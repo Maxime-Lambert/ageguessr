@@ -1,0 +1,56 @@
+<div class="mx-auto max-w-md px-6 py-16">
+  <div class="bg-surface border-border rounded-lg border p-6">
+    <h1 class="font-display text-3xl">Welcome back</h1>
+
+    <form class="mt-6 space-y-4" [formGroup]="form" (ngSubmit)="submit()">
+      <div>
+        <label for="email" class="text-sm font-medium">Email</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          class="border-border bg-background mt-1 w-full rounded-md border px-3 py-2"
+        />
+      </div>
+
+      <div>
+        <label for="password" class="text-sm font-medium">Password</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          class="border-border bg-background mt-1 w-full rounded-md border px-3 py-2"
+        />
+      </div>
+
+      @if (errorMessage()) {
+        <p class="text-danger text-sm">{{ errorMessage() }}</p>
+      }
+
+      @if (needsVerification()) {
+        <div class="border-border rounded-md border p-3 text-sm">
+          <p>Please verify your email before logging in.</p>
+          @if (resendSent()) {
+            <p class="text-muted mt-1">Verification email sent — check your inbox.</p>
+          } @else {
+            <button type="button" (click)="resendVerification()" class="text-accent mt-1 underline">
+              Resend verification email
+            </button>
+          }
+        </div>
+      }
+
+      <button
+        type="submit"
+        [disabled]="submitting()"
+        class="bg-accent text-accent-foreground w-full rounded-md py-2 font-medium disabled:opacity-50"
+      >
+        Log in
+      </button>
+    </form>
+
+    <p class="text-muted mt-4 text-sm">
+      No account yet? <a routerLink="/register" class="text-accent">Create one</a>
+    </p>
+  </div>
+</div>
