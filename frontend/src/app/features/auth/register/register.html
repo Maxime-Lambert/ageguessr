@@ -1,0 +1,54 @@
+<div class="mx-auto max-w-md px-6 py-16">
+  <div class="bg-surface border-border rounded-lg border p-6">
+    <h1 class="font-display text-3xl">Create your account</h1>
+    <p class="text-muted mt-2">Track your streak and compare scores with friends.</p>
+
+    <form class="mt-6 space-y-4" [formGroup]="form" (ngSubmit)="submit()">
+      <div>
+        <label for="email" class="text-sm font-medium">Email</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          class="border-border bg-background mt-1 w-full rounded-md border px-3 py-2"
+        />
+      </div>
+
+      <div>
+        <label for="password" class="text-sm font-medium">Password</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          class="border-border bg-background mt-1 w-full rounded-md border px-3 py-2"
+        />
+      </div>
+
+      <div>
+        <label for="confirmPassword" class="text-sm font-medium">Confirm password</label>
+        <input
+          id="confirmPassword"
+          type="password"
+          formControlName="confirmPassword"
+          class="border-border bg-background mt-1 w-full rounded-md border px-3 py-2"
+        />
+      </div>
+
+      @if (errorMessage()) {
+        <p class="text-danger text-sm">{{ errorMessage() }}</p>
+      }
+
+      <button
+        type="submit"
+        [disabled]="submitting()"
+        class="bg-accent text-accent-foreground w-full rounded-md py-2 font-medium disabled:opacity-50"
+      >
+        Create account
+      </button>
+    </form>
+
+    <p class="text-muted mt-4 text-sm">
+      Already have an account? <a routerLink="/login" class="text-accent">Log in</a>
+    </p>
+  </div>
+</div>
