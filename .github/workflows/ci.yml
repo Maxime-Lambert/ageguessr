@@ -83,23 +83,23 @@ jobs:
         uses: appleboy/ssh-action@v1
         env:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          JWT_SIGNING_KEY: ${{ secrets.JWT_SIGNING_KEY }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           DOMAIN: ${{ vars.DOMAIN }}
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 2222
-          envs: POSTGRES_PASSWORD,JWT_SIGNING_KEY,DOMAIN,CLOUDFLARE_API_TOKEN
+          envs: POSTGRES_PASSWORD,JWT_SECRET,RESEND_API_KEY,DOMAIN
           script: |
             set -euo pipefail
             cd /opt/ageguessr
             cat > .env <<ENVEOF
             POSTGRES_PASSWORD=$POSTGRES_PASSWORD
-            JWT_SIGNING_KEY=$JWT_SIGNING_KEY
+            JWT_SECRET=$JWT_SECRET
+            RESEND_API_KEY=$RESEND_API_KEY
             DOMAIN=$DOMAIN
-            CLOUDFLARE_API_TOKEN=$CLOUDFLARE_API_TOKEN
             ENVEOF
             chmod 600 .env
             docker compose -f docker-compose.prod.yml up -d --build
