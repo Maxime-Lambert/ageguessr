@@ -1,0 +1,15 @@
+**/target/
+**/node_modules/
+frontend/dist/
+frontend/test-results/
+frontend/playwright-report/
+frontend/.angular/
+.git/
+.github/
+.claude/
+.githooks/
+**/*.env
+.env*
+plans/
+docs/
+*.md

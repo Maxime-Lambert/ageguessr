@@ -30,6 +30,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
 
     private static final String[] PUBLIC_AUTH_PATHS = {
+        "/api/health",
         "/api/auth/register",
         "/api/auth/login",
         "/api/auth/refresh",
