@@ -1,0 +1,14 @@
+<button
+  type="button"
+  (click)="themeService.toggle()"
+  [attr.aria-label]="
+    themeService.theme() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'
+  "
+  class="border-border bg-surface text-foreground hover:bg-accent hover:text-accent-foreground rounded-md border p-2 transition-colors"
+>
+  @if (themeService.theme() === 'dark') {
+    <svg lucideSun [size]="18"></svg>
+  } @else {
+    <svg lucideMoon [size]="18"></svg>
+  }
+</button>

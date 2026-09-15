@@ -1,0 +1,30 @@
+# Java / Maven
+**/target/
+*.class
+
+# Playwright
+frontend/test-results/
+frontend/playwright-report/
+frontend/playwright/.cache/
+
+# Frontend
+**/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/.env
+
+# Secrets
+.env
+.env.local
+**/*.env
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Plans terminés (optionnel - à toi de décider)
+# plans/done/

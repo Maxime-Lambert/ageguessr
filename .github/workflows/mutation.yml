@@ -1,0 +1,27 @@
+name: Mutation testing
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  mutation-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "25"
+          cache: "maven"
+
+      - name: Run PIT
+        continue-on-error: true
+        run: ./scripts/run-mutation-tests.sh
+
+      - name: Publish report
+        uses: actions/upload-artifact@v4
+        with:
+          name: mutation-report
+          path: ageguessr-api/target/pit-reports/**

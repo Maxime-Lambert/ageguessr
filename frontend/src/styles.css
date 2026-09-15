@@ -1,0 +1,50 @@
+@import 'tailwindcss';
+
+@import '@fontsource-variable/fraunces';
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/inter/700.css';
+
+@custom-variant light (&:where(.light, .light *));
+
+@theme {
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-display: 'Fraunces Variable', 'Fraunces', system-ui, serif;
+
+  /* Archive/vieille photo — sombre par defaut, voir docs/decisions/design.md */
+  --color-background: #17130f;
+  --color-surface: #221c15;
+  --color-foreground: #ede3d2;
+  --color-muted: #9c8f79;
+  --color-border: #3a3021;
+  --color-accent: #6467e8;
+  --color-accent-foreground: #ffffff;
+
+  /* Indicateur chaud/froid du jeu — volontairement distinct de --color-accent */
+  --color-hot: #e2572b;
+  --color-cold: #3e92b0;
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+}
+
+.light {
+  --color-background: #f5eedf;
+  --color-surface: #fffcf5;
+  --color-foreground: #241d14;
+  --color-muted: #79705e;
+  --color-border: #ddd0b5;
+  --color-accent: #4548b0;
+  --color-accent-foreground: #ffffff;
+
+  --color-hot: #c8431d;
+  --color-cold: #1f6e89;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+}
