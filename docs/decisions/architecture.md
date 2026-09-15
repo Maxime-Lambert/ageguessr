@@ -299,25 +299,40 @@ sur `6380` (pas `6379`) — évite un conflit si un autre projet tourne en paral
 cette machine avec ses propres conteneurs sur les ports par défaut.
 
 ### Hébergement
-**Décision** : VPS avec Caddy comme reverse proxy + HTTPS automatique (Let's Encrypt
-intégré) et Cloudflare pour le DNS (challenge DNS-01, nécessaire si le domaine est
-proxifié par Cloudflare) — domaine `ageguessr.app`.
+**Décision** : VPS partagé avec un autre projet personnel, une passerelle Caddy unique
+au niveau du VPS (hors de ce repo) pour le HTTPS + le routage par domaine, et
+Cloudflare pour le DNS — domaine `ageguessr.app`.
 
 **Raison** : coût fixe et prévisible, expérience ops valorisable pour un projet solo.
-Détails d'implémentation (Dockerfile edge, Caddyfile, challenge DNS-01 si besoin) à
-définir dans un plan dédié à la mise en place CI/CD.
 
-**Mutualisation VPS** : ce projet peut être déployé sur le même VPS qu'un autre projet
-personnel, chacun dans son propre conteneur/sous-domaine, sans aucun partage de code, de
-base de données ni de configuration applicative — la mutualisation est purement une
-question d'infrastructure (un seul serveur physique à payer), jamais une dépendance
-logicielle entre projets.
+**Mutualisation VPS et passerelle partagée** : un seul serveur ne peut avoir qu'un
+processus qui écoute sur les ports 80/443 — deux projets sur la même machine ne peuvent
+donc pas chacun faire tourner leur propre Caddy exposé publiquement. La solution : une
+passerelle Caddy unique, minimale, qui ne fait que terminer le TLS et router par nom de
+domaine vers le conteneur "edge" de chaque projet via un réseau Docker externe partagé
+(`gateway`) — elle ne vit dans aucun des deux repos (n'est le code d'aucun des deux
+projets), uniquement sur le VPS. Chaque projet garde son propre conteneur "edge" (sert
+son propre frontend statique + reverse-proxy `/api/*` vers son propre backend), mais ce
+conteneur ne termine plus le TLS lui-même et n'est plus jamais exposé directement sur
+80/443 — il écoute en HTTP simple sur le réseau partagé, seule la passerelle lui parle.
+Aucun partage de code, de base de données ni de configuration applicative entre projets
+— uniquement le point d'entrée réseau, qui est par nature une ressource unique par
+machine.
+
+**Implémentation** (`Dockerfile.edge`, `Caddyfile` à la racine du repo) : le conteneur
+edge du projet build le frontend, sert les fichiers statiques via `file_server`, et
+route `/api/*` vers `backend:8080` en interne, sans retirer le préfixe (chaque
+endpoint backend est mappé avec son `/api/...` complet, ex. `/api/auth/login` —
+contrairement à un design où le préfixe ne serait qu'une convention d'edge) — écoute sur
+`:80` sans bloc `tls` (adresse Caddy sans nom de domaine = pas d'HTTPS automatique
+tenté). `docker-compose.prod.yml` attache le service `edge` à la fois au réseau interne
+du projet (pour joindre `backend`) et au réseau externe `gateway` (pour être joignable
+par la passerelle) ; `postgres`/`redis`/`backend` ne sont jamais exposés sur l'hôte.
 
 ### Migrations en production
-**Décision** : à trancher au moment de l'implémentation CI/CD — probable application
-automatique des migrations Flyway au démarrage du conteneur backend
-(`spring.flyway.enabled=true` déjà actif par défaut), acceptable pour une instance
-unique à faible trafic.
+**Décision** : migrations Flyway appliquées automatiquement au démarrage du conteneur
+backend (`spring.flyway.enabled=true` déjà actif par défaut) — acceptable pour une
+instance unique à faible trafic.
 
 ### Variables d'environnement
 - **Local** : fichier `.env` (gitignored)
