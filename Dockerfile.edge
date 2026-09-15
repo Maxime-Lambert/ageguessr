@@ -1,0 +1,18 @@
+# Un seul conteneur "edge" par projet : Caddy sert les fichiers statiques du
+# frontend et fait reverse-proxy vers le backend pour /api/*. TLS n'est PAS
+# termine ici - une passerelle Caddy partagee au niveau du VPS (hors de ce
+# repo, puisqu'elle route aussi vers d'autres projets sur la meme machine)
+# s'en charge et relaie en HTTP simple sur le reseau Docker partage "gateway".
+
+FROM node:24-alpine AS build
+WORKDIR /app/frontend
+
+COPY frontend/package.json frontend/pnpm-lock.yaml frontend/pnpm-workspace.yaml ./
+RUN corepack enable && pnpm install --frozen-lockfile
+
+COPY frontend/ .
+RUN pnpm build
+
+FROM caddy:2-alpine
+COPY --from=build /app/frontend/dist/frontend/browser /srv
+COPY Caddyfile /etc/caddy/Caddyfile

@@ -1,0 +1,73 @@
+name: ageguessr-prod
+
+networks:
+  gateway:
+    external: true
+
+services:
+  postgres:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ageguessr
+      POSTGRES_USER: ageguessr
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data_prod:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ageguessr -d ageguessr"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:8-alpine
+    restart: unless-stopped
+    volumes:
+      - redis_data_prod:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: .
+      dockerfile: ageguessr-api/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ageguessr
+      DB_USER: ageguessr
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET: ${JWT_SECRET}
+      COOKIE_SECURE: "true"
+      CORS_ALLOWED_ORIGIN: "https://${DOMAIN}"
+      FRONTEND_URL: "https://${DOMAIN}"
+      RESEND_API_KEY: ${RESEND_API_KEY}
+
+  edge:
+    build:
+      context: .
+      dockerfile: Dockerfile.edge
+    restart: unless-stopped
+    depends_on:
+      - backend
+    # "default" = le reseau implicite du projet, pour joindre "backend" ;
+    # "gateway" = le reseau partage avec la passerelle Caddy du VPS.
+    networks:
+      - default
+      - gateway
+
+volumes:
+  postgres_data_prod:
+  redis_data_prod:
