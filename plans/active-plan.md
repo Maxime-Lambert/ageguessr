@@ -68,16 +68,16 @@ explicitement avec l'utilisateur avant exécution — c'est une prod partagée a
 autre projet, pas seulement celle d'Ageguessr.
 
 ## Phase 1 : Passerelle (additive, sans risque pour l'autre projet)
-Status: In progress
+Status: Completed
 
 - [x] Créer le réseau Docker externe `gateway` sur le VPS
 - [x] Écrire `/opt/gateway/{Dockerfile,Caddyfile,docker-compose.yml}`
-- [ ] Vérifier que l'utilisateur a bien créé `/opt/gateway/.env` avec
+- [x] Vérifier que l'utilisateur a bien créé `/opt/gateway/.env` avec
       `CLOUDFLARE_API_TOKEN` (nouveau token, pas celui de l'autre projet)
-- [ ] Builder l'image de la passerelle (`cd /opt/gateway && docker compose build`) —
+- [x] Builder l'image de la passerelle (`cd /opt/gateway && docker compose build`) —
       ne PAS faire `up` tout de suite, le port 80/443 est encore tenu par l'autre
       projet
-- [ ] Vérifier que le build inclut bien le plugin `github.com/caddy-dns/cloudflare`
+- [x] Vérifier que le build inclut bien le plugin `github.com/caddy-dns/cloudflare`
       (`docker compose run --rm caddy caddy list-modules | grep cloudflare`)
 
 ### Verification Plan
@@ -85,21 +85,50 @@ Status: In progress
 - La commande `list-modules` ci-dessus liste bien le module cloudflare
 
 ### Phase Summary
-_(à écrire une fois la phase terminée)_
+`/opt/gateway/.env` créé par l'utilisateur avec un token Cloudflare neuf. Image
+buildée avec succès, `caddy list-modules` confirme la présence de
+`dns.providers.cloudflare`. La passerelle est prête mais pas démarrée (pas de `up`,
+conformément au plan — le port 80/443 est encore tenu par `watodoo-prod-edge-1`).
 
 ---
 
 ## Phase 2 : Bascule de l'autre projet vers le réseau partagé (touche une prod live — demander confirmation explicite juste avant)
-Status: Not started
+Status: In progress
 
-- [ ] Dans le repo de l'autre projet (`/home/lord/source/watodoo`, PAS ce repo) :
-      modifier `Caddyfile` pour retirer le bloc `tls { dns cloudflare ... }` et
-      changer l'adresse du site de `{$DOMAIN}` à `:80` (sert du HTTP simple en
-      interne, la passerelle termine le TLS) ; modifier `docker-compose.prod.yml`
-      pour retirer `ports: ["80:80", "443:443"]` et `CLOUDFLARE_API_TOKEN` du
-      service `edge`, et l'attacher en plus au réseau externe `gateway`
-- [ ] Committer et pousser ce changement dans le repo de l'autre projet (créer une
-      PR comme d'habitude pour ce repo, pas de push direct sur `main`/`develop`)
+**État exact (vérifié en direct à la pause du 2026-10-14)** : branche
+`chore/caddy-passerelle-partagee` créée depuis `develop` dans
+`/home/lord/source/watodoo`, commit `7230030` poussé sur
+`origin/chore/caddy-passerelle-partagee` (**pas de PR ouverte** — volontairement
+incomplet, voir ci-dessous). CI du repo `watodoo` verte sur ce push (tests
+backend + frontend). `watodoo` tourne toujours normalement en prod, rien n'a
+encore été touché côté VPS pour cette phase.
+
+- [x] Dans le repo de l'autre projet (`/home/lord/source/watodoo`, PAS ce repo) —
+      **partiellement fait**, détail ci-dessous :
+  - [x] `docker-compose.prod.yml` : retiré `ports: ["80:80", "443:443"]` et
+        `CLOUDFLARE_API_TOKEN` du service `edge` (+ volumes `caddy_data`/
+        `caddy_config`, plus utilisés par ce conteneur), attaché au réseau
+        externe `gateway`
+  - [x] `Dockerfile.edge` : retiré le build Caddy custom (`xcaddy` + plugin
+        `caddy-dns/cloudflare`), repassé sur `caddy:2-alpine` standard — plus
+        nécessaire puisque ce conteneur ne gère plus lui-même le certificat
+        Let's Encrypt (DNS-01 désormais géré une seule fois par la passerelle)
+  - [x] `docs/decisions/architecture.md` : section "Hébergement" mise à jour
+        (nouvelle sous-section "Passerelle Caddy partagée du VPS" expliquant
+        le changement et pourquoi, section Cloudflare mise à jour pour dire
+        que c'est maintenant la passerelle qui détient le token)
+  - [ ] **`Caddyfile` : PAS encore fait** — bloqué par l'auto mode classifier de
+        Claude Code (raison : `TLS/Auth Weaken`, le retrait du bloc `tls` est vu
+        comme un affaiblissement de sécurité alors qu'il est voulu ici). Reste
+        à faire : remplacer `{$DOMAIN} { tls { dns cloudflare
+        {env.CLOUDFLARE_API_TOKEN} } ... }` par `:80 { ... }` (retirer tout le
+        bloc `tls`). Soit l'utilisateur l'édite lui-même, soit redemander la
+        permission explicitement à la reprise.
+- [ ] Committer ce dernier changement (`Caddyfile`) et pousser (déjà un commit
+      WIP `7230030` pour le reste, ce sera un commit de suite logique) — **puis
+      seulement** ouvrir la PR vers `develop` (pas avant que le `Caddyfile` soit
+      cohérent avec le reste, sinon config cassée si quelqu'un build cette
+      branche)
 - [ ] Sur le VPS : synchroniser ces fichiers dans `/opt/watodoo/` (le déploiement
       normal de ce projet le fait déjà via son propre CI — ou copier manuellement
       pour tester avant de merger)
