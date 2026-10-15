@@ -127,6 +127,15 @@ encore été touché côté VPS pour cette phase.
       `develop` est sans risque (le job `deploy` de watodoo ne tourne que sur push
       vers `main`) ; c'est la PR `develop` → `main` qui ne doit partir qu'au moment
       de la bascule ci-dessous.
+- **Attention (constaté le 2026-10-15 dans `.github/workflows/ci.yml` de watodoo)** :
+  le job `deploy` (push sur `main`) fait `rsync -az --delete` du repo vers
+  `/opt/watodoo/` puis `docker compose -f docker-compose.prod.yml up -d --build`
+  → **merger `develop` → `main` déclenche à lui seul la bascule de l'edge**. Ordre
+  retenu : bascule manuelle complète (passerelle comprise) d'abord, merge vers `main`
+  ensuite (redéploiement alors sans effet visible). Le CI écrit encore
+  `CLOUDFLARE_API_TOKEN` dans le `.env` de watodoo : inutilisé, à nettoyer plus tard.
+- Les accès SSH au VPS sont refusés à Claude par le mode auto (« Production
+  Reads ») : les étapes VPS sont exécutées par l'utilisateur, guidé pas à pas.
 - [ ] Sur le VPS : synchroniser ces fichiers dans `/opt/watodoo/` (le déploiement
       normal de ce projet le fait déjà via son propre CI — ou copier manuellement
       pour tester avant de merger)
