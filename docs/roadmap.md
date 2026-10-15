@@ -7,16 +7,18 @@ la suivante).
 ## Semaine 1 — Fondations
 - [x] Initialisation projet Spring Boot (Java 25) + Angular (Claude Code)
 - [x] Docker Compose local fonctionnel (PostgreSQL + Redis)
-- [ ] Authentification complète (inscription, connexion, JWT + refresh token rotatif,
-      jeu possible sans compte)
+- [x] Authentification complète (inscription, connexion, JWT + refresh token rotatif,
+      jeu possible sans compte) — PR #1
 - [ ] Charte graphique définie (`docs/decisions/design.md`) — couleurs, typo, formes,
       icônes, ton (actuellement uniquement esquissé, pas de session de design dédiée)
 - [ ] Mise en place technique de la charte (tokens Tailwind, polices, toggle thème)
 - [ ] Logo/wordmark Ageguessr + favicon
 - [ ] Mentions légales + CGU minimales (audience internationale — juridiction à
       clarifier, avant toute ouverture publique même en beta)
-- [ ] CI/CD GitHub Actions → déploiement automatique sur le VPS
-- [ ] Structure de base du Caddyfile pour l'app réelle (domaine `ageguessr.app`)
+- [ ] CI/CD GitHub Actions → déploiement automatique sur le VPS — en cours (PR #2,
+      bloquée par la bascule du VPS sur la passerelle partagée, voir `plans/active-plan.md`)
+- [ ] Structure de base du Caddyfile pour l'app réelle (domaine `ageguessr.app`) — en
+      cours (PR #2)
 
 ## Semaine 2 — Données du jeu
 - [ ] Client Wikidata (recherche par notoriété/sitelinks, extraction date de naissance
