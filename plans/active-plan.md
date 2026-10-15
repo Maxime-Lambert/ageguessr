@@ -119,16 +119,14 @@ encore été touché côté VPS pour cette phase.
         que c'est maintenant la passerelle qui détient le token)
   - [x] `Caddyfile` : bloc `tls { dns cloudflare ... }` retiré, adresse
         `{$DOMAIN}` remplacée par `:80` (fait le 2026-10-15 avec accord explicite
-        de l'utilisateur, commit `657da14`). Pas validé localement avec
-        `caddy validate` : Docker indisponible dans le WSL de dev.
+        de l'utilisateur, commit `657da14`). `caddy validate` : OK.
 - [x] Committer ce dernier changement (`Caddyfile`) — commit `657da14`
-- [ ] Pousser `657da14` — **bloqué** : le hook pre-push de `watodoo` lance les tests
-      d'intégration (Testcontainers), qui exigent Docker, indisponible dans le WSL
-      au 2026-10-15. Démarrer Docker puis `git push`, ou pousser avec
-      `--no-verify` uniquement si l'utilisateur l'accepte (la CI rejoue les tests)
-- [ ] **Puis seulement** ouvrir la PR vers `develop` (pas avant que le `Caddyfile` soit
-      cohérent avec le reste, sinon config cassée si quelqu'un build cette
-      branche)
+- [x] Pousser `657da14` (hook pre-push : 40/40 tests OK)
+- [x] Ouvrir la PR vers `develop` :
+      [Watodoo#24](https://github.com/Maxime-Lambert/Watodoo/pull/24). Merger dans
+      `develop` est sans risque (le job `deploy` de watodoo ne tourne que sur push
+      vers `main`) ; c'est la PR `develop` → `main` qui ne doit partir qu'au moment
+      de la bascule ci-dessous.
 - [ ] Sur le VPS : synchroniser ces fichiers dans `/opt/watodoo/` (le déploiement
       normal de ce projet le fait déjà via son propre CI — ou copier manuellement
       pour tester avant de merger)
