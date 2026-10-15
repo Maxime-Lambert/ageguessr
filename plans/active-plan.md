@@ -117,16 +117,16 @@ encore été touché côté VPS pour cette phase.
         (nouvelle sous-section "Passerelle Caddy partagée du VPS" expliquant
         le changement et pourquoi, section Cloudflare mise à jour pour dire
         que c'est maintenant la passerelle qui détient le token)
-  - [ ] **`Caddyfile` : PAS encore fait** — bloqué par l'auto mode classifier de
-        Claude Code (raison : `TLS/Auth Weaken`, le retrait du bloc `tls` est vu
-        comme un affaiblissement de sécurité alors qu'il est voulu ici). Reste
-        à faire : remplacer `{$DOMAIN} { tls { dns cloudflare
-        {env.CLOUDFLARE_API_TOKEN} } ... }` par `:80 { ... }` (retirer tout le
-        bloc `tls`). Soit l'utilisateur l'édite lui-même, soit redemander la
-        permission explicitement à la reprise.
-- [ ] Committer ce dernier changement (`Caddyfile`) et pousser (déjà un commit
-      WIP `7230030` pour le reste, ce sera un commit de suite logique) — **puis
-      seulement** ouvrir la PR vers `develop` (pas avant que le `Caddyfile` soit
+  - [x] `Caddyfile` : bloc `tls { dns cloudflare ... }` retiré, adresse
+        `{$DOMAIN}` remplacée par `:80` (fait le 2026-10-15 avec accord explicite
+        de l'utilisateur, commit `657da14`). Pas validé localement avec
+        `caddy validate` : Docker indisponible dans le WSL de dev.
+- [x] Committer ce dernier changement (`Caddyfile`) — commit `657da14`
+- [ ] Pousser `657da14` — **bloqué** : le hook pre-push de `watodoo` lance les tests
+      d'intégration (Testcontainers), qui exigent Docker, indisponible dans le WSL
+      au 2026-10-15. Démarrer Docker puis `git push`, ou pousser avec
+      `--no-verify` uniquement si l'utilisateur l'accepte (la CI rejoue les tests)
+- [ ] **Puis seulement** ouvrir la PR vers `develop` (pas avant que le `Caddyfile` soit
       cohérent avec le reste, sinon config cassée si quelqu'un build cette
       branche)
 - [ ] Sur le VPS : synchroniser ces fichiers dans `/opt/watodoo/` (le déploiement
