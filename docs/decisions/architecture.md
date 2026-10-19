@@ -329,6 +329,24 @@ tenté). `docker-compose.prod.yml` attache le service `edge` à la fois au rése
 du projet (pour joindre `backend`) et au réseau externe `gateway` (pour être joignable
 par la passerelle) ; `postgres`/`redis`/`backend` ne sont jamais exposés sur l'hôte.
 
+**IP du client à travers les proxys** : chaîne Cloudflare → passerelle Caddy du VPS →
+Caddy edge → Spring. Le rate limiting de `/api/auth/*` partitionne par IP client, il
+faut donc que Spring voie la vraie IP et qu'elle soit infalsifiable. Par défaut, chaque
+Caddy remplace `X-Forwarded-For` par l'IP de la connexion entrante : tous les
+utilisateurs partageraient alors un seul compteur (celui de l'IP de la passerelle), et
+un seul client pourrait bloquer la connexion de tout le monde. Solution :
+- la passerelle ne fait confiance qu'aux plages IP de Cloudflare (`trusted_proxies`) et
+  lit l'IP client dans `CF-Connecting-IP` (Cloudflare écrase toujours cet en-tête) ;
+  une connexion directe à l'IP du VPS garde son IP réelle ;
+- elle transmet `X-Forwarded-For: {client_ip}` (une seule valeur, tout en-tête envoyé
+  par le client est écrasé) ;
+- l'edge fait confiance aux IP privées (seule la passerelle peut le joindre) et
+  retransmet cette valeur telle quelle au backend ;
+- Spring la lit via `ForwardedHeaderFilter` (`WebConfig`).
+Les plages IP de Cloudflare sont copiées en dur dans le Caddyfile de la passerelle :
+elles changent rarement, mais sont à revérifier de temps en temps
+(https://www.cloudflare.com/ips/).
+
 ### Migrations en production
 **Décision** : migrations Flyway appliquées automatiquement au démarrage du conteneur
 backend (`spring.flyway.enabled=true` déjà actif par défaut) — acceptable pour une

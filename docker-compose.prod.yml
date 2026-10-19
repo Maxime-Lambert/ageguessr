@@ -13,6 +13,9 @@ services:
       POSTGRES_USER: ageguessr
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
+      # Volontairement le dossier parent et pas .../data : depuis Postgres 18, l'image
+      # officielle met PGDATA dans /var/lib/postgresql/18/docker et declare son VOLUME
+      # sur /var/lib/postgresql (permet les montees de version majeure via pg_upgrade).
       - postgres_data_prod:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ageguessr -d ageguessr"]
