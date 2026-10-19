@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import tools.jackson.databind.ObjectMapper;
 
 /**
@@ -47,6 +48,31 @@ class RateLimitFunctionalTest {
                 .andExpect(result -> org.assertj.core.api.Assertions.assertThat(
                                 result.getResponse().getContentAsString())
                         .contains("RATE_LIMITED"));
+    }
+
+    /**
+     * In prod every request reaches Spring from the edge Caddy container: without
+     * X-Forwarded-For (set by the Caddy chain to the real client IP) all users would
+     * share a single bucket. Pins that the limiter keys on that header, not on the
+     * socket peer.
+     */
+    @Test
+    void partitionsByForwardedClientIp() throws Exception {
+        String exhaustedClient = "203.0.113.10";
+        for (int i = 0; i < 3; i++) {
+            resendVerificationFrom(exhaustedClient).andExpect(status().isAccepted());
+        }
+        resendVerificationFrom(exhaustedClient).andExpect(status().isTooManyRequests());
+
+        resendVerificationFrom("203.0.113.11").andExpect(status().isAccepted());
+    }
+
+    private ResultActions resendVerificationFrom(String clientIp)
+            throws Exception {
+        return mockMvc.perform(post("/api/auth/resend-verification")
+                .header("X-Forwarded-For", clientIp)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(new EmailPayload("someone@x.com"))));
     }
 
     private record EmailPayload(String email) {}

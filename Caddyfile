@@ -1,6 +1,29 @@
+{
+	servers {
+		# Seule la passerelle du VPS (reseau Docker "gateway", donc IP privee) parle a
+		# ce conteneur : on lui fait confiance pour l'IP client qu'elle transmet dans
+		# X-Forwarded-For. {client_ip} vaut alors cette IP, sinon l'IP de la connexion.
+		trusted_proxies static private_ranges
+	}
+}
+
 :80 {
+	# Les reponses de Spring ont deja ces en-tetes (Spring Security), mais pas les
+	# fichiers statiques du frontend servis directement par Caddy.
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+	}
+
 	handle /api/* {
-		reverse_proxy backend:8080
+		reverse_proxy backend:8080 {
+			# Une seule valeur, l'IP du vrai client : le rate limiting de Spring
+			# (ForwardedHeaderFilter -> getRemoteAddr) partitionne dessus.
+			header_up X-Forwarded-For {client_ip}
+		}
 	}
 
 	handle {
