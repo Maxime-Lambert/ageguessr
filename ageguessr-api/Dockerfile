@@ -16,8 +16,12 @@ COPY ageguessr-api/src src
 RUN ./mvnw -q -B package -DskipTests
 
 FROM eclipse-temurin:25-jre AS final
+# Utilisateur systeme sans privileges : une faille d'execution de code dans la JVM ne
+# donnerait pas root dans le conteneur (et rendrait une evasion vers l'hote plus dure).
+RUN useradd --system --no-create-home --uid 10001 --user-group app
 WORKDIR /app
 COPY --from=build /src/ageguessr-api/target/*.jar app.jar
+USER app
 
 ENV SERVER_PORT=8080
 EXPOSE 8080

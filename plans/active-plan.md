@@ -71,7 +71,8 @@ autre projet, pas seulement celle d'Ageguessr.
 Status: Completed
 
 - [x] Créer le réseau Docker externe `gateway` sur le VPS
-- [x] Écrire `/opt/gateway/{Dockerfile,Caddyfile,docker-compose.yml}`
+- [x] Écrire `/opt/gateway/{Dockerfile,Caddyfile,docker-compose.yml}` (Caddyfile déplacé ensuite dans
+      `/opt/gateway/conf/` et monté, voir Phase 3)
 - [x] Vérifier que l'utilisateur a bien créé `/opt/gateway/.env` avec
       `CLOUDFLARE_API_TOKEN` (nouveau token, pas celui de l'autre projet)
 - [x] Builder l'image de la passerelle (`cd /opt/gateway && docker compose build`) —
@@ -236,7 +237,33 @@ Status: Not started
       clé dédiée), `POSTGRES_PASSWORD` (générer), `JWT_SECRET` (générer via
       `openssl rand -base64 32`), `RESEND_API_KEY`, variable `DOMAIN`
       (`ageguessr.app`)
-- [ ] Merger la PR [#2](https://github.com/Maxime-Lambert/ageguessr/pull/2) sur
+- [x] Relecture de la PR #2 par `code-reviewer` + `architecture-reviewer` (2026-10-19),
+      corrections appliquées sur la branche :
+  - **IP client** (signalé comme « spoofing X-Forwarded-For » ; le mécanisme décrit
+    était faux : chaque Caddy écrase XFF par défaut. Vrai problème : Spring voyait
+    l'IP de la passerelle pour tout le monde → un seul compteur de rate limit
+    partagé par tous les utilisateurs). Corrigé : passerelle `trusted_proxies` =
+    plages Cloudflare + `client_ip_headers CF-Connecting-IP` + `header_up
+    X-Forwarded-For {client_ip}` ; edge `trusted_proxies private_ranges` + même
+    `header_up`. Testé en local de bout en bout (XFF forgé ignoré, vraie IP
+    transmise) + test fonctionnel `partitionsByForwardedClientIp`. Détail dans
+    `docs/decisions/architecture.md`.
+  - Backend en utilisateur non-root (`app`, uid 10001) — image buildée et vérifiée.
+  - En-têtes de sécurité sur les fichiers statiques (HSTS, nosniff, X-Frame-Options,
+    Referrer-Policy, Permissions-Policy).
+  - `HealthController` déplacé dans `config/` + `HealthFunctionalTest`.
+  - Refusé : monter Postgres sur `/var/lib/postgresql/data` (faux pour Postgres 18,
+    PGDATA = `/var/lib/postgresql/18/docker`, VOLUME = `/var/lib/postgresql` ;
+    commentaire ajouté dans `docker-compose.prod.yml`).
+  - **Reporté (à faire plus tard)** : mot de passe Redis (Redis isolé sur le réseau
+    interne du projet), limites mémoire/CPU + `no-new-privileges` sur les conteneurs
+    (VPS partagé), Content-Security-Policy (à régler avec Angular), n'accepter que
+    Cloudflare sur 80/443 au niveau pare-feu, et côté watodoo : son edge ne fait pas
+    confiance à la passerelle → son backend voit l'IP de la passerelle pour tous
+    (même problème que ci-dessus, à corriger dans le repo watodoo).
+- [ ] Appliquer le nouveau Caddyfile de la passerelle (IP client) sur le VPS :
+      `conf/Caddyfile` + `caddy reload`, sans coupure — fichier préparé par Claude
+- Merger la PR [#2](https://github.com/Maxime-Lambert/ageguessr/pull/2) sur
       `develop`, puis PR `develop` → `main` pour déclencher le premier déploiement
       réel (le job `deploy` du CI ne tourne que sur push vers `main`)
 - [ ] Vérifier le smoke test du CI (`/api/health`) et tester manuellement
