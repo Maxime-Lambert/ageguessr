@@ -160,6 +160,13 @@ encore été touché côté VPS pour cette phase.
   Le CI de watodoo réécrit ce `.env` avec ces clés à chaque déploiement → vérifier
   que les secrets GitHub correspondants existent avant le merge vers `main`.
   Ne jamais recréer le backend watodoo à la main avec ce `.env`.
+  Vérifié le 2026-10-19 : les secrets existent bien (environnement GitHub
+  `production` de watodoo). Ils manquent seulement parce que `develop` de watodoo
+  contient 5 PR pas encore en prod (#19 à #23, dont l'ingestion IGDB et le
+  verrouillage de compte) → **merger `develop` → `main` sur watodoo déploie aussi
+  ces features : décision produit de l'utilisateur, pas une simple formalité**.
+- Le merge de Watodoo#24 par Claude est refusé par le mode auto (« Production
+  Deploy ») → c'est l'utilisateur qui merge.
 
 ### Verification Plan
 - Le site de l'autre projet répond en HTTPS sans erreur de certificat après la
@@ -183,6 +190,16 @@ Status: Not started
 - [ ] Ajouter le bloc `ageguessr.app` dans `/opt/gateway/Caddyfile`, rebuild +
       redémarrer la passerelle (un seul bloc supplémentaire, n'affecte pas le bloc
       de l'autre projet)
+  - Prérequis : la zone `ageguessr.app` est **active** dans Cloudflare, et le token
+    Cloudflare de la passerelle couvre aussi cette zone (il a été créé quand seule
+    `watodoo.app` y était → probablement à étendre). Sinon le challenge DNS-01
+    échoue, et Let's Encrypt limite les échecs de validation.
+  - Bloc prévu (même forme que celui de watodoo, à aligner sur le fichier réel) :
+    `ageguessr.app { tls { dns cloudflare {env.CLOUDFLARE_API_TOKEN} }
+    reverse_proxy ageguessr-prod-edge-1:80 }` + `www.ageguessr.app` en redirection
+    permanente vers `https://ageguessr.app{uri}`. Le nom du conteneur vient de
+    `name: ageguessr-prod` dans `docker-compose.prod.yml` → `ageguessr-prod-edge-1`.
+    Tant que le conteneur n'existe pas, Caddy démarre quand même et répond 502.
 - [ ] Créer un compte Resend, vérifier le domaine d'envoi, récupérer une clé API
       (action utilisateur)
 - [ ] Créer une clé SSH de déploiement dédiée à Ageguessr (ne pas réutiliser celle
