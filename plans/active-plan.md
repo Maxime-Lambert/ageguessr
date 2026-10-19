@@ -200,6 +200,13 @@ Status: Not started
     permanente vers `https://ageguessr.app{uri}`. Le nom du conteneur vient de
     `name: ageguessr-prod` dans `docker-compose.prod.yml` → `ageguessr-prod-edge-1`.
     Tant que le conteneur n'existe pas, Caddy démarre quand même et répond 502.
+  - Constaté le 2026-10-19 : le Caddyfile de la passerelle était copié dans l'image
+    (`COPY Caddyfile`), donc chaque modif = rebuild + recréation = coupure watodoo.
+    Changement préparé en même temps que l'ajout du bloc : Caddyfile déplacé dans
+    `/opt/gateway/conf/` et monté en lecture seule (`./conf:/etc/caddy:ro`),
+    `COPY` retiré du Dockerfile → à l'avenir, `sudo docker compose exec caddy caddy
+    reload --config /etc/caddy/Caddyfile` sans coupure. Sauvegarde de l'ancien
+    `/opt/gateway` dans `~/gateway-backup-2026-10-19/`.
 - [ ] Créer un compte Resend, vérifier le domaine d'envoi, récupérer une clé API
       (action utilisateur)
 - [ ] Créer une clé SSH de déploiement dédiée à Ageguessr (ne pas réutiliser celle
