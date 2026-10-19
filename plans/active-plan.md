@@ -187,7 +187,7 @@ Status: Not started
 
 - [ ] Pointer le DNS de `ageguessr.app` vers Cloudflare (action utilisateur, côté
       registrar — indépendante des phases précédentes, peut être faite en parallèle)
-- [ ] Ajouter le bloc `ageguessr.app` dans `/opt/gateway/Caddyfile`, rebuild +
+- [x] Ajouter le bloc `ageguessr.app` dans `/opt/gateway/Caddyfile`, rebuild +
       redémarrer la passerelle (un seul bloc supplémentaire, n'affecte pas le bloc
       de l'autre projet)
   - Prérequis : la zone `ageguessr.app` est **active** dans Cloudflare, et le token
@@ -207,6 +207,17 @@ Status: Not started
     `COPY` retiré du Dockerfile → à l'avenir, `sudo docker compose exec caddy caddy
     reload --config /etc/caddy/Caddyfile` sans coupure. Sauvegarde de l'ancien
     `/opt/gateway` dans `~/gateway-backup-2026-10-19/`.
+  - Fait le 2026-10-19 (~16:33 UTC) : fichiers en place, passerelle recréée, watodoo
+    toujours en 200. Premier essai ACME en échec (propagation DNS trop lente pour
+    Let's Encrypt), réussi au retry automatique de Caddy : certificats Let's Encrypt
+    `ageguessr.app` et `www.ageguessr.app` obtenus (vérifiés en direct contre le VPS
+    avec `curl --resolve ageguessr.app:443:51.83.68.37` : apex → 502 attendu, www →
+    301 vers l'apex).
+  - DNS Cloudflare : la zone a importé les enregistrements OVH (A `213.186.33.5` =
+    parking OVH sur `@` et `www`, CNAME `ftp`, TXT `1|www…` et `3|welcome`).
+    Correction demandée à l'utilisateur : A `@` et `www` → `51.83.68.37` (Proxied),
+    suppression `ftp` + 2 TXT OVH, ajout `_dmarc` `v=DMARC1; p=none;`. MX/SPF OVH
+    conservés volontairement (réception mail `@ageguessr.app`).
 - [ ] Créer un compte Resend, vérifier le domaine d'envoi, récupérer une clé API
       (action utilisateur)
 - [ ] Créer une clé SSH de déploiement dédiée à Ageguessr (ne pas réutiliser celle
