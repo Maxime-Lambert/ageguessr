@@ -220,10 +220,19 @@ Status: Not started
     conservés volontairement (réception mail `@ageguessr.app`).
 - [ ] Créer un compte Resend, vérifier le domaine d'envoi, récupérer une clé API
       (action utilisateur)
+- [x] DNS Cloudflare corrigé par l'utilisateur (vérifié le 2026-10-19 : apex → 502
+      via Cloudflare, www → 301, restes OVH supprimés, `_dmarc` présent)
 - [ ] Créer une clé SSH de déploiement dédiée à Ageguessr (ne pas réutiliser celle
       de l'autre projet), l'ajouter aux `authorized_keys` du VPS
+  - Décision 2026-10-19 : utilisateur dédié `ageguessr-deploy` (groupe `docker`, pas
+    de sudo, propriétaire de `/opt/ageguessr`) plutôt que `ubuntu` (qui a sudo).
+    Limite assumée : le groupe `docker` équivaut à root sur la machine, donc c'est
+    surtout une séparation des clés et des fichiers, pas une vraie isolation.
+  - `JWT_SECRET` doit être du Base64 (`JwtConfig` le décode) → généré avec
+    `openssl rand -base64 32` et passé via `--body "$(...)"` (pas de retour à la
+    ligne final, qui ferait échouer le décodage Base64 de Java).
 - [ ] Configurer les secrets/variables GitHub Actions du repo `ageguessr` :
-      `VPS_HOST` (`51.83.68.37`), `VPS_USER` (`ubuntu`), `VPS_SSH_KEY` (la nouvelle
+      `VPS_HOST` (`51.83.68.37`), `VPS_USER` (`ageguessr-deploy`), `VPS_SSH_KEY` (la nouvelle
       clé dédiée), `POSTGRES_PASSWORD` (générer), `JWT_SECRET` (générer via
       `openssl rand -base64 32`), `RESEND_API_KEY`, variable `DOMAIN`
       (`ageguessr.app`)
