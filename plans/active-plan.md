@@ -136,11 +136,15 @@ encore été touché côté VPS pour cette phase.
   `CLOUDFLARE_API_TOKEN` dans le `.env` de watodoo : inutilisé, à nettoyer plus tard.
 - Les accès SSH au VPS sont refusés à Claude par le mode auto (« Production
   Reads ») : les étapes VPS sont exécutées par l'utilisateur, guidé pas à pas.
-- [ ] Sur le VPS : synchroniser ces fichiers dans `/opt/watodoo/` (le déploiement
-      normal de ce projet le fait déjà via son propre CI — ou copier manuellement
-      pour tester avant de merger)
-- [ ] Pré-builder la nouvelle image edge de l'autre projet SANS encore relancer le
-      conteneur (`docker compose -f docker-compose.prod.yml build edge`)
+- [x] Sur le VPS : synchroniser ces fichiers dans `/opt/watodoo/` — fait le
+      2026-10-19 à la main : sauvegarde des anciennes versions dans
+      `~/watodoo-backup-2026-10-19/`, upload dans `~/watodoo-staging/` puis
+      `sudo cp` (fichiers de `/opt/watodoo/` non modifiables par `ubuntu` ; `cp`
+      préserve propriétaire/droits des fichiers écrasés)
+- [x] Pré-builder la nouvelle image edge de l'autre projet SANS encore relancer le
+      conteneur (`docker compose -f docker-compose.prod.yml build edge`) — fait le 2026-10-19,
+      **avec `sudo`** : `/opt/watodoo/.env` n'est pas lisible par `ubuntu`, toute
+      commande `docker compose` dans `/opt/watodoo` doit passer par `sudo`
 - [ ] **Confirmer avec l'utilisateur juste avant cette étape** : recréer le
       conteneur edge de l'autre projet (`docker compose -f docker-compose.prod.yml
       up -d edge`) — il n'écoute plus alors sur 80/443, le site de l'autre projet
