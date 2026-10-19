@@ -261,11 +261,17 @@ Status: Not started
     Cloudflare sur 80/443 au niveau pare-feu, et côté watodoo : son edge ne fait pas
     confiance à la passerelle → son backend voit l'IP de la passerelle pour tous
     (même problème que ci-dessus, à corriger dans le repo watodoo).
-- [ ] Appliquer le nouveau Caddyfile de la passerelle (IP client) sur le VPS :
-      `conf/Caddyfile` + `caddy reload`, sans coupure — fichier préparé par Claude
-- Merger la PR [#2](https://github.com/Maxime-Lambert/ageguessr/pull/2) sur
-      `develop`, puis PR `develop` → `main` pour déclencher le premier déploiement
-      réel (le job `deploy` du CI ne tourne que sur push vers `main`)
+- [x] Appliquer le nouveau Caddyfile de la passerelle (IP client) sur le VPS :
+      `conf/Caddyfile` + `caddy reload`, sans coupure — fait par l'utilisateur le
+      2026-10-19 (ancienne version : `~/gateway-backup-2026-10-19/Caddyfile.avant-ip-client`)
+- [x] PR [#2](https://github.com/Maxime-Lambert/ageguessr/pull/2) mergée sur `develop`
+      (2026-10-19)
+- [ ] **Reprise ici** : merger la PR de release
+      [#3](https://github.com/Maxime-Lambert/ageguessr/pull/3) `develop` → `main`
+      pour déclencher le premier déploiement réel (le job `deploy` ne tourne que sur
+      push vers `main`). CI de la #3 verte le 2026-10-19 (backend, frontend,
+      mutation). Merge fait par l'utilisateur (le mode auto refuse à Claude les
+      merges qui déploient).
 - [ ] Vérifier le smoke test du CI (`/api/health`) et tester manuellement
       l'inscription complète en prod
 
