@@ -93,7 +93,7 @@ conformément au plan — le port 80/443 est encore tenu par `watodoo-prod-edge-
 ---
 
 ## Phase 2 : Bascule de l'autre projet vers le réseau partagé (touche une prod live — demander confirmation explicite juste avant)
-Status: In progress
+Status: Completed (merge Watodoo#24 vers `main` restant)
 
 **État exact (vérifié en direct à la pause du 2026-10-14)** : branche
 `chore/caddy-passerelle-partagee` créée depuis `develop` dans
@@ -145,14 +145,21 @@ encore été touché côté VPS pour cette phase.
       conteneur (`docker compose -f docker-compose.prod.yml build edge`) — fait le 2026-10-19,
       **avec `sudo`** : `/opt/watodoo/.env` n'est pas lisible par `ubuntu`, toute
       commande `docker compose` dans `/opt/watodoo` doit passer par `sudo`
-- [ ] **Confirmer avec l'utilisateur juste avant cette étape** : recréer le
-      conteneur edge de l'autre projet (`docker compose -f docker-compose.prod.yml
-      up -d edge`) — il n'écoute plus alors sur 80/443, le site de l'autre projet
-      sera injoignable jusqu'à la fin de cette phase
-- [ ] Démarrer la passerelle (`cd /opt/gateway && docker compose up -d`) — elle
-      reprend 80/443 et route vers `watodoo-prod-edge-1:80` en interne
-- [ ] Vérifier immédiatement que le site de l'autre projet répond toujours en HTTPS
-      normalement (`curl -sI https://<son-domaine>/`)
+- [x] **Confirmé par l'utilisateur** : recréation de l'edge watodoo
+      (`sudo docker compose -f docker-compose.prod.yml up -d --no-deps edge`) puis
+      démarrage immédiat de la passerelle (`cd /opt/gateway && sudo docker compose
+      up -d`), enchaînés dans une seule commande le 2026-10-19 (~14:16 UTC)
+- [x] `curl -sI https://watodoo.app/` → `HTTP/2 200`, certificat valide (réutilisé
+      depuis les volumes `watodoo-prod_caddy_*`)
+- [ ] Merger [Watodoo#24](https://github.com/Maxime-Lambert/Watodoo/pull/24) dans
+      `develop`, puis `develop` → `main` (le redéploiement CI est alors sans effet
+      visible : fichiers identiques à ceux déjà en place)
+- **Constaté pendant la bascule** : `docker compose` a averti que
+  `INGESTION_ADMIN_KEY`, `IGDB_CLIENT_ID`, `IGDB_CLIENT_SECRET` sont absents du
+  `/opt/watodoo/.env` actuel (sans impact ici : `--no-deps`, backend non recréé).
+  Le CI de watodoo réécrit ce `.env` avec ces clés à chaque déploiement → vérifier
+  que les secrets GitHub correspondants existent avant le merge vers `main`.
+  Ne jamais recréer le backend watodoo à la main avec ce `.env`.
 
 ### Verification Plan
 - Le site de l'autre projet répond en HTTPS sans erreur de certificat après la
@@ -161,7 +168,10 @@ encore été touché côté VPS pour cette phase.
 - Le conteneur de la passerelle a bien les ports 80/443
 
 ### Phase Summary
-_(à écrire une fois la phase terminée)_
+Bascule faite le 2026-10-19 sans incident, coupure de quelques secondes. `docker ps` :
+`gateway-caddy-1` publie 80/443, `watodoo-prod-edge-1` n'a plus aucun port publié.
+watodoo.app répond en HTTPS 200. Reste le merge de Watodoo#24 jusqu'à `main` pour
+que le repo watodoo reflète l'état réel du VPS.
 
 ---
 
