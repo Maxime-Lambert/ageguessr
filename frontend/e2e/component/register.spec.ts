@@ -6,7 +6,7 @@ test.describe('register form', () => {
     await page.locator('#email').fill('user@x.com');
     await page.locator('#username').fill('Player');
     await page.locator('#password').fill('tortoise-violin-42');
-    await page.locator('#confirmPassword').fill('different123');
+    await page.locator('#confirmPassword').fill('different-violin-42');
     await page.getByRole('button', { name: 'Create account' }).click();
 
     await expect(page.getByText("Passwords don't match.")).toBeVisible();
@@ -72,6 +72,38 @@ test.describe('register form', () => {
     await page.getByRole('button', { name: 'Create account' }).click();
 
     await expect(page.getByText('This username is already taken.')).toBeVisible();
+  });
+
+  test('shows a too-common password under the password field', async ({ page }) => {
+    await page.route('**/api/auth/register', (route) =>
+      route.fulfill({
+        status: 400,
+        contentType: 'application/json',
+        body: JSON.stringify({ errorCode: 'PASSWORD_TOO_COMMON', message: 'too common' }),
+      }),
+    );
+
+    await page.goto('/register');
+    await page.locator('#email').fill('user@x.com');
+    await page.locator('#username').fill('Player');
+    await page.locator('#password').fill('qwerty123456');
+    await page.locator('#confirmPassword').fill('qwerty123456');
+    await page.getByRole('button', { name: 'Create account' }).click();
+
+    await expect(page.getByText('This password is too common.')).toBeVisible();
+
+    await page.locator('#password').fill('tortoise-violin-42');
+    await expect(page.getByText('At least 12 characters. Avoid common passwords.')).toBeVisible();
+  });
+
+  test('flags a password shorter than 12 characters once the field is left', async ({ page }) => {
+    await page.goto('/register');
+    await page.locator('#password').fill('elevenchars');
+    await page.locator('#confirmPassword').click();
+
+    await expect(
+      page.locator('p.text-danger', { hasText: 'At least 12 characters.' }),
+    ).toBeVisible();
   });
 
   test('keeps the pointer cursor on the submit button after a failed attempt', async ({ page }) => {

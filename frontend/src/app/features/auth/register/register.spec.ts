@@ -29,7 +29,7 @@ describe('Register', () => {
   }
 
   it('shows an error when the passwords do not match', () => {
-    fillForm('user@x.com', 'password123', 'different123');
+    fillForm('user@x.com', 'tortoise-violin-42', 'different-violin-42');
 
     component.submit();
 
@@ -39,7 +39,7 @@ describe('Register', () => {
 
   it('navigates to check-email on success', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
-    fillForm('user@x.com', 'password123', 'password123');
+    fillForm('user@x.com', 'tortoise-violin-42', 'tortoise-violin-42');
 
     component.submit();
 
@@ -47,7 +47,7 @@ describe('Register', () => {
     expect(req.request.body).toEqual({
       email: 'user@x.com',
       username: 'Player',
-      password: 'password123',
+      password: 'tortoise-violin-42',
     });
     req.flush({ userId: '1', email: 'user@x.com', username: 'Player' });
 
@@ -57,7 +57,7 @@ describe('Register', () => {
   });
 
   it('shows a duplicate-email message on 409', () => {
-    fillForm('taken@x.com', 'password123', 'password123');
+    fillForm('taken@x.com', 'tortoise-violin-42', 'tortoise-violin-42');
 
     component.submit();
 
@@ -67,7 +67,7 @@ describe('Register', () => {
   });
 
   it('flags the username field on USERNAME_TAKEN instead of the generic message', () => {
-    fillForm('user@x.com', 'password123', 'password123', 'Taken');
+    fillForm('user@x.com', 'tortoise-violin-42', 'tortoise-violin-42', 'Taken');
 
     component.submit();
 
@@ -82,10 +82,32 @@ describe('Register', () => {
     expect(component.errorMessage()).toBeNull();
   });
 
+  it('does not submit a password shorter than 12 characters', () => {
+    fillForm('user@x.com', 'elevenchars', 'elevenchars');
+
+    component.submit();
+
+    httpMock.expectNone('/api/auth/register');
+  });
+
+  it('shows a refused password under the password field', () => {
+    fillForm('user@x.com', 'qwerty123456', 'qwerty123456');
+
+    component.submit();
+    httpMock
+      .expectOne('/api/auth/register')
+      .flush(
+        { errorCode: 'PASSWORD_TOO_COMMON', message: 'too common' },
+        { status: 400, statusText: 'Bad Request' },
+      );
+
+    expect(component.passwordRefusal()).toContain('too common');
+    expect(component.errorMessage()).toBeNull();
+  });
   it.each(['ab', 'with space', 'at@sign', 'a'.repeat(21)])(
     'does not submit an invalid username (%s)',
     (username) => {
-      fillForm('user@x.com', 'password123', 'password123', username);
+      fillForm('user@x.com', 'tortoise-violin-42', 'tortoise-violin-42', username);
 
       component.submit();
 

@@ -3,14 +3,18 @@ package app.ageguessr.features.auth.Register;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import app.ageguessr.features.auth.EmailVerificationService;
+import app.ageguessr.features.auth.PasswordPolicy;
 import app.ageguessr.features.auth.User;
 import app.ageguessr.features.auth.UserRepository;
 import app.ageguessr.shared.exceptions.ConflictException;
+import app.ageguessr.shared.exceptions.ValidationException;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -36,11 +40,14 @@ class RegisterHandlerTest {
     @Mock
     private EmailVerificationService emailVerificationService;
 
+    @Mock
+    private PasswordPolicy passwordPolicy;
+
     @Test
     void hashesThePasswordAndPersistsAnUnverifiedUser() {
         when(userRepository.existsByEmailIgnoreCase("new@x.com")).thenReturn(false);
         when(userRepository.existsByUsernameIgnoreCase("NewPlayer")).thenReturn(false);
-        when(passwordEncoder.encode("password123")).thenReturn("hashed-password");
+        when(passwordEncoder.encode("tortoise-violin-42")).thenReturn("hashed-password");
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
             User user = invocation.getArgument(0);
             user.setId(UUID.randomUUID());
@@ -48,8 +55,8 @@ class RegisterHandlerTest {
         });
 
         RegisterHandler handler =
-                new RegisterHandler(userRepository, passwordEncoder, emailVerificationService, FIXED_CLOCK);
-        RegisterResponse response = handler.handle(new RegisterCommand("new@x.com", "NewPlayer", "password123"));
+                new RegisterHandler(userRepository, passwordPolicy, passwordEncoder, emailVerificationService, FIXED_CLOCK);
+        RegisterResponse response = handler.handle(new RegisterCommand("new@x.com", "NewPlayer", "tortoise-violin-42"));
 
         ArgumentCaptor<User> savedUser = ArgumentCaptor.forClass(User.class);
         verify(userRepository).save(savedUser.capture());
@@ -69,9 +76,9 @@ class RegisterHandlerTest {
         when(userRepository.existsByEmailIgnoreCase("taken@x.com")).thenReturn(true);
 
         RegisterHandler handler =
-                new RegisterHandler(userRepository, passwordEncoder, emailVerificationService, FIXED_CLOCK);
+                new RegisterHandler(userRepository, passwordPolicy, passwordEncoder, emailVerificationService, FIXED_CLOCK);
 
-        assertThatThrownBy(() -> handler.handle(new RegisterCommand("taken@x.com", "AnyName", "password123")))
+        assertThatThrownBy(() -> handler.handle(new RegisterCommand("taken@x.com", "AnyName", "tortoise-violin-42")))
                 .isInstanceOf(ConflictException.class)
                 .extracting("errorCode")
                 .isEqualTo("EMAIL_TAKEN");
@@ -86,9 +93,9 @@ class RegisterHandlerTest {
         when(userRepository.existsByUsernameIgnoreCase("Taken")).thenReturn(true);
 
         RegisterHandler handler =
-                new RegisterHandler(userRepository, passwordEncoder, emailVerificationService, FIXED_CLOCK);
+                new RegisterHandler(userRepository, passwordPolicy, passwordEncoder, emailVerificationService, FIXED_CLOCK);
 
-        assertThatThrownBy(() -> handler.handle(new RegisterCommand("new@x.com", "Taken", "password123")))
+        assertThatThrownBy(() -> handler.handle(new RegisterCommand("new@x.com", "Taken", "tortoise-violin-42")))
                 .isInstanceOf(ConflictException.class)
                 .extracting("errorCode")
                 .isEqualTo("USERNAME_TAKEN");
@@ -102,10 +109,29 @@ class RegisterHandlerTest {
         when(userRepository.existsByEmailIgnoreCase("taken@x.com")).thenReturn(true);
 
         RegisterHandler handler =
-                new RegisterHandler(userRepository, passwordEncoder, emailVerificationService, FIXED_CLOCK);
+                new RegisterHandler(userRepository, passwordPolicy, passwordEncoder, emailVerificationService, FIXED_CLOCK);
 
-        assertThatThrownBy(() -> handler.handle(new RegisterCommand("taken@x.com", "Taken", "password123")))
+        assertThatThrownBy(() -> handler.handle(new RegisterCommand("taken@x.com", "Taken", "tortoise-violin-42")))
                 .extracting("errorCode")
                 .isEqualTo("EMAIL_TAKEN");
+    }
+
+    /** A refused password must not reveal whether the email is taken. */
+    @Test
+    void aRefusedPasswordStopsBeforeTheUniquenessChecks() {
+        doThrow(new ValidationException("PASSWORD_TOO_COMMON", "This password is too common"))
+                .when(passwordPolicy)
+                .check("qwerty123456", "NewPlayer", "taken@x.com");
+
+        RegisterHandler handler =
+                new RegisterHandler(userRepository, passwordPolicy, passwordEncoder, emailVerificationService, FIXED_CLOCK);
+
+        assertThatThrownBy(() -> handler.handle(new RegisterCommand("taken@x.com", "NewPlayer", "qwerty123456")))
+                .extracting("errorCode")
+                .isEqualTo("PASSWORD_TOO_COMMON");
+
+        verify(userRepository, never()).existsByEmailIgnoreCase(anyString());
+        verify(passwordEncoder, never()).encode(anyString());
+        verify(userRepository, never()).save(any());
     }
 }

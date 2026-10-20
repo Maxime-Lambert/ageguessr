@@ -1,405 +1,236 @@
-# Finalisation de l'authentification — Ageguessr
+# Politique de mot de passe : 12 caractères minimum + mots de passe interdits
 
-Clore l'authentification : pseudo choisi à l'inscription (unique, modifiable), mot de
-passe oublié, page compte (pseudo, mot de passe), suppression de compte, et une vraie
-navigation frontend (accueil, liens connexion/inscription, pseudo + déconnexion dans
-l'en-tête). Branche `feature/auth-completion` depuis `develop`.
+Tout mot de passe **choisi** (inscription, réinitialisation, changement) doit faire au
+moins 12 caractères. Il ne doit figurer ni dans une liste de mots de passe courants issus
+de fuites, ni contenir le nom du site, le pseudo ou l'email de l'utilisateur. Pas de règle
+de composition. La connexion et la confirmation par mot de passe actuel ne changent pas :
+les comptes existants avec un mot de passe de 8 à 11 caractères continuent de fonctionner.
 
 ## Contexte pour repartir à froid
-
-- Le backend d'auth existe (plan archivé `plans/done/authentication.md`) : register,
-  confirm-email, resend-verification, login (+ verrouillage), refresh rotatif, logout,
-  me. Package unique `features/auth/<UseCase>/`.
-- Les pages frontend `/register`, `/login`, `/check-email`, `/confirm-email` existent
-  et fonctionnent en prod, mais **rien n'y mène** : `app.html` affiche une carte
-  d'accueil codée en dur au-dessus du `<router-outlet>` sur toutes les pages, et
-  l'en-tête n'a que le toggle de thème.
-- UI en anglais (audience internationale), docs/commentaires du repo en français.
+- Branche : `feature/password-policy` (depuis `develop`).
+- Règle actuelle : `shared/validation/Password.java` (`@NotBlank @Size(min=8)
+  @MaxUtf8Bytes(72)`, `@ReportAsSingleViolation`), posée sur `RegisterCommand.password`,
+  `ResetPasswordCommand.newPassword`, `ChangePasswordCommand.newPassword`. Miroir front :
+  `frontend/src/app/features/auth/password-rules.ts` (`NEW_PASSWORD_VALIDATORS`).
+- Le plan précédent (finalisation de l'auth) est archivé dans `plans/done/auth-completion.md`.
 
 ## Décisions validées avec l'utilisateur (2026-10-20)
-
-- **Pseudo** : unique sans tenir compte de la casse, 3 à 20 caractères
-  `[A-Za-z0-9_-]`, choisi à l'inscription, **modifiable** depuis la page compte.
-  Casse d'affichage conservée telle que saisie.
-- **Connexion par email uniquement** (le pseudo est public, ne pas en faire un
-  identifiant de connexion).
-- **Inclus** : mot de passe oublié, page compte, suppression de compte.
-- **Récupération après vol de compte** (demandé par l'utilisateur : « s'il se fait
-  prendre son compte, il ne peut plus rien faire ? ») :
-  1. Le mail « your password was changed » contient un lien **« Wasn't you? Secure
-     your account »** = token de reset valable **24 h** (au lieu d'1 h) → un clic,
-     nouveau mot de passe, toutes les sessions révoquées.
-  2. **Suppression de compte confirmée par email** en plus du mot de passe : un
-     attaquant qui n'a que le mot de passe ne peut pas faire l'irréversible.
-  3. Règle écrite pour le futur changement d'email (hors périmètre ici).
-  4. Hors périmètre : attaquant qui contrôle la boîte mail → 2FA (TOTP) ajoutée à la
-     roadmap.
+- **12 caractères minimum, sans règle de composition.** Sources :
+  - NIST SP 800-63B rév. 4 (2025) : pas de composition imposée ; 15 caractères minimum
+    quand le mot de passe est le seul facteur ; vérification contre une liste de mots
+    de passe compromis ou courants et contre les mots propres au contexte (nom du
+    service, identifiant).
+  - CNIL, recommandation de 2022 : environ 50 bits d'entropie suffisent quand l'accès
+    est freiné après des échecs (c'est notre cas : verrouillage du compte et limite de
+    tentatives). Sans composition imposée, on compte un alphabet de 26 lettres : 11
+    caractères donnent ~52 bits. 12 laisse une marge.
+  - 15 serait trop dissuasif pour un jeu grand public. À réévaluer quand le TOTP
+    (roadmap) existera.
+- **Liste locale** plutôt que l'API Have I Been Pwned : aucune dépendance réseau ni
+  tiers dans le parcours d'inscription.
 
 ## Décisions d'architecture de cette feature
+- **Source de la liste** : `Pwdb_top-1000000.txt` de SecLists
+  (github.com/danielmiessler/SecLists, licence MIT), classée par fréquence dans les
+  fuites. On ne garde que les entrées d'au moins 12 caractères : une entrée plus courte
+  est déjà refusée par la longueur. On les passe en minuscules et on déduplique, ce qui
+  donne **≈ 29 950 entrées, ≈ 427 Ko**.
+  - Fichier versionné : `ageguessr-api/src/main/resources/security/common-passwords.txt`.
+  - Licence MIT et commande de régénération dans
+    `ageguessr-api/src/main/resources/security/README.md`.
+  - Le top 10 millions filtré ferait 700 000 entrées (10 Mo dans le repo, ~60 Mo de
+    tas) : coût disproportionné pour des mots de passe rarement essayés en premier.
+- **Comparaison** : insensible à la casse. Le mot de passe passe en minuscules
+  (`Locale.ROOT`), puis on cherche une correspondance exacte dans un `Set` chargé une
+  fois au démarrage. Sans ça, `Qwerty123456` contournerait `qwerty123456`.
+- **Mots du contexte** : on refuse un mot de passe dont la version en minuscules
+  **contient** :
+  - `ageguessr` ;
+  - le pseudo ;
+  - la partie de l'email avant le `@`.
 
-- **Tout reste dans `features/auth/`** : nouveaux use cases `ForgotPassword/`,
-  `ResetPassword/`, `ChangeUsername/`, `ChangePassword/`, `DeleteAccount/`. Un package
-  `features/account/` dépendrait de `User` (dans `features/auth`) et violerait la règle
-  ArchUnit « les features ne dépendent pas les unes des autres ».
-- **Endpoints** (tous sous `/api/auth/`, donc couverts par le rate limit IP existant) :
-  - `POST /api/auth/forgot-password` `{email}` → **toujours 204** (pas d'énumération
-    des comptes), email envoyé seulement si le compte existe.
-  - `POST /api/auth/reset-password` `{token, newPassword}` → 204 ; 404
-    `INVALID_RESET_TOKEN` si token inconnu/expiré/consommé.
-  - `PATCH /api/auth/me/username` `{username}` → 200 `MeResponse` ; 409
-    `USERNAME_TAKEN`.
-  - `POST /api/auth/me/password` `{currentPassword, newPassword}` → 204 ; 403
-    `INVALID_CURRENT_PASSWORD`.
-  - `POST /api/auth/me/deletion` `{password}` → **202** (email de confirmation envoyé,
-    rien n'est supprimé) ; 403 `INVALID_CURRENT_PASSWORD`.
-  - `POST /api/auth/confirm-account-deletion` `{token}` → 204 + cookie refresh effacé ;
-    404 `INVALID_DELETION_TOKEN`. Public : le lien peut être ouvert sur un autre
-    appareil, non connecté.
-  - `forgot-password`, `reset-password`, `confirm-account-deletion` ajoutés à
-    `PUBLIC_AUTH_PATHS`.
-- **Codes d'erreur 409 distincts** : `ConflictException` prend un `errorCode` (comme
-  `ForbiddenException`) → `EMAIL_TAKEN` / `USERNAME_TAKEN`, pour que le formulaire
-  affiche l'erreur sur le bon champ. L'existence d'un email était déjà révélée par
-  `register` (choix antérieur, inchangé) ; celle d'un pseudo est publique par nature.
-- **Tokens de reset et de suppression** : une seule nouvelle table `account_tokens`
-  avec une colonne `purpose` (`PASSWORD_RESET`, `ACCOUNT_DELETION`), même forme que
-  `email_verification_tokens` (hash SHA-256 via `OpaqueTokenGenerator`, jamais le token
-  brut), usage unique, `ON DELETE CASCADE`. Une table plutôt que deux : même cycle de
-  vie, même code ; un token d'un usage n'est jamais accepté pour l'autre (filtre par
-  `purpose`, testé). TTL : reset demandé **1 h**
-  (`app.account-token.password-reset-ttl-minutes=60`), lien « secure your account »
-  **24 h** (`app.account-token.secure-account-ttl-hours=24`), suppression **1 h**
-  (`app.account-token.deletion-ttl-minutes=60`). `email_verification_tokens` reste
-  tel quel (déjà en prod, pas de migration de données pour rien).
-- **Un changement de mot de passe n'invalide pas les liens de reset en cours** : sinon
-  un attaquant qui change le mot de passe deux fois tuerait le lien de récupération du
-  propriétaire. Seul un reset réussi invalide les autres tokens de reset.
-  Un reset réussi : nouveau hash, `failedLoginAttempts=0`, `lockedUntil=null`,
-  `emailVerified=true` (cliquer le lien prouve la possession de l'email), invalide les
-  autres tokens de reset du compte, **révoque tous les refresh tokens** (déconnecte
-  partout — c'est le but si le compte était compromis).
-- **Changement de mot de passe** : exige le mot de passe actuel, révoque tous les
-  refresh tokens **sauf celui de la session courante** (lu dans le cookie) → l'utilisateur
-  reste connecté ici, déconnecté ailleurs. Email de notification « your password was
-  changed » (aussi après un reset), avec le lien « secure your account » (24 h).
-- **Suppression de compte** : exige le mot de passe **puis** la confirmation par le
-  lien email ; suppression physique de la ligne `users` à la confirmation ; les tokens partent par `ON DELETE CASCADE` (déjà en place, testé par
-  `CascadeDeleteIntegrationTest`). Règle documentée dans `architecture.md` : toute
-  future table liée à un utilisateur (parties, amis) doit être en `ON DELETE CASCADE`
-  ou anonymisée — c'est le droit à l'effacement RGPD.
-- **La page de confirmation de suppression exige un clic explicite** (« Delete my
-  account permanently ») au lieu d'appeler l'API au chargement : certains scanners de
-  liens des messageries ouvrent les liens des mails (et parfois exécutent le JS), ce
-  qui supprimerait le compte sans action de l'utilisateur.
-- **Règle pour le futur changement d'email** (dans `architecture.md`) : confirmation
-  sur la nouvelle adresse + notification à l'ancienne avec un lien d'annulation
-  valable plusieurs jours, sinon un vol de compte devient définitif.
-- **Migration `V2__add_username_and_password_reset.sql`** : colonne `username
-  VARCHAR(20)` ajoutée nullable, **backfill** des comptes existants en prod
-  (`'player-' || left(replace(id::text,'-',''), 8)`, conforme au format), puis
-  `NOT NULL` + index unique sur `LOWER(username)`. Le compte de test éventuel de
-  l'utilisateur en prod pourra changer ce pseudo depuis la page compte.
-- **`MeResponse`** gagne `username` ; le JWT ne change pas (le pseudo est modifiable,
-  le mettre dans un token d'1 h le rendrait périmé).
-- **Frontend** :
-  - Nouvelle feature `features/home/` (page d'accueil = route `''`, carte actuelle
-    sortie de `app.html`) et `features/layout/header/` (logo → `/`, toggle thème,
-    invité : « Log in » / « Sign up » ; connecté : pseudo → `/account`, « Log out »).
-  - Nouvelles pages `features/auth/forgot-password/`, `reset-password/`, `account/`
-    (sections : infos, changer le pseudo, changer le mot de passe, zone de danger
-    suppression avec confirmation par mot de passe).
-  - Champ `username` ajouté à `/register` ; lien « Forgot password? » sur `/login`.
-  - **Course au démarrage** : `tryRestoreSession()` est asynchrone, donc un
-    rechargement direct de `/account` ferait rediriger `authGuard` vers `/login` avant
-    la fin de la restauration. `Auth` expose un état `sessionChecked` et le guard
-    attend sa résolution avant de décider.
-  - `guestGuard` sur `/login` et `/register` : un utilisateur connecté est renvoyé
-    vers `/`.
-  - Validation du pseudo côté client = même regex que le backend (le backend reste la
-    seule source de vérité).
-- **Hypothèses** (non bloquantes, à corriger si l'utilisateur n'est pas d'accord) :
-  pas de vérification de disponibilité du pseudo en direct pendant la saisie (erreur
-  à la soumission) ; pas de liste de pseudos réservés/interdits pour l'instant ;
-  changer d'email hors périmètre.
+  Pour le pseudo et l'email, la règle ne s'applique qu'à partir de 4 caractères :
+  sinon un pseudo « max » interdirait tout mot de passe contenant « max ».
+- **Où vit la règle** : `features/auth/PasswordPolicy.java`, un `@Component` à la racine
+  de la feature, comme `CurrentPasswordVerifier`. Il expose
+  `check(String password, String username, String email)`.
+  - Elle n'est pas en Bean Validation, parce que les mots du contexte demandent
+    l'utilisateur. Au reset et au changement, il n'est connu qu'une fois chargé par le
+    handler.
+  - Les règles de format (longueur min et max) restent dans `@Password`, en Bean
+    Validation, côté front comme côté back.
+- **Code d'erreur** : `ValidationException` gagne un `errorCode`, sur le modèle de
+  `ConflictException`. Le constructeur actuel `(message)` garde `VALIDATION_ERROR`.
+  `PasswordPolicy` lève `PASSWORD_TOO_COMMON` (liste ou nom du site) ou
+  `PASSWORD_CONTAINS_PERSONAL_INFO` (pseudo ou email). `GlobalExceptionHandler` renvoie
+  le code en 400, et le front affiche un message précis sous le champ.
+- **Ordre dans les handlers** :
+  - Register : la politique passe **avant** les vérifications d'unicité, pour ne pas
+    révéler un email pris à quelqu'un dont le mot de passe est de toute façon refusé.
+  - Reset : après la validation du token. Sans token valide, on ne connaît pas
+    l'utilisateur.
+  - Change : **après** `CurrentPasswordVerifier`. Un attaquant qui ne connaît pas le
+    mot de passe actuel n'obtient aucune information, et l'échec compte toujours dans
+    le verrouillage.
+  - Dans tous les cas, l'appel se fait avant le hachage bcrypt et toute écriture.
+- **Front** : `Validators.minLength(12)` et indice « At least 12 characters. Avoid common
+  passwords. ». La liste n'est **pas** envoyée au navigateur (427 Ko pour un contrôle que
+  le backend fait déjà).
 
 ## For Future Agents
+As work proceeds: mark checkboxes `- [x]` as items complete; when a phase is done,
+set its status to `Complete` and write its **Phase Summary**; run the phase's
+**Verification Plan** and record the result before moving on.
 
-Cocher au fur et à mesure ; quand une phase est finie, passer son statut à `Complete`,
-lancer son Verification Plan et écrire son Phase Summary avant de passer à la suite.
-Tests écrits en même temps que le code. Après l'implémentation : relecture par
-`code-reviewer` (auth + données utilisateur) **et** `architecture-reviewer`, jamais
-sautées. Tout nouveau clé dans `src/main/resources/application.properties` doit être
-recopiée dans `src/test/resources/application.properties` (le fichier de test
-remplace celui de main, il ne le complète pas).
-
-## Phase 1 : Pseudo (backend)
+## Phase 1 : Backend
 Status: Complete
 
-- [x] `ageguessr-api/src/main/resources/db/migration/V2__add_username_and_account_tokens.sql`
-      (colonne `username` + backfill + `NOT NULL` + index unique `LOWER(username)` ;
-      table `account_tokens` (`purpose`) + index, `ON DELETE CASCADE`)
-- [x] `features/auth/User.java` : champ `username` ; `UserRepository` :
-      `existsByUsernameIgnoreCase`
-- [x] `shared/exceptions/ConflictException.java` : `errorCode` ;
-      `config/GlobalExceptionHandler.java` le renvoie ; `RegisterHandler` →
-      `EMAIL_TAKEN` / `USERNAME_TAKEN`
-- [x] `shared/validation/Username.java` : contrainte Bean Validation composée
-      (`@NotBlank @Pattern("^[A-Za-z0-9_-]{3,20}$")`), réutilisée par register et
-      change-username
-- [x] `Register/RegisterCommand.java` + `RegisterHandler` + `RegisterResponse` :
-      `username`
-- [x] `Me/MeResponse.java` → déplacé en `features/auth/ProfileResponse.java` (+ `username`,
-      `ProfileResponse.from(User)`) : partagé par `Me` et `ChangeUsername`, éviter qu'un
-      use case dépende du package d'un autre
-- [x] `ChangeUsername/{ChangeUsernameCommand,ChangeUsernameController,ChangeUsernameHandler}.java`
-      (même pseudo à la casse près pour soi-même = autorisé, ex. `max` → `Max`)
+- [x] `ageguessr-api/src/main/resources/security/common-passwords.txt` (généré, une
+      entrée par ligne) + `security/README.md` (source, licence MIT, commande :
+      `awk 'length($0)>=12' Pwdb_top-1000000.txt | tr A-Z a-z | sort -u`)
+- [x] `shared/exceptions/ValidationException.java` : `errorCode` (constructeur
+      `(message)` → `VALIDATION_ERROR`) ; `config/GlobalExceptionHandler.java` le renvoie
+- [x] `shared/validation/Password.java` : `@Size(min = 12)` + message et Javadoc
+- [x] `features/auth/PasswordPolicy.java` : chargement de la liste au démarrage (échec
+      au démarrage si le fichier manque, plutôt que d'accepter tous les mots de passe
+      sans rien dire), `check(password, username, email)`
+- [x] Appels dans `Register/RegisterHandler`, `ResetPassword/ResetPasswordHandler`,
+      `ChangePassword/ChangePasswordHandler` selon l'ordre ci-dessus
+- [x] Mots de passe des tests passés à ≥ 12 caractères hors liste (`tortoise-violin-42`,
+      `old-/new-tortoise-violin`, etc.), remplacés sur place plutôt que via une constante
+      `AuthFlows` : chaque test garde des valeurs distinctes et lisibles
+- [x] `docs/decisions/architecture.md` : section « Politique de mot de passe » (sources
+      NIST/CNIL, choix de la liste, pourquoi pas de composition)
 
 **Tests**
-- Unitaire : `RegisterHandlerTest` (pseudo pris → `USERNAME_TAKEN`, email pris →
-  `EMAIL_TAKEN`), `ChangeUsernameHandlerTest` (pris par un autre → 409, son propre
-  pseudo avec une autre casse → OK).
-- Intégration : `UserRepositoryIntegrationTest` (index unique insensible à la casse
-  sur `username`, `existsByUsernameIgnoreCaseAndIdNot`). Backfill de V2 vérifié à la
-  main sur un Postgres 18 jetable (V1 + 2 comptes + V2 → `player-3c2991b4`,
-  `player-7e0074ab`, format valide ; doublon à la casse près refusé par l'index).
-- Fonctionnel : `RegisterFunctionalTest` (pseudo invalide → 400, pris → 409
-  `USERNAME_TAKEN`), `MeFunctionalTest` (renvoie `username`),
-  `ChangeUsernameFunctionalTest` (401 sans token, 200, 409, 400).
-- `AuthFlows.registerAndVerify` prend un pseudo.
+- Unitaire : `PasswordPolicyTest` couvre :
+  - entrée de la liste, y compris avec une autre casse ;
+  - `ageguessr` dans le mot de passe ;
+  - pseudo et partie locale de l'email contenus, y compris avec une autre casse ;
+  - pseudo de 3 caractères ignoré ;
+  - mot de passe sûr accepté ;
+  - la liste chargée n'est pas vide.
+
+  Handlers : la politique est appelée avant l'encodeur et le repository (Register) ;
+  après le vérificateur du mot de passe actuel (Change).
+- Fonctionnel : `RegisterFunctionalTest`, `PasswordResetFunctionalTest`,
+  `ChangePasswordFunctionalTest` vérifient :
+  - 11 caractères → 400 `VALIDATION_ERROR` ;
+  - mot de passe de la liste → 400 `PASSWORD_TOO_COMMON` ;
+  - mot de passe contenant le pseudo → 400 `PASSWORD_CONTAINS_PERSONAL_INFO`.
+
+  `LoginFunctionalTest` : un compte créé avec un mot de passe de 8 caractères
+  (inséré directement en base, l'API le refuserait désormais) se connecte toujours.
+- Intégration : aucun nouveau. Pas de nouvelle requête ni de migration.
+- Architecture : les tests ArchUnit existants couvrent l'emplacement de
+  `PasswordPolicy`. Pas de nouvelle règle.
+- Mutation : PIT sur `PasswordPolicy` si la config le permet, sinon ce sont les tests
+  unitaires ci-dessus qui tuent les mutants évidents (bornes 4 et 12, casse).
 
 ### Verification Plan
 - `cd ageguessr-api && ./mvnw test` → BUILD SUCCESS
 
 ### Phase Summary
-Pseudo en place côté backend. `./mvnw test` : 85 tests, 0 échec. Écarts au plan :
-migration nommée `V2__add_username_and_account_tokens.sql` (crée aussi `account_tokens`
-pour la phase 2) ; `MeResponse` devenu `ProfileResponse` à la racine de la feature.
-Les tests fonctionnels construisent le corps d'inscription via
-`AuthFlows.registerBody(...)` / `AuthFlows.randomUsername()` (pseudo unique par appel,
-les tests partagent une base).
+Terminée le 2026-10-20. `./mvnw test` : 156 tests, 0 échec (133 avant).
+- Liste : 29 954 entrées, 427 Ko (après la correction de la phase 3).
+- Les handlers reçoivent `PasswordPolicy` par injection. Leurs tests unitaires le
+  mockent ; `PasswordPolicyTest` utilise une liste d'une entrée, plus un test sur la
+  vraie liste.
+- Fonctionnel ajouté au-delà du plan : au reset, un refus laisse le lien utilisable
+  (la transaction est annulée, la consommation du token aussi). À l'inscription, un mot
+  de passe courant sur un email déjà pris renvoie 400, pas 409.
+- PIT non lancé (pas de config ciblée) ; les bornes 4/12 et la casse sont couvertes par
+  les tests unitaires.
 
-## Phase 2 : Mot de passe oublié, changement de mot de passe, suppression (backend)
+## Phase 2 : Frontend
 Status: Complete
 
-- [x] `features/auth/AccountToken.java` + `AccountTokenPurpose.java` +
-      `AccountTokenRepository.java` (dont `consumeAllActiveForUser(userId, purpose,
-      now)`, `@Transactional @Modifying`)
-- [x] `features/auth/AccountTokenService.java` (émission d'un token par usage +
-      validation/consommation) et `features/auth/AccountEmails.java` (mails reset,
-      notification « password changed » + lien 24 h, confirmation de suppression) ;
-      clés `app.account-token.*` dans les deux `application.properties`
-- [x] `ForgotPassword/{Command,Controller,Handler}.java`
-- [x] `ResetPassword/{Command,Controller,Handler}.java`
-- [x] `RefreshTokenRepository.revokeAllActiveForUserExcept(userId, keepHash, now)`
-- [x] `ChangePassword/{Command,Controller,Handler}.java` (lit le cookie refresh)
-- [x] `DeleteAccount/{Command,Controller,Handler}.java` (vérifie le mot de passe,
-      envoie le mail, 202)
-- [x] `ConfirmAccountDeletion/{Command,Controller,Handler}.java` (supprime, efface le
-      cookie)
-- [x] `SecurityConfig.PUBLIC_AUTH_PATHS` : `forgot-password`, `reset-password`
-- [x] `TestSupportController` : `/test-support/verification-token` lit le token du
-      dernier mail reçu quel qu'il soit → renommer en `/test-support/last-email-token`
-      (et adapter le journey existant)
-- [x] `docs/decisions/architecture.md` : section Authentification (reset, révocation
-      des sessions) + règle RGPD `ON DELETE CASCADE` pour les futures tables + règle du futur changement
-      d'email
+- [x] `password-rules.ts` : `minLength(12)` ; `PASSWORD_HINT`, et messages pour
+      `PASSWORD_TOO_COMMON` et `PASSWORD_CONTAINS_PERSONAL_INFO`
+- [x] `register`, `reset-password`, `account` (changement de mot de passe) : indice mis à
+      jour, message précis sous le champ pour les deux codes d'erreur (comme
+      `USERNAME_TAKEN`), effacé à la saisie
+- [x] Mots de passe des specs Vitest, Playwright `e2e/component` et `e2e/journeys`
+      (`support.ts`) passés à ≥ 12 caractères hors liste
 
 **Tests**
-- Unitaire : `ForgotPasswordHandlerTest` (compte inconnu → aucun email, aucune
-  exception), `ResetPasswordHandlerTest` (expiré / consommé / inconnu → 404 ; succès →
-  hash changé, verrou levé, email vérifié, sessions révoquées, autres tokens
-  invalidés), `ChangePasswordHandlerTest` (mauvais mot de passe → 403 ; succès →
-  sessions révoquées sauf la courante, liens de reset en cours toujours valides, mail
-  de notification avec lien 24 h), `DeleteAccountHandlerTest` (mauvais mot de passe →
-  403, rien envoyé ; bon → mail, compte intact), `ConfirmAccountDeletionHandlerTest`
-  (token de reset refusé, expiré, consommé ; succès → suppression).
-- Intégration : `RefreshTokenRepository.revokeAllActiveForUserExcept`,
-  `AccountTokenRepository.consumeAllActiveForUser` (ne touche que le `purpose` donné) ;
-  `CascadeDeleteIntegrationTest` étendu aux `account_tokens`.
-- Fonctionnel : `PasswordResetFunctionalTest` (forgot → token de l'email → reset →
-  ancien mot de passe refusé, nouveau accepté, ancien refresh token rejeté ; forgot
-  sur email inconnu → 204), `ChangePasswordFunctionalTest` (session courante toujours
-  valide, autre session révoquée, lien « secure » du mail utilisable),
-  `DeleteAccountFunctionalTest` (202, compte toujours là ; confirmation → 204, puis
-  login → 401, `/me` avec l'ancien JWT → 404).
-- Architecture : règles ArchUnit existantes suffisent (nouveaux use cases dans
-  `features/auth`, aucune nouvelle règle).
+- Unitaire (Vitest) : 11 caractères → pas d'envoi ; réponse 400 `PASSWORD_TOO_COMMON`
+  → message sous le champ (register, reset, account).
+- Interface (Playwright) : register affiche le message « too common » sur un 400 mocké.
+- QA e2e : les 4 parcours existants relancés en local (ils couvrent register, reset,
+  change). Pas de nouveau parcours : aucun nouvel écran.
 
 ### Verification Plan
-- `cd ageguessr-api && ./mvnw test` → BUILD SUCCESS
+- `cd frontend && pnpm test` → tous verts
+- `cd frontend && pnpm exec playwright test --project=component` → tous verts
+- Parcours en local (Postgres 5434 / Redis 6381 jetables, backend profil `e2e`) :
+  `pnpm test:e2e:journeys` → 4 verts
 
 ### Phase Summary
-Backend complet. `./mvnw test` : 125 tests, 0 échec (17 nouveaux fonctionnels,
-5 intégration, 21 unitaires). Écarts et ajouts par rapport au plan :
-- **Demande de suppression = `POST /api/auth/me/deletion`** (pas `DELETE /api/auth/me`
-  avec un body, que certains proxys/clients suppriment).
-- **Erreurs de token = 404 `NOT_FOUND` générique** (pas de codes
-  `INVALID_RESET_TOKEN`/`INVALID_DELETION_TOKEN`) : le frontend n'a besoin que du statut.
-- **`AccountLockout`** extrait de `LoginHandler` (même politique pour login et
-  re-saisie du mot de passe) + **`CurrentPasswordVerifier`** ; `LoginHandlerTest`
-  inchangé hormis le constructeur, ses 8 tests passent.
-- **`AccountTokenRepository.markConsumed`** = `UPDATE ... WHERE consumed_at IS NULL`
-  (deux soumissions simultanées du même lien : une seule passe).
-- `TestSupportController` : `/test-support/last-email-token` (journey existant adapté).
-- Docs : `architecture.md` sections « Pseudo public », « Récupération du compte et
-  actions sensibles », « Suppression des données (RGPD) ».
+Terminée le 2026-10-20.
+- `pnpm test` : 85 tests verts (77 avant). Playwright interface : 27 verts. Les 4
+  parcours complets passent en local.
+- Essai direct sur le backend local :
+  - `qwerty123456` → `PASSWORD_TOO_COMMON` ;
+  - `elevenchars` → `VALIDATION_ERROR` ;
+  - mot de passe contenant le pseudo → `PASSWORD_CONTAINS_PERSONAL_INFO` ;
+  - `tortoise-violin-42` → 201.
+- Ajouts au-delà du plan :
+  - l'indice passe en rouge si le champ est quitté avec moins de 12 caractères ;
+  - `autocomplete="new-password"` sur le mot de passe de l'inscription, pour que les
+    gestionnaires de mots de passe proposent d'en générer un.
+- Attention : la PR #9 (curseur des boutons), encore ouverte, ajoute un test Playwright
+  avec `password123`. La nouvelle règle bloque désormais ce mot de passe côté
+  formulaire, donc ce test devra être corrigé quand l'une des deux branches sera
+  rebasée sur l'autre.
 
-## Phase 3 : Navigation, accueil et inscription avec pseudo (frontend)
+## Phase 3 : Relectures, PR
 Status: Complete
-
-- [x] `frontend/src/app/features/home/home.{ts,html,spec.ts}` (contenu de la carte
-      actuelle de `app.html`) + route `''`
-- [x] `frontend/src/app/features/layout/header/header.{ts,html,spec.ts}` ;
-      `app.html` = header + `<router-outlet>` seulement
-- [x] `features/auth/auth.ts` : `sessionChecked`, `register(email, username,
-      password)`, `forgotPassword`, `resetPassword`, `changeUsername`,
-      `changePassword`, `deleteAccount` ; `models.ts` : `username`
-- [x] `features/auth/auth-guard.ts` : attend `sessionChecked` ; `guest-guard.ts`
-- [x] `register/` : champ `username` (validation regex, erreur `USERNAME_TAKEN` sur
-      le champ) ; `login/` : lien « Forgot password? »
-- [x] `docs/decisions/design.md` : rien à ajouter (en-tête construit avec les tokens
-      existants, aucune nouvelle décision visuelle)
-
-**Tests**
-- Unitaire (Vitest) : `header.spec.ts` (invité / connecté / clic logout), `home.spec.ts`,
-  `auth.spec.ts` (nouvelles méthodes, `sessionChecked`), `auth-guard.spec.ts`
-  (attend la restauration), `guest-guard.spec.ts`, `register.spec.ts` (pseudo invalide,
-  `USERNAME_TAKEN`).
-- Interface (Playwright component) : `register.spec.ts` (champ pseudo + erreurs),
-  nouveau `header.spec.ts` (liens invité, pseudo une fois connecté, réseau mocké).
-
-### Verification Plan
-- `cd frontend && pnpm lint && pnpm format:check && pnpm test` → tout vert
-- `cd frontend && pnpm test:e2e` → tout vert
-- `pnpm build` → OK, budgets respectés
-
-### Phase Summary
-Navigation et inscription avec pseudo en place. Écarts : `Auth.sessionChecked` (signal)
-+ `sessionChecked$` attendu par `authGuard`/`guestGuard` ; `authGuard` renvoie vers
-`/login?returnUrl=…` et la connexion y revient (chemins internes uniquement, testé contre
-`//evil.com`, `/\evil.com`, `https://…`) ; `logout()` vide l'état local même si l'appel
-échoue ; route `**` → accueil. **Bug trouvé par le test Playwright mobile** : en-tête
-connecté avec un pseudo de 20 caractères débordait de 18 px à 360 px de large → le pseudo
-est le seul élément qui rétrécit (`min-w-0` + `truncate`). Ajout d'un
-`frontend/.prettierignore` (`test-results/`, `playwright-report/`) : Prettier ne lit pas
-le `.gitignore` racine, donc `format:check` (et le hook pre-push) échouait après un
-passage local de Playwright — problème antérieur à cette feature.
-
-## Phase 4 : Mot de passe oublié, page compte, suppression (frontend)
-Status: Complete
-
-- [x] `features/auth/forgot-password/` (formulaire email → message neutre « if an
-      account exists, we sent a link »)
-- [x] `features/auth/reset-password/` (lit `?token=`, nouveau mot de passe +
-      confirmation, succès → lien login ; token invalide → message + lien vers
-      forgot-password)
-- [x] `features/auth/account/` (protégée par `authGuard`) : infos, changer le pseudo,
-      changer le mot de passe, supprimer le compte (mot de passe → message « check
-      your email to confirm »)
-- [x] `features/auth/confirm-account-deletion/` (lit `?token=`, bouton explicite,
-      jamais d'appel au chargement ; succès → déconnexion locale → message final)
-- [x] Routes `forgot-password`, `reset-password`, `account`, `confirm-account-deletion`
-
-**Tests**
-- Unitaire (Vitest) : un spec par page (succès, erreurs API, validation).
-- Interface (Playwright component) : `forgot-password.spec.ts`,
-  `reset-password.spec.ts`, `account.spec.ts`, `confirm-account-deletion.spec.ts`
-  (aucune requête avant le clic) (réseau mocké).
-- QA e2e (Playwright journeys, app complète) : `auth.spec.ts` étendu —
-  inscription avec pseudo → confirmation → connexion → pseudo visible dans l'en-tête →
-  changement de pseudo → déconnexion ; nouveau `password-reset.spec.ts` (forgot →
-  token via `/test-support` → reset → connexion avec le nouveau mot de passe) ;
-  `delete-account.spec.ts` (demande → token via `/test-support` → confirmation →
-  reconnexion impossible). Justification : ce
-  sont les parcours critiques du compte, un bug ici bloque ou perd un utilisateur.
-- Mutation : PIT tourne sur la PR vers `main` (informatif) ; regarder le rapport
-  pour les nouveaux handlers.
-
-### Verification Plan
-- `cd frontend && pnpm lint && pnpm format:check && pnpm test && pnpm test:e2e` → vert
-- Journeys contre l'app complète en local (backend profil `e2e` + `pnpm start`) :
-  `pnpm test:e2e:journeys` → vert
-
-### Phase Summary
-Pages `forgot-password`, `reset-password`, `account`, `confirm-account-deletion` en
-place. `resetPassword` et `confirmAccountDeletion` vident l'état local (toutes les
-sessions sont révoquées côté serveur). Vérifs : `pnpm lint`, `format:check`, `pnpm test`
-(73 tests, 17 fichiers), `pnpm test:e2e` (25 tests d'interface), `pnpm build` (initial
-293 kB). Journeys (4 parcours : inscription → renommage → déconnexion, reset, lien
-« secure your account » après changement, suppression) **verts contre l'app complète**,
-lancés à la main : Postgres/Redis jetables (ports 5434/6381, `docker run --rm`), backend
-`DB_PORT=5434 REDIS_PORT=6381 JWT_SECRET=<celui de src/test/resources>
-RESEND_API_KEY=unused AUTH_RATE_LIMIT_MAX_ATTEMPTS=1000 ./mvnw spring-boot:run
--Dspring-boot.run.profiles=e2e`, puis `pnpm exec playwright test --project=journeys`.
-Helpers partagés dans `frontend/e2e/journeys/support.ts` et
-`frontend/e2e/component/session.ts`. Note : le premier `pnpm test:e2e` après ajout de
-fichiers peut échouer en masse pendant la compilation à froid de `ng serve` (relancé :
-25/25 stable).
-
-## Phase 5 : Relectures, PR, vérification en prod
-Status: In progress
 
 - [x] `code-reviewer` + `architecture-reviewer` sur le diff, corrections appliquées
-      (2026-10-20) :
-  - **Bug antérieur trouvé (en prod aujourd'hui)** : `BCryptPasswordEncoder` lève une
-    exception au-delà de 72 **octets** → inscription avec un mot de passe de 73
-    caractères, ou 40 « é », ou 20 emoji = **500**. Corrigé : contrainte partagée
-    `shared/validation/Password` (`@NotBlank @Size(min=8) @MaxUtf8Bytes(72)`) sur
-    register / reset / change, miroir front (`features/auth/password-rules.ts`). Tests
-    fonctionnels de non-régression vérifiés en retirant la borne (→ 500).
-  - CORS : `PATCH` ajouté aux méthodes autorisées (utilisé par change-username).
-  - Reset : le mail de notification part **après** le commit (`TransactionTemplate`),
-    plus d'appel réseau Resend dans la transaction.
-  - `AccountEmailsTest` (contenu, liens et durées des 3 mails) ; `submitting` remis à
-    `false` sur forgot-password.
-  - **Reportés** (non bloquants, à planifier) : délai de réponse de forgot-password
-    (compte existant = envoi de mail, plus lent ; sans effet tant que register révèle
-    l'email en 409, voir `architecture.md`) ; job de nettoyage des tokens
-    expirés/consommés (`account_tokens`, `refresh_tokens`, `email_verification_tokens`) ;
-    fusion d'`email_verification_tokens` dans `account_tokens` à la prochaine migration
-    de cette table.
-- [x] `docs/roadmap.md` : cocher « Inscription/connexion (frontend) » et noter pseudo /
-      reset / compte / suppression ; ajouter une ligne « Double authentification (TOTP) »
-- [ ] PR `feature/auth-completion` → `develop`, puis release `develop` → `main`
-      (**merge commit**, merge par l'utilisateur)
-- [ ] En prod (par l'utilisateur, vraie boîte mail) : inscription → mail Resend →
-      confirmation → connexion → mot de passe oublié → suppression du compte de test.
-      Si aucun mail n'arrive : vérifier le domaine dans Resend (case non cochée du plan
-      de déploiement).
+      (2026-10-20). Aucun point bloquant. Corrigé :
+  - la liste filtrait en octets (`LC_ALL=C awk`) : 28 entrées cyrilliques de moins de
+    12 caractères passaient. Régénérée en comptant les caractères (29 954 entrées),
+    commande du `README.md` corrigée ;
+  - normalisation Unicode NFC du mot de passe, des mots du contexte et de la liste, pour
+    qu'un « é » décomposé corresponde à un « é » précomposé (+ test) ;
+  - `RegisterHandlerTest` : derniers `password123` remplacés.
+
+  Laissé tel quel : le bloc d'indice sous le champ est répété dans 3 formulaires. Chacun
+  a ses propres erreurs, donc un composant `<app-password-field>` ne se justifiera qu'au
+  4e formulaire.
+- [x] `docs/roadmap.md` à jour
+- [ ] PR `feature/password-policy` → `develop` (merge par l'utilisateur)
 
 ### Verification Plan
-- CI de la PR verte (backend, frontend, Playwright)
-- Après release : `curl -s https://ageguessr.app/api/health` → `OK`, et le parcours
-  manuel ci-dessus validé par l'utilisateur
+- CI de la PR verte
 
 ### Phase Summary
-_(à écrire une fois la phase terminée)_
+Relectures faites et corrections appliquées. `./mvnw test` : 157 tests, 0 échec ;
+`pnpm test` : 85 tests verts. PR ouverte vers `develop`.
 
 ## Edge cases à couvrir
-
-- Pseudo : casse (`Max` vs `max` = même pseudo), longueur 2 / 21, caractères
-  interdits (espace, `@`, emoji, accents), espaces autour (refusés, pas de trim
-  silencieux), changer pour son propre pseudo avec une autre casse.
-- Inscription : email et pseudo pris en même temps → l'erreur email d'abord (ordre
-  stable, testé).
-- Reset : token expiré, déjà utilisé, inconnu ; deux demandes successives (les deux
-  liens valides jusqu'à l'utilisation de l'un, qui invalide l'autre) ; reset d'un
-  compte verrouillé (verrou levé) ou non vérifié (devient vérifié) ; email inconnu →
-  même réponse qu'un email connu ; lien « secure your account » utilisé après 2 h
-  (valide) ; attaquant qui change le mot de passe deux fois → le premier lien
-  « secure » du propriétaire marche toujours.
-- Changement de mot de passe : mauvais mot de passe actuel ; pas de cookie refresh
-  (révoquer toutes les sessions) ; nouveau mot de passe < 8 caractères.
-- Suppression : mauvais mot de passe ; demande sans confirmation → compte intact ;
-  token de suppression utilisé comme token de reset (et inversement) → refusé ; JWT
-  encore valide après suppression → `/me` 404, pas de 500 ; cookie refresh effacé ;
-  confirmation ouverte sur un autre appareil non connecté → fonctionne.
-- Frontend : rechargement direct de `/account` connecté (pas de redirection parasite),
-  `/account` en invité → `/login`, `/login` connecté → `/`, `/reset-password` sans
-  `?token=`.
+- Casse : `QWERTY123456` refusé comme `qwerty123456`.
+- Pseudo court (`max`) : n'interdit pas les mots de passe contenant « max ».
+- Email `a@x.com` : partie locale trop courte, ignorée.
+- Unicode : 12 caractères accentués acceptés (24 octets, sous la limite de 72).
+- Comptes existants à 8-11 caractères : connexion et suppression du compte (mot de passe
+  actuel) inchangées. Seul un **nouveau** mot de passe suit la nouvelle règle.
+- Changement de mot de passe avec un mot de passe actuel faux et un nouveau mot de
+  passe courant : 403 `INVALID_CURRENT_PASSWORD` (le mot de passe actuel est vérifié
+  d'abord), pas 400.
 
 ## Final Recap
-_(à écrire une fois toutes les phases terminées)_
+Un nouveau mot de passe doit faire au moins 12 caractères, sans règle de composition.
+Il est refusé s'il figure parmi les ~30 000 mots de passe courants (top 1 million de
+Pwdb, filtré à 12 caractères et plus) ou s'il contient `ageguessr`, le pseudo ou la
+partie de l'email avant le `@`. Le frontend affiche un message précis sous le champ. La
+connexion ne change pas, donc les comptes existants fonctionnent toujours.
 
 ## Deployment Plan
-_(à écrire une fois toutes les phases terminées)_
+- Aucune migration ni variable d'environnement. La liste est embarquée dans le jar
+  (≈ 427 Ko, quelques Mo de tas une fois chargée).
+- Le déploiement suit le chemin habituel : merge dans `develop` par l'utilisateur, puis
+  release `develop` → `main` en **merge commit**, ce qui lance la CI et le déploiement.
+- Smoke test après déploiement : un `POST /api/auth/register` avec `qwerty123456`
+  renvoie 400 `PASSWORD_TOO_COMMON`.

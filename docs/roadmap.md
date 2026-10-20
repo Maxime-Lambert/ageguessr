@@ -52,6 +52,9 @@ la suivante).
       `feature/auth-completion`
 - [x] Pseudo public unique et modifiable, mot de passe oublié, page compte (pseudo, mot
       de passe), suppression de compte confirmée par email — PR `feature/auth-completion`
+- [x] Politique de mot de passe : 12 caractères minimum, sans composition, refus des mots
+      de passe courants et de ceux contenant le pseudo ou l'email — PR
+      `feature/password-policy`
 - [ ] Page profil (statistiques, historique visible)
 - [ ] Historique des parties passées (score, streak quotidien)
 

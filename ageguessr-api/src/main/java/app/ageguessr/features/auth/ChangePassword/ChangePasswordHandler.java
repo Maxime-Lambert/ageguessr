@@ -2,6 +2,7 @@ package app.ageguessr.features.auth.ChangePassword;
 
 import app.ageguessr.features.auth.AccountEmails;
 import app.ageguessr.features.auth.CurrentPasswordVerifier;
+import app.ageguessr.features.auth.PasswordPolicy;
 import app.ageguessr.features.auth.RefreshTokenRepository;
 import app.ageguessr.features.auth.User;
 import app.ageguessr.features.auth.UserRepository;
@@ -25,6 +26,7 @@ public class ChangePasswordHandler {
 
     private final UserRepository userRepository;
     private final CurrentPasswordVerifier currentPasswordVerifier;
+    private final PasswordPolicy passwordPolicy;
     private final PasswordEncoder passwordEncoder;
     private final RefreshTokenRepository refreshTokenRepository;
     private final OpaqueTokenGenerator tokenGenerator;
@@ -35,6 +37,9 @@ public class ChangePasswordHandler {
     public void handle(UUID userId, String rawRefreshToken, ChangePasswordCommand command) {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
         currentPasswordVerifier.verify(user, command.currentPassword());
+        // Only once the current password is proven: otherwise this would answer
+        // questions about the account to someone who does not own it.
+        passwordPolicy.check(command.newPassword(), user.getUsername(), user.getEmail());
 
         user.setPasswordHash(passwordEncoder.encode(command.newPassword()));
         userRepository.save(user);

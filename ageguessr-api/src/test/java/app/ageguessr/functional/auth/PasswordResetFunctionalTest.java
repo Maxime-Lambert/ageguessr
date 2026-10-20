@@ -2,6 +2,7 @@ package app.ageguessr.functional.auth;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import app.ageguessr.TestcontainersConfiguration;
@@ -36,17 +37,17 @@ class PasswordResetFunctionalTest {
     @Test
     void resettingReplacesThePasswordAndLogsOutEveryExistingSession() throws Exception {
         String email = "reset-" + UUID.randomUUID() + "@x.com";
-        AuthFlows.registerAndVerify(mockMvc, objectMapper, emailSender, email, "old-password");
-        LoggedInSession existingSession = AuthFlows.login(mockMvc, objectMapper, email, "old-password");
+        AuthFlows.registerAndVerify(mockMvc, objectMapper, emailSender, email, "old-tortoise-violin");
+        LoggedInSession existingSession = AuthFlows.login(mockMvc, objectMapper, email, "old-tortoise-violin");
 
         forgotPassword(email).andExpect(status().isNoContent());
         EmailMessage resetEmail = emailSender.lastMessageTo(email);
         assertThat(resetEmail.htmlBody()).contains("/reset-password?token=");
 
-        resetPassword(VerificationLinks.extractToken(resetEmail), "new-password").andExpect(status().isNoContent());
+        resetPassword(VerificationLinks.extractToken(resetEmail), "new-tortoise-violin").andExpect(status().isNoContent());
 
-        login(email, "old-password").andExpect(status().isUnauthorized());
-        login(email, "new-password").andExpect(status().isOk());
+        login(email, "old-tortoise-violin").andExpect(status().isUnauthorized());
+        login(email, "new-tortoise-violin").andExpect(status().isOk());
         mockMvc.perform(post("/api/auth/refresh").cookie(existingSession.asRequestCookie()))
                 .andExpect(status().isUnauthorized());
         assertThat(emailSender.lastMessageTo(email).subject()).isEqualTo("Your Ageguessr password was changed");
@@ -55,25 +56,25 @@ class PasswordResetFunctionalTest {
     @Test
     void aResetLinkWorksOnlyOnce() throws Exception {
         String email = "reset-once-" + UUID.randomUUID() + "@x.com";
-        AuthFlows.registerAndVerify(mockMvc, objectMapper, emailSender, email, "old-password");
+        AuthFlows.registerAndVerify(mockMvc, objectMapper, emailSender, email, "old-tortoise-violin");
         forgotPassword(email);
         String token = VerificationLinks.extractToken(emailSender.lastMessageTo(email));
 
-        resetPassword(token, "new-password").andExpect(status().isNoContent());
-        resetPassword(token, "another-password").andExpect(status().isNotFound());
+        resetPassword(token, "new-tortoise-violin").andExpect(status().isNoContent());
+        resetPassword(token, "another-tortoise-violin").andExpect(status().isNotFound());
     }
 
     @Test
     void usingOneResetLinkInvalidatesTheOthers() throws Exception {
         String email = "reset-many-" + UUID.randomUUID() + "@x.com";
-        AuthFlows.registerAndVerify(mockMvc, objectMapper, emailSender, email, "old-password");
+        AuthFlows.registerAndVerify(mockMvc, objectMapper, emailSender, email, "old-tortoise-violin");
         forgotPassword(email);
         String firstToken = VerificationLinks.extractToken(emailSender.lastMessageTo(email));
         forgotPassword(email);
         String secondToken = VerificationLinks.extractToken(emailSender.lastMessageTo(email));
 
-        resetPassword(secondToken, "new-password").andExpect(status().isNoContent());
-        resetPassword(firstToken, "another-password").andExpect(status().isNotFound());
+        resetPassword(secondToken, "new-tortoise-violin").andExpect(status().isNoContent());
+        resetPassword(firstToken, "another-tortoise-violin").andExpect(status().isNotFound());
     }
 
     @Test
@@ -81,13 +82,13 @@ class PasswordResetFunctionalTest {
         String email = "reset-unverified-" + UUID.randomUUID() + "@x.com";
         mockMvc.perform(post("/api/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(AuthFlows.registerBody(objectMapper, email, "old-password")));
+                .content(AuthFlows.registerBody(objectMapper, email, "old-tortoise-violin")));
         forgotPassword(email);
 
-        resetPassword(VerificationLinks.extractToken(emailSender.lastMessageTo(email)), "new-password")
+        resetPassword(VerificationLinks.extractToken(emailSender.lastMessageTo(email)), "new-tortoise-violin")
                 .andExpect(status().isNoContent());
 
-        login(email, "new-password").andExpect(status().isOk());
+        login(email, "new-tortoise-violin").andExpect(status().isOk());
     }
 
     @Test
@@ -101,17 +102,34 @@ class PasswordResetFunctionalTest {
 
     @Test
     void aGarbageTokenIsNotFound() throws Exception {
-        resetPassword("not-a-real-token", "new-password").andExpect(status().isNotFound());
+        resetPassword("not-a-real-token", "new-tortoise-violin").andExpect(status().isNotFound());
     }
 
     @Test
-    void theNewPasswordMustBeAtLeastEightCharacters() throws Exception {
-        resetPassword("whatever", "short").andExpect(status().isBadRequest());
+    void theNewPasswordMustBeAtLeastTwelveCharacters() throws Exception {
+        resetPassword("whatever", "elevenchars").andExpect(status().isBadRequest());
     }
 
     @Test
     void aNewPasswordOverBcryptsByteLimitIsABadRequestNotACrash() throws Exception {
         resetPassword("whatever", "é".repeat(40)).andExpect(status().isBadRequest());
+    }
+
+    /** The refusal rolls the redemption back: the same link works for a second try. */
+    @Test
+    void aCommonPasswordIsRefusedAndTheLinkStaysUsable() throws Exception {
+        String email = "reset-common-" + UUID.randomUUID() + "@x.com";
+        AuthFlows.registerAndVerify(mockMvc, objectMapper, emailSender, email, "old-tortoise-violin");
+        forgotPassword(email).andExpect(status().isNoContent());
+        String token = VerificationLinks.extractToken(emailSender.lastMessageTo(email));
+
+        resetPassword(token, "qwerty123456")
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorCode").value("PASSWORD_TOO_COMMON"));
+        login(email, "old-tortoise-violin").andExpect(status().isOk());
+
+        resetPassword(token, "new-tortoise-violin").andExpect(status().isNoContent());
+        login(email, "new-tortoise-violin").andExpect(status().isOk());
     }
 
     private ResultActions forgotPassword(String email) throws Exception {
