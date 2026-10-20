@@ -337,7 +337,7 @@ fichiers peut échouer en masse pendant la compilation à froid de `ng serve` (r
 25/25 stable).
 
 ## Phase 5 : Relectures, PR, vérification en prod
-Status: Not started
+Status: In progress
 
 - [x] `code-reviewer` + `architecture-reviewer` sur le diff, corrections appliquées
       (2026-10-20) :
