@@ -338,7 +338,10 @@ fait `pull` + `up -d`. Raison : le premier déploiement (2026-10-20) a échoué 
 12 Mo de `@lucide/angular` passé au linker Angular), en parallèle du build Maven, sur
 une machine partagée avec un autre projet en prod. Builder ailleurs supprime ce risque
 pour l'autre projet, rend le déploiement plus rapide, et permet un retour arrière en
-relançant le workflow d'un commit précédent (même image, même SHA). Le jeton GitHub
+relançant le workflow d'un commit précédent (même image, même SHA, re-téléchargée
+depuis GHCR : les anciennes images locales sont supprimées à chaque déploiement). Le
+`pull` a lieu avant la réécriture du `.env` : s'il échoue, `.env` garde l'`IMAGE_TAG`
+du dernier déploiement réussi. Le jeton GitHub
 transmis au VPS pour le `pull` est en lecture seule (`packages: read`) et expire à la
 fin du job.
 
