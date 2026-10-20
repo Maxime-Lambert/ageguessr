@@ -119,7 +119,7 @@ class LoginFunctionalTest {
     }
 
     private String registerBody(String email, String password) {
-        return objectMapper.writeValueAsString(new CredentialsPayload(email, password));
+        return AuthFlows.registerBody(objectMapper, email, password);
     }
 
     private String loginBody(String email, String password) {

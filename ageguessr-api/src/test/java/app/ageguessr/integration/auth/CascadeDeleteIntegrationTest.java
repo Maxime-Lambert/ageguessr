@@ -44,6 +44,7 @@ class CascadeDeleteIntegrationTest {
         User user = userRepository.saveAndFlush(
                 User.builder()
                         .email("cascade@x.com")
+                        .username("cascade")
                         .passwordHash("hash")
                         .createdAt(Instant.now())
                         .build());
@@ -82,6 +83,7 @@ class CascadeDeleteIntegrationTest {
         User user = userRepository.saveAndFlush(
                 User.builder()
                         .email("no-tokens@x.com")
+                        .username("no-tokens")
                         .passwordHash("hash")
                         .createdAt(Instant.now())
                         .build());
@@ -97,6 +99,7 @@ class CascadeDeleteIntegrationTest {
         User survivor = userRepository.saveAndFlush(
                 User.builder()
                         .email("survivor@x.com")
+                        .username("survivor")
                         .passwordHash("hash")
                         .createdAt(Instant.now())
                         .build());
@@ -111,6 +114,7 @@ class CascadeDeleteIntegrationTest {
         User deleted = userRepository.saveAndFlush(
                 User.builder()
                         .email("deleted@x.com")
+                        .username("deleted")
                         .passwordHash("hash")
                         .createdAt(Instant.now())
                         .build());

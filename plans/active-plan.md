@@ -133,23 +133,25 @@ recopiée dans `src/test/resources/application.properties` (le fichier de test
 remplace celui de main, il ne le complète pas).
 
 ## Phase 1 : Pseudo (backend)
-Status: Not started
+Status: Complete
 
-- [ ] `ageguessr-api/src/main/resources/db/migration/V2__add_username_and_password_reset.sql`
+- [x] `ageguessr-api/src/main/resources/db/migration/V2__add_username_and_account_tokens.sql`
       (colonne `username` + backfill + `NOT NULL` + index unique `LOWER(username)` ;
       table `account_tokens` (`purpose`) + index, `ON DELETE CASCADE`)
-- [ ] `features/auth/User.java` : champ `username` ; `UserRepository` :
+- [x] `features/auth/User.java` : champ `username` ; `UserRepository` :
       `existsByUsernameIgnoreCase`
-- [ ] `shared/exceptions/ConflictException.java` : `errorCode` ;
+- [x] `shared/exceptions/ConflictException.java` : `errorCode` ;
       `config/GlobalExceptionHandler.java` le renvoie ; `RegisterHandler` →
       `EMAIL_TAKEN` / `USERNAME_TAKEN`
-- [ ] `shared/validation/Username.java` : contrainte Bean Validation composée
+- [x] `shared/validation/Username.java` : contrainte Bean Validation composée
       (`@NotBlank @Pattern("^[A-Za-z0-9_-]{3,20}$")`), réutilisée par register et
       change-username
-- [ ] `Register/RegisterCommand.java` + `RegisterHandler` + `RegisterResponse` :
+- [x] `Register/RegisterCommand.java` + `RegisterHandler` + `RegisterResponse` :
       `username`
-- [ ] `Me/MeResponse.java` + `MeHandler` : `username`
-- [ ] `ChangeUsername/{ChangeUsernameCommand,ChangeUsernameController,ChangeUsernameHandler}.java`
+- [x] `Me/MeResponse.java` → déplacé en `features/auth/ProfileResponse.java` (+ `username`,
+      `ProfileResponse.from(User)`) : partagé par `Me` et `ChangeUsername`, éviter qu'un
+      use case dépende du package d'un autre
+- [x] `ChangeUsername/{ChangeUsernameCommand,ChangeUsernameController,ChangeUsernameHandler}.java`
       (même pseudo à la casse près pour soi-même = autorisé, ex. `max` → `Max`)
 
 **Tests**
@@ -157,9 +159,9 @@ Status: Not started
   `EMAIL_TAKEN`), `ChangeUsernameHandlerTest` (pris par un autre → 409, son propre
   pseudo avec une autre casse → OK).
 - Intégration : `UserRepositoryIntegrationTest` (index unique insensible à la casse
-  sur `username` ; la migration applique bien le backfill → test sur une ligne
-  insérée avant V2 via Flyway `target`… si trop lourd, vérifier le SQL de backfill
-  manuellement sur un Postgres local et le noter ici).
+  sur `username`, `existsByUsernameIgnoreCaseAndIdNot`). Backfill de V2 vérifié à la
+  main sur un Postgres 18 jetable (V1 + 2 comptes + V2 → `player-3c2991b4`,
+  `player-7e0074ab`, format valide ; doublon à la casse près refusé par l'index).
 - Fonctionnel : `RegisterFunctionalTest` (pseudo invalide → 400, pris → 409
   `USERNAME_TAKEN`), `MeFunctionalTest` (renvoie `username`),
   `ChangeUsernameFunctionalTest` (401 sans token, 200, 409, 400).
@@ -169,7 +171,12 @@ Status: Not started
 - `cd ageguessr-api && ./mvnw test` → BUILD SUCCESS
 
 ### Phase Summary
-_(à écrire une fois la phase terminée)_
+Pseudo en place côté backend. `./mvnw test` : 85 tests, 0 échec. Écarts au plan :
+migration nommée `V2__add_username_and_account_tokens.sql` (crée aussi `account_tokens`
+pour la phase 2) ; `MeResponse` devenu `ProfileResponse` à la racine de la feature.
+Les tests fonctionnels construisent le corps d'inscription via
+`AuthFlows.registerBody(...)` / `AuthFlows.randomUsername()` (pseudo unique par appel,
+les tests partagent une base).
 
 ## Phase 2 : Mot de passe oublié, changement de mot de passe, suppression (backend)
 Status: Not started

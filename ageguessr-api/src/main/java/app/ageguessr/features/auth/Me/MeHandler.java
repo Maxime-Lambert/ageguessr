@@ -1,5 +1,6 @@
 package app.ageguessr.features.auth.Me;
 
+import app.ageguessr.features.auth.ProfileResponse;
 import app.ageguessr.features.auth.User;
 import app.ageguessr.features.auth.UserRepository;
 import app.ageguessr.shared.exceptions.NotFoundException;
@@ -12,10 +13,10 @@ public class MeHandler {
 
     private final UserRepository userRepository;
 
-    public MeResponse handle(MeQuery query) {
+    public ProfileResponse handle(MeQuery query) {
         User user = userRepository
                 .findById(query.userId())
                 .orElseThrow(() -> new NotFoundException("User not found"));
-        return new MeResponse(user.getId(), user.getEmail(), user.isEmailVerified());
+        return ProfileResponse.from(user);
     }
 }
