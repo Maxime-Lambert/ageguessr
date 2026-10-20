@@ -1,10 +1,10 @@
 import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Auth } from './features/auth/auth';
-import { ThemeToggle } from './features/theme/theme-toggle/theme-toggle';
+import { Header } from './features/layout/header/header';
 
 @Component({
-  imports: [RouterOutlet, ThemeToggle],
+  imports: [RouterOutlet, Header],
   selector: 'app-root',
   styleUrl: './app.css',
   templateUrl: './app.html',

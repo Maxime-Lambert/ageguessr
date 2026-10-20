@@ -1,0 +1,33 @@
+<header class="border-border flex items-center justify-between gap-4 border-b px-4 py-4 sm:px-6">
+  <a routerLink="/" class="font-display shrink-0 text-2xl">Ageguessr</a>
+
+  <!-- min-w-0 + flex-1: the username is the one element allowed to shrink (and truncate)
+       so the header never overflows on a phone, whatever its length. -->
+  <nav class="flex min-w-0 flex-1 items-center justify-end gap-3 sm:gap-4" aria-label="Account">
+    @if (auth.currentUser(); as user) {
+      <a
+        routerLink="/account"
+        class="hover:text-accent min-w-0 truncate text-sm font-medium sm:max-w-[12rem]"
+        [attr.aria-label]="'Account settings for ' + user.username"
+        >{{ user.username }}</a
+      >
+      <button
+        type="button"
+        (click)="logout()"
+        class="text-muted hover:text-foreground shrink-0 text-sm"
+      >
+        Log out
+      </button>
+    } @else if (auth.sessionChecked()) {
+      <!-- Hidden until the session restore settles, so a logged-in user never sees a
+           "Log in" link flash on reload. -->
+      <a routerLink="/login" class="hover:text-accent shrink-0 text-sm font-medium">Log in</a>
+      <a
+        routerLink="/register"
+        class="bg-accent text-accent-foreground shrink-0 rounded-md px-3 py-1.5 text-sm font-medium"
+        >Sign up</a
+      >
+    }
+    <app-theme-toggle class="shrink-0" />
+  </nav>
+</header>

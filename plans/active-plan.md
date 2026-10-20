@@ -245,19 +245,20 @@ Backend complet. `./mvnw test` : 125 tests, 0 échec (17 nouveaux fonctionnels,
   actions sensibles », « Suppression des données (RGPD) ».
 
 ## Phase 3 : Navigation, accueil et inscription avec pseudo (frontend)
-Status: Not started
+Status: Complete
 
-- [ ] `frontend/src/app/features/home/home.{ts,html,spec.ts}` (contenu de la carte
+- [x] `frontend/src/app/features/home/home.{ts,html,spec.ts}` (contenu de la carte
       actuelle de `app.html`) + route `''`
-- [ ] `frontend/src/app/features/layout/header/header.{ts,html,spec.ts}` ;
+- [x] `frontend/src/app/features/layout/header/header.{ts,html,spec.ts}` ;
       `app.html` = header + `<router-outlet>` seulement
-- [ ] `features/auth/auth.ts` : `sessionChecked`, `register(email, username,
+- [x] `features/auth/auth.ts` : `sessionChecked`, `register(email, username,
       password)`, `forgotPassword`, `resetPassword`, `changeUsername`,
       `changePassword`, `deleteAccount` ; `models.ts` : `username`
-- [ ] `features/auth/auth-guard.ts` : attend `sessionChecked` ; `guest-guard.ts`
-- [ ] `register/` : champ `username` (validation regex, erreur `USERNAME_TAKEN` sur
+- [x] `features/auth/auth-guard.ts` : attend `sessionChecked` ; `guest-guard.ts`
+- [x] `register/` : champ `username` (validation regex, erreur `USERNAME_TAKEN` sur
       le champ) ; `login/` : lien « Forgot password? »
-- [ ] `docs/decisions/design.md` si une décision visuelle nouvelle est prise (en-tête)
+- [x] `docs/decisions/design.md` : rien à ajouter (en-tête construit avec les tokens
+      existants, aucune nouvelle décision visuelle)
 
 **Tests**
 - Unitaire (Vitest) : `header.spec.ts` (invité / connecté / clic logout), `home.spec.ts`,
@@ -273,22 +274,31 @@ Status: Not started
 - `pnpm build` → OK, budgets respectés
 
 ### Phase Summary
-_(à écrire une fois la phase terminée)_
+Navigation et inscription avec pseudo en place. Écarts : `Auth.sessionChecked` (signal)
++ `sessionChecked$` attendu par `authGuard`/`guestGuard` ; `authGuard` renvoie vers
+`/login?returnUrl=…` et la connexion y revient (chemins internes uniquement, testé contre
+`//evil.com`, `/\evil.com`, `https://…`) ; `logout()` vide l'état local même si l'appel
+échoue ; route `**` → accueil. **Bug trouvé par le test Playwright mobile** : en-tête
+connecté avec un pseudo de 20 caractères débordait de 18 px à 360 px de large → le pseudo
+est le seul élément qui rétrécit (`min-w-0` + `truncate`). Ajout d'un
+`frontend/.prettierignore` (`test-results/`, `playwright-report/`) : Prettier ne lit pas
+le `.gitignore` racine, donc `format:check` (et le hook pre-push) échouait après un
+passage local de Playwright — problème antérieur à cette feature.
 
 ## Phase 4 : Mot de passe oublié, page compte, suppression (frontend)
-Status: Not started
+Status: Complete
 
-- [ ] `features/auth/forgot-password/` (formulaire email → message neutre « if an
+- [x] `features/auth/forgot-password/` (formulaire email → message neutre « if an
       account exists, we sent a link »)
-- [ ] `features/auth/reset-password/` (lit `?token=`, nouveau mot de passe +
+- [x] `features/auth/reset-password/` (lit `?token=`, nouveau mot de passe +
       confirmation, succès → lien login ; token invalide → message + lien vers
       forgot-password)
-- [ ] `features/auth/account/` (protégée par `authGuard`) : infos, changer le pseudo,
+- [x] `features/auth/account/` (protégée par `authGuard`) : infos, changer le pseudo,
       changer le mot de passe, supprimer le compte (mot de passe → message « check
       your email to confirm »)
-- [ ] `features/auth/confirm-account-deletion/` (lit `?token=`, bouton explicite,
+- [x] `features/auth/confirm-account-deletion/` (lit `?token=`, bouton explicite,
       jamais d'appel au chargement ; succès → déconnexion locale → message final)
-- [ ] Routes `forgot-password`, `reset-password`, `account`, `confirm-account-deletion`
+- [x] Routes `forgot-password`, `reset-password`, `account`, `confirm-account-deletion`
 
 **Tests**
 - Unitaire (Vitest) : un spec par page (succès, erreurs API, validation).
@@ -311,7 +321,20 @@ Status: Not started
   `pnpm test:e2e:journeys` → vert
 
 ### Phase Summary
-_(à écrire une fois la phase terminée)_
+Pages `forgot-password`, `reset-password`, `account`, `confirm-account-deletion` en
+place. `resetPassword` et `confirmAccountDeletion` vident l'état local (toutes les
+sessions sont révoquées côté serveur). Vérifs : `pnpm lint`, `format:check`, `pnpm test`
+(73 tests, 17 fichiers), `pnpm test:e2e` (25 tests d'interface), `pnpm build` (initial
+293 kB). Journeys (4 parcours : inscription → renommage → déconnexion, reset, lien
+« secure your account » après changement, suppression) **verts contre l'app complète**,
+lancés à la main : Postgres/Redis jetables (ports 5434/6381, `docker run --rm`), backend
+`DB_PORT=5434 REDIS_PORT=6381 JWT_SECRET=<celui de src/test/resources>
+RESEND_API_KEY=unused AUTH_RATE_LIMIT_MAX_ATTEMPTS=1000 ./mvnw spring-boot:run
+-Dspring-boot.run.profiles=e2e`, puis `pnpm exec playwright test --project=journeys`.
+Helpers partagés dans `frontend/e2e/journeys/support.ts` et
+`frontend/e2e/component/session.ts`. Note : le premier `pnpm test:e2e` après ajout de
+fichiers peut échouer en masse pendant la compilation à froid de `ng serve` (relancé :
+25/25 stable).
 
 ## Phase 5 : Relectures, PR, vérification en prod
 Status: Not started
