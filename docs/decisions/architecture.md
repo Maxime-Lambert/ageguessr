@@ -329,6 +329,22 @@ tenté). `docker-compose.prod.yml` attache le service `edge` à la fois au rése
 du projet (pour joindre `backend`) et au réseau externe `gateway` (pour être joignable
 par la passerelle) ; `postgres`/`redis`/`backend` ne sont jamais exposés sur l'hôte.
 
+**Images buildées en CI, pas sur le VPS** : le job `publish-images` (push sur `main`)
+builde `ageguessr-api` et `ageguessr-edge` sur le runner GitHub et les pousse sur GHCR
+(`ghcr.io/maxime-lambert/...`), taguées par le SHA du commit. Le job `deploy` copie
+uniquement `docker-compose.prod.yml` sur le VPS, écrit `IMAGE_TAG` dans le `.env`, puis
+fait `pull` + `up -d`. Raison : le premier déploiement (2026-10-20) a échoué parce que
+`ng build` était tué faute de mémoire sur le VPS (~4 Go au pic, dû au fichier unique de
+12 Mo de `@lucide/angular` passé au linker Angular), en parallèle du build Maven, sur
+une machine partagée avec un autre projet en prod. Builder ailleurs supprime ce risque
+pour l'autre projet, rend le déploiement plus rapide, et permet un retour arrière en
+relançant le workflow d'un commit précédent (même image, même SHA, re-téléchargée
+depuis GHCR : les anciennes images locales sont supprimées à chaque déploiement). Le
+`pull` a lieu avant la réécriture du `.env` : s'il échoue, `.env` garde l'`IMAGE_TAG`
+du dernier déploiement réussi. Le jeton GitHub
+transmis au VPS pour le `pull` est en lecture seule (`packages: read`) et expire à la
+fin du job.
+
 **IP du client à travers les proxys** : chaîne Cloudflare → passerelle Caddy du VPS →
 Caddy edge → Spring. Le rate limiting de `/api/auth/*` partitionne par IP client, il
 faut donc que Spring voie la vraie IP et qu'elle soit infalsifiable. Par défaut, chaque

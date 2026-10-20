@@ -34,10 +34,12 @@ services:
       timeout: 5s
       retries: 10
 
+  # Images buildees par le CI (job publish-images) et poussees sur GHCR : le VPS ne
+  # fait que les telecharger. Builder sur le VPS faisait tuer ng build faute de memoire
+  # (~4 Go au pic) sur une machine partagee avec un autre projet en prod.
+  # IMAGE_TAG = SHA du commit deploye, ecrit dans .env par le job deploy.
   backend:
-    build:
-      context: .
-      dockerfile: ageguessr-api/Dockerfile
+    image: ghcr.io/maxime-lambert/ageguessr-api:${IMAGE_TAG:?IMAGE_TAG manquant}
     restart: unless-stopped
     depends_on:
       postgres:
@@ -59,9 +61,7 @@ services:
       RESEND_API_KEY: ${RESEND_API_KEY}
 
   edge:
-    build:
-      context: .
-      dockerfile: Dockerfile.edge
+    image: ghcr.io/maxime-lambert/ageguessr-edge:${IMAGE_TAG:?IMAGE_TAG manquant}
     restart: unless-stopped
     depends_on:
       - backend
