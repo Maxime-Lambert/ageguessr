@@ -18,7 +18,7 @@ test('register, confirm email, log in, and see a verified profile', async ({ pag
   // confirmation email instead of sending it (see TestSupportController, gated by
   // the "e2e" Spring profile, never active in the prod deployment config).
   const tokenResponse = await request.get(
-    `${BACKEND_URL}/test-support/verification-token?email=${encodeURIComponent(email)}`,
+    `${BACKEND_URL}/test-support/last-email-token?email=${encodeURIComponent(email)}`,
   );
   expect(tokenResponse.ok()).toBe(true);
   const { token } = await tokenResponse.json();

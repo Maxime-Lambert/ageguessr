@@ -50,8 +50,8 @@ l'en-tête). Branche `feature/auth-completion` depuis `develop`.
     `USERNAME_TAKEN`.
   - `POST /api/auth/me/password` `{currentPassword, newPassword}` → 204 ; 403
     `INVALID_CURRENT_PASSWORD`.
-  - `DELETE /api/auth/me` `{password}` → **202** (email de confirmation envoyé, rien
-    n'est supprimé) ; 403 `INVALID_CURRENT_PASSWORD`.
+  - `POST /api/auth/me/deletion` `{password}` → **202** (email de confirmation envoyé,
+    rien n'est supprimé) ; 403 `INVALID_CURRENT_PASSWORD`.
   - `POST /api/auth/confirm-account-deletion` `{token}` → 204 + cookie refresh effacé ;
     404 `INVALID_DELETION_TOKEN`. Public : le lien peut être ouvert sur un autre
     appareil, non connecté.
@@ -179,28 +179,28 @@ Les tests fonctionnels construisent le corps d'inscription via
 les tests partagent une base).
 
 ## Phase 2 : Mot de passe oublié, changement de mot de passe, suppression (backend)
-Status: Not started
+Status: Complete
 
-- [ ] `features/auth/AccountToken.java` + `AccountTokenPurpose.java` +
+- [x] `features/auth/AccountToken.java` + `AccountTokenPurpose.java` +
       `AccountTokenRepository.java` (dont `consumeAllActiveForUser(userId, purpose,
       now)`, `@Transactional @Modifying`)
-- [ ] `features/auth/AccountTokenService.java` (émission d'un token par usage +
+- [x] `features/auth/AccountTokenService.java` (émission d'un token par usage +
       validation/consommation) et `features/auth/AccountEmails.java` (mails reset,
       notification « password changed » + lien 24 h, confirmation de suppression) ;
       clés `app.account-token.*` dans les deux `application.properties`
-- [ ] `ForgotPassword/{Command,Controller,Handler}.java`
-- [ ] `ResetPassword/{Command,Controller,Handler}.java`
-- [ ] `RefreshTokenRepository.revokeAllActiveForUserExcept(userId, keepHash, now)`
-- [ ] `ChangePassword/{Command,Controller,Handler}.java` (lit le cookie refresh)
-- [ ] `DeleteAccount/{Command,Controller,Handler}.java` (vérifie le mot de passe,
+- [x] `ForgotPassword/{Command,Controller,Handler}.java`
+- [x] `ResetPassword/{Command,Controller,Handler}.java`
+- [x] `RefreshTokenRepository.revokeAllActiveForUserExcept(userId, keepHash, now)`
+- [x] `ChangePassword/{Command,Controller,Handler}.java` (lit le cookie refresh)
+- [x] `DeleteAccount/{Command,Controller,Handler}.java` (vérifie le mot de passe,
       envoie le mail, 202)
-- [ ] `ConfirmAccountDeletion/{Command,Controller,Handler}.java` (supprime, efface le
+- [x] `ConfirmAccountDeletion/{Command,Controller,Handler}.java` (supprime, efface le
       cookie)
-- [ ] `SecurityConfig.PUBLIC_AUTH_PATHS` : `forgot-password`, `reset-password`
-- [ ] `TestSupportController` : `/test-support/verification-token` lit le token du
+- [x] `SecurityConfig.PUBLIC_AUTH_PATHS` : `forgot-password`, `reset-password`
+- [x] `TestSupportController` : `/test-support/verification-token` lit le token du
       dernier mail reçu quel qu'il soit → renommer en `/test-support/last-email-token`
       (et adapter le journey existant)
-- [ ] `docs/decisions/architecture.md` : section Authentification (reset, révocation
+- [x] `docs/decisions/architecture.md` : section Authentification (reset, révocation
       des sessions) + règle RGPD `ON DELETE CASCADE` pour les futures tables + règle du futur changement
       d'email
 
@@ -229,7 +229,20 @@ Status: Not started
 - `cd ageguessr-api && ./mvnw test` → BUILD SUCCESS
 
 ### Phase Summary
-_(à écrire une fois la phase terminée)_
+Backend complet. `./mvnw test` : 125 tests, 0 échec (17 nouveaux fonctionnels,
+5 intégration, 21 unitaires). Écarts et ajouts par rapport au plan :
+- **Demande de suppression = `POST /api/auth/me/deletion`** (pas `DELETE /api/auth/me`
+  avec un body, que certains proxys/clients suppriment).
+- **Erreurs de token = 404 `NOT_FOUND` générique** (pas de codes
+  `INVALID_RESET_TOKEN`/`INVALID_DELETION_TOKEN`) : le frontend n'a besoin que du statut.
+- **`AccountLockout`** extrait de `LoginHandler` (même politique pour login et
+  re-saisie du mot de passe) + **`CurrentPasswordVerifier`** ; `LoginHandlerTest`
+  inchangé hormis le constructeur, ses 8 tests passent.
+- **`AccountTokenRepository.markConsumed`** = `UPDATE ... WHERE consumed_at IS NULL`
+  (deux soumissions simultanées du même lien : une seule passe).
+- `TestSupportController` : `/test-support/last-email-token` (journey existant adapté).
+- Docs : `architecture.md` sections « Pseudo public », « Récupération du compte et
+  actions sensibles », « Suppression des données (RGPD) ».
 
 ## Phase 3 : Navigation, accueil et inscription avec pseudo (frontend)
 Status: Not started

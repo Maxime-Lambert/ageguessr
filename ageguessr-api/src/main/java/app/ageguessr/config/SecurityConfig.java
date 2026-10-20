@@ -35,7 +35,10 @@ public class SecurityConfig {
         "/api/auth/login",
         "/api/auth/refresh",
         "/api/auth/confirm-email",
-        "/api/auth/resend-verification"
+        "/api/auth/resend-verification",
+        "/api/auth/forgot-password",
+        "/api/auth/reset-password",
+        "/api/auth/confirm-account-deletion"
     };
 
     private final RateLimitFilter rateLimitFilter;
