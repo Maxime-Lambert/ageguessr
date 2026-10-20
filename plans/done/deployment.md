@@ -290,7 +290,7 @@ Status: Completed
     servent), à nettoyer à la main.
 - [x] Smoke test du CI (`/api/health`) vert (run 39401388701) ; vérifié en direct :
       apex 200 + en-têtes de sécurité, www → 301, watodoo.app toujours 200
-- Test manuel de l'inscription en prod : reporté au plan suivant (`plans/active-plan.md`,
+- Test manuel de l'inscription en prod : reporté au plan suivant (`plans/done/auth-completion.md`,
   finalisation de l'auth) — les pages existaient mais n'étaient reliées à aucune
   navigation.
 
