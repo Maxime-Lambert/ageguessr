@@ -103,6 +103,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: [publish-images]
     environment: production
+    # Deux merges rapproches sur main : le second deploiement attend la fin du premier
+    # au lieu de modifier .env et les conteneurs en meme temps.
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
     # Lecture seule : ce jeton est transmis au VPS pour le docker pull, il ne doit pas
     # pouvoir pousser d'image. Il expire de toute facon a la fin du job.
     permissions:
@@ -111,9 +116,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Les actions tierces qui recoivent la cle SSH et les secrets de prod sont epinglees
+      # par SHA de commit : un tag peut etre reecrit si le depot de l'action est compromis.
       # Seul le compose est necessaire sur le VPS : le code est dans les images.
       - name: Copier le compose de prod sur le VPS
-        uses: easingthemes/ssh-deploy@v5.1.2
+        uses: easingthemes/ssh-deploy@922253577e23ce0edbfdbf819f0e1ceaecabc61a # v5.1.2
         with:
           SSH_PRIVATE_KEY: ${{ secrets.VPS_SSH_KEY }}
           REMOTE_HOST: ${{ secrets.VPS_HOST }}
@@ -124,7 +131,7 @@ jobs:
           REMOTE_PORT: 2222
 
       - name: Écrire le .env de prod et déployer
-        uses: appleboy/ssh-action@v1
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
         env:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
@@ -142,6 +149,13 @@ jobs:
           script: |
             set -euo pipefail
             cd /opt/ageguessr
+            echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
+            trap 'docker logout ghcr.io' EXIT
+            # Pull AVANT de reecrire .env : si le pull echoue, .env garde l'IMAGE_TAG du
+            # dernier deploiement reussi (un "up -d" manuel relance alors cette version).
+            # IMAGE_TAG est exporte par ssh-action, et l'environnement du shell est
+            # prioritaire sur .env pour Compose.
+            docker compose -f docker-compose.prod.yml pull
             cat > .env <<ENVEOF
             POSTGRES_PASSWORD=$POSTGRES_PASSWORD
             JWT_SECRET=$JWT_SECRET
@@ -150,9 +164,6 @@ jobs:
             IMAGE_TAG=$IMAGE_TAG
             ENVEOF
             chmod 600 .env
-            echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
-            trap 'docker logout ghcr.io' EXIT
-            docker compose -f docker-compose.prod.yml pull
             docker compose -f docker-compose.prod.yml up -d
             # Uniquement nos images (taguees par SHA, donc jamais "dangling") : un prune
             # global toucherait aussi celles de l'autre projet du VPS.
