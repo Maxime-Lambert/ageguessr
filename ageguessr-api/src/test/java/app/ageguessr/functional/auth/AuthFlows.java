@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import app.ageguessr.shared.email.RecordingEmailSender;
 import jakarta.servlet.http.Cookie;
+import java.util.UUID;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -31,12 +32,36 @@ final class AuthFlows {
         }
     }
 
+    /** Unique per call: functional tests share one database, and usernames are unique. */
+    static String randomUsername() {
+        return "u-" + UUID.randomUUID().toString().replace("-", "").substring(0, 12);
+    }
+
+    static String registerBody(ObjectMapper objectMapper, String email, String username, String password) {
+        return objectMapper.writeValueAsString(new RegisterPayload(email, username, password));
+    }
+
+    static String registerBody(ObjectMapper objectMapper, String email, String password) {
+        return registerBody(objectMapper, email, randomUsername(), password);
+    }
+
     static void registerAndVerify(
             MockMvc mockMvc, ObjectMapper objectMapper, RecordingEmailSender emailSender, String email, String password)
             throws Exception {
+        registerAndVerify(mockMvc, objectMapper, emailSender, email, randomUsername(), password);
+    }
+
+    static void registerAndVerify(
+            MockMvc mockMvc,
+            ObjectMapper objectMapper,
+            RecordingEmailSender emailSender,
+            String email,
+            String username,
+            String password)
+            throws Exception {
         mockMvc.perform(post("/api/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new CredentialsPayload(email, password))));
+                .content(registerBody(objectMapper, email, username, password)));
 
         String token = VerificationLinks.extractToken(emailSender.lastMessageTo(email));
         mockMvc.perform(post("/api/auth/confirm-email")
@@ -61,6 +86,8 @@ final class AuthFlows {
     }
 
     private record CredentialsPayload(String email, String password) {}
+
+    private record RegisterPayload(String email, String username, String password) {}
 
     private record TokenPayload(String token) {}
 

@@ -1,15 +1,13 @@
 package app.ageguessr.features.auth.Login;
 
+import app.ageguessr.features.auth.AccountLockout;
 import app.ageguessr.features.auth.AuthTokenService;
 import app.ageguessr.features.auth.TokenPair;
 import app.ageguessr.features.auth.User;
 import app.ageguessr.features.auth.UserRepository;
 import app.ageguessr.shared.exceptions.ForbiddenException;
 import app.ageguessr.shared.exceptions.UnauthorizedException;
-import java.time.Clock;
-import java.time.Duration;
 import java.util.Optional;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -30,24 +28,18 @@ public class LoginHandler {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthTokenService authTokenService;
-    private final Clock clock;
-    private final int lockoutMaxAttempts;
-    private final long lockoutDurationMinutes;
+    private final AccountLockout accountLockout;
     private final String dummyPasswordHash;
 
     public LoginHandler(
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
             AuthTokenService authTokenService,
-            Clock clock,
-            @Value("${app.lockout.max-attempts}") int lockoutMaxAttempts,
-            @Value("${app.lockout.duration-minutes}") long lockoutDurationMinutes) {
+            AccountLockout accountLockout) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authTokenService = authTokenService;
-        this.clock = clock;
-        this.lockoutMaxAttempts = lockoutMaxAttempts;
-        this.lockoutDurationMinutes = lockoutDurationMinutes;
+        this.accountLockout = accountLockout;
         // Computed once from the real encoder so its cost factor always matches real
         // password comparisons - not a hardcoded string that could drift out of sync.
         this.dummyPasswordHash = passwordEncoder.encode(DUMMY_PASSWORD);
@@ -63,13 +55,13 @@ public class LoginHandler {
 
         User user = maybeUser.get();
 
-        if (user.getLockedUntil() != null && user.getLockedUntil().isAfter(clock.instant())) {
+        if (accountLockout.isLocked(user)) {
             normalizeTiming(command.password());
             throw new UnauthorizedException(INVALID_CREDENTIALS_MESSAGE);
         }
 
         if (!passwordEncoder.matches(command.password(), user.getPasswordHash())) {
-            registerFailedAttempt(user);
+            accountLockout.recordFailure(user);
             throw new UnauthorizedException(INVALID_CREDENTIALS_MESSAGE);
         }
 
@@ -79,8 +71,7 @@ public class LoginHandler {
             throw new ForbiddenException("EMAIL_NOT_VERIFIED", "Please verify your email before logging in");
         }
 
-        user.setFailedLoginAttempts(0);
-        user.setLockedUntil(null);
+        accountLockout.clear(user);
         userRepository.save(user);
 
         String accessToken = authTokenService.issueAccessToken(user);
@@ -94,14 +85,5 @@ public class LoginHandler {
      * attacker distinguish those cases from a genuine wrong-password attempt. */
     private void normalizeTiming(String presentedPassword) {
         passwordEncoder.matches(presentedPassword, dummyPasswordHash);
-    }
-
-    private void registerFailedAttempt(User user) {
-        int attempts = user.getFailedLoginAttempts() + 1;
-        user.setFailedLoginAttempts(attempts);
-        if (attempts >= lockoutMaxAttempts) {
-            user.setLockedUntil(clock.instant().plus(Duration.ofMinutes(lockoutDurationMinutes)));
-        }
-        userRepository.save(user);
     }
 }

@@ -57,14 +57,12 @@ class ConfirmEmailFunctionalTest {
     }
 
     private String registerBody(String email) {
-        return objectMapper.writeValueAsString(new CredentialsPayload(email, "password123"));
+        return AuthFlows.registerBody(objectMapper, email, "password123");
     }
 
     private String tokenBody(String token) {
         return objectMapper.writeValueAsString(new TokenPayload(token));
     }
-
-    private record CredentialsPayload(String email, String password) {}
 
     private record TokenPayload(String token) {}
 }

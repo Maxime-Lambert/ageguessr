@@ -15,8 +15,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Verifies the real database constraint from V1__create_auth_tables.sql (a unique
- * index on LOWER(email)) — not something Mockito could ever catch, since it's a
+ * Verifies the real database constraint from V1__create_auth_tables.sql (unique
+ * indexes on LOWER(email) and, since V2, LOWER(username)) — not something Mockito could ever catch, since it's a
  * Postgres-level guarantee, not application code.
  */
 @SpringBootTest
@@ -29,23 +29,43 @@ class UserRepositoryIntegrationTest {
 
     @Test
     void rejectsCaseInsensitiveDuplicateEmail() {
-        userRepository.saveAndFlush(newUser("foo@x.com"));
+        userRepository.saveAndFlush(newUser("foo@x.com", "first"));
 
-        assertThatThrownBy(() -> userRepository.saveAndFlush(newUser("Foo@X.com")))
+        assertThatThrownBy(() -> userRepository.saveAndFlush(newUser("Foo@X.com", "second")))
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
 
     @Test
     void findsAUserRegardlessOfEmailCase() {
-        userRepository.saveAndFlush(newUser("foo@x.com"));
+        userRepository.saveAndFlush(newUser("foo@x.com", "foo"));
 
         assertThat(userRepository.findByEmailIgnoreCase("FOO@X.COM")).isPresent();
         assertThat(userRepository.existsByEmailIgnoreCase("FOO@X.COM")).isTrue();
     }
 
-    private User newUser(String email) {
+    @Test
+    void rejectsCaseInsensitiveDuplicateUsername() {
+        userRepository.saveAndFlush(newUser("one@x.com", "Max"));
+
+        assertThatThrownBy(() -> userRepository.saveAndFlush(newUser("two@x.com", "mAX")))
+                .isInstanceOf(DataIntegrityViolationException.class);
+    }
+
+    @Test
+    void usernameLookupsIgnoreCaseAndCanExcludeTheCurrentUser() {
+        User max = userRepository.saveAndFlush(newUser("max@x.com", "Max"));
+
+        assertThat(userRepository.existsByUsernameIgnoreCase("MAX")).isTrue();
+        assertThat(userRepository.existsByUsernameIgnoreCaseAndIdNot("max", max.getId())).isFalse();
+
+        User other = userRepository.saveAndFlush(newUser("other@x.com", "other"));
+        assertThat(userRepository.existsByUsernameIgnoreCaseAndIdNot("MAX", other.getId())).isTrue();
+    }
+
+    private User newUser(String email, String username) {
         return User.builder()
                 .email(email)
+                .username(username)
                 .passwordHash("hash")
                 .emailVerified(false)
                 .failedLoginAttempts(0)

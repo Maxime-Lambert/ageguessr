@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Auth } from '../auth';
 import { ApiErrorResponse } from '../models';
 
@@ -13,6 +13,7 @@ import { ApiErrorResponse } from '../models';
 export class Login {
   private readonly auth = inject(Auth);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   readonly form = new FormGroup({
     email: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
@@ -35,7 +36,7 @@ export class Login {
     this.errorMessage.set(null);
     this.needsVerification.set(false);
     this.auth.login(email, password).subscribe({
-      next: () => this.router.navigate(['/']),
+      next: () => this.router.navigateByUrl(this.safeReturnUrl()),
       error: (error: HttpErrorResponse) => {
         this.submitting.set(false);
         const body = error.error as ApiErrorResponse | null;
@@ -46,6 +47,12 @@ export class Login {
         this.errorMessage.set('Invalid email or password.');
       },
     });
+  }
+
+  /** Only same-site paths: "//evil.com" or "/\evil.com" would be an open redirect. */
+  private safeReturnUrl(): string {
+    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+    return returnUrl && /^\/(?![/\\])/.test(returnUrl) ? returnUrl : '/';
   }
 
   resendVerification(): void {

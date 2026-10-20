@@ -1,293 +1,405 @@
-# Déploiement production — Ageguessr
+# Finalisation de l'authentification — Ageguessr
 
-Mettre en ligne Ageguessr sur le VPS déjà utilisé par un autre projet personnel
-(partage d'infra uniquement, voir `docs/decisions/architecture.md` section
-"Hébergement"). Ce plan touche **trois endroits différents** : le repo `ageguessr`
-(ce repo), le repo de l'autre projet déjà en prod sur ce VPS, et le VPS lui-même
-(fichiers hors de tout repo Git, dans `/opt/gateway/`).
+Clore l'authentification : pseudo choisi à l'inscription (unique, modifiable), mot de
+passe oublié, page compte (pseudo, mot de passe), suppression de compte, et une vraie
+navigation frontend (accueil, liens connexion/inscription, pseudo + déconnexion dans
+l'en-tête). Branche `feature/auth-completion` depuis `develop`.
 
 ## Contexte pour repartir à froid
 
-Le VPS (`51.83.68.37`, SSH port `2222`, user `ubuntu`, clé `~/.ssh/id_ed25519`,
-config déjà dans `~/.ssh/config` sous le host `51.83.68.37`) héberge déjà un autre
-projet en prod (`/opt/watodoo/`, conteneurs `watodoo-prod-*`) dont le conteneur Caddy
-(`watodoo-prod-edge-1`) **occupe actuellement les ports 80/443 de la machine**. Un seul
-processus peut écouter sur ces ports — Ageguessr ne peut donc pas déployer son propre
-Caddy exposé publiquement comme cet autre projet l'a fait.
+- Le backend d'auth existe (plan archivé `plans/done/authentication.md`) : register,
+  confirm-email, resend-verification, login (+ verrouillage), refresh rotatif, logout,
+  me. Package unique `features/auth/<UseCase>/`.
+- Les pages frontend `/register`, `/login`, `/check-email`, `/confirm-email` existent
+  et fonctionnent en prod, mais **rien n'y mène** : `app.html` affiche une carte
+  d'accueil codée en dur au-dessus du `<router-outlet>` sur toutes les pages, et
+  l'en-tête n'a que le toggle de thème.
+- UI en anglais (audience internationale), docs/commentaires du repo en français.
 
-**Solution retenue** : une passerelle Caddy unique au niveau du VPS (`/opt/gateway/`,
-pas dans un repo Git — c'est de l'infra partagée, pas le code d'un projet), seule à
-publier 80/443, qui route par nom de domaine vers le conteneur `edge` de chaque projet
-via un réseau Docker externe partagé nommé `gateway`. Chaque projet garde son propre
-conteneur edge (frontend statique + reverse-proxy `/api/*`), mais celui-ci ne termine
-plus le TLS lui-même et n'est plus jamais publié sur un port hôte.
+## Décisions validées avec l'utilisateur (2026-10-20)
 
-## État exact au moment de la pause (vérifié en direct, pas supposé)
+- **Pseudo** : unique sans tenir compte de la casse, 3 à 20 caractères
+  `[A-Za-z0-9_-]`, choisi à l'inscription, **modifiable** depuis la page compte.
+  Casse d'affichage conservée telle que saisie.
+- **Connexion par email uniquement** (le pseudo est public, ne pas en faire un
+  identifiant de connexion).
+- **Inclus** : mot de passe oublié, page compte, suppression de compte.
+- **Récupération après vol de compte** (demandé par l'utilisateur : « s'il se fait
+  prendre son compte, il ne peut plus rien faire ? ») :
+  1. Le mail « your password was changed » contient un lien **« Wasn't you? Secure
+     your account »** = token de reset valable **24 h** (au lieu d'1 h) → un clic,
+     nouveau mot de passe, toutes les sessions révoquées.
+  2. **Suppression de compte confirmée par email** en plus du mot de passe : un
+     attaquant qui n'a que le mot de passe ne peut pas faire l'irréversible.
+  3. Règle écrite pour le futur changement d'email (hors périmètre ici).
+  4. Hors périmètre : attaquant qui contrôle la boîte mail → 2FA (TOTP) ajoutée à la
+     roadmap.
 
-- **Repo `ageguessr`** : branche `feature/deployment-setup` poussée, PR
-  [#2](https://github.com/Maxime-Lambert/ageguessr/pull/2) ouverte et verte
-  (CI backend+frontend passent), **pas encore mergée**. Contient
-  `ageguessr-api/Dockerfile`, `Dockerfile.edge`, `Caddyfile`,
-  `docker-compose.prod.yml`, `.dockerignore`, `/api/health`, et le fix du job
-  `deploy` du CI (noms de variables). Tout a été validé par un build + un run
-  complet en local (voir description de la PR pour le détail), y compris un bug
-  réel trouvé et corrigé (le `Caddyfile` retirait `/api` avant de proxyfier, alors
-  que chaque contrôleur Spring inclut déjà `/api/...` dans son mapping).
-- **VPS** :
-  - Réseau Docker externe `gateway` : **créé** (`docker network create gateway`).
-  - `/opt/gateway/Dockerfile`, `/opt/gateway/Caddyfile` (un seul bloc `watodoo.app`
-    pour l'instant), `/opt/gateway/docker-compose.yml` : **écrits**. Le
-    `docker-compose.yml` référence en `external: true` les volumes
-    `watodoo-prod_caddy_data`/`watodoo-prod_caddy_config` déjà existants (pour
-    réutiliser le certificat Let's Encrypt déjà émis pour `watodoo.app` plutôt que
-    d'en redemander un).
-  - `/opt/gateway/.env` (doit contenir `CLOUDFLARE_API_TOKEN=...`) : **PAS encore
-    créé** — l'utilisateur devait le créer lui-même en SSH (un token Cloudflare
-    fraîchement créé, scopé `Zone:DNS:Edit`, pas celui de l'autre projet — voir "Pourquoi"
-    ci-dessous). **Vérifier avec `ls -la /opt/gateway/.env` avant de continuer.**
-  - Image Docker de la passerelle : **pas encore buildée** (bloqué sur le `.env`
-    manquant).
-  - L'autre projet (`/opt/watodoo/`) : **pas touché du tout**, toujours en train de
-    publier 80/443 directement, toujours en ligne normalement.
-  - `ageguessr.app` : DNS **pas encore pointé vers Cloudflare** (action côté
-    registrar, à faire par l'utilisateur, indépendante du reste).
+## Décisions d'architecture de cette feature
 
-**Pourquoi un nouveau token plutôt que réutiliser celui de l'autre projet** : celui-ci
-est probablement scopé uniquement sur sa propre zone DNS — inutilisable pour
-`ageguessr.app` une fois cette zone ajoutée à Cloudflare. Range aussi les deux projets
-sur des identifiants distincts plutôt que de faire fuiter un secret d'un projet vers
-l'autre.
+- **Tout reste dans `features/auth/`** : nouveaux use cases `ForgotPassword/`,
+  `ResetPassword/`, `ChangeUsername/`, `ChangePassword/`, `DeleteAccount/`. Un package
+  `features/account/` dépendrait de `User` (dans `features/auth`) et violerait la règle
+  ArchUnit « les features ne dépendent pas les unes des autres ».
+- **Endpoints** (tous sous `/api/auth/`, donc couverts par le rate limit IP existant) :
+  - `POST /api/auth/forgot-password` `{email}` → **toujours 204** (pas d'énumération
+    des comptes), email envoyé seulement si le compte existe.
+  - `POST /api/auth/reset-password` `{token, newPassword}` → 204 ; 404
+    `INVALID_RESET_TOKEN` si token inconnu/expiré/consommé.
+  - `PATCH /api/auth/me/username` `{username}` → 200 `MeResponse` ; 409
+    `USERNAME_TAKEN`.
+  - `POST /api/auth/me/password` `{currentPassword, newPassword}` → 204 ; 403
+    `INVALID_CURRENT_PASSWORD`.
+  - `POST /api/auth/me/deletion` `{password}` → **202** (email de confirmation envoyé,
+    rien n'est supprimé) ; 403 `INVALID_CURRENT_PASSWORD`.
+  - `POST /api/auth/confirm-account-deletion` `{token}` → 204 + cookie refresh effacé ;
+    404 `INVALID_DELETION_TOKEN`. Public : le lien peut être ouvert sur un autre
+    appareil, non connecté.
+  - `forgot-password`, `reset-password`, `confirm-account-deletion` ajoutés à
+    `PUBLIC_AUTH_PATHS`.
+- **Codes d'erreur 409 distincts** : `ConflictException` prend un `errorCode` (comme
+  `ForbiddenException`) → `EMAIL_TAKEN` / `USERNAME_TAKEN`, pour que le formulaire
+  affiche l'erreur sur le bon champ. L'existence d'un email était déjà révélée par
+  `register` (choix antérieur, inchangé) ; celle d'un pseudo est publique par nature.
+- **Tokens de reset et de suppression** : une seule nouvelle table `account_tokens`
+  avec une colonne `purpose` (`PASSWORD_RESET`, `ACCOUNT_DELETION`), même forme que
+  `email_verification_tokens` (hash SHA-256 via `OpaqueTokenGenerator`, jamais le token
+  brut), usage unique, `ON DELETE CASCADE`. Une table plutôt que deux : même cycle de
+  vie, même code ; un token d'un usage n'est jamais accepté pour l'autre (filtre par
+  `purpose`, testé). TTL : reset demandé **1 h**
+  (`app.account-token.password-reset-ttl-minutes=60`), lien « secure your account »
+  **24 h** (`app.account-token.secure-account-ttl-hours=24`), suppression **1 h**
+  (`app.account-token.deletion-ttl-minutes=60`). `email_verification_tokens` reste
+  tel quel (déjà en prod, pas de migration de données pour rien).
+- **Un changement de mot de passe n'invalide pas les liens de reset en cours** : sinon
+  un attaquant qui change le mot de passe deux fois tuerait le lien de récupération du
+  propriétaire. Seul un reset réussi invalide les autres tokens de reset.
+  Un reset réussi : nouveau hash, `failedLoginAttempts=0`, `lockedUntil=null`,
+  `emailVerified=true` (cliquer le lien prouve la possession de l'email), invalide les
+  autres tokens de reset du compte, **révoque tous les refresh tokens** (déconnecte
+  partout — c'est le but si le compte était compromis).
+- **Changement de mot de passe** : exige le mot de passe actuel, révoque tous les
+  refresh tokens **sauf celui de la session courante** (lu dans le cookie) → l'utilisateur
+  reste connecté ici, déconnecté ailleurs. Email de notification « your password was
+  changed » (aussi après un reset), avec le lien « secure your account » (24 h).
+- **Suppression de compte** : exige le mot de passe **puis** la confirmation par le
+  lien email ; suppression physique de la ligne `users` à la confirmation ; les tokens partent par `ON DELETE CASCADE` (déjà en place, testé par
+  `CascadeDeleteIntegrationTest`). Règle documentée dans `architecture.md` : toute
+  future table liée à un utilisateur (parties, amis) doit être en `ON DELETE CASCADE`
+  ou anonymisée — c'est le droit à l'effacement RGPD.
+- **La page de confirmation de suppression exige un clic explicite** (« Delete my
+  account permanently ») au lieu d'appeler l'API au chargement : certains scanners de
+  liens des messageries ouvrent les liens des mails (et parfois exécutent le JS), ce
+  qui supprimerait le compte sans action de l'utilisateur.
+- **Règle pour le futur changement d'email** (dans `architecture.md`) : confirmation
+  sur la nouvelle adresse + notification à l'ancienne avec un lien d'annulation
+  valable plusieurs jours, sinon un vol de compte devient définitif.
+- **Migration `V2__add_username_and_password_reset.sql`** : colonne `username
+  VARCHAR(20)` ajoutée nullable, **backfill** des comptes existants en prod
+  (`'player-' || left(replace(id::text,'-',''), 8)`, conforme au format), puis
+  `NOT NULL` + index unique sur `LOWER(username)`. Le compte de test éventuel de
+  l'utilisateur en prod pourra changer ce pseudo depuis la page compte.
+- **`MeResponse`** gagne `username` ; le JWT ne change pas (le pseudo est modifiable,
+  le mettre dans un token d'1 h le rendrait périmé).
+- **Frontend** :
+  - Nouvelle feature `features/home/` (page d'accueil = route `''`, carte actuelle
+    sortie de `app.html`) et `features/layout/header/` (logo → `/`, toggle thème,
+    invité : « Log in » / « Sign up » ; connecté : pseudo → `/account`, « Log out »).
+  - Nouvelles pages `features/auth/forgot-password/`, `reset-password/`, `account/`
+    (sections : infos, changer le pseudo, changer le mot de passe, zone de danger
+    suppression avec confirmation par mot de passe).
+  - Champ `username` ajouté à `/register` ; lien « Forgot password? » sur `/login`.
+  - **Course au démarrage** : `tryRestoreSession()` est asynchrone, donc un
+    rechargement direct de `/account` ferait rediriger `authGuard` vers `/login` avant
+    la fin de la restauration. `Auth` expose un état `sessionChecked` et le guard
+    attend sa résolution avant de décider.
+  - `guestGuard` sur `/login` et `/register` : un utilisateur connecté est renvoyé
+    vers `/`.
+  - Validation du pseudo côté client = même regex que le backend (le backend reste la
+    seule source de vérité).
+- **Hypothèses** (non bloquantes, à corriger si l'utilisateur n'est pas d'accord) :
+  pas de vérification de disponibilité du pseudo en direct pendant la saisie (erreur
+  à la soumission) ; pas de liste de pseudos réservés/interdits pour l'instant ;
+  changer d'email hors périmètre.
 
 ## For Future Agents
 
-Cocher au fur et à mesure. **Avant toute action sur le VPS touchant l'autre projet
-(Phase 2), relire "État exact" ci-dessus avec des commandes réelles (`docker ps`,
-`ls`), ne jamais supposer que l'état décrit ici est encore exact si du temps a
-passé.** Chaque commande de coupure/bascule sur le VPS doit être confirmée
-explicitement avec l'utilisateur avant exécution — c'est une prod partagée avec un
-autre projet, pas seulement celle d'Ageguessr.
+Cocher au fur et à mesure ; quand une phase est finie, passer son statut à `Complete`,
+lancer son Verification Plan et écrire son Phase Summary avant de passer à la suite.
+Tests écrits en même temps que le code. Après l'implémentation : relecture par
+`code-reviewer` (auth + données utilisateur) **et** `architecture-reviewer`, jamais
+sautées. Tout nouveau clé dans `src/main/resources/application.properties` doit être
+recopiée dans `src/test/resources/application.properties` (le fichier de test
+remplace celui de main, il ne le complète pas).
 
-## Phase 1 : Passerelle (additive, sans risque pour l'autre projet)
-Status: Completed
+## Phase 1 : Pseudo (backend)
+Status: Complete
 
-- [x] Créer le réseau Docker externe `gateway` sur le VPS
-- [x] Écrire `/opt/gateway/{Dockerfile,Caddyfile,docker-compose.yml}` (Caddyfile déplacé ensuite dans
-      `/opt/gateway/conf/` et monté, voir Phase 3)
-- [x] Vérifier que l'utilisateur a bien créé `/opt/gateway/.env` avec
-      `CLOUDFLARE_API_TOKEN` (nouveau token, pas celui de l'autre projet)
-- [x] Builder l'image de la passerelle (`cd /opt/gateway && docker compose build`) —
-      ne PAS faire `up` tout de suite, le port 80/443 est encore tenu par l'autre
-      projet
-- [x] Vérifier que le build inclut bien le plugin `github.com/caddy-dns/cloudflare`
-      (`docker compose run --rm caddy caddy list-modules | grep cloudflare`)
+- [x] `ageguessr-api/src/main/resources/db/migration/V2__add_username_and_account_tokens.sql`
+      (colonne `username` + backfill + `NOT NULL` + index unique `LOWER(username)` ;
+      table `account_tokens` (`purpose`) + index, `ON DELETE CASCADE`)
+- [x] `features/auth/User.java` : champ `username` ; `UserRepository` :
+      `existsByUsernameIgnoreCase`
+- [x] `shared/exceptions/ConflictException.java` : `errorCode` ;
+      `config/GlobalExceptionHandler.java` le renvoie ; `RegisterHandler` →
+      `EMAIL_TAKEN` / `USERNAME_TAKEN`
+- [x] `shared/validation/Username.java` : contrainte Bean Validation composée
+      (`@NotBlank @Pattern("^[A-Za-z0-9_-]{3,20}$")`), réutilisée par register et
+      change-username
+- [x] `Register/RegisterCommand.java` + `RegisterHandler` + `RegisterResponse` :
+      `username`
+- [x] `Me/MeResponse.java` → déplacé en `features/auth/ProfileResponse.java` (+ `username`,
+      `ProfileResponse.from(User)`) : partagé par `Me` et `ChangeUsername`, éviter qu'un
+      use case dépende du package d'un autre
+- [x] `ChangeUsername/{ChangeUsernameCommand,ChangeUsernameController,ChangeUsernameHandler}.java`
+      (même pseudo à la casse près pour soi-même = autorisé, ex. `max` → `Max`)
 
-### Verification Plan
-- `docker images | grep gateway` montre une image construite
-- La commande `list-modules` ci-dessus liste bien le module cloudflare
-
-### Phase Summary
-`/opt/gateway/.env` créé par l'utilisateur avec un token Cloudflare neuf. Image
-buildée avec succès, `caddy list-modules` confirme la présence de
-`dns.providers.cloudflare`. La passerelle est prête mais pas démarrée (pas de `up`,
-conformément au plan — le port 80/443 est encore tenu par `watodoo-prod-edge-1`).
-
----
-
-## Phase 2 : Bascule de l'autre projet vers le réseau partagé (touche une prod live — demander confirmation explicite juste avant)
-Status: Completed (Watodoo#24 mergée dans `develop` ; `develop` → `main` de watodoo non vérifié)
-
-**État exact (vérifié en direct à la pause du 2026-10-14)** : branche
-`chore/caddy-passerelle-partagee` créée depuis `develop` dans
-`/home/lord/source/watodoo`, commit `7230030` poussé sur
-`origin/chore/caddy-passerelle-partagee` (**pas de PR ouverte** — volontairement
-incomplet, voir ci-dessous). CI du repo `watodoo` verte sur ce push (tests
-backend + frontend). `watodoo` tourne toujours normalement en prod, rien n'a
-encore été touché côté VPS pour cette phase.
-
-- [x] Dans le repo de l'autre projet (`/home/lord/source/watodoo`, PAS ce repo) —
-      **partiellement fait**, détail ci-dessous :
-  - [x] `docker-compose.prod.yml` : retiré `ports: ["80:80", "443:443"]` et
-        `CLOUDFLARE_API_TOKEN` du service `edge` (+ volumes `caddy_data`/
-        `caddy_config`, plus utilisés par ce conteneur), attaché au réseau
-        externe `gateway`
-  - [x] `Dockerfile.edge` : retiré le build Caddy custom (`xcaddy` + plugin
-        `caddy-dns/cloudflare`), repassé sur `caddy:2-alpine` standard — plus
-        nécessaire puisque ce conteneur ne gère plus lui-même le certificat
-        Let's Encrypt (DNS-01 désormais géré une seule fois par la passerelle)
-  - [x] `docs/decisions/architecture.md` : section "Hébergement" mise à jour
-        (nouvelle sous-section "Passerelle Caddy partagée du VPS" expliquant
-        le changement et pourquoi, section Cloudflare mise à jour pour dire
-        que c'est maintenant la passerelle qui détient le token)
-  - [x] `Caddyfile` : bloc `tls { dns cloudflare ... }` retiré, adresse
-        `{$DOMAIN}` remplacée par `:80` (fait le 2026-10-15 avec accord explicite
-        de l'utilisateur, commit `657da14`). `caddy validate` : OK.
-- [x] Committer ce dernier changement (`Caddyfile`) — commit `657da14`
-- [x] Pousser `657da14` (hook pre-push : 40/40 tests OK)
-- [x] Ouvrir la PR vers `develop` :
-      [Watodoo#24](https://github.com/Maxime-Lambert/Watodoo/pull/24). Merger dans
-      `develop` est sans risque (le job `deploy` de watodoo ne tourne que sur push
-      vers `main`) ; c'est la PR `develop` → `main` qui ne doit partir qu'au moment
-      de la bascule ci-dessous.
-- **Attention (constaté le 2026-10-15 dans `.github/workflows/ci.yml` de watodoo)** :
-  le job `deploy` (push sur `main`) fait `rsync -az --delete` du repo vers
-  `/opt/watodoo/` puis `docker compose -f docker-compose.prod.yml up -d --build`
-  → **merger `develop` → `main` déclenche à lui seul la bascule de l'edge**. Ordre
-  retenu : bascule manuelle complète (passerelle comprise) d'abord, merge vers `main`
-  ensuite (redéploiement alors sans effet visible). Le CI écrit encore
-  `CLOUDFLARE_API_TOKEN` dans le `.env` de watodoo : inutilisé, à nettoyer plus tard.
-- Les accès SSH au VPS sont refusés à Claude par le mode auto (« Production
-  Reads ») : les étapes VPS sont exécutées par l'utilisateur, guidé pas à pas.
-- [x] Sur le VPS : synchroniser ces fichiers dans `/opt/watodoo/` — fait le
-      2026-10-19 à la main : sauvegarde des anciennes versions dans
-      `~/watodoo-backup-2026-10-19/`, upload dans `~/watodoo-staging/` puis
-      `sudo cp` (fichiers de `/opt/watodoo/` non modifiables par `ubuntu` ; `cp`
-      préserve propriétaire/droits des fichiers écrasés)
-- [x] Pré-builder la nouvelle image edge de l'autre projet SANS encore relancer le
-      conteneur (`docker compose -f docker-compose.prod.yml build edge`) — fait le 2026-10-19,
-      **avec `sudo`** : `/opt/watodoo/.env` n'est pas lisible par `ubuntu`, toute
-      commande `docker compose` dans `/opt/watodoo` doit passer par `sudo`
-- [x] **Confirmé par l'utilisateur** : recréation de l'edge watodoo
-      (`sudo docker compose -f docker-compose.prod.yml up -d --no-deps edge`) puis
-      démarrage immédiat de la passerelle (`cd /opt/gateway && sudo docker compose
-      up -d`), enchaînés dans une seule commande le 2026-10-19 (~14:16 UTC)
-- [x] `curl -sI https://watodoo.app/` → `HTTP/2 200`, certificat valide (réutilisé
-      depuis les volumes `watodoo-prod_caddy_*`)
-- [x] Merger [Watodoo#24](https://github.com/Maxime-Lambert/Watodoo/pull/24) dans
-      `develop`, puis `develop` → `main` (le redéploiement CI est alors sans effet
-      visible : fichiers identiques à ceux déjà en place)
-- **Constaté pendant la bascule** : `docker compose` a averti que
-  `INGESTION_ADMIN_KEY`, `IGDB_CLIENT_ID`, `IGDB_CLIENT_SECRET` sont absents du
-  `/opt/watodoo/.env` actuel (sans impact ici : `--no-deps`, backend non recréé).
-  Le CI de watodoo réécrit ce `.env` avec ces clés à chaque déploiement → vérifier
-  que les secrets GitHub correspondants existent avant le merge vers `main`.
-  Ne jamais recréer le backend watodoo à la main avec ce `.env`.
-  Vérifié le 2026-10-19 : les secrets existent bien (environnement GitHub
-  `production` de watodoo). Ils manquent seulement parce que `develop` de watodoo
-  contient 5 PR pas encore en prod (#19 à #23, dont l'ingestion IGDB et le
-  verrouillage de compte) → **merger `develop` → `main` sur watodoo déploie aussi
-  ces features : décision produit de l'utilisateur, pas une simple formalité**.
-- Le merge de Watodoo#24 par Claude est refusé par le mode auto (« Production
-  Deploy ») → c'est l'utilisateur qui merge.
+**Tests**
+- Unitaire : `RegisterHandlerTest` (pseudo pris → `USERNAME_TAKEN`, email pris →
+  `EMAIL_TAKEN`), `ChangeUsernameHandlerTest` (pris par un autre → 409, son propre
+  pseudo avec une autre casse → OK).
+- Intégration : `UserRepositoryIntegrationTest` (index unique insensible à la casse
+  sur `username`, `existsByUsernameIgnoreCaseAndIdNot`). Backfill de V2 vérifié à la
+  main sur un Postgres 18 jetable (V1 + 2 comptes + V2 → `player-3c2991b4`,
+  `player-7e0074ab`, format valide ; doublon à la casse près refusé par l'index).
+- Fonctionnel : `RegisterFunctionalTest` (pseudo invalide → 400, pris → 409
+  `USERNAME_TAKEN`), `MeFunctionalTest` (renvoie `username`),
+  `ChangeUsernameFunctionalTest` (401 sans token, 200, 409, 400).
+- `AuthFlows.registerAndVerify` prend un pseudo.
 
 ### Verification Plan
-- Le site de l'autre projet répond en HTTPS sans erreur de certificat après la
-  bascule
-- Le conteneur `watodoo-prod-edge-1` n'a plus de port publié dans `docker ps`
-- Le conteneur de la passerelle a bien les ports 80/443
+- `cd ageguessr-api && ./mvnw test` → BUILD SUCCESS
 
 ### Phase Summary
-Bascule faite le 2026-10-19 sans incident, coupure de quelques secondes. `docker ps` :
-`gateway-caddy-1` publie 80/443, `watodoo-prod-edge-1` n'a plus aucun port publié.
-watodoo.app répond en HTTPS 200. Reste le merge de Watodoo#24 jusqu'à `main` pour
-que le repo watodoo reflète l'état réel du VPS.
+Pseudo en place côté backend. `./mvnw test` : 85 tests, 0 échec. Écarts au plan :
+migration nommée `V2__add_username_and_account_tokens.sql` (crée aussi `account_tokens`
+pour la phase 2) ; `MeResponse` devenu `ProfileResponse` à la racine de la feature.
+Les tests fonctionnels construisent le corps d'inscription via
+`AuthFlows.registerBody(...)` / `AuthFlows.randomUsername()` (pseudo unique par appel,
+les tests partagent une base).
 
----
+## Phase 2 : Mot de passe oublié, changement de mot de passe, suppression (backend)
+Status: Complete
 
-## Phase 3 : Déploiement d'Ageguessr
-Status: Not started
+- [x] `features/auth/AccountToken.java` + `AccountTokenPurpose.java` +
+      `AccountTokenRepository.java` (dont `consumeAllActiveForUser(userId, purpose,
+      now)`, `@Transactional @Modifying`)
+- [x] `features/auth/AccountTokenService.java` (émission d'un token par usage +
+      validation/consommation) et `features/auth/AccountEmails.java` (mails reset,
+      notification « password changed » + lien 24 h, confirmation de suppression) ;
+      clés `app.account-token.*` dans les deux `application.properties`
+- [x] `ForgotPassword/{Command,Controller,Handler}.java`
+- [x] `ResetPassword/{Command,Controller,Handler}.java`
+- [x] `RefreshTokenRepository.revokeAllActiveForUserExcept(userId, keepHash, now)`
+- [x] `ChangePassword/{Command,Controller,Handler}.java` (lit le cookie refresh)
+- [x] `DeleteAccount/{Command,Controller,Handler}.java` (vérifie le mot de passe,
+      envoie le mail, 202)
+- [x] `ConfirmAccountDeletion/{Command,Controller,Handler}.java` (supprime, efface le
+      cookie)
+- [x] `SecurityConfig.PUBLIC_AUTH_PATHS` : `forgot-password`, `reset-password`
+- [x] `TestSupportController` : `/test-support/verification-token` lit le token du
+      dernier mail reçu quel qu'il soit → renommer en `/test-support/last-email-token`
+      (et adapter le journey existant)
+- [x] `docs/decisions/architecture.md` : section Authentification (reset, révocation
+      des sessions) + règle RGPD `ON DELETE CASCADE` pour les futures tables + règle du futur changement
+      d'email
 
-- [ ] Pointer le DNS de `ageguessr.app` vers Cloudflare (action utilisateur, côté
-      registrar — indépendante des phases précédentes, peut être faite en parallèle)
-- [x] Ajouter le bloc `ageguessr.app` dans `/opt/gateway/Caddyfile`, rebuild +
-      redémarrer la passerelle (un seul bloc supplémentaire, n'affecte pas le bloc
-      de l'autre projet)
-  - Prérequis : la zone `ageguessr.app` est **active** dans Cloudflare, et le token
-    Cloudflare de la passerelle couvre aussi cette zone (il a été créé quand seule
-    `watodoo.app` y était → probablement à étendre). Sinon le challenge DNS-01
-    échoue, et Let's Encrypt limite les échecs de validation.
-  - Bloc prévu (même forme que celui de watodoo, à aligner sur le fichier réel) :
-    `ageguessr.app { tls { dns cloudflare {env.CLOUDFLARE_API_TOKEN} }
-    reverse_proxy ageguessr-prod-edge-1:80 }` + `www.ageguessr.app` en redirection
-    permanente vers `https://ageguessr.app{uri}`. Le nom du conteneur vient de
-    `name: ageguessr-prod` dans `docker-compose.prod.yml` → `ageguessr-prod-edge-1`.
-    Tant que le conteneur n'existe pas, Caddy démarre quand même et répond 502.
-  - Constaté le 2026-10-19 : le Caddyfile de la passerelle était copié dans l'image
-    (`COPY Caddyfile`), donc chaque modif = rebuild + recréation = coupure watodoo.
-    Changement préparé en même temps que l'ajout du bloc : Caddyfile déplacé dans
-    `/opt/gateway/conf/` et monté en lecture seule (`./conf:/etc/caddy:ro`),
-    `COPY` retiré du Dockerfile → à l'avenir, `sudo docker compose exec caddy caddy
-    reload --config /etc/caddy/Caddyfile` sans coupure. Sauvegarde de l'ancien
-    `/opt/gateway` dans `~/gateway-backup-2026-10-19/`.
-  - Fait le 2026-10-19 (~16:33 UTC) : fichiers en place, passerelle recréée, watodoo
-    toujours en 200. Premier essai ACME en échec (propagation DNS trop lente pour
-    Let's Encrypt), réussi au retry automatique de Caddy : certificats Let's Encrypt
-    `ageguessr.app` et `www.ageguessr.app` obtenus (vérifiés en direct contre le VPS
-    avec `curl --resolve ageguessr.app:443:51.83.68.37` : apex → 502 attendu, www →
-    301 vers l'apex).
-  - DNS Cloudflare : la zone a importé les enregistrements OVH (A `213.186.33.5` =
-    parking OVH sur `@` et `www`, CNAME `ftp`, TXT `1|www…` et `3|welcome`).
-    Correction demandée à l'utilisateur : A `@` et `www` → `51.83.68.37` (Proxied),
-    suppression `ftp` + 2 TXT OVH, ajout `_dmarc` `v=DMARC1; p=none;`. MX/SPF OVH
-    conservés volontairement (réception mail `@ageguessr.app`).
-- [ ] Créer un compte Resend, vérifier le domaine d'envoi, récupérer une clé API
-      (action utilisateur)
-- [x] DNS Cloudflare corrigé par l'utilisateur (vérifié le 2026-10-19 : apex → 502
-      via Cloudflare, www → 301, restes OVH supprimés, `_dmarc` présent)
-- [ ] Créer une clé SSH de déploiement dédiée à Ageguessr (ne pas réutiliser celle
-      de l'autre projet), l'ajouter aux `authorized_keys` du VPS
-  - Décision 2026-10-19 : utilisateur dédié `ageguessr-deploy` (groupe `docker`, pas
-    de sudo, propriétaire de `/opt/ageguessr`) plutôt que `ubuntu` (qui a sudo).
-    Limite assumée : le groupe `docker` équivaut à root sur la machine, donc c'est
-    surtout une séparation des clés et des fichiers, pas une vraie isolation.
-  - `JWT_SECRET` doit être du Base64 (`JwtConfig` le décode) → généré avec
-    `openssl rand -base64 32` et passé via `--body "$(...)"` (pas de retour à la
-    ligne final, qui ferait échouer le décodage Base64 de Java).
-- [x] Configurer les secrets/variables GitHub Actions du repo `ageguessr` (vérifié le
-      2026-10-20 : tous présents dans l'environnement GitHub `production`) :
-      `VPS_HOST` (`51.83.68.37`), `VPS_USER` (`ageguessr-deploy`), `VPS_SSH_KEY` (la nouvelle
-      clé dédiée), `POSTGRES_PASSWORD` (générer), `JWT_SECRET` (générer via
-      `openssl rand -base64 32`), `RESEND_API_KEY`, variable `DOMAIN`
-      (`ageguessr.app`)
-- [x] Relecture de la PR #2 par `code-reviewer` + `architecture-reviewer` (2026-10-19),
-      corrections appliquées sur la branche :
-  - **IP client** (signalé comme « spoofing X-Forwarded-For » ; le mécanisme décrit
-    était faux : chaque Caddy écrase XFF par défaut. Vrai problème : Spring voyait
-    l'IP de la passerelle pour tout le monde → un seul compteur de rate limit
-    partagé par tous les utilisateurs). Corrigé : passerelle `trusted_proxies` =
-    plages Cloudflare + `client_ip_headers CF-Connecting-IP` + `header_up
-    X-Forwarded-For {client_ip}` ; edge `trusted_proxies private_ranges` + même
-    `header_up`. Testé en local de bout en bout (XFF forgé ignoré, vraie IP
-    transmise) + test fonctionnel `partitionsByForwardedClientIp`. Détail dans
-    `docs/decisions/architecture.md`.
-  - Backend en utilisateur non-root (`app`, uid 10001) — image buildée et vérifiée.
-  - En-têtes de sécurité sur les fichiers statiques (HSTS, nosniff, X-Frame-Options,
-    Referrer-Policy, Permissions-Policy).
-  - `HealthController` déplacé dans `config/` + `HealthFunctionalTest`.
-  - Refusé : monter Postgres sur `/var/lib/postgresql/data` (faux pour Postgres 18,
-    PGDATA = `/var/lib/postgresql/18/docker`, VOLUME = `/var/lib/postgresql` ;
-    commentaire ajouté dans `docker-compose.prod.yml`).
-  - **Reporté (à faire plus tard)** : mot de passe Redis (Redis isolé sur le réseau
-    interne du projet), limites mémoire/CPU + `no-new-privileges` sur les conteneurs
-    (VPS partagé), Content-Security-Policy (à régler avec Angular), n'accepter que
-    Cloudflare sur 80/443 au niveau pare-feu, et côté watodoo : son edge ne fait pas
-    confiance à la passerelle → son backend voit l'IP de la passerelle pour tous
-    (même problème que ci-dessus, à corriger dans le repo watodoo).
-- [x] Appliquer le nouveau Caddyfile de la passerelle (IP client) sur le VPS :
-      `conf/Caddyfile` + `caddy reload`, sans coupure — fait par l'utilisateur le
-      2026-10-19 (ancienne version : `~/gateway-backup-2026-10-19/Caddyfile.avant-ip-client`)
-- [x] PR [#2](https://github.com/Maxime-Lambert/ageguessr/pull/2) mergée sur `develop`
-      (2026-10-19)
-- [x] Merger la PR de release [#3](https://github.com/Maxime-Lambert/ageguessr/pull/3)
-      `develop` → `main` (fait par l'utilisateur le 2026-10-20)
-- **Premier déploiement en échec (run 39391331362, 2026-10-20)** : `ng build` tué sans
-  message pendant `docker compose up --build` sur le VPS. Reproduit en local : le build
-  échoue à 2 Go de RAM et passe à 4 Go. Cause : `@lucide/angular` = un seul fichier de
-  12 Mo que le linker Angular doit traiter entièrement. Rien n'a été démarré (échec au
-  build) : ageguessr.app toujours en 502, watodoo.app toujours en 200.
-- [x] Correctif choisi par l'utilisateur : builder les images en CI et les pousser sur
-      GHCR, le VPS ne fait plus que `pull` (on garde Lucide). Branche
-      `fix/build-images-in-ci` (contient aussi le commit de suivi du plan de
-      `chore/deployment-plan-progress`). Détail dans `docs/decisions/architecture.md`.
-- [ ] **Reprise ici** : PR `fix/build-images-in-ci` → `develop`, puis release
-      `develop` → `main` (merge par l'utilisateur) pour relancer le déploiement.
-  - `/opt/ageguessr/` contient encore une copie complète du repo laissée par le rsync du
-    déploiement raté : inutile désormais (seuls `docker-compose.prod.yml` et `.env`
-    servent), à nettoyer à la main.
-- [ ] Vérifier le smoke test du CI (`/api/health`) et tester manuellement
-      l'inscription complète en prod
+**Tests**
+- Unitaire : `ForgotPasswordHandlerTest` (compte inconnu → aucun email, aucune
+  exception), `ResetPasswordHandlerTest` (expiré / consommé / inconnu → 404 ; succès →
+  hash changé, verrou levé, email vérifié, sessions révoquées, autres tokens
+  invalidés), `ChangePasswordHandlerTest` (mauvais mot de passe → 403 ; succès →
+  sessions révoquées sauf la courante, liens de reset en cours toujours valides, mail
+  de notification avec lien 24 h), `DeleteAccountHandlerTest` (mauvais mot de passe →
+  403, rien envoyé ; bon → mail, compte intact), `ConfirmAccountDeletionHandlerTest`
+  (token de reset refusé, expiré, consommé ; succès → suppression).
+- Intégration : `RefreshTokenRepository.revokeAllActiveForUserExcept`,
+  `AccountTokenRepository.consumeAllActiveForUser` (ne touche que le `purpose` donné) ;
+  `CascadeDeleteIntegrationTest` étendu aux `account_tokens`.
+- Fonctionnel : `PasswordResetFunctionalTest` (forgot → token de l'email → reset →
+  ancien mot de passe refusé, nouveau accepté, ancien refresh token rejeté ; forgot
+  sur email inconnu → 204), `ChangePasswordFunctionalTest` (session courante toujours
+  valide, autre session révoquée, lien « secure » du mail utilisable),
+  `DeleteAccountFunctionalTest` (202, compte toujours là ; confirmation → 204, puis
+  login → 401, `/me` avec l'ancien JWT → 404).
+- Architecture : règles ArchUnit existantes suffisent (nouveaux use cases dans
+  `features/auth`, aucune nouvelle règle).
+
+### Verification Plan
+- `cd ageguessr-api && ./mvnw test` → BUILD SUCCESS
+
+### Phase Summary
+Backend complet. `./mvnw test` : 125 tests, 0 échec (17 nouveaux fonctionnels,
+5 intégration, 21 unitaires). Écarts et ajouts par rapport au plan :
+- **Demande de suppression = `POST /api/auth/me/deletion`** (pas `DELETE /api/auth/me`
+  avec un body, que certains proxys/clients suppriment).
+- **Erreurs de token = 404 `NOT_FOUND` générique** (pas de codes
+  `INVALID_RESET_TOKEN`/`INVALID_DELETION_TOKEN`) : le frontend n'a besoin que du statut.
+- **`AccountLockout`** extrait de `LoginHandler` (même politique pour login et
+  re-saisie du mot de passe) + **`CurrentPasswordVerifier`** ; `LoginHandlerTest`
+  inchangé hormis le constructeur, ses 8 tests passent.
+- **`AccountTokenRepository.markConsumed`** = `UPDATE ... WHERE consumed_at IS NULL`
+  (deux soumissions simultanées du même lien : une seule passe).
+- `TestSupportController` : `/test-support/last-email-token` (journey existant adapté).
+- Docs : `architecture.md` sections « Pseudo public », « Récupération du compte et
+  actions sensibles », « Suppression des données (RGPD) ».
+
+## Phase 3 : Navigation, accueil et inscription avec pseudo (frontend)
+Status: Complete
+
+- [x] `frontend/src/app/features/home/home.{ts,html,spec.ts}` (contenu de la carte
+      actuelle de `app.html`) + route `''`
+- [x] `frontend/src/app/features/layout/header/header.{ts,html,spec.ts}` ;
+      `app.html` = header + `<router-outlet>` seulement
+- [x] `features/auth/auth.ts` : `sessionChecked`, `register(email, username,
+      password)`, `forgotPassword`, `resetPassword`, `changeUsername`,
+      `changePassword`, `deleteAccount` ; `models.ts` : `username`
+- [x] `features/auth/auth-guard.ts` : attend `sessionChecked` ; `guest-guard.ts`
+- [x] `register/` : champ `username` (validation regex, erreur `USERNAME_TAKEN` sur
+      le champ) ; `login/` : lien « Forgot password? »
+- [x] `docs/decisions/design.md` : rien à ajouter (en-tête construit avec les tokens
+      existants, aucune nouvelle décision visuelle)
+
+**Tests**
+- Unitaire (Vitest) : `header.spec.ts` (invité / connecté / clic logout), `home.spec.ts`,
+  `auth.spec.ts` (nouvelles méthodes, `sessionChecked`), `auth-guard.spec.ts`
+  (attend la restauration), `guest-guard.spec.ts`, `register.spec.ts` (pseudo invalide,
+  `USERNAME_TAKEN`).
+- Interface (Playwright component) : `register.spec.ts` (champ pseudo + erreurs),
+  nouveau `header.spec.ts` (liens invité, pseudo une fois connecté, réseau mocké).
+
+### Verification Plan
+- `cd frontend && pnpm lint && pnpm format:check && pnpm test` → tout vert
+- `cd frontend && pnpm test:e2e` → tout vert
+- `pnpm build` → OK, budgets respectés
+
+### Phase Summary
+Navigation et inscription avec pseudo en place. Écarts : `Auth.sessionChecked` (signal)
++ `sessionChecked$` attendu par `authGuard`/`guestGuard` ; `authGuard` renvoie vers
+`/login?returnUrl=…` et la connexion y revient (chemins internes uniquement, testé contre
+`//evil.com`, `/\evil.com`, `https://…`) ; `logout()` vide l'état local même si l'appel
+échoue ; route `**` → accueil. **Bug trouvé par le test Playwright mobile** : en-tête
+connecté avec un pseudo de 20 caractères débordait de 18 px à 360 px de large → le pseudo
+est le seul élément qui rétrécit (`min-w-0` + `truncate`). Ajout d'un
+`frontend/.prettierignore` (`test-results/`, `playwright-report/`) : Prettier ne lit pas
+le `.gitignore` racine, donc `format:check` (et le hook pre-push) échouait après un
+passage local de Playwright — problème antérieur à cette feature.
+
+## Phase 4 : Mot de passe oublié, page compte, suppression (frontend)
+Status: Complete
+
+- [x] `features/auth/forgot-password/` (formulaire email → message neutre « if an
+      account exists, we sent a link »)
+- [x] `features/auth/reset-password/` (lit `?token=`, nouveau mot de passe +
+      confirmation, succès → lien login ; token invalide → message + lien vers
+      forgot-password)
+- [x] `features/auth/account/` (protégée par `authGuard`) : infos, changer le pseudo,
+      changer le mot de passe, supprimer le compte (mot de passe → message « check
+      your email to confirm »)
+- [x] `features/auth/confirm-account-deletion/` (lit `?token=`, bouton explicite,
+      jamais d'appel au chargement ; succès → déconnexion locale → message final)
+- [x] Routes `forgot-password`, `reset-password`, `account`, `confirm-account-deletion`
+
+**Tests**
+- Unitaire (Vitest) : un spec par page (succès, erreurs API, validation).
+- Interface (Playwright component) : `forgot-password.spec.ts`,
+  `reset-password.spec.ts`, `account.spec.ts`, `confirm-account-deletion.spec.ts`
+  (aucune requête avant le clic) (réseau mocké).
+- QA e2e (Playwright journeys, app complète) : `auth.spec.ts` étendu —
+  inscription avec pseudo → confirmation → connexion → pseudo visible dans l'en-tête →
+  changement de pseudo → déconnexion ; nouveau `password-reset.spec.ts` (forgot →
+  token via `/test-support` → reset → connexion avec le nouveau mot de passe) ;
+  `delete-account.spec.ts` (demande → token via `/test-support` → confirmation →
+  reconnexion impossible). Justification : ce
+  sont les parcours critiques du compte, un bug ici bloque ou perd un utilisateur.
+- Mutation : PIT tourne sur la PR vers `main` (informatif) ; regarder le rapport
+  pour les nouveaux handlers.
+
+### Verification Plan
+- `cd frontend && pnpm lint && pnpm format:check && pnpm test && pnpm test:e2e` → vert
+- Journeys contre l'app complète en local (backend profil `e2e` + `pnpm start`) :
+  `pnpm test:e2e:journeys` → vert
+
+### Phase Summary
+Pages `forgot-password`, `reset-password`, `account`, `confirm-account-deletion` en
+place. `resetPassword` et `confirmAccountDeletion` vident l'état local (toutes les
+sessions sont révoquées côté serveur). Vérifs : `pnpm lint`, `format:check`, `pnpm test`
+(73 tests, 17 fichiers), `pnpm test:e2e` (25 tests d'interface), `pnpm build` (initial
+293 kB). Journeys (4 parcours : inscription → renommage → déconnexion, reset, lien
+« secure your account » après changement, suppression) **verts contre l'app complète**,
+lancés à la main : Postgres/Redis jetables (ports 5434/6381, `docker run --rm`), backend
+`DB_PORT=5434 REDIS_PORT=6381 JWT_SECRET=<celui de src/test/resources>
+RESEND_API_KEY=unused AUTH_RATE_LIMIT_MAX_ATTEMPTS=1000 ./mvnw spring-boot:run
+-Dspring-boot.run.profiles=e2e`, puis `pnpm exec playwright test --project=journeys`.
+Helpers partagés dans `frontend/e2e/journeys/support.ts` et
+`frontend/e2e/component/session.ts`. Note : le premier `pnpm test:e2e` après ajout de
+fichiers peut échouer en masse pendant la compilation à froid de `ng serve` (relancé :
+25/25 stable).
+
+## Phase 5 : Relectures, PR, vérification en prod
+Status: In progress
+
+- [x] `code-reviewer` + `architecture-reviewer` sur le diff, corrections appliquées
+      (2026-10-20) :
+  - **Bug antérieur trouvé (en prod aujourd'hui)** : `BCryptPasswordEncoder` lève une
+    exception au-delà de 72 **octets** → inscription avec un mot de passe de 73
+    caractères, ou 40 « é », ou 20 emoji = **500**. Corrigé : contrainte partagée
+    `shared/validation/Password` (`@NotBlank @Size(min=8) @MaxUtf8Bytes(72)`) sur
+    register / reset / change, miroir front (`features/auth/password-rules.ts`). Tests
+    fonctionnels de non-régression vérifiés en retirant la borne (→ 500).
+  - CORS : `PATCH` ajouté aux méthodes autorisées (utilisé par change-username).
+  - Reset : le mail de notification part **après** le commit (`TransactionTemplate`),
+    plus d'appel réseau Resend dans la transaction.
+  - `AccountEmailsTest` (contenu, liens et durées des 3 mails) ; `submitting` remis à
+    `false` sur forgot-password.
+  - **Reportés** (non bloquants, à planifier) : délai de réponse de forgot-password
+    (compte existant = envoi de mail, plus lent ; sans effet tant que register révèle
+    l'email en 409, voir `architecture.md`) ; job de nettoyage des tokens
+    expirés/consommés (`account_tokens`, `refresh_tokens`, `email_verification_tokens`) ;
+    fusion d'`email_verification_tokens` dans `account_tokens` à la prochaine migration
+    de cette table.
+- [x] `docs/roadmap.md` : cocher « Inscription/connexion (frontend) » et noter pseudo /
+      reset / compte / suppression ; ajouter une ligne « Double authentification (TOTP) »
+- [ ] PR `feature/auth-completion` → `develop`, puis release `develop` → `main`
+      (**merge commit**, merge par l'utilisateur)
+- [ ] En prod (par l'utilisateur, vraie boîte mail) : inscription → mail Resend →
+      confirmation → connexion → mot de passe oublié → suppression du compte de test.
+      Si aucun mail n'arrive : vérifier le domaine dans Resend (case non cochée du plan
+      de déploiement).
+
+### Verification Plan
+- CI de la PR verte (backend, frontend, Playwright)
+- Après release : `curl -s https://ageguessr.app/api/health` → `OK`, et le parcours
+  manuel ci-dessus validé par l'utilisateur
 
 ### Phase Summary
 _(à écrire une fois la phase terminée)_
 
+## Edge cases à couvrir
+
+- Pseudo : casse (`Max` vs `max` = même pseudo), longueur 2 / 21, caractères
+  interdits (espace, `@`, emoji, accents), espaces autour (refusés, pas de trim
+  silencieux), changer pour son propre pseudo avec une autre casse.
+- Inscription : email et pseudo pris en même temps → l'erreur email d'abord (ordre
+  stable, testé).
+- Reset : token expiré, déjà utilisé, inconnu ; deux demandes successives (les deux
+  liens valides jusqu'à l'utilisation de l'un, qui invalide l'autre) ; reset d'un
+  compte verrouillé (verrou levé) ou non vérifié (devient vérifié) ; email inconnu →
+  même réponse qu'un email connu ; lien « secure your account » utilisé après 2 h
+  (valide) ; attaquant qui change le mot de passe deux fois → le premier lien
+  « secure » du propriétaire marche toujours.
+- Changement de mot de passe : mauvais mot de passe actuel ; pas de cookie refresh
+  (révoquer toutes les sessions) ; nouveau mot de passe < 8 caractères.
+- Suppression : mauvais mot de passe ; demande sans confirmation → compte intact ;
+  token de suppression utilisé comme token de reset (et inversement) → refusé ; JWT
+  encore valide après suppression → `/me` 404, pas de 500 ; cookie refresh effacé ;
+  confirmation ouverte sur un autre appareil non connecté → fonctionne.
+- Frontend : rechargement direct de `/account` connecté (pas de redirection parasite),
+  `/account` en invité → `/login`, `/login` connecté → `/`, `/reset-password` sans
+  `?token=`.
+
 ## Final Recap
+_(à écrire une fois toutes les phases terminées)_
+
+## Deployment Plan
 _(à écrire une fois toutes les phases terminées)_

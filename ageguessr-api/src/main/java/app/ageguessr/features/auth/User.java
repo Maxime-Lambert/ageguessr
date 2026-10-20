@@ -17,7 +17,8 @@ import lombok.Setter;
  * Uniqueness on email is enforced in the database via a case-insensitive index on
  * LOWER(email) (see V1__create_auth_tables.sql), not via a JPA @Column(unique=true) —
  * a plain unique constraint is case-sensitive in Postgres and would let "Foo@x.com" and
- * "foo@x.com" both exist as separate accounts.
+ * "foo@x.com" both exist as separate accounts. Same for username (LOWER(username), see
+ * V2__add_username_and_account_tokens.sql), whose display casing is kept as typed.
  */
 @Entity
 @Table(name = "users")
@@ -33,6 +34,8 @@ public class User {
     private UUID id;
 
     private String email;
+
+    private String username;
 
     private String passwordHash;
 

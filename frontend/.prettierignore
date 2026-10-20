@@ -1,0 +1,3 @@
+# Artefacts Playwright (deja dans le .gitignore racine, que Prettier ne lit pas depuis frontend/).
+test-results/
+playwright-report/

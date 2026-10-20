@@ -15,6 +15,30 @@
       </div>
 
       <div>
+        <label for="username" class="text-sm font-medium">Username</label>
+        <input
+          id="username"
+          type="text"
+          formControlName="username"
+          autocomplete="username"
+          aria-describedby="username-hint"
+          (input)="usernameTaken.set(false)"
+          class="border-border bg-background mt-1 w-full rounded-md border px-3 py-2"
+        />
+        @if (usernameTaken()) {
+          <p id="username-hint" class="text-danger mt-1 text-sm">This username is already taken.</p>
+        } @else if (form.controls.username.invalid && form.controls.username.touched) {
+          <p id="username-hint" class="text-danger mt-1 text-sm">
+            3 to 20 characters: letters, digits, _ or -.
+          </p>
+        } @else {
+          <p id="username-hint" class="text-muted mt-1 text-sm">
+            Shown to your friends. You can change it later.
+          </p>
+        }
+      </div>
+
+      <div>
         <label for="password" class="text-sm font-medium">Password</label>
         <input
           id="password"
@@ -22,6 +46,11 @@
           formControlName="password"
           class="border-border bg-background mt-1 w-full rounded-md border px-3 py-2"
         />
+        @if (form.controls.password.hasError('maxUtf8Bytes')) {
+          <p class="text-danger mt-1 text-sm">{{ passwordTooLongMessage }}</p>
+        } @else {
+          <p class="text-muted mt-1 text-sm">At least 8 characters.</p>
+        }
       </div>
 
       <div>

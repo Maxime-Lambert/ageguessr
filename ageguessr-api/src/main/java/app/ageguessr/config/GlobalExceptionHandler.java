@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<ErrorResponse> handleConflict(ConflictException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(new ErrorResponse("CONFLICT", ex.getMessage()));
+                .body(new ErrorResponse(ex.getErrorCode(), ex.getMessage()));
     }
 
     @ExceptionHandler(UnauthorizedException.class)

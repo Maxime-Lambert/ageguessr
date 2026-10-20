@@ -1,0 +1,38 @@
+<div class="mx-auto max-w-md px-4 py-16 sm:px-6">
+  <div class="bg-surface border-border rounded-lg border p-6">
+    @switch (status()) {
+      @case ('deleted') {
+        <h1 class="font-display text-3xl">Account deleted</h1>
+        <p class="text-muted mt-2">
+          Your account and its data are gone. You can still play without an account.
+        </p>
+        <a routerLink="/" class="text-accent mt-4 inline-block underline">Back to the game</a>
+      }
+      @case ('invalid-link') {
+        <h1 class="font-display text-3xl">Link invalid or expired</h1>
+        <p class="text-danger mt-2">
+          This deletion link no longer works. Your account has not been deleted.
+        </p>
+        <a routerLink="/account" class="text-accent mt-4 inline-block underline"
+          >Go to my account</a
+        >
+      }
+      @default {
+        <h1 class="font-display text-3xl">Delete your account?</h1>
+        <p class="text-muted mt-2">
+          This permanently deletes your account, your history and your friends list. It cannot be
+          undone.
+        </p>
+        <button
+          type="button"
+          (click)="confirm()"
+          [disabled]="status() === 'deleting'"
+          class="bg-danger mt-6 w-full rounded-md py-2 font-medium text-white disabled:opacity-50"
+        >
+          Delete my account permanently
+        </button>
+        <a routerLink="/" class="text-muted mt-4 inline-block text-sm">Keep my account</a>
+      }
+    }
+  </div>
+</div>
