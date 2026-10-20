@@ -105,4 +105,27 @@ test.describe('register form', () => {
       page.locator('p.text-danger', { hasText: 'At least 12 characters.' }),
     ).toBeVisible();
   });
+
+  test('keeps the pointer cursor on the submit button after a failed attempt', async ({ page }) => {
+    await page.route('**/api/auth/register', (route) =>
+      route.fulfill({
+        status: 409,
+        contentType: 'application/json',
+        body: JSON.stringify({ errorCode: 'USERNAME_TAKEN', message: 'taken' }),
+      }),
+    );
+
+    await page.goto('/register');
+    const submit = page.getByRole('button', { name: 'Create account' });
+    await expect(submit).toHaveCSS('cursor', 'pointer');
+
+    await page.locator('#email').fill('user@x.com');
+    await page.locator('#username').fill('Taken');
+    await page.locator('#password').fill('tortoise-violin-42');
+    await page.locator('#confirmPassword').fill('tortoise-violin-42');
+    await submit.click();
+
+    await expect(page.getByText('This username is already taken.')).toBeVisible();
+    await expect(submit).toHaveCSS('cursor', 'pointer');
+  });
 });
