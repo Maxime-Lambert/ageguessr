@@ -94,7 +94,7 @@ conformément au plan — le port 80/443 est encore tenu par `watodoo-prod-edge-
 ---
 
 ## Phase 2 : Bascule de l'autre projet vers le réseau partagé (touche une prod live — demander confirmation explicite juste avant)
-Status: Completed (merge Watodoo#24 vers `main` restant)
+Status: Completed (Watodoo#24 mergée dans `develop` ; `develop` → `main` de watodoo non vérifié)
 
 **État exact (vérifié en direct à la pause du 2026-10-14)** : branche
 `chore/caddy-passerelle-partagee` créée depuis `develop` dans
@@ -152,7 +152,7 @@ encore été touché côté VPS pour cette phase.
       up -d`), enchaînés dans une seule commande le 2026-10-19 (~14:16 UTC)
 - [x] `curl -sI https://watodoo.app/` → `HTTP/2 200`, certificat valide (réutilisé
       depuis les volumes `watodoo-prod_caddy_*`)
-- [ ] Merger [Watodoo#24](https://github.com/Maxime-Lambert/Watodoo/pull/24) dans
+- [x] Merger [Watodoo#24](https://github.com/Maxime-Lambert/Watodoo/pull/24) dans
       `develop`, puis `develop` → `main` (le redéploiement CI est alors sans effet
       visible : fichiers identiques à ceux déjà en place)
 - **Constaté pendant la bascule** : `docker compose` a averti que
@@ -232,7 +232,8 @@ Status: Not started
   - `JWT_SECRET` doit être du Base64 (`JwtConfig` le décode) → généré avec
     `openssl rand -base64 32` et passé via `--body "$(...)"` (pas de retour à la
     ligne final, qui ferait échouer le décodage Base64 de Java).
-- [ ] Configurer les secrets/variables GitHub Actions du repo `ageguessr` :
+- [x] Configurer les secrets/variables GitHub Actions du repo `ageguessr` (vérifié le
+      2026-10-20 : tous présents dans l'environnement GitHub `production`) :
       `VPS_HOST` (`51.83.68.37`), `VPS_USER` (`ageguessr-deploy`), `VPS_SSH_KEY` (la nouvelle
       clé dédiée), `POSTGRES_PASSWORD` (générer), `JWT_SECRET` (générer via
       `openssl rand -base64 32`), `RESEND_API_KEY`, variable `DOMAIN`
@@ -266,12 +267,22 @@ Status: Not started
       2026-10-19 (ancienne version : `~/gateway-backup-2026-10-19/Caddyfile.avant-ip-client`)
 - [x] PR [#2](https://github.com/Maxime-Lambert/ageguessr/pull/2) mergée sur `develop`
       (2026-10-19)
-- [ ] **Reprise ici** : merger la PR de release
-      [#3](https://github.com/Maxime-Lambert/ageguessr/pull/3) `develop` → `main`
-      pour déclencher le premier déploiement réel (le job `deploy` ne tourne que sur
-      push vers `main`). CI de la #3 verte le 2026-10-19 (backend, frontend,
-      mutation). Merge fait par l'utilisateur (le mode auto refuse à Claude les
-      merges qui déploient).
+- [x] Merger la PR de release [#3](https://github.com/Maxime-Lambert/ageguessr/pull/3)
+      `develop` → `main` (fait par l'utilisateur le 2026-10-20)
+- **Premier déploiement en échec (run 39391331362, 2026-10-20)** : `ng build` tué sans
+  message pendant `docker compose up --build` sur le VPS. Reproduit en local : le build
+  échoue à 2 Go de RAM et passe à 4 Go. Cause : `@lucide/angular` = un seul fichier de
+  12 Mo que le linker Angular doit traiter entièrement. Rien n'a été démarré (échec au
+  build) : ageguessr.app toujours en 502, watodoo.app toujours en 200.
+- [x] Correctif choisi par l'utilisateur : builder les images en CI et les pousser sur
+      GHCR, le VPS ne fait plus que `pull` (on garde Lucide). Branche
+      `fix/build-images-in-ci` (contient aussi le commit de suivi du plan de
+      `chore/deployment-plan-progress`). Détail dans `docs/decisions/architecture.md`.
+- [ ] **Reprise ici** : PR `fix/build-images-in-ci` → `develop`, puis release
+      `develop` → `main` (merge par l'utilisateur) pour relancer le déploiement.
+  - `/opt/ageguessr/` contient encore une copie complète du repo laissée par le rsync du
+    déploiement raté : inutile désormais (seuls `docker-compose.prod.yml` et `.env`
+    servent), à nettoyer à la main.
 - [ ] Vérifier le smoke test du CI (`/api/health`) et tester manuellement
       l'inscription complète en prod
 

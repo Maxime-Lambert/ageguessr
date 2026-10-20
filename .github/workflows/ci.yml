@@ -60,23 +60,67 @@ jobs:
       - name: Interface (Playwright)
         run: pnpm test:e2e
 
-  deploy:
+  # Les images sont buildees ici (runner GitHub, 16 Go de RAM) et non sur le VPS :
+  # ng build monte a ~4 Go a cause de @lucide/angular (toutes les icones dans un seul
+  # fichier de 12 Mo a passer au linker Angular), ce qui faisait tuer le build sur un
+  # VPS partage avec un autre projet en prod.
+  publish-images:
     runs-on: ubuntu-latest
     needs: [backend-test, frontend-test]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    environment: production
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        include:
+          - image: ageguessr-api
+            dockerfile: ageguessr-api/Dockerfile
+          - image: ageguessr-edge
+            dockerfile: Dockerfile.edge
     steps:
       - uses: actions/checkout@v4
 
-      - name: Synchroniser le code sur le VPS
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build et push ${{ matrix.image }}
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ${{ matrix.dockerfile }}
+          push: true
+          tags: ghcr.io/maxime-lambert/${{ matrix.image }}:${{ github.sha }}
+          cache-from: type=gha,scope=${{ matrix.image }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.image }}
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [publish-images]
+    environment: production
+    # Lecture seule : ce jeton est transmis au VPS pour le docker pull, il ne doit pas
+    # pouvoir pousser d'image. Il expire de toute facon a la fin du job.
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - uses: actions/checkout@v4
+
+      # Seul le compose est necessaire sur le VPS : le code est dans les images.
+      - name: Copier le compose de prod sur le VPS
         uses: easingthemes/ssh-deploy@v5.1.2
         with:
           SSH_PRIVATE_KEY: ${{ secrets.VPS_SSH_KEY }}
           REMOTE_HOST: ${{ secrets.VPS_HOST }}
           REMOTE_USER: ${{ secrets.VPS_USER }}
+          SOURCE: "docker-compose.prod.yml"
           TARGET: /opt/ageguessr/
-          EXCLUDE: ".git/, node_modules/, target/, frontend/dist/, frontend/test-results/"
-          ARGS: "-az --delete"
+          ARGS: "-az"
           REMOTE_PORT: 2222
 
       - name: Écrire le .env de prod et déployer
@@ -86,12 +130,15 @@ jobs:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           DOMAIN: ${{ vars.DOMAIN }}
+          IMAGE_TAG: ${{ github.sha }}
+          GHCR_USER: ${{ github.actor }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 2222
-          envs: POSTGRES_PASSWORD,JWT_SECRET,RESEND_API_KEY,DOMAIN
+          envs: POSTGRES_PASSWORD,JWT_SECRET,RESEND_API_KEY,DOMAIN,IMAGE_TAG,GHCR_USER,GHCR_TOKEN
           script: |
             set -euo pipefail
             cd /opt/ageguessr
@@ -100,10 +147,18 @@ jobs:
             JWT_SECRET=$JWT_SECRET
             RESEND_API_KEY=$RESEND_API_KEY
             DOMAIN=$DOMAIN
+            IMAGE_TAG=$IMAGE_TAG
             ENVEOF
             chmod 600 .env
-            docker compose -f docker-compose.prod.yml up -d --build
-            docker image prune -f
+            echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
+            trap 'docker logout ghcr.io' EXIT
+            docker compose -f docker-compose.prod.yml pull
+            docker compose -f docker-compose.prod.yml up -d
+            # Uniquement nos images (taguees par SHA, donc jamais "dangling") : un prune
+            # global toucherait aussi celles de l'autre projet du VPS.
+            docker images --filter 'reference=ghcr.io/maxime-lambert/ageguessr-*' \
+              --format '{{.Repository}}:{{.Tag}}' | grep -v ":$IMAGE_TAG\$" \
+              | xargs -r docker rmi || true
 
       - name: Smoke test
         run: |
