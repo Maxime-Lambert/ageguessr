@@ -64,13 +64,21 @@
           id="newPassword"
           type="password"
           formControlName="newPassword"
+          (input)="passwordRefusal.set(null)"
           autocomplete="new-password"
           class="border-border bg-background mt-1 w-full rounded-md border px-3 py-2"
         />
         @if (passwordForm.controls.newPassword.hasError('maxUtf8Bytes')) {
           <p class="text-danger mt-1 text-sm">{{ passwordTooLongMessage }}</p>
+        } @else if (passwordRefusal()) {
+          <p class="text-danger mt-1 text-sm">{{ passwordRefusal() }}</p>
+        } @else if (
+          passwordForm.controls.newPassword.hasError('minlength') &&
+          passwordForm.controls.newPassword.touched
+        ) {
+          <p class="text-danger mt-1 text-sm">{{ passwordHint }}</p>
         } @else {
-          <p class="text-muted mt-1 text-sm">At least 8 characters.</p>
+          <p class="text-muted mt-1 text-sm">{{ passwordHint }}</p>
         }
       </div>
       <div>

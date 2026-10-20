@@ -23,7 +23,7 @@ describe('Auth', () => {
 
   it('login sets the access token and fetches the current user', () => {
     let result: unknown;
-    service.login('user@x.com', 'password123').subscribe((user) => (result = user));
+    service.login('user@x.com', 'tortoise-violin-42').subscribe((user) => (result = user));
 
     const loginReq = httpMock.expectOne('/api/auth/login');
     expect(loginReq.request.withCredentials).toBe(true);
@@ -104,13 +104,13 @@ describe('Auth', () => {
   });
 
   it('register sends the username', () => {
-    service.register('user@x.com', 'Player', 'password123').subscribe();
+    service.register('user@x.com', 'Player', 'tortoise-violin-42').subscribe();
 
     const req = httpMock.expectOne('/api/auth/register');
     expect(req.request.body).toEqual({
       email: 'user@x.com',
       username: 'Player',
-      password: 'password123',
+      password: 'tortoise-violin-42',
     });
     req.flush({ userId: '1', email: 'user@x.com', username: 'Player' });
   });
@@ -149,13 +149,13 @@ describe('Auth', () => {
   });
 
   it('changePassword sends the refresh cookie so this session is kept', () => {
-    service.changePassword('old-password', 'new-password').subscribe();
+    service.changePassword('old-tortoise-violin', 'new-tortoise-violin').subscribe();
 
     const req = httpMock.expectOne('/api/auth/me/password');
     expect(req.request.withCredentials).toBe(true);
     expect(req.request.body).toEqual({
-      currentPassword: 'old-password',
-      newPassword: 'new-password',
+      currentPassword: 'old-tortoise-violin',
+      newPassword: 'new-tortoise-violin',
     });
     req.flush(null);
   });
@@ -163,7 +163,7 @@ describe('Auth', () => {
   it('requestAccountDeletion only asks for the confirmation email', () => {
     service.currentUser.set(USER);
 
-    service.requestAccountDeletion('password123').subscribe();
+    service.requestAccountDeletion('tortoise-violin-42').subscribe();
     httpMock
       .expectOne('/api/auth/me/deletion')
       .flush(null, { status: 202, statusText: 'Accepted' });
@@ -186,7 +186,7 @@ describe('Auth', () => {
     service.accessToken.set('access-token');
     service.currentUser.set(USER);
 
-    service.resetPassword('token', 'new-password').subscribe();
+    service.resetPassword('token', 'new-tortoise-violin').subscribe();
     httpMock.expectOne('/api/auth/reset-password').flush(null);
 
     expect(service.currentUser()).toBeNull();

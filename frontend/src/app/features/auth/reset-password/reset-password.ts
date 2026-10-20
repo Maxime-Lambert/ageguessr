@@ -3,7 +3,12 @@ import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Auth } from '../auth';
-import { NEW_PASSWORD_VALIDATORS, PASSWORD_TOO_LONG_MESSAGE } from '../password-rules';
+import {
+  NEW_PASSWORD_VALIDATORS,
+  PASSWORD_HINT,
+  PASSWORD_TOO_LONG_MESSAGE,
+  passwordRefusalMessage,
+} from '../password-rules';
 
 type ResetStatus = 'form' | 'success' | 'invalid-link';
 
@@ -22,6 +27,8 @@ export class ResetPassword {
   });
 
   readonly passwordTooLongMessage = PASSWORD_TOO_LONG_MESSAGE;
+  readonly passwordHint = PASSWORD_HINT;
+  readonly passwordRefusal = signal<string | null>(null);
   readonly status = signal<ResetStatus>(this.token ? 'form' : 'invalid-link');
   readonly submitting = signal(false);
   readonly errorMessage = signal<string | null>(null);
@@ -40,12 +47,18 @@ export class ResetPassword {
 
     this.submitting.set(true);
     this.errorMessage.set(null);
+    this.passwordRefusal.set(null);
     this.auth.resetPassword(this.token, newPassword).subscribe({
       next: () => this.status.set('success'),
       error: (error: HttpErrorResponse) => {
         this.submitting.set(false);
         if (error.status === 404) {
           this.status.set('invalid-link');
+          return;
+        }
+        const refusal = passwordRefusalMessage(error);
+        if (refusal) {
+          this.passwordRefusal.set(refusal);
           return;
         }
         this.errorMessage.set('Something went wrong. Please try again.');

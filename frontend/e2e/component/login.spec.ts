@@ -33,7 +33,7 @@ test.describe('login form', () => {
 
     await page.goto('/login');
     await page.locator('#email').fill('unverified@x.com');
-    await page.locator('#password').fill('password123');
+    await page.locator('#password').fill('tortoise-violin-42');
     await page.getByRole('button', { name: 'Log in' }).click();
 
     const resendButton = page.getByRole('button', { name: 'Resend verification email' });

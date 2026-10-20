@@ -44,7 +44,7 @@ test.describe('account page', () => {
     );
 
     await page.goto('/account');
-    await page.locator('#deletionPassword').fill('password123');
+    await page.locator('#deletionPassword').fill('tortoise-violin-42');
     await page.getByRole('button', { name: 'Delete my account' }).click();
 
     await expect(page.getByText('We sent a confirmation link to')).toBeVisible();

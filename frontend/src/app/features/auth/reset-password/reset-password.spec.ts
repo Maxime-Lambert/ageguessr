@@ -26,11 +26,14 @@ describe('ResetPassword', () => {
 
   it('sets the new password with the token from the link', async () => {
     const component = await create('the-token');
-    component.form.setValue({ newPassword: 'new-password', confirmPassword: 'new-password' });
+    component.form.setValue({
+      newPassword: 'new-tortoise-violin',
+      confirmPassword: 'new-tortoise-violin',
+    });
 
     component.submit();
     const req = httpMock.expectOne('/api/auth/reset-password');
-    expect(req.request.body).toEqual({ token: 'the-token', newPassword: 'new-password' });
+    expect(req.request.body).toEqual({ token: 'the-token', newPassword: 'new-tortoise-violin' });
     req.flush(null);
 
     expect(component.status()).toBe('success');
@@ -38,7 +41,10 @@ describe('ResetPassword', () => {
 
   it('rejects mismatched passwords without calling the API', async () => {
     const component = await create('the-token');
-    component.form.setValue({ newPassword: 'new-password', confirmPassword: 'other-password' });
+    component.form.setValue({
+      newPassword: 'new-tortoise-violin',
+      confirmPassword: 'other-tortoise-violin',
+    });
 
     component.submit();
 
@@ -48,7 +54,10 @@ describe('ResetPassword', () => {
 
   it('shows the invalid-link state on 404', async () => {
     const component = await create('expired');
-    component.form.setValue({ newPassword: 'new-password', confirmPassword: 'new-password' });
+    component.form.setValue({
+      newPassword: 'new-tortoise-violin',
+      confirmPassword: 'new-tortoise-violin',
+    });
 
     component.submit();
     httpMock
@@ -58,6 +67,22 @@ describe('ResetPassword', () => {
     expect(component.status()).toBe('invalid-link');
   });
 
+  it('shows a refused password under the field and stays on the form', async () => {
+    const component = await create('the-token');
+    component.form.setValue({ newPassword: 'qwerty123456', confirmPassword: 'qwerty123456' });
+
+    component.submit();
+    httpMock
+      .expectOne('/api/auth/reset-password')
+      .flush(
+        { errorCode: 'PASSWORD_TOO_COMMON', message: 'too common' },
+        { status: 400, statusText: 'Bad Request' },
+      );
+
+    expect(component.passwordRefusal()).toContain('too common');
+    expect(component.status()).toBe('form');
+    expect(component.errorMessage()).toBeNull();
+  });
   it('shows the invalid-link state straight away without a token', async () => {
     const component = await create(null);
 

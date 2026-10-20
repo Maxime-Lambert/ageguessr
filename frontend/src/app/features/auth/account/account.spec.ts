@@ -65,9 +65,9 @@ describe('Account', () => {
 
   it('changes the password', () => {
     component.passwordForm.setValue({
-      currentPassword: 'old-password',
-      newPassword: 'new-password',
-      confirmPassword: 'new-password',
+      currentPassword: 'old-tortoise-violin',
+      newPassword: 'new-tortoise-violin',
+      confirmPassword: 'new-tortoise-violin',
     });
 
     component.changePassword();
@@ -80,8 +80,8 @@ describe('Account', () => {
   it('explains a wrong current password, lockout included', () => {
     component.passwordForm.setValue({
       currentPassword: 'wrong',
-      newPassword: 'new-password',
-      confirmPassword: 'new-password',
+      newPassword: 'new-tortoise-violin',
+      confirmPassword: 'new-tortoise-violin',
     });
 
     component.changePassword();
@@ -91,10 +91,29 @@ describe('Account', () => {
     expect(component.passwordError()).toContain('locked');
   });
 
+  it('shows a refused new password under the field', () => {
+    component.passwordForm.setValue({
+      currentPassword: 'old-tortoise-violin',
+      newPassword: 'my-Player-password',
+      confirmPassword: 'my-Player-password',
+    });
+
+    component.changePassword();
+    httpMock
+      .expectOne('/api/auth/me/password')
+      .flush(
+        { errorCode: 'PASSWORD_CONTAINS_PERSONAL_INFO', message: 'personal' },
+        { status: 400, statusText: 'Bad Request' },
+      );
+
+    expect(component.passwordRefusal()).toContain('username or email');
+    expect(component.passwordError()).toBeNull();
+  });
+
   it('rejects mismatched new passwords without calling the API', () => {
     component.passwordForm.setValue({
-      currentPassword: 'old-password',
-      newPassword: 'new-password',
+      currentPassword: 'old-tortoise-violin',
+      newPassword: 'new-tortoise-violin',
       confirmPassword: 'different',
     });
 
@@ -104,7 +123,7 @@ describe('Account', () => {
   });
 
   it('a deletion request only sends the confirmation email and keeps the user logged in', () => {
-    component.deletionForm.setValue({ password: 'password123' });
+    component.deletionForm.setValue({ password: 'tortoise-violin-42' });
 
     component.requestDeletion();
     httpMock

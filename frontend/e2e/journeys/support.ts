@@ -21,7 +21,7 @@ export function uniqueAccount(prefix: string) {
   return {
     email: `${prefix}-${id}@x.com`,
     username: `${prefix.slice(0, 4)}${id}`.slice(0, 20),
-    password: 'password123',
+    password: 'tortoise-violin-42',
   };
 }
 

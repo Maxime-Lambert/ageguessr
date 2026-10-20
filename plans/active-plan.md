@@ -143,14 +143,14 @@ Terminée le 2026-10-20. `./mvnw test` : 156 tests, 0 échec (133 avant).
   les tests unitaires.
 
 ## Phase 2 : Frontend
-Status: Not started
+Status: Complete
 
-- [ ] `password-rules.ts` : `minLength(12)` ; `PASSWORD_HINT`, et messages pour
+- [x] `password-rules.ts` : `minLength(12)` ; `PASSWORD_HINT`, et messages pour
       `PASSWORD_TOO_COMMON` et `PASSWORD_CONTAINS_PERSONAL_INFO`
-- [ ] `register`, `reset-password`, `account` (changement de mot de passe) : indice mis à
+- [x] `register`, `reset-password`, `account` (changement de mot de passe) : indice mis à
       jour, message précis sous le champ pour les deux codes d'erreur (comme
       `USERNAME_TAKEN`), effacé à la saisie
-- [ ] Mots de passe des specs Vitest, Playwright `e2e/component` et `e2e/journeys`
+- [x] Mots de passe des specs Vitest, Playwright `e2e/component` et `e2e/journeys`
       (`support.ts`) passés à ≥ 12 caractères hors liste
 
 **Tests**
@@ -167,7 +167,22 @@ Status: Not started
   `pnpm test:e2e:journeys` → 4 verts
 
 ### Phase Summary
-_(à écrire une fois la phase terminée)_
+Terminée le 2026-10-20.
+- `pnpm test` : 85 tests verts (77 avant). Playwright interface : 27 verts. Les 4
+  parcours complets passent en local.
+- Essai direct sur le backend local :
+  - `qwerty123456` → `PASSWORD_TOO_COMMON` ;
+  - `elevenchars` → `VALIDATION_ERROR` ;
+  - mot de passe contenant le pseudo → `PASSWORD_CONTAINS_PERSONAL_INFO` ;
+  - `tortoise-violin-42` → 201.
+- Ajouts au-delà du plan :
+  - l'indice passe en rouge si le champ est quitté avec moins de 12 caractères ;
+  - `autocomplete="new-password"` sur le mot de passe de l'inscription, pour que les
+    gestionnaires de mots de passe proposent d'en générer un.
+- Attention : la PR #9 (curseur des boutons), encore ouverte, ajoute un test Playwright
+  avec `password123`. La nouvelle règle bloque désormais ce mot de passe côté
+  formulaire, donc ce test devra être corrigé quand l'une des deux branches sera
+  rebasée sur l'autre.
 
 ## Phase 3 : Relectures, PR
 Status: Not started

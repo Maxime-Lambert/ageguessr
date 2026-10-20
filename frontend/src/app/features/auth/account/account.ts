@@ -3,7 +3,12 @@ import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Auth } from '../auth';
 import { ApiErrorResponse, USERNAME_PATTERN } from '../models';
-import { NEW_PASSWORD_VALIDATORS, PASSWORD_TOO_LONG_MESSAGE } from '../password-rules';
+import {
+  NEW_PASSWORD_VALIDATORS,
+  PASSWORD_HINT,
+  PASSWORD_TOO_LONG_MESSAGE,
+  passwordRefusalMessage,
+} from '../password-rules';
 
 const WRONG_PASSWORD_MESSAGE =
   'Incorrect password. After too many attempts, your account is locked for 15 minutes.';
@@ -39,6 +44,8 @@ export class Account {
     confirmPassword: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
   });
   readonly passwordTooLongMessage = PASSWORD_TOO_LONG_MESSAGE;
+  readonly passwordHint = PASSWORD_HINT;
+  readonly passwordRefusal = signal<string | null>(null);
   readonly passwordStatus = signal<'idle' | 'saving' | 'saved'>('idle');
   readonly passwordError = signal<string | null>(null);
 
@@ -84,6 +91,7 @@ export class Account {
 
     this.passwordStatus.set('saving');
     this.passwordError.set(null);
+    this.passwordRefusal.set(null);
     this.auth.changePassword(currentPassword, newPassword).subscribe({
       next: () => {
         this.passwordStatus.set('saved');
@@ -91,6 +99,11 @@ export class Account {
       },
       error: (error: HttpErrorResponse) => {
         this.passwordStatus.set('idle');
+        const refusal = passwordRefusalMessage(error);
+        if (refusal) {
+          this.passwordRefusal.set(refusal);
+          return;
+        }
         this.passwordError.set(
           isWrongPassword(error) ? WRONG_PASSWORD_MESSAGE : GENERIC_ERROR_MESSAGE,
         );

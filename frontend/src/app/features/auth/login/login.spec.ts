@@ -38,7 +38,7 @@ describe('Login', () => {
   });
 
   it('offers to resend the verification email on EMAIL_NOT_VERIFIED', () => {
-    fillForm('unverified@x.com', 'password123');
+    fillForm('unverified@x.com', 'tortoise-violin-42');
 
     component.submit();
 
@@ -79,7 +79,7 @@ describe('Login return URL', () => {
     const component = TestBed.createComponent(Login).componentInstance;
     const httpMock = TestBed.inject(HttpTestingController);
 
-    component.form.setValue({ email: 'user@x.com', password: 'password123' });
+    component.form.setValue({ email: 'user@x.com', password: 'tortoise-violin-42' });
     component.submit();
     httpMock.expectOne('/api/auth/login').flush({ accessToken: 'token' });
     httpMock
