@@ -48,6 +48,16 @@
   --color-danger: #b23a2e;
 }
 
+/* Tailwind v4 a retire le curseur "main" des boutons (retour au comportement natif du
+   navigateur) : on le remet pour tout element cliquable non desactive. */
+@layer base {
+  button:not(:disabled),
+  input:is([type='button'], [type='reset'], [type='submit']):not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
 body {
   font-family: var(--font-sans);
   background-color: var(--color-background);
