@@ -169,6 +169,57 @@ d'entrée.
 **Raison** : complexité d'intégration OAuth non justifiée au stade MVP. À ajouter
 (Google, autres) post-lancement si la demande existe.
 
+### Pseudo public, connexion par email
+**Décision** : chaque compte a un pseudo (3 à 20 caractères `[A-Za-z0-9_-]`, unique sans
+tenir compte de la casse, casse d'affichage conservée), choisi à l'inscription et
+modifiable. La connexion reste par email uniquement.
+
+**Raison** : le pseudo est ce que voient les amis et les classements ; l'email ne doit
+jamais être affiché. Le pseudo est public, donc s'en servir comme identifiant de
+connexion faciliterait le brute-force ciblé. Il n'est pas mis dans le JWT : modifiable,
+il y serait périmé pendant jusqu'à une heure.
+
+### Récupération du compte et actions sensibles
+**Décision** : l'email est la racine de confiance du compte (il n'est pas modifiable
+pour l'instant). Les actions sensibles passent par des liens à usage unique envoyés par
+email (table `account_tokens`, colonne `purpose`, seul le hash SHA-256 est stocké) :
+- **mot de passe oublié** : lien valable 1 h ; la réponse est identique que le compte
+  existe ou non. Le reset révoque toutes les sessions, lève le verrouillage et marque
+  l'email comme vérifié (suivre le lien prouve l'accès à la boîte) ;
+- **notification après chaque changement de mot de passe** : contient un lien « Secure
+  your account » (un reset valable 24 h). Un changement de mot de passe n'invalide pas
+  les liens de reset en cours, sinon un intrus qui change le mot de passe deux fois
+  tuerait le lien de récupération du propriétaire ;
+- **changement de mot de passe** : exige le mot de passe actuel, garde la session
+  courante et révoque les autres ;
+- **suppression de compte** : exige le mot de passe **et** la confirmation d'un lien
+  email (1 h). Un intrus qui n'a que le mot de passe ne peut pas faire l'irréversible.
+  La page de confirmation demande un clic explicite : les scanners de liens des
+  messageries ouvrent les liens des mails.
+
+La re-saisie du mot de passe (changement, suppression) compte dans le même verrouillage
+que la connexion (`AccountLockout`) : une session volée ne doit pas permettre de deviner
+le mot de passe sans limite. Pour la même raison, ces handlers ne sont pas
+`@Transactional` (une transaction annulerait l'échec enregistré juste avant l'exception).
+
+**Limite connue** : l'existence d'un email reste déductible via l'inscription (409
+`EMAIL_TAKEN`), choix antérieur conservé pour l'ergonomie ; le délai d'envoi d'un mail
+sur « mot de passe oublié » n'ajoute donc pas de fuite. Un attaquant qui contrôle la
+boîte mail contrôle le compte : seule une double authentification (TOTP, dans la
+roadmap) protégerait de ce cas.
+
+**Règle pour le futur changement d'email** : confirmation sur la nouvelle adresse **et**
+notification à l'ancienne avec un lien d'annulation valable plusieurs jours. Sans ça, un
+vol de compte devient définitif (l'intrus remplace l'email, le propriétaire ne peut plus
+rien récupérer).
+
+### Suppression des données (RGPD)
+**Décision** : la suppression d'un compte est physique (`DELETE` de la ligne `users`).
+**Toute table qui référence un utilisateur doit être en `ON DELETE CASCADE`** (ou, si
+une donnée doit survivre pour d'autres joueurs, anonymisée explicitement), pour que ce
+seul `DELETE` suffise au droit à l'effacement. Vérifié par
+`CascadeDeleteIntegrationTest`, à étendre à chaque nouvelle table de ce type.
+
 ---
 
 ## Domaine du jeu

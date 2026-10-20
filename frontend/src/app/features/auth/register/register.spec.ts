@@ -24,8 +24,8 @@ describe('Register', () => {
     fixture.detectChanges();
   });
 
-  function fillForm(email: string, password: string, confirmPassword: string) {
-    component.form.setValue({ email, password, confirmPassword });
+  function fillForm(email: string, password: string, confirmPassword: string, username = 'Player') {
+    component.form.setValue({ email, username, password, confirmPassword });
   }
 
   it('shows an error when the passwords do not match', () => {
@@ -43,7 +43,13 @@ describe('Register', () => {
 
     component.submit();
 
-    httpMock.expectOne('/api/auth/register').flush({ userId: '1', email: 'user@x.com' });
+    const req = httpMock.expectOne('/api/auth/register');
+    expect(req.request.body).toEqual({
+      email: 'user@x.com',
+      username: 'Player',
+      password: 'password123',
+    });
+    req.flush({ userId: '1', email: 'user@x.com', username: 'Player' });
 
     expect(navigateSpy).toHaveBeenCalledWith(['/check-email'], {
       queryParams: { email: 'user@x.com' },
@@ -59,4 +65,31 @@ describe('Register', () => {
 
     expect(component.errorMessage()).toBe('An account with this email already exists.');
   });
+
+  it('flags the username field on USERNAME_TAKEN instead of the generic message', () => {
+    fillForm('user@x.com', 'password123', 'password123', 'Taken');
+
+    component.submit();
+
+    httpMock
+      .expectOne('/api/auth/register')
+      .flush(
+        { errorCode: 'USERNAME_TAKEN', message: 'taken' },
+        { status: 409, statusText: 'Conflict' },
+      );
+
+    expect(component.usernameTaken()).toBe(true);
+    expect(component.errorMessage()).toBeNull();
+  });
+
+  it.each(['ab', 'with space', 'at@sign', 'a'.repeat(21)])(
+    'does not submit an invalid username (%s)',
+    (username) => {
+      fillForm('user@x.com', 'password123', 'password123', username);
+
+      component.submit();
+
+      httpMock.expectNone('/api/auth/register');
+    },
+  );
 });

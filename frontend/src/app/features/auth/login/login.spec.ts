@@ -1,7 +1,8 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
+import { vi } from 'vitest';
 import { Login } from './login';
 
 describe('Login', () => {
@@ -55,4 +56,51 @@ describe('Login', () => {
 
     expect(component.resendSent()).toBe(true);
   });
+});
+
+describe('Login return URL', () => {
+  async function loginWith(returnUrl: string | null): Promise<string> {
+    TestBed.resetTestingModule();
+    await TestBed.configureTestingModule({
+      imports: [Login],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: { queryParamMap: convertToParamMap(returnUrl ? { returnUrl } : {}) },
+          },
+        },
+      ],
+    }).compileComponents();
+    const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
+    const component = TestBed.createComponent(Login).componentInstance;
+    const httpMock = TestBed.inject(HttpTestingController);
+
+    component.form.setValue({ email: 'user@x.com', password: 'password123' });
+    component.submit();
+    httpMock.expectOne('/api/auth/login').flush({ accessToken: 'token' });
+    httpMock
+      .expectOne('/api/auth/me')
+      .flush({ id: '1', email: 'user@x.com', username: 'Player', emailVerified: true });
+
+    return navigateSpy.mock.calls[0][0] as string;
+  }
+
+  it('goes back to the page that required logging in', async () => {
+    expect(await loginWith('/account')).toBe('/account');
+  });
+
+  it('goes home without a return URL', async () => {
+    expect(await loginWith(null)).toBe('/');
+  });
+
+  it.each(['//evil.com', '/\\evil.com', 'https://evil.com'])(
+    'never redirects off-site (%s)',
+    async (returnUrl) => {
+      expect(await loginWith(returnUrl)).toBe('/');
+    },
+  );
 });

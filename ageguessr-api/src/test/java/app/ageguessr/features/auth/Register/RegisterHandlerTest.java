@@ -39,6 +39,7 @@ class RegisterHandlerTest {
     @Test
     void hashesThePasswordAndPersistsAnUnverifiedUser() {
         when(userRepository.existsByEmailIgnoreCase("new@x.com")).thenReturn(false);
+        when(userRepository.existsByUsernameIgnoreCase("NewPlayer")).thenReturn(false);
         when(passwordEncoder.encode("password123")).thenReturn("hashed-password");
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
             User user = invocation.getArgument(0);
@@ -48,16 +49,18 @@ class RegisterHandlerTest {
 
         RegisterHandler handler =
                 new RegisterHandler(userRepository, passwordEncoder, emailVerificationService, FIXED_CLOCK);
-        RegisterResponse response = handler.handle(new RegisterCommand("new@x.com", "password123"));
+        RegisterResponse response = handler.handle(new RegisterCommand("new@x.com", "NewPlayer", "password123"));
 
         ArgumentCaptor<User> savedUser = ArgumentCaptor.forClass(User.class);
         verify(userRepository).save(savedUser.capture());
         assertThat(savedUser.getValue().getEmail()).isEqualTo("new@x.com");
+        assertThat(savedUser.getValue().getUsername()).isEqualTo("NewPlayer");
         assertThat(savedUser.getValue().getPasswordHash()).isEqualTo("hashed-password");
         assertThat(savedUser.getValue().isEmailVerified()).isFalse();
         assertThat(savedUser.getValue().getCreatedAt()).isEqualTo(FIXED_CLOCK.instant());
 
         assertThat(response.email()).isEqualTo("new@x.com");
+        assertThat(response.username()).isEqualTo("NewPlayer");
         verify(emailVerificationService).issueAndSend(savedUser.getValue());
     }
 
@@ -68,10 +71,41 @@ class RegisterHandlerTest {
         RegisterHandler handler =
                 new RegisterHandler(userRepository, passwordEncoder, emailVerificationService, FIXED_CLOCK);
 
-        assertThatThrownBy(() -> handler.handle(new RegisterCommand("taken@x.com", "password123")))
-                .isInstanceOf(ConflictException.class);
+        assertThatThrownBy(() -> handler.handle(new RegisterCommand("taken@x.com", "AnyName", "password123")))
+                .isInstanceOf(ConflictException.class)
+                .extracting("errorCode")
+                .isEqualTo("EMAIL_TAKEN");
 
         verify(userRepository, never()).save(any());
         verify(emailVerificationService, never()).issueAndSend(any());
+    }
+
+    @Test
+    void rejectsADuplicateUsernameWithoutSendingAnyEmail() {
+        when(userRepository.existsByEmailIgnoreCase("new@x.com")).thenReturn(false);
+        when(userRepository.existsByUsernameIgnoreCase("Taken")).thenReturn(true);
+
+        RegisterHandler handler =
+                new RegisterHandler(userRepository, passwordEncoder, emailVerificationService, FIXED_CLOCK);
+
+        assertThatThrownBy(() -> handler.handle(new RegisterCommand("new@x.com", "Taken", "password123")))
+                .isInstanceOf(ConflictException.class)
+                .extracting("errorCode")
+                .isEqualTo("USERNAME_TAKEN");
+
+        verify(userRepository, never()).save(any());
+        verify(emailVerificationService, never()).issueAndSend(any());
+    }
+
+    @Test
+    void reportsTheEmailConflictFirstWhenBothAreTaken() {
+        when(userRepository.existsByEmailIgnoreCase("taken@x.com")).thenReturn(true);
+
+        RegisterHandler handler =
+                new RegisterHandler(userRepository, passwordEncoder, emailVerificationService, FIXED_CLOCK);
+
+        assertThatThrownBy(() -> handler.handle(new RegisterCommand("taken@x.com", "Taken", "password123")))
+                .extracting("errorCode")
+                .isEqualTo("EMAIL_TAKEN");
     }
 }

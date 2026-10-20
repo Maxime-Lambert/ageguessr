@@ -9,6 +9,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import app.ageguessr.features.auth.AccountLockout;
 import app.ageguessr.features.auth.AuthTokenService;
 import app.ageguessr.features.auth.TokenPair;
 import app.ageguessr.features.auth.User;
@@ -47,7 +48,8 @@ class LoginHandlerTest {
     @BeforeEach
     void setUp() {
         when(passwordEncoder.encode(anyString())).thenReturn(DUMMY_HASH);
-        handler = new LoginHandler(userRepository, passwordEncoder, authTokenService, FIXED_CLOCK, 5, 15);
+        handler = new LoginHandler(
+                userRepository, passwordEncoder, authTokenService, new AccountLockout(userRepository, FIXED_CLOCK, 5, 15));
     }
 
     @Test

@@ -23,4 +23,18 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, UUID
             WHERE t.userId = :userId AND t.revokedAt IS NULL
             """)
     void revokeAllActiveForUser(@Param("userId") UUID userId, @Param("revokedAt") Instant revokedAt);
+
+    /** Logs out every other device: the session that made the change keeps working. */
+    @Transactional
+    @Modifying
+    @Query(
+            """
+            UPDATE RefreshToken t
+            SET t.revokedAt = :revokedAt
+            WHERE t.userId = :userId AND t.revokedAt IS NULL AND t.tokenHash <> :keptTokenHash
+            """)
+    void revokeAllActiveForUserExcept(
+            @Param("userId") UUID userId,
+            @Param("keptTokenHash") String keptTokenHash,
+            @Param("revokedAt") Instant revokedAt);
 }

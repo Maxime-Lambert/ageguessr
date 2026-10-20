@@ -3,6 +3,9 @@ package app.ageguessr.integration.auth;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import app.ageguessr.TestcontainersConfiguration;
+import app.ageguessr.features.auth.AccountToken;
+import app.ageguessr.features.auth.AccountTokenPurpose;
+import app.ageguessr.features.auth.AccountTokenRepository;
 import app.ageguessr.features.auth.EmailVerificationToken;
 import app.ageguessr.features.auth.EmailVerificationTokenRepository;
 import app.ageguessr.features.auth.RefreshToken;
@@ -19,7 +22,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Verifies the ON DELETE CASCADE foreign keys from V1__create_auth_tables.sql — a
+ * Verifies the ON DELETE CASCADE foreign keys from V1__create_auth_tables.sql (and V2's
+ * account_tokens) — a
  * real database behavior, not something a mocked repository could exercise.
  */
 @SpringBootTest
@@ -37,13 +41,17 @@ class CascadeDeleteIntegrationTest {
     private EmailVerificationTokenRepository emailVerificationTokenRepository;
 
     @Autowired
+    private AccountTokenRepository accountTokenRepository;
+
+    @Autowired
     private EntityManager entityManager;
 
     @Test
-    void deletingAUserCascadesToItsRefreshAndVerificationTokens() {
+    void deletingAUserCascadesToItsRefreshVerificationAndAccountTokens() {
         User user = userRepository.saveAndFlush(
                 User.builder()
                         .email("cascade@x.com")
+                        .username("cascade")
                         .passwordHash("hash")
                         .createdAt(Instant.now())
                         .build());
@@ -64,6 +72,15 @@ class CascadeDeleteIntegrationTest {
                         .createdAt(Instant.now())
                         .build());
 
+        AccountToken accountToken = accountTokenRepository.saveAndFlush(
+                AccountToken.builder()
+                        .userId(user.getId())
+                        .purpose(AccountTokenPurpose.ACCOUNT_DELETION)
+                        .tokenHash("account-hash")
+                        .expiresAt(Instant.now().plus(1, ChronoUnit.HOURS))
+                        .createdAt(Instant.now())
+                        .build());
+
         userRepository.delete(user);
         userRepository.flush();
         // The cascade delete happens at the database level (ON DELETE CASCADE), not
@@ -75,6 +92,7 @@ class CascadeDeleteIntegrationTest {
 
         assertThat(refreshTokenRepository.findById(refreshToken.getId())).isEmpty();
         assertThat(emailVerificationTokenRepository.findById(verificationToken.getId())).isEmpty();
+        assertThat(accountTokenRepository.findById(accountToken.getId())).isEmpty();
     }
 
     @Test
@@ -82,6 +100,7 @@ class CascadeDeleteIntegrationTest {
         User user = userRepository.saveAndFlush(
                 User.builder()
                         .email("no-tokens@x.com")
+                        .username("no-tokens")
                         .passwordHash("hash")
                         .createdAt(Instant.now())
                         .build());
@@ -97,6 +116,7 @@ class CascadeDeleteIntegrationTest {
         User survivor = userRepository.saveAndFlush(
                 User.builder()
                         .email("survivor@x.com")
+                        .username("survivor")
                         .passwordHash("hash")
                         .createdAt(Instant.now())
                         .build());
@@ -111,6 +131,7 @@ class CascadeDeleteIntegrationTest {
         User deleted = userRepository.saveAndFlush(
                 User.builder()
                         .email("deleted@x.com")
+                        .username("deleted")
                         .passwordHash("hash")
                         .createdAt(Instant.now())
                         .build());

@@ -15,10 +15,10 @@ la suivante).
 - [ ] Logo/wordmark Ageguessr + favicon
 - [ ] Mentions légales + CGU minimales (audience internationale — juridiction à
       clarifier, avant toute ouverture publique même en beta)
-- [ ] CI/CD GitHub Actions → déploiement automatique sur le VPS — en cours (PR #2,
-      bloquée par la bascule du VPS sur la passerelle partagée, voir `plans/active-plan.md`)
-- [ ] Structure de base du Caddyfile pour l'app réelle (domaine `ageguessr.app`) — en
-      cours (PR #2)
+- [x] CI/CD GitHub Actions → déploiement automatique sur le VPS (images buildées en CI,
+      poussées sur GHCR) — PR #2, #4, release #5 ; en ligne sur https://ageguessr.app
+- [x] Structure de base du Caddyfile pour l'app réelle (domaine `ageguessr.app`,
+      passerelle Caddy partagée du VPS) — PR #2
 
 ## Semaine 2 — Données du jeu
 - [ ] Client Wikidata (recherche par notoriété/sitelinks, extraction date de naissance
@@ -48,8 +48,11 @@ la suivante).
 - [ ] Page d'accueil publique
 
 ## Semaine 5 — Compte utilisateur + historique
-- [ ] Inscription/connexion (frontend)
-- [ ] Page profil
+- [x] Inscription/connexion (frontend) + navigation (en-tête invité/connecté) — PR
+      `feature/auth-completion`
+- [x] Pseudo public unique et modifiable, mot de passe oublié, page compte (pseudo, mot
+      de passe), suppression de compte confirmée par email — PR `feature/auth-completion`
+- [ ] Page profil (statistiques, historique visible)
 - [ ] Historique des parties passées (score, streak quotidien)
 
 ## Semaine 6 — Amis
@@ -60,8 +63,10 @@ la suivante).
 
 ## Semaine 7 — Polish
 - [ ] SEO (meta tags, sitemap, Angular SSR si pertinent pour le référencement)
-- [ ] RGPD / conformité internationale (bannière cookies si besoin, suppression de
-      compte — mentions légales/CGU déjà livrées en Semaine 1)
+- [ ] RGPD / conformité internationale (bannière cookies si besoin, export des données —
+      suppression de compte déjà livrée en Semaine 5, mentions légales/CGU en Semaine 1)
+- [ ] Double authentification (TOTP), seule protection si la boîte mail d'un joueur est
+      compromise (voir `docs/decisions/architecture.md`, « Récupération du compte »)
 - [ ] Partage de résultat façon Wordle (grille/emoji, pas de compte requis)
 
 ## Semaine 8 — Stabilisation et déploiement
