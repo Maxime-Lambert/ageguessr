@@ -1,6 +1,6 @@
 package app.ageguessr.features.auth.ResetPassword;
 
+import app.ageguessr.shared.validation.Password;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 
-public record ResetPasswordCommand(@NotBlank String token, @NotBlank @Size(min = 8) String newPassword) {}
+public record ResetPasswordCommand(@NotBlank String token, @Password String newPassword) {}

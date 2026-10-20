@@ -67,7 +67,11 @@
           autocomplete="new-password"
           class="border-border bg-background mt-1 w-full rounded-md border px-3 py-2"
         />
-        <p class="text-muted mt-1 text-sm">At least 8 characters.</p>
+        @if (passwordForm.controls.newPassword.hasError('maxUtf8Bytes')) {
+          <p class="text-danger mt-1 text-sm">{{ passwordTooLongMessage }}</p>
+        } @else {
+          <p class="text-muted mt-1 text-sm">At least 8 characters.</p>
+        }
       </div>
       <div>
         <label for="confirmNewPassword" class="text-sm font-medium">Confirm new password</label>

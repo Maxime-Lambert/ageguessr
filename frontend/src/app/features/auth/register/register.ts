@@ -4,6 +4,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router, RouterLink } from '@angular/router';
 import { Auth } from '../auth';
 import { ApiErrorResponse, USERNAME_PATTERN } from '../models';
+import { NEW_PASSWORD_VALIDATORS, PASSWORD_TOO_LONG_MESSAGE } from '../password-rules';
 
 @Component({
   imports: [ReactiveFormsModule, RouterLink],
@@ -23,16 +24,14 @@ export class Register {
       nonNullable: true,
       validators: [Validators.required, Validators.pattern(USERNAME_PATTERN)],
     }),
-    password: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required, Validators.minLength(8)],
-    }),
+    password: new FormControl('', { nonNullable: true, validators: NEW_PASSWORD_VALIDATORS }),
     confirmPassword: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
   });
 
   readonly submitting = signal(false);
   readonly errorMessage = signal<string | null>(null);
   readonly usernameTaken = signal(false);
+  readonly passwordTooLongMessage = PASSWORD_TOO_LONG_MESSAGE;
 
   submit(): void {
     if (this.form.invalid) {

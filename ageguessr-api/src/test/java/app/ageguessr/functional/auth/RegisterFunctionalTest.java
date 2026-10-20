@@ -127,5 +127,31 @@ class RegisterFunctionalTest {
                 .andExpect(status().isCreated());
     }
 
+    @ParameterizedTest
+    // bcrypt's limit is 72 *bytes*: 73 ASCII chars, 40 "é" (80 bytes) or 20 emoji (80
+    // bytes) used to reach the encoder and crash it into a 500.
+    @ValueSource(strings = {
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "éééééééééééééééééééééééééééééééééééééééé",
+        "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀"
+    })
+    void rejectsAPasswordLongerThanBcryptsByteLimitWithABadRequest(String password) throws Exception {
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new RegisterPayload(
+                                "long-" + UUID.randomUUID() + "@x.com", AuthFlows.randomUsername(), password))))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorCode").value("VALIDATION_ERROR"));
+    }
+
+    @Test
+    void acceptsAPasswordOfExactlyBcryptsByteLimit() throws Exception {
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new RegisterPayload(
+                                "max-" + UUID.randomUUID() + "@x.com", AuthFlows.randomUsername(), "a".repeat(72)))))
+                .andExpect(status().isCreated());
+    }
+
     private record RegisterPayload(String email, String username, String password) {}
 }

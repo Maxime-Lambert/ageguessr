@@ -339,8 +339,26 @@ fichiers peut échouer en masse pendant la compilation à froid de `ng serve` (r
 ## Phase 5 : Relectures, PR, vérification en prod
 Status: Not started
 
-- [ ] `code-reviewer` + `architecture-reviewer` sur le diff, corrections appliquées
-- [ ] `docs/roadmap.md` : cocher « Inscription/connexion (frontend) » et noter pseudo /
+- [x] `code-reviewer` + `architecture-reviewer` sur le diff, corrections appliquées
+      (2026-10-20) :
+  - **Bug antérieur trouvé (en prod aujourd'hui)** : `BCryptPasswordEncoder` lève une
+    exception au-delà de 72 **octets** → inscription avec un mot de passe de 73
+    caractères, ou 40 « é », ou 20 emoji = **500**. Corrigé : contrainte partagée
+    `shared/validation/Password` (`@NotBlank @Size(min=8) @MaxUtf8Bytes(72)`) sur
+    register / reset / change, miroir front (`features/auth/password-rules.ts`). Tests
+    fonctionnels de non-régression vérifiés en retirant la borne (→ 500).
+  - CORS : `PATCH` ajouté aux méthodes autorisées (utilisé par change-username).
+  - Reset : le mail de notification part **après** le commit (`TransactionTemplate`),
+    plus d'appel réseau Resend dans la transaction.
+  - `AccountEmailsTest` (contenu, liens et durées des 3 mails) ; `submitting` remis à
+    `false` sur forgot-password.
+  - **Reportés** (non bloquants, à planifier) : délai de réponse de forgot-password
+    (compte existant = envoi de mail, plus lent ; sans effet tant que register révèle
+    l'email en 409, voir `architecture.md`) ; job de nettoyage des tokens
+    expirés/consommés (`account_tokens`, `refresh_tokens`, `email_verification_tokens`) ;
+    fusion d'`email_verification_tokens` dans `account_tokens` à la prochaine migration
+    de cette table.
+- [x] `docs/roadmap.md` : cocher « Inscription/connexion (frontend) » et noter pseudo /
       reset / compte / suppression ; ajouter une ligne « Double authentification (TOTP) »
 - [ ] PR `feature/auth-completion` → `develop`, puis release `develop` → `main`
       (**merge commit**, merge par l'utilisateur)

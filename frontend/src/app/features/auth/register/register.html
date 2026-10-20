@@ -46,6 +46,11 @@
           formControlName="password"
           class="border-border bg-background mt-1 w-full rounded-md border px-3 py-2"
         />
+        @if (form.controls.password.hasError('maxUtf8Bytes')) {
+          <p class="text-danger mt-1 text-sm">{{ passwordTooLongMessage }}</p>
+        } @else {
+          <p class="text-muted mt-1 text-sm">At least 8 characters.</p>
+        }
       </div>
 
       <div>

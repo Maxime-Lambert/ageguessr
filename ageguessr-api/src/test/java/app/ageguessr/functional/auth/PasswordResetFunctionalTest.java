@@ -109,6 +109,11 @@ class PasswordResetFunctionalTest {
         resetPassword("whatever", "short").andExpect(status().isBadRequest());
     }
 
+    @Test
+    void aNewPasswordOverBcryptsByteLimitIsABadRequestNotACrash() throws Exception {
+        resetPassword("whatever", "é".repeat(40)).andExpect(status().isBadRequest());
+    }
+
     private ResultActions forgotPassword(String email) throws Exception {
         return mockMvc.perform(post("/api/auth/forgot-password")
                 .contentType(MediaType.APPLICATION_JSON)

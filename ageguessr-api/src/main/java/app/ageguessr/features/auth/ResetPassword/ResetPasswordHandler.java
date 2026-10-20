@@ -13,12 +13,16 @@ import java.time.Instant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 /**
  * Recovery path, including after an account takeover: the new password takes effect,
  * every session is revoked (an intruder's included), the lockout is lifted and the
  * email counts as verified, since following the link proved access to the inbox.
+ *
+ * The database work commits as one unit; the notification email is sent only after,
+ * so a slow or failing email provider never holds the transaction (and its row locks)
+ * open, nor rolls back a reset that already succeeded.
  */
 @Service
 @RequiredArgsConstructor
@@ -31,10 +35,15 @@ public class ResetPasswordHandler {
     private final PasswordEncoder passwordEncoder;
     private final AccountLockout accountLockout;
     private final AccountEmails accountEmails;
+    private final TransactionTemplate transactionTemplate;
     private final Clock clock;
 
-    @Transactional
     public void handle(ResetPasswordCommand command) {
+        User user = transactionTemplate.execute(status -> resetInDatabase(command));
+        accountEmails.sendPasswordChanged(user);
+    }
+
+    private User resetInDatabase(ResetPasswordCommand command) {
         User user = accountTokenService.redeem(command.token(), AccountTokenPurpose.PASSWORD_RESET);
         Instant now = clock.instant();
 
@@ -46,7 +55,6 @@ public class ResetPasswordHandler {
         // Any other reset link still in an inbox would let its holder undo this reset.
         accountTokenRepository.consumeAllActiveForUser(user.getId(), AccountTokenPurpose.PASSWORD_RESET, now);
         refreshTokenRepository.revokeAllActiveForUser(user.getId(), now);
-
-        accountEmails.sendPasswordChanged(user);
+        return user;
     }
 }

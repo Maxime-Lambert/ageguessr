@@ -3,6 +3,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Auth } from '../auth';
 import { ApiErrorResponse, USERNAME_PATTERN } from '../models';
+import { NEW_PASSWORD_VALIDATORS, PASSWORD_TOO_LONG_MESSAGE } from '../password-rules';
 
 const WRONG_PASSWORD_MESSAGE =
   'Incorrect password. After too many attempts, your account is locked for 15 minutes.';
@@ -34,12 +35,10 @@ export class Account {
 
   readonly passwordForm = new FormGroup({
     currentPassword: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    newPassword: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required, Validators.minLength(8)],
-    }),
+    newPassword: new FormControl('', { nonNullable: true, validators: NEW_PASSWORD_VALIDATORS }),
     confirmPassword: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
   });
+  readonly passwordTooLongMessage = PASSWORD_TOO_LONG_MESSAGE;
   readonly passwordStatus = signal<'idle' | 'saving' | 'saved'>('idle');
   readonly passwordError = signal<string | null>(null);
 

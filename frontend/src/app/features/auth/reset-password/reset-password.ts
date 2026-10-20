@@ -3,6 +3,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Auth } from '../auth';
+import { NEW_PASSWORD_VALIDATORS, PASSWORD_TOO_LONG_MESSAGE } from '../password-rules';
 
 type ResetStatus = 'form' | 'success' | 'invalid-link';
 
@@ -16,13 +17,11 @@ export class ResetPassword {
   private readonly token = inject(ActivatedRoute).snapshot.queryParamMap.get('token');
 
   readonly form = new FormGroup({
-    newPassword: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required, Validators.minLength(8)],
-    }),
+    newPassword: new FormControl('', { nonNullable: true, validators: NEW_PASSWORD_VALIDATORS }),
     confirmPassword: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
   });
 
+  readonly passwordTooLongMessage = PASSWORD_TOO_LONG_MESSAGE;
   readonly status = signal<ResetStatus>(this.token ? 'form' : 'invalid-link');
   readonly submitting = signal(false);
   readonly errorMessage = signal<string | null>(null);

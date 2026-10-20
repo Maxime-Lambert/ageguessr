@@ -26,6 +26,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.support.AbstractPlatformTransactionManager;
+import org.springframework.transaction.support.DefaultTransactionStatus;
+import org.springframework.transaction.support.TransactionTemplate;
 
 @ExtendWith(MockitoExtension.class)
 class ResetPasswordHandlerTest {
@@ -62,6 +66,9 @@ class ResetPasswordHandlerTest {
                 passwordEncoder,
                 new AccountLockout(userRepository, FIXED_CLOCK, 5, 15),
                 accountEmails,
+                // Runs the callback inline: the transaction boundary itself is exercised
+                // by PasswordResetFunctionalTest against a real database.
+                new TransactionTemplate(new PseudoTransactionManager()),
                 FIXED_CLOCK);
     }
 
@@ -101,5 +108,22 @@ class ResetPasswordHandlerTest {
         verify(userRepository, never()).save(any());
         verify(refreshTokenRepository, never()).revokeAllActiveForUser(any(), any());
         verify(accountEmails, never()).sendPasswordChanged(any());
+    }
+
+    /** Minimal no-op transaction manager, so TransactionTemplate can run without a database. */
+    private static final class PseudoTransactionManager extends AbstractPlatformTransactionManager {
+        @Override
+        protected Object doGetTransaction() {
+            return new Object();
+        }
+
+        @Override
+        protected void doBegin(Object transaction, TransactionDefinition definition) {}
+
+        @Override
+        protected void doCommit(DefaultTransactionStatus status) {}
+
+        @Override
+        protected void doRollback(DefaultTransactionStatus status) {}
     }
 }

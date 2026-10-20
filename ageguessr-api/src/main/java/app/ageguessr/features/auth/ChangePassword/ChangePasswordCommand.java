@@ -1,6 +1,6 @@
 package app.ageguessr.features.auth.ChangePassword;
 
+import app.ageguessr.shared.validation.Password;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 
-public record ChangePasswordCommand(@NotBlank String currentPassword, @NotBlank @Size(min = 8) String newPassword) {}
+public record ChangePasswordCommand(@NotBlank String currentPassword, @Password String newPassword) {}

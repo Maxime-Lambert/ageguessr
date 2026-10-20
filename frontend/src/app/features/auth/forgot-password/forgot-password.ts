@@ -33,7 +33,10 @@ export class ForgotPassword {
     this.submitting.set(true);
     this.errorMessage.set(null);
     this.auth.forgotPassword(email).subscribe({
-      next: () => this.sentTo.set(email),
+      next: () => {
+        this.submitting.set(false);
+        this.sentTo.set(email);
+      },
       error: (error: HttpErrorResponse) => {
         this.submitting.set(false);
         this.errorMessage.set(
