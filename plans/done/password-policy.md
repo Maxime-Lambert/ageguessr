@@ -200,7 +200,9 @@ Status: Complete
   a ses propres erreurs, donc un composant `<app-password-field>` ne se justifiera qu'au
   4e formulaire.
 - [x] `docs/roadmap.md` à jour
-- [ ] PR `feature/password-policy` → `develop` (merge par l'utilisateur)
+- [x] PR `feature/password-policy` → `develop` (#10), release `develop` → `main` (#11,
+      merge commit). Déployé le 2026-10-20 ; en prod, le JS servi affiche l'indice de 12
+      caractères et `qwerty123456` à l'inscription renvoie 400 `PASSWORD_TOO_COMMON`
 
 ### Verification Plan
 - CI de la PR verte

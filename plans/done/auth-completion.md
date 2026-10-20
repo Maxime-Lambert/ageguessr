@@ -375,7 +375,7 @@ Status: In progress
 
 ### Phase Summary
 Archivé le 2026-10-20 avec le test manuel en prod encore à faire par l'utilisateur
-(dernière case). Le chantier suivant (`plans/active-plan.md`, politique de mot de passe)
+(dernière case). Le chantier suivant (`plans/done/password-policy.md`, politique de mot de passe)
 a démarré entre-temps, à la demande de l'utilisateur.
 
 ## Edge cases à couvrir
