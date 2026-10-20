@@ -47,7 +47,7 @@ class RegisterHandlerTest {
     void hashesThePasswordAndPersistsAnUnverifiedUser() {
         when(userRepository.existsByEmailIgnoreCase("new@x.com")).thenReturn(false);
         when(userRepository.existsByUsernameIgnoreCase("NewPlayer")).thenReturn(false);
-        when(passwordEncoder.encode("password123")).thenReturn("hashed-password");
+        when(passwordEncoder.encode("tortoise-violin-42")).thenReturn("hashed-password");
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
             User user = invocation.getArgument(0);
             user.setId(UUID.randomUUID());
@@ -56,7 +56,7 @@ class RegisterHandlerTest {
 
         RegisterHandler handler =
                 new RegisterHandler(userRepository, passwordPolicy, passwordEncoder, emailVerificationService, FIXED_CLOCK);
-        RegisterResponse response = handler.handle(new RegisterCommand("new@x.com", "NewPlayer", "password123"));
+        RegisterResponse response = handler.handle(new RegisterCommand("new@x.com", "NewPlayer", "tortoise-violin-42"));
 
         ArgumentCaptor<User> savedUser = ArgumentCaptor.forClass(User.class);
         verify(userRepository).save(savedUser.capture());
@@ -78,7 +78,7 @@ class RegisterHandlerTest {
         RegisterHandler handler =
                 new RegisterHandler(userRepository, passwordPolicy, passwordEncoder, emailVerificationService, FIXED_CLOCK);
 
-        assertThatThrownBy(() -> handler.handle(new RegisterCommand("taken@x.com", "AnyName", "password123")))
+        assertThatThrownBy(() -> handler.handle(new RegisterCommand("taken@x.com", "AnyName", "tortoise-violin-42")))
                 .isInstanceOf(ConflictException.class)
                 .extracting("errorCode")
                 .isEqualTo("EMAIL_TAKEN");
@@ -95,7 +95,7 @@ class RegisterHandlerTest {
         RegisterHandler handler =
                 new RegisterHandler(userRepository, passwordPolicy, passwordEncoder, emailVerificationService, FIXED_CLOCK);
 
-        assertThatThrownBy(() -> handler.handle(new RegisterCommand("new@x.com", "Taken", "password123")))
+        assertThatThrownBy(() -> handler.handle(new RegisterCommand("new@x.com", "Taken", "tortoise-violin-42")))
                 .isInstanceOf(ConflictException.class)
                 .extracting("errorCode")
                 .isEqualTo("USERNAME_TAKEN");
@@ -111,7 +111,7 @@ class RegisterHandlerTest {
         RegisterHandler handler =
                 new RegisterHandler(userRepository, passwordPolicy, passwordEncoder, emailVerificationService, FIXED_CLOCK);
 
-        assertThatThrownBy(() -> handler.handle(new RegisterCommand("taken@x.com", "Taken", "password123")))
+        assertThatThrownBy(() -> handler.handle(new RegisterCommand("taken@x.com", "Taken", "tortoise-violin-42")))
                 .extracting("errorCode")
                 .isEqualTo("EMAIL_TAKEN");
     }

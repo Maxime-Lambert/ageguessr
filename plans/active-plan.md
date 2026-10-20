@@ -132,7 +132,7 @@ Status: Complete
 
 ### Phase Summary
 Terminée le 2026-10-20. `./mvnw test` : 156 tests, 0 échec (133 avant).
-- Liste : 29 982 entrées, 427 Ko.
+- Liste : 29 954 entrées, 427 Ko (après la correction de la phase 3).
 - Les handlers reçoivent `PasswordPolicy` par injection. Leurs tests unitaires le
   mockent ; `PasswordPolicyTest` utilise une liste d'une entrée, plus un test sur la
   vraie liste.
@@ -185,17 +185,29 @@ Terminée le 2026-10-20.
   rebasée sur l'autre.
 
 ## Phase 3 : Relectures, PR
-Status: Not started
+Status: Complete
 
-- [ ] `code-reviewer` + `architecture-reviewer` sur le diff, corrections appliquées
-- [ ] `docs/roadmap.md` à jour
+- [x] `code-reviewer` + `architecture-reviewer` sur le diff, corrections appliquées
+      (2026-10-20). Aucun point bloquant. Corrigé :
+  - la liste filtrait en octets (`LC_ALL=C awk`) : 28 entrées cyrilliques de moins de
+    12 caractères passaient. Régénérée en comptant les caractères (29 954 entrées),
+    commande du `README.md` corrigée ;
+  - normalisation Unicode NFC du mot de passe, des mots du contexte et de la liste, pour
+    qu'un « é » décomposé corresponde à un « é » précomposé (+ test) ;
+  - `RegisterHandlerTest` : derniers `password123` remplacés.
+
+  Laissé tel quel : le bloc d'indice sous le champ est répété dans 3 formulaires. Chacun
+  a ses propres erreurs, donc un composant `<app-password-field>` ne se justifiera qu'au
+  4e formulaire.
+- [x] `docs/roadmap.md` à jour
 - [ ] PR `feature/password-policy` → `develop` (merge par l'utilisateur)
 
 ### Verification Plan
 - CI de la PR verte
 
 ### Phase Summary
-_(à écrire une fois la phase terminée)_
+Relectures faites et corrections appliquées. `./mvnw test` : 157 tests, 0 échec ;
+`pnpm test` : 85 tests verts. PR ouverte vers `develop`.
 
 ## Edge cases à couvrir
 - Casse : `QWERTY123456` refusé comme `qwerty123456`.
@@ -209,7 +221,16 @@ _(à écrire une fois la phase terminée)_
   d'abord), pas 400.
 
 ## Final Recap
-_(à écrire une fois toutes les phases terminées)_
+Un nouveau mot de passe doit faire au moins 12 caractères, sans règle de composition.
+Il est refusé s'il figure parmi les ~30 000 mots de passe courants (top 1 million de
+Pwdb, filtré à 12 caractères et plus) ou s'il contient `ageguessr`, le pseudo ou la
+partie de l'email avant le `@`. Le frontend affiche un message précis sous le champ. La
+connexion ne change pas, donc les comptes existants fonctionnent toujours.
 
 ## Deployment Plan
-_(à écrire une fois toutes les phases terminées)_
+- Aucune migration ni variable d'environnement. La liste est embarquée dans le jar
+  (≈ 427 Ko, quelques Mo de tas une fois chargée).
+- Le déploiement suit le chemin habituel : merge dans `develop` par l'utilisateur, puis
+  release `develop` → `main` en **merge commit**, ce qui lance la CI et le déploiement.
+- Smoke test après déploiement : un `POST /api/auth/register` avec `qwerty123456`
+  renvoie 400 `PASSWORD_TOO_COMMON`.

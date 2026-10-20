@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
+import java.text.Normalizer;
 import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -15,7 +16,9 @@ import org.springframework.stereotype.Component;
 /**
  * What a new password must not be, beyond its format (@Password): a password found in
  * data breaches, or one built from the site name, the username or the email. Compared
- * case-insensitively, so "Qwerty123456" is refused like "qwerty123456". Only for
+ * case-insensitively, so "Qwerty123456" is refused like "qwerty123456", and after
+ * Unicode NFC normalization, so an "é" typed as "e" + combining accent still matches
+ * a precomposed "é". Only for
  * passwords being set - an existing account keeps logging in with the one it has.
  */
 @Component
@@ -39,7 +42,7 @@ public class PasswordPolicy {
     }
 
     public void check(String password, String username, String email) {
-        String lowered = password.toLowerCase(Locale.ROOT);
+        String lowered = normalize(password);
         if (commonPasswords.contains(lowered) || lowered.contains(SITE_NAME)) {
             throw new ValidationException("PASSWORD_TOO_COMMON", "This password is too common");
         }
@@ -52,7 +55,11 @@ public class PasswordPolicy {
     private static boolean containsPersonalTerm(String loweredPassword, String term) {
         return term != null
                 && term.length() >= MIN_PERSONAL_TERM_LENGTH
-                && loweredPassword.contains(term.toLowerCase(Locale.ROOT));
+                && loweredPassword.contains(normalize(term));
+    }
+
+    private static String normalize(String value) {
+        return Normalizer.normalize(value, Normalizer.Form.NFC).toLowerCase(Locale.ROOT);
     }
 
     private static String emailName(String email) {
@@ -72,7 +79,7 @@ public class PasswordPolicy {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))) {
             return reader.lines()
                     .filter(line -> !line.isEmpty())
-                    .map(line -> line.toLowerCase(Locale.ROOT))
+                    .map(PasswordPolicy::normalize)
                     .collect(Collectors.toUnmodifiableSet());
         } catch (IOException e) {
             throw new UncheckedIOException(e);

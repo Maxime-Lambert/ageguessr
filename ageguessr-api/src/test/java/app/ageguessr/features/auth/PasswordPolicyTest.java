@@ -34,6 +34,13 @@ class PasswordPolicyTest {
         assertRefused("jean.dupont-1984", "Player", "Jean.Dupont@x.com", "PASSWORD_CONTAINS_PERSONAL_INFO");
     }
 
+    @Test
+    void matchesWhateverTheUnicodeNormalizationForm() {
+        String decomposed = "rene\u0301e"; // "renée" typed as "e" + combining acute accent
+        assertRefused("i-am-ren\u00e9e-1990", decomposed, "someone@x.com", "PASSWORD_CONTAINS_PERSONAL_INFO");
+        assertRefused("i-am-" + decomposed + "-1990", "ren\u00e9e", "someone@x.com", "PASSWORD_CONTAINS_PERSONAL_INFO");
+    }
+
     /** Below 4 characters, a username or email name would forbid too many passwords. */
     @Test
     void ignoresShortUsernamesAndEmailNames() {
