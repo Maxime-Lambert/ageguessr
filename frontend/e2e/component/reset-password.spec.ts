@@ -11,12 +11,12 @@ test.describe('reset-password page', () => {
     });
 
     await page.goto('/reset-password?token=the-token');
-    await page.locator('#newPassword').fill('new-password');
-    await page.locator('#confirmPassword').fill('new-password');
+    await page.locator('#newPassword').fill('new-tortoise-violin');
+    await page.locator('#confirmPassword').fill('new-tortoise-violin');
     await page.getByRole('button', { name: 'Set new password' }).click();
 
     await expect(page.getByRole('heading', { name: 'Password updated' })).toBeVisible();
-    expect(sentBody).toEqual({ token: 'the-token', newPassword: 'new-password' });
+    expect(sentBody).toEqual({ token: 'the-token', newPassword: 'new-tortoise-violin' });
   });
 
   test('offers a new link when this one is expired', async ({ page }) => {
@@ -26,8 +26,8 @@ test.describe('reset-password page', () => {
     );
 
     await page.goto('/reset-password?token=expired');
-    await page.locator('#newPassword').fill('new-password');
-    await page.locator('#confirmPassword').fill('new-password');
+    await page.locator('#newPassword').fill('new-tortoise-violin');
+    await page.locator('#confirmPassword').fill('new-tortoise-violin');
     await page.getByRole('button', { name: 'Set new password' }).click();
 
     await expect(page.getByRole('link', { name: 'Get a new link' })).toBeVisible();

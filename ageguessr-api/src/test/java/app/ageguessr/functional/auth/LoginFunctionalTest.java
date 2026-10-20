@@ -5,6 +5,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import app.ageguessr.TestcontainersConfiguration;
+import app.ageguessr.features.auth.User;
+import app.ageguessr.features.auth.UserRepository;
 import app.ageguessr.shared.email.RecordingEmailSender;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
@@ -14,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import tools.jackson.databind.ObjectMapper;
@@ -32,13 +35,19 @@ class LoginFunctionalTest {
     @Autowired
     private RecordingEmailSender emailSender;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Test
     void loggingInWithVerifiedCredentialsReturnsAnAccessTokenAndSetsTheRefreshCookie() throws Exception {
         String email = registerAndVerify();
 
         MvcResult result = mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(loginBody(email, "password123")))
+                        .content(loginBody(email, "tortoise-violin-42")))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -78,7 +87,7 @@ class LoginFunctionalTest {
         MvcResult locked = mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         // Correct password, but the account is now locked.
-                        .content(loginBody(verifiedEmail, "password123")))
+                        .content(loginBody(verifiedEmail, "tortoise-violin-42")))
                 .andExpect(status().isUnauthorized())
                 .andReturn();
 
@@ -94,21 +103,36 @@ class LoginFunctionalTest {
         String email = "unverified-" + UUID.randomUUID() + "@x.com";
         mockMvc.perform(post("/api/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(registerBody(email, "password123")));
+                .content(registerBody(email, "tortoise-violin-42")));
 
         mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(loginBody(email, "password123")))
+                        .content(loginBody(email, "tortoise-violin-42")))
                 .andExpect(status().isForbidden())
                 .andExpect(result ->
                         assertThat(result.getResponse().getContentAsString()).contains("EMAIL_NOT_VERIFIED"));
+    }
+
+    /** Accounts created under the old 8-character rule keep logging in. */
+    @Test
+    void anAccountWithAPasswordSetUnderTheOldRuleStillLogsIn() throws Exception {
+        String email = registerAndVerify();
+        User user = userRepository.findByEmailIgnoreCase(email).orElseThrow();
+        // Written straight to the database: the API would now refuse this password.
+        user.setPasswordHash(passwordEncoder.encode("eight-ch"));
+        userRepository.save(user);
+
+        mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(loginBody(email, "eight-ch")))
+                .andExpect(status().isOk());
     }
 
     private String registerAndVerify() throws Exception {
         String email = "login-" + UUID.randomUUID() + "@x.com";
         mockMvc.perform(post("/api/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(registerBody(email, "password123")));
+                .content(registerBody(email, "tortoise-violin-42")));
 
         String token = VerificationLinks.extractToken(emailSender.lastMessageTo(email));
         mockMvc.perform(post("/api/auth/confirm-email")

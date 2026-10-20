@@ -179,6 +179,46 @@ jamais être affiché. Le pseudo est public, donc s'en servir comme identifiant 
 connexion faciliterait le brute-force ciblé. Il n'est pas mis dans le JWT : modifiable,
 il y serait périmé pendant jusqu'à une heure.
 
+### Politique de mot de passe
+**Décision** : un mot de passe choisi (inscription, réinitialisation, changement) fait au
+moins 12 caractères et au plus 72 octets en UTF-8. Il est refusé s'il figure dans une
+liste de mots de passe courants, s'il contient `ageguessr`, ou s'il contient le pseudo ou
+la partie de l'email avant le `@` (pour ces deux derniers, seulement à partir de 4
+caractères). Toutes les comparaisons ignorent la casse. Aucune règle de composition
+(majuscule, chiffre, symbole). La connexion n'applique aucune de ces règles : les
+comptes créés sous l'ancienne règle (8 caractères) continuent de fonctionner.
+
+**Raison** :
+- **Pas de composition** : le NIST (SP 800-63B rév. 4, 2025) l'interdit désormais. Les
+  études sur de vrais mots de passe montrent que ces règles produisent des
+  transformations prévisibles (`password` → `Password1!`), que les outils d'attaque
+  appliquent d'office. La longueur et le refus des mots de passe connus protègent mieux.
+- **12 caractères** : la CNIL (recommandation de 2022) demande environ 50 bits
+  d'entropie quand l'accès est freiné après des échecs, ce qui est notre cas
+  (verrouillage du compte et limite de tentatives). Sans composition imposée, il faut
+  compter sur un alphabet de 26 lettres : 11 caractères donnent ~52 bits, et 12 laissent
+  une marge. Le NIST demande 15 caractères quand le mot de passe est le seul facteur :
+  on reste à 12 tant que la double authentification (TOTP, roadmap) n'existe pas, pour
+  ne pas décourager l'inscription à un jeu.
+- **Liste locale** (`src/main/resources/security/common-passwords.txt`, issue de
+  SecLists, licence MIT, voir le `README.md` voisin) plutôt que l'API Have I Been Pwned :
+  pas de tiers ni de dépendance réseau dans l'inscription. Seules les entrées d'au moins
+  12 caractères du top 1 million sont gardées (~30 000), les autres étant déjà refusées
+  par la longueur.
+- **Où vit la règle** : le format reste dans la contrainte Bean Validation `@Password`.
+  La liste et les mots du contexte sont dans `features/auth/PasswordPolicy`, appelé par
+  les handlers, parce qu'il faut l'utilisateur, qui n'est connu au reset et au
+  changement qu'une fois chargé. Codes d'erreur distincts (`PASSWORD_TOO_COMMON`,
+  `PASSWORD_CONTAINS_PERSONAL_INFO`) pour un message précis côté front. La liste n'est
+  jamais envoyée au navigateur.
+- **Ordre** :
+  - à l'inscription, la politique passe avant l'unicité de l'email, pour qu'un refus ne
+    révèle pas un email pris ;
+  - au changement, elle passe après la vérification du mot de passe actuel : sans lui,
+    on n'apprend rien sur le compte, et l'échec compte dans le verrouillage ;
+  - au reset, un refus annule la consommation du lien, qui reste utilisable pour un
+    nouvel essai.
+
 ### Récupération du compte et actions sensibles
 **Décision** : l'email est la racine de confiance du compte (il n'est pas modifiable
 pour l'instant). Les actions sensibles passent par des liens à usage unique envoyés par

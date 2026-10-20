@@ -3,6 +3,8 @@ package app.ageguessr.features.auth.ResetPassword;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -12,10 +14,12 @@ import app.ageguessr.features.auth.AccountLockout;
 import app.ageguessr.features.auth.AccountTokenPurpose;
 import app.ageguessr.features.auth.AccountTokenRepository;
 import app.ageguessr.features.auth.AccountTokenService;
+import app.ageguessr.features.auth.PasswordPolicy;
 import app.ageguessr.features.auth.RefreshTokenRepository;
 import app.ageguessr.features.auth.User;
 import app.ageguessr.features.auth.UserRepository;
 import app.ageguessr.shared.exceptions.NotFoundException;
+import app.ageguessr.shared.exceptions.ValidationException;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -52,6 +56,9 @@ class ResetPasswordHandlerTest {
     private PasswordEncoder passwordEncoder;
 
     @Mock
+    private PasswordPolicy passwordPolicy;
+
+    @Mock
     private AccountEmails accountEmails;
 
     private ResetPasswordHandler handler;
@@ -64,6 +71,7 @@ class ResetPasswordHandlerTest {
                 refreshTokenRepository,
                 userRepository,
                 passwordEncoder,
+                passwordPolicy,
                 new AccountLockout(userRepository, FIXED_CLOCK, 5, 15),
                 accountEmails,
                 // Runs the callback inline: the transaction boundary itself is exercised
@@ -105,6 +113,29 @@ class ResetPasswordHandlerTest {
         assertThatThrownBy(() -> handler.handle(new ResetPasswordCommand("bad", "new-password")))
                 .isInstanceOf(NotFoundException.class);
 
+        verify(userRepository, never()).save(any());
+        verify(refreshTokenRepository, never()).revokeAllActiveForUser(any(), any());
+        verify(accountEmails, never()).sendPasswordChanged(any());
+    }
+
+    @Test
+    void aRefusedPasswordChangesNothing() {
+        User user = User.builder()
+                .id(UUID.randomUUID())
+                .username("Player")
+                .email("player@x.com")
+                .passwordHash("old-hash")
+                .build();
+        when(accountTokenService.redeem("raw", AccountTokenPurpose.PASSWORD_RESET)).thenReturn(user);
+        doThrow(new ValidationException("PASSWORD_TOO_COMMON", "This password is too common"))
+                .when(passwordPolicy)
+                .check("qwerty123456", "Player", "player@x.com");
+
+        assertThatThrownBy(() -> handler.handle(new ResetPasswordCommand("raw", "qwerty123456")))
+                .isInstanceOf(ValidationException.class);
+
+        assertThat(user.getPasswordHash()).isEqualTo("old-hash");
+        verify(passwordEncoder, never()).encode(anyString());
         verify(userRepository, never()).save(any());
         verify(refreshTokenRepository, never()).revokeAllActiveForUser(any(), any());
         verify(accountEmails, never()).sendPasswordChanged(any());
