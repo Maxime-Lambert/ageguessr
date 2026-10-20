@@ -57,7 +57,7 @@ class ConfirmEmailFunctionalTest {
     }
 
     private String registerBody(String email) {
-        return AuthFlows.registerBody(objectMapper, email, "password123");
+        return AuthFlows.registerBody(objectMapper, email, "tortoise-violin-42");
     }
 
     private String tokenBody(String token) {

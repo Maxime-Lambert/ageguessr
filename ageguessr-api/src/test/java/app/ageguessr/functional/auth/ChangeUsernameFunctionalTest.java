@@ -75,8 +75,8 @@ class ChangeUsernameFunctionalTest {
 
     private LoggedInSession registeredSession(String username) throws Exception {
         String email = "rename-" + UUID.randomUUID() + "@x.com";
-        AuthFlows.registerAndVerify(mockMvc, objectMapper, emailSender, email, username, "password123");
-        return AuthFlows.login(mockMvc, objectMapper, email, "password123");
+        AuthFlows.registerAndVerify(mockMvc, objectMapper, emailSender, email, username, "tortoise-violin-42");
+        return AuthFlows.login(mockMvc, objectMapper, email, "tortoise-violin-42");
     }
 
     private ResultActions changeUsername(LoggedInSession session, String username) throws Exception {

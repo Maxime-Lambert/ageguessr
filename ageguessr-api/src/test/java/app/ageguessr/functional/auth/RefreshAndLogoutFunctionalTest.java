@@ -36,8 +36,8 @@ class RefreshAndLogoutFunctionalTest {
     @Test
     void refreshingRotatesTheTokenAndTheOldOneCanNeverBeUsedAgain() throws Exception {
         String email = "refresh-" + UUID.randomUUID() + "@x.com";
-        AuthFlows.registerAndVerify(mockMvc, objectMapper, emailSender, email, "password123");
-        LoggedInSession session = AuthFlows.login(mockMvc, objectMapper, email, "password123");
+        AuthFlows.registerAndVerify(mockMvc, objectMapper, emailSender, email, "tortoise-violin-42");
+        LoggedInSession session = AuthFlows.login(mockMvc, objectMapper, email, "tortoise-violin-42");
         Cookie originalCookie = session.asRequestCookie();
 
         MvcResult firstRefresh = mockMvc.perform(post("/api/auth/refresh").cookie(originalCookie))
@@ -63,8 +63,8 @@ class RefreshAndLogoutFunctionalTest {
     @Test
     void loggingOutRevokesTheRefreshTokenAndClearsTheCookie() throws Exception {
         String email = "logout-" + UUID.randomUUID() + "@x.com";
-        AuthFlows.registerAndVerify(mockMvc, objectMapper, emailSender, email, "password123");
-        LoggedInSession session = AuthFlows.login(mockMvc, objectMapper, email, "password123");
+        AuthFlows.registerAndVerify(mockMvc, objectMapper, emailSender, email, "tortoise-violin-42");
+        LoggedInSession session = AuthFlows.login(mockMvc, objectMapper, email, "tortoise-violin-42");
 
         MvcResult logout = mockMvc.perform(post("/api/auth/logout")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + session.accessToken())
@@ -80,8 +80,8 @@ class RefreshAndLogoutFunctionalTest {
     @Test
     void loggingOutWithNoCookieIsStillNoContentAsLongAsTheBearerIsValid() throws Exception {
         String email = "logout-no-cookie-" + UUID.randomUUID() + "@x.com";
-        AuthFlows.registerAndVerify(mockMvc, objectMapper, emailSender, email, "password123");
-        LoggedInSession session = AuthFlows.login(mockMvc, objectMapper, email, "password123");
+        AuthFlows.registerAndVerify(mockMvc, objectMapper, emailSender, email, "tortoise-violin-42");
+        LoggedInSession session = AuthFlows.login(mockMvc, objectMapper, email, "tortoise-violin-42");
 
         mockMvc.perform(post("/api/auth/logout").header(HttpHeaders.AUTHORIZATION, "Bearer " + session.accessToken()))
                 .andExpect(status().isNoContent());

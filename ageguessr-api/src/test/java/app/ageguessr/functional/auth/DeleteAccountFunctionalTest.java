@@ -42,9 +42,9 @@ class DeleteAccountFunctionalTest {
     @Test
     void theAccountIsOnlyDeletedOnceTheEmailedLinkIsConfirmed() throws Exception {
         String email = registered();
-        LoggedInSession session = AuthFlows.login(mockMvc, objectMapper, email, "password123");
+        LoggedInSession session = AuthFlows.login(mockMvc, objectMapper, email, "tortoise-violin-42");
 
-        requestDeletion(session, "password123").andExpect(status().isAccepted());
+        requestDeletion(session, "tortoise-violin-42").andExpect(status().isAccepted());
         assertThat(userRepository.findByEmailIgnoreCase(email)).isPresent();
 
         String token = VerificationLinks.extractToken(emailSender.lastMessageTo(email));
@@ -56,7 +56,7 @@ class DeleteAccountFunctionalTest {
         assertThat(userRepository.findByEmailIgnoreCase(email)).isEmpty();
         mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new CredentialsPayload(email, "password123"))))
+                        .content(objectMapper.writeValueAsString(new CredentialsPayload(email, "tortoise-violin-42"))))
                 .andExpect(status().isUnauthorized());
         // The access token is a self-contained JWT still within its hour: it must
         // yield a clean 404, never a 500.
@@ -69,7 +69,7 @@ class DeleteAccountFunctionalTest {
     @Test
     void aWrongPasswordSendsNoConfirmationEmail() throws Exception {
         String email = registered();
-        LoggedInSession session = AuthFlows.login(mockMvc, objectMapper, email, "password123");
+        LoggedInSession session = AuthFlows.login(mockMvc, objectMapper, email, "tortoise-violin-42");
         String lastEmailBefore = emailSender.lastMessageTo(email).subject();
 
         requestDeletion(session, "wrong-password").andExpect(status().isForbidden());
@@ -92,13 +92,13 @@ class DeleteAccountFunctionalTest {
     @Test
     void aDeletionLinkCannotResetThePassword() throws Exception {
         String email = registered();
-        LoggedInSession session = AuthFlows.login(mockMvc, objectMapper, email, "password123");
-        requestDeletion(session, "password123");
+        LoggedInSession session = AuthFlows.login(mockMvc, objectMapper, email, "tortoise-violin-42");
+        requestDeletion(session, "tortoise-violin-42");
         String deletionToken = VerificationLinks.extractToken(emailSender.lastMessageTo(email));
 
         mockMvc.perform(post("/api/auth/reset-password")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new ResetPayload(deletionToken, "hijacked-password"))))
+                        .content(objectMapper.writeValueAsString(new ResetPayload(deletionToken, "hijacked-tortoise-violin"))))
                 .andExpect(status().isNotFound());
     }
 
@@ -106,13 +106,13 @@ class DeleteAccountFunctionalTest {
     void requestingADeletionRequiresAuthentication() throws Exception {
         mockMvc.perform(post("/api/auth/me/deletion")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new PasswordPayload("password123"))))
+                        .content(objectMapper.writeValueAsString(new PasswordPayload("tortoise-violin-42"))))
                 .andExpect(status().isUnauthorized());
     }
 
     private String registered() throws Exception {
         String email = "delete-" + UUID.randomUUID() + "@x.com";
-        AuthFlows.registerAndVerify(mockMvc, objectMapper, emailSender, email, "password123");
+        AuthFlows.registerAndVerify(mockMvc, objectMapper, emailSender, email, "tortoise-violin-42");
         return email;
     }
 

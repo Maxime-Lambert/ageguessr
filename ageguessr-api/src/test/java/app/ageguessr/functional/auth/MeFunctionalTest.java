@@ -35,8 +35,8 @@ class MeFunctionalTest {
     void returnsTheAuthenticatedUsersProfile() throws Exception {
         String email = "me-" + UUID.randomUUID() + "@x.com";
         String username = AuthFlows.randomUsername();
-        AuthFlows.registerAndVerify(mockMvc, objectMapper, emailSender, email, username, "password123");
-        LoggedInSession session = AuthFlows.login(mockMvc, objectMapper, email, "password123");
+        AuthFlows.registerAndVerify(mockMvc, objectMapper, emailSender, email, username, "tortoise-violin-42");
+        LoggedInSession session = AuthFlows.login(mockMvc, objectMapper, email, "tortoise-violin-42");
 
         mockMvc.perform(get("/api/auth/me").header(HttpHeaders.AUTHORIZATION, "Bearer " + session.accessToken()))
                 .andExpect(status().isOk())

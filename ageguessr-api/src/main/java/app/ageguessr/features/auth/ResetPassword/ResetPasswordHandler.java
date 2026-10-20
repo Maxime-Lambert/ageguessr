@@ -5,6 +5,7 @@ import app.ageguessr.features.auth.AccountLockout;
 import app.ageguessr.features.auth.AccountTokenPurpose;
 import app.ageguessr.features.auth.AccountTokenRepository;
 import app.ageguessr.features.auth.AccountTokenService;
+import app.ageguessr.features.auth.PasswordPolicy;
 import app.ageguessr.features.auth.RefreshTokenRepository;
 import app.ageguessr.features.auth.User;
 import app.ageguessr.features.auth.UserRepository;
@@ -33,6 +34,7 @@ public class ResetPasswordHandler {
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final PasswordPolicy passwordPolicy;
     private final AccountLockout accountLockout;
     private final AccountEmails accountEmails;
     private final TransactionTemplate transactionTemplate;
@@ -45,6 +47,8 @@ public class ResetPasswordHandler {
 
     private User resetInDatabase(ResetPasswordCommand command) {
         User user = accountTokenService.redeem(command.token(), AccountTokenPurpose.PASSWORD_RESET);
+        // A refused password rolls the redemption back: the link stays usable for a retry.
+        passwordPolicy.check(command.newPassword(), user.getUsername(), user.getEmail());
         Instant now = clock.instant();
 
         user.setPasswordHash(passwordEncoder.encode(command.newPassword()));
