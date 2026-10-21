@@ -9,6 +9,8 @@ type Tokens = Record<string, string>;
 const TEXT = 4.5; // WCAG 1.4.3, normal-size text
 const NON_TEXT = 3; // WCAG 1.4.11, form field boundaries and graphical indicators
 
+// Assumes a flat block (custom properties only): `[^}]*` stops at the first closing brace,
+// so a nested rule inside @theme or .light would silently cut the token list short.
 function readBlock(selector: string): Tokens {
   const block = new RegExp(`${selector}\\s*\\{([^}]*)\\}`).exec(styles)?.[1];
   if (!block) throw new Error(`No "${selector}" block in styles.css`);

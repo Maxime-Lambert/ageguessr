@@ -170,11 +170,19 @@ Le test garde-fou échouait sur 15 paires avant correction, 36/36 après.
 Aucun (documentation).
 
 ## Phase 4 — Relectures et PR
-- [ ] Agent `architecture-reviewer` sur le diff. `code-reviewer` n'est pas requis :
+- [x] Agent `architecture-reviewer` sur le diff. `code-reviewer` n'est pas requis :
       aucune donnée utilisateur, aucun endpoint, aucune auth, aucune source externe.
-- [ ] `pnpm test` + `pnpm lint` + specs Playwright `component` verts ; `./mvnw test` vert
+- [x] `pnpm test` + `pnpm lint` + specs Playwright `component` verts ; `./mvnw test` vert
       (règle avant tout push, même sans changement backend)
-- [ ] PR `chore/design-charter` → `develop`
+- [x] PR `chore/design-charter` → `develop`
+
+### Phase Summary
+- `architecture-reviewer` : 1 point important corrigé (la déclaration `*.css` →
+  string fuyait dans le code applicatif : `src/text-imports.d.ts` exclu de
+  `tsconfig.app.json`), 1 mineur corrigé (hypothèse de bloc CSS plat commentée dans
+  le spec). Doc et code jugés cohérents.
+- `pnpm test` 121 verts, lint et Prettier OK, `ng build` OK, Playwright `component` 29
+  verts, `./mvnw test` 156 tests, 0 échec (aucun changement backend).
 
 ### Verification Plan
 - `design-tokens.spec.ts` échoue avant la Phase 1 et passe après.
@@ -193,7 +201,15 @@ Aucun (documentation).
 - iOS : `apple-touch-icon.png` sans transparence, sinon iOS remplit le fond en noir.
 
 ## Final Recap
-_(à remplir en fin de feature)_
+La charte graphique est close pour la Semaine 1 :
+- **Couleurs** : toutes les paires utilisées passent WCAG AA dans les deux thèmes.
+  - Corrigés en luminosité seule : l'accent et danger en sombre, muted en clair.
+  - En sombre, le texte des boutons devient sombre.
+  - Les champs de formulaire ont un bord dédié à 3:1.
+  - Un spec relit `styles.css` et bloque toute régression.
+- **Favicon** : « A » de Fraunces vectorisé (SVG, ICO, Apple touch icon), lisible à 32 px.
+- **Décisions** : ton « enquête » adopté à l'essai (glossaire, critère, fichier de
+  vocabulaire unique à la Semaine 4) ; duotone reporté à la Semaine 4.
 
 ## Deployment Plan
 - Aucune migration, aucune variable d'environnement, aucun changement backend.

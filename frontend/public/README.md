@@ -14,11 +14,13 @@ installée chez le visiteur.
 - `favicon.ico` contient un seul PNG 32×32, format lu par tous les navigateurs actuels.
 
 ## Licence
+
 Fraunces est distribuée sous SIL Open Font License 1.1, qui autorise l'intégration de
 ses contours dans un logo ou une icône. Licence complète :
 `node_modules/@fontsource-variable/fraunces/LICENSE`.
 
 ## Régénérer
+
 Le script n'est pas versionné : c'est une opération ponctuelle. Il tient en ~40 lignes
 de Node avec `fontkit@2.0.4`, `wawoff2@2.0.1` (fontkit ne sait pas instancier un WOFF2
 variable, on le décompresse en TTF d'abord) et `@resvg/resvg-js@2.6.2` (rendu PNG) :
