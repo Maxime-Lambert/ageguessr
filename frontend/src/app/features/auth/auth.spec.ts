@@ -103,14 +103,15 @@ describe('Auth', () => {
     expect(restored).toBe(false);
   });
 
-  it('register sends the username', () => {
-    service.register('user@x.com', 'Player', 'tortoise-violin-42').subscribe();
+  it('register sends the username and the Terms acceptance', () => {
+    service.register('user@x.com', 'Player', 'tortoise-violin-42', true).subscribe();
 
     const req = httpMock.expectOne('/api/auth/register');
     expect(req.request.body).toEqual({
       email: 'user@x.com',
       username: 'Player',
       password: 'tortoise-violin-42',
+      acceptTerms: true,
     });
     req.flush({ userId: '1', email: 'user@x.com', username: 'Player' });
   });

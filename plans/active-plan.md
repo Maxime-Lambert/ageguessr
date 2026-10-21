@@ -184,10 +184,10 @@ site. À l'inscription, on fait accepter les CGU, on fait confirmer l'âge minim
   release.
 
 ## Phase 2 — Inscription et pied de page (frontend)
-- [ ] `register` : case à cocher obligatoire, liens vers `/terms` et `/privacy` (nouvel
+- [x] `register` : case à cocher obligatoire, liens vers `/terms` et `/privacy` (nouvel
       onglet, pour ne pas perdre le formulaire), `acceptTerms` envoyé à l'API
-- [ ] `features/layout/footer/` et ajout dans `app.html`
-- [ ] Mettre à jour les helpers des parcours e2e qui remplissent l'inscription
+- [x] `features/layout/footer/` et ajout dans `app.html`
+- [x] Mettre à jour les helpers des parcours e2e qui remplissent l'inscription
       (`e2e/journeys/support.ts`, `e2e/component/register.spec.ts`)
 
 ### Tests
@@ -201,6 +201,16 @@ site. À l'inscription, on fait accepter les CGU, on fait confirmer l'âge minim
   - `footer.spec.ts` : chaque lien mène à sa page, sans défilement horizontal à 360 px.
 - **QA e2e** : les parcours existants (`auth`, `delete-account`, `password-reset`) passent
   avec la case cochée. Pas de nouveau parcours : il n'est que prolongé.
+
+### Phase Summary
+- Case `acceptTerms` non pré-cochée (`Validators.requiredTrue`), envoyée à l'API par
+  `Auth.register(…, acceptTerms)`. Liens CGU et confidentialité en `target="_blank"`.
+- Pied de page `app-footer` : `app.html` passe en colonne flex, et le contenu prend
+  `flex-1`, ce qui garde le pied de page en bas de l'écran.
+- `pnpm test` : 89 verts. Sur cette branche, pas de spec de tokens : il arrive avec la
+  PR #13.
+- Playwright : le test « Terms dans un nouvel onglet » attend `/terms`, il ne passera
+  qu'avec la Phase 3 (route absente → redirection vers l'accueil).
 
 ## Phase 3 — Les trois pages (frontend)
 - [ ] `features/legal/legal-notice/` : éditeur non professionnel, contact, hébergeur OVH

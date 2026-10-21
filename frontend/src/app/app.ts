@@ -1,10 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Auth } from './features/auth/auth';
+import { Footer } from './features/layout/footer/footer';
 import { Header } from './features/layout/header/header';
 
 @Component({
-  imports: [RouterOutlet, Header],
+  imports: [RouterOutlet, Header, Footer],
   selector: 'app-root',
   styleUrl: './app.css',
   templateUrl: './app.html',

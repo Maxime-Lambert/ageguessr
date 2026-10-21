@@ -24,8 +24,14 @@ describe('Register', () => {
     fixture.detectChanges();
   });
 
-  function fillForm(email: string, password: string, confirmPassword: string, username = 'Player') {
-    component.form.setValue({ email, username, password, confirmPassword });
+  function fillForm(
+    email: string,
+    password: string,
+    confirmPassword: string,
+    username = 'Player',
+    acceptTerms = true,
+  ) {
+    component.form.setValue({ email, username, password, confirmPassword, acceptTerms });
   }
 
   it('shows an error when the passwords do not match', () => {
@@ -48,12 +54,29 @@ describe('Register', () => {
       email: 'user@x.com',
       username: 'Player',
       password: 'tortoise-violin-42',
+      acceptTerms: true,
     });
     req.flush({ userId: '1', email: 'user@x.com', username: 'Player' });
 
     expect(navigateSpy).toHaveBeenCalledWith(['/check-email'], {
       queryParams: { email: 'user@x.com' },
     });
+  });
+
+  it('does not submit until the Terms are accepted', () => {
+    fillForm('user@x.com', 'tortoise-violin-42', 'tortoise-violin-42', 'Player', false);
+
+    component.submit();
+    fixture.detectChanges();
+
+    httpMock.expectNone('/api/auth/register');
+    expect(fixture.nativeElement.textContent).toContain(
+      'You need to accept the Terms to create an account.',
+    );
+  });
+
+  it('starts with the Terms checkbox unchecked', () => {
+    expect(component.form.controls.acceptTerms.value).toBe(false);
   });
 
   it('shows a duplicate-email message on 409', () => {
