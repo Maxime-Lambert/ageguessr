@@ -151,7 +151,7 @@ Le test garde-fou échouait sur 15 paires avant correction, 36/36 après.
 - **Omis** : unitaire (aucune logique), le reste comme en Phase 1.
 
 ## Phase 3 — Documentation
-- [ ] `docs/decisions/design.md` :
+- [x] `docs/decisions/design.md` :
   - tableau des couleurs mis à jour, avec les nouveaux tokens et leur raison ;
   - `--color-danger` documenté ;
   - nouvelle section « Accessibilité des couleurs » : seuils, règle des deux bordures,
@@ -160,7 +160,7 @@ Le test garde-fou échouait sur 15 paires avant correction, 36/36 après.
   - ton « dossier d'enquête » adopté à l'essai : glossaire, critère, règle du fichier de
     vocabulaire unique, écrans auth neutres ;
   - section « Nom et logo » : favicon livré, licence OFL.
-- [ ] `docs/roadmap.md` :
+- [x] `docs/roadmap.md` :
   - cocher « Charte graphique définie » et « Mise en place technique » ;
   - cocher « Logo/wordmark + favicon » ;
   - ajouter en Semaine 4 : « Vocabulaire de jeu centralisé (essai du ton enquête) » et
