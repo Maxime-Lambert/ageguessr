@@ -87,7 +87,11 @@ final class AuthFlows {
 
     private record CredentialsPayload(String email, String password) {}
 
-    private record RegisterPayload(String email, String username, String password) {}
+    private record RegisterPayload(String email, String username, String password, boolean acceptTerms) {
+        RegisterPayload(String email, String username, String password) {
+            this(email, username, password, true);
+        }
+    }
 
     private record TokenPayload(String token) {}
 

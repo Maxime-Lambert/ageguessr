@@ -46,4 +46,9 @@ public class User {
     private Instant lockedUntil;
 
     private Instant createdAt;
+
+    /** Null for accounts created before the Terms existed (see V3__add_terms_acceptance.sql). */
+    private String termsVersion;
+
+    private Instant termsAcceptedAt;
 }
