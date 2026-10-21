@@ -281,10 +281,34 @@ site. À l'inscription, on fait accepter les CGU, on fait confirmer l'âge minim
     et « Ré-acceptation des CGU à chaque nouvelle version ».
 
 ## Phase 5 — Relectures et PR
-- [ ] Agent `code-reviewer` : auth, données utilisateur, conformité RGPD et légale
-- [ ] Agent `architecture-reviewer`
-- [ ] `./mvnw test`, `pnpm test`, lint, Playwright `component` et `journeys` verts
-- [ ] PR `feature/legal-pages` → `develop`
+- [x] Agent `code-reviewer` : auth, données utilisateur, conformité RGPD et légale
+- [x] Agent `architecture-reviewer`
+- [x] `./mvnw test`, `pnpm test`, lint, Playwright `component` et `journeys` verts
+- [x] PR `feature/legal-pages` → `develop`
+
+### Phase Summary
+- `code-reviewer` : rien de bloquant. Toutes les affirmations de `/privacy` ont été
+  vérifiées contre le code, et l'inventaire des données est complet. Corrections
+  appliquées :
+  - une erreur Spring 5xx (`ResponseStatusException`) est de nouveau loguée ;
+  - ajout de la mention RGPD art. 13(2)(e) (email et pseudo nécessaires au compte).
+
+  Non retenu : une renonciation au droit de rétractation. La suppression du compte à
+  tout moment est plus favorable, et c'est à revoir avec un professionnel si le service
+  devient payant. Le CCPA n'est pas concerné (seuils très loin).
+- `architecture-reviewer` : rien de bloquant. Corrections appliquées :
+  - `RegisterPayload` dédupliqué (package-private dans `AuthFlows`) ;
+  - branche Spring MVC extraite dans `springMvcError` ;
+  - spec `LanguageSwitch` ajouté.
+- Vérifications finales :
+  - `./mvnw test` : 161, 0 échec ;
+  - `pnpm test` : 101 ; lint OK ;
+  - Playwright `component` : 37 ;
+  - `journeys` : 4 verts contre la stack complète locale (Postgres et Redis de
+    `docker compose`, API en profil `e2e` avec `AUTH_RATE_LIMIT_MAX_ATTEMPTS=1000`,
+    sinon le rate limiting fait échouer les parcours lancés en parallèle).
+- Conflit prévu avec la PR #13, sur `docs/roadmap.md` seulement : à résoudre en
+  mergeant `develop` dans cette branche une fois la #13 mergée.
 
 ### Verification Plan
 - Après release : les 3 pages répondent en prod dans les deux langues.
@@ -303,7 +327,18 @@ site. À l'inscription, on fait accepter les CGU, on fait confirmer l'âge minim
 - Comptes existants sans acceptation : connexion inchangée.
 
 ## Final Recap
-_(à remplir en fin de feature)_
+- Trois pages légales, en anglais et en français : mentions légales (éditeur anonyme,
+  hébergeur OVH), CGU (13 ans minimum, droit français avec clause consommateur, version
+  française prévalente) et politique de confidentialité (alignée sur le code, avec les
+  sous-traitants OVH, Cloudflare et Resend).
+- Un pied de page sur tout le site.
+- L'inscription exige l'acceptation des CGU, côté formulaire comme côté API. La version
+  acceptée et sa date sont enregistrées.
+- Bug corrigé en route : les erreurs de requête (JSON malformé, 405, 415) renvoyaient
+  500 en prod.
+- **Reste à faire côté utilisateur avant la release** : `contact@ageguessr.app`
+  fonctionnelle (Zimbra OVH, DNS chez Cloudflare : validation du domaine en cours, puis
+  MX, SPF, DKIM et SRV).
 
 ## Deployment Plan
 - La migration Flyway `V3` ne fait qu'ajouter des colonnes nullables : pas de

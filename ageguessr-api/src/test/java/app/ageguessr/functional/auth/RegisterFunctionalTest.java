@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import app.ageguessr.TestcontainersConfiguration;
+import app.ageguessr.functional.auth.AuthFlows.RegisterPayload;
 import app.ageguessr.features.auth.TermsVersion;
 import app.ageguessr.features.auth.UserRepository;
 import app.ageguessr.shared.email.RecordingEmailSender;
@@ -220,11 +221,5 @@ class RegisterFunctionalTest {
                                 new RegisterPayload(email, AuthFlows.randomUsername(), "qwerty123456"))))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorCode").value("PASSWORD_TOO_COMMON"));
-    }
-
-    private record RegisterPayload(String email, String username, String password, boolean acceptTerms) {
-        RegisterPayload(String email, String username, String password) {
-            this(email, username, password, true);
-        }
     }
 }

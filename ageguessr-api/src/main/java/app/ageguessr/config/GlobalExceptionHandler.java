@@ -77,16 +77,26 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleUnexpected(Exception ex) {
         if (ex instanceof org.springframework.web.ErrorResponse springError) {
-            HttpStatusCode status = springError.getStatusCode();
-            HttpStatus known = HttpStatus.resolve(status.value());
-            String code = known != null ? known.name() : "REQUEST_ERROR";
-            String message = known != null ? known.getReasonPhrase() : "The request could not be processed";
-            return ResponseEntity.status(status)
-                    .headers(springError.getHeaders())
-                    .body(new ErrorResponse(code, message));
+            return springMvcError(ex, springError);
         }
         log.error("Unexpected error", ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ErrorResponse("INTERNAL_ERROR", "An unexpected error occurred"));
+    }
+
+    /**
+     * Keeps the status and headers (e.g. {@code Allow}) of the Spring error, with a generic
+     * message. A 5xx one (a {@code ResponseStatusException} thrown with a server status) is
+     * still a server failure: it gets logged like any unexpected error.
+     */
+    private ResponseEntity<ErrorResponse> springMvcError(Exception ex, org.springframework.web.ErrorResponse springError) {
+        HttpStatusCode status = springError.getStatusCode();
+        if (status.is5xxServerError()) {
+            log.error("Unexpected error", ex);
+        }
+        HttpStatus known = HttpStatus.resolve(status.value());
+        String code = known != null ? known.name() : "REQUEST_ERROR";
+        String message = known != null ? known.getReasonPhrase() : "The request could not be processed";
+        return ResponseEntity.status(status).headers(springError.getHeaders()).body(new ErrorResponse(code, message));
     }
 }

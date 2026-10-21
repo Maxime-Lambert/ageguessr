@@ -87,7 +87,8 @@ final class AuthFlows {
 
     private record CredentialsPayload(String email, String password) {}
 
-    private record RegisterPayload(String email, String username, String password, boolean acceptTerms) {
+    /** Package-private: also used by RegisterFunctionalTest, which sends variations of it. */
+    record RegisterPayload(String email, String username, String password, boolean acceptTerms) {
         RegisterPayload(String email, String username, String password) {
             this(email, username, password, true);
         }
