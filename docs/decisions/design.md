@@ -164,6 +164,3 @@ icône/favicon dédiée plus tard sans remettre en cause l'identité typographiq
 ## À définir
 
 - **Modèle économique** : gratuit, freemium, ou autre — non tranché
-- **Mentions légales / CGU / RGPD** : à traiter avant toute ouverture publique —
-  juridiction et libellés à adapter à une audience internationale (pas uniquement
-  française)

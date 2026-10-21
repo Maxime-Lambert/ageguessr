@@ -270,11 +270,11 @@ site. À l'inscription, on fait accepter les CGU, on fait confirmer l'âge minim
   (bascule de langue, pas de défilement horizontal à 360 px, pied de page en bas).
 
 ## Phase 4 — Documentation
-- [ ] `docs/decisions/architecture.md` : section « Pages légales » (éditeur anonyme, droit
+- [x] `docs/decisions/architecture.md` : section « Pages légales » (éditeur anonyme, droit
       applicable, versionnement des CGU, langues)
-- [ ] `docs/decisions/design.md` : retirer « Mentions légales / CGU / RGPD » de « À
+- [x] `docs/decisions/design.md` : retirer « Mentions légales / CGU / RGPD » de « À
       définir »
-- [ ] `docs/roadmap.md` :
+- [x] `docs/roadmap.md` :
   - cocher la case de la Semaine 1 ;
   - réduire la case RGPD de la Semaine 7 à l'export des données ;
   - ajouter en Semaine 7 « Purge des comptes jamais vérifiés et des comptes inactifs »

@@ -114,6 +114,11 @@ dans le code).
   `ForbiddenException` catchées par `GlobalExceptionHandler`
 - Erreurs infrastructure (DB down, service externe inaccessible) → exception standard
   propagée, loguée, retournée en 500
+- Erreurs de requête de Spring MVC (mauvaise méthode, type de contenu non supporté…) →
+  elles implémentent `org.springframework.web.ErrorResponse` et gardent leur statut 4xx.
+  Le gestionnaire « attrape-tout » ne doit pas les transformer en 500. Un corps
+  illisible (JSON malformé, champ primitif absent) → 400 `MALFORMED_REQUEST`, avec un
+  message générique qui ne renvoie pas les détails du parseur
 
 ### Migrations Flyway
 **Décision** : migrations SQL versionnées (`V<N>__<nom>.sql` dans
@@ -259,6 +264,32 @@ rien récupérer).
 une donnée doit survivre pour d'autres joueurs, anonymisée explicitement), pour que ce
 seul `DELETE` suffise au droit à l'effacement. Vérifié par
 `CascadeDeleteIntegrationTest`, à étendre à chaque nouvelle table de ce type.
+
+### Pages légales et acceptation des CGU
+**Décision** : trois pages statiques côté Angular (`features/legal/`) : `/legal-notice`,
+`/terms` et `/privacy`. Chacune existe en anglais par défaut et en français avec
+`?lang=fr`.
+- **Éditeur** : particulier non professionnel, identité non publiée (LCEN) : seuls
+  l'email `contact@ageguessr.app` et les coordonnées de l'hébergeur OVH apparaissent.
+- **Droit applicable** : le droit français, sans priver un consommateur étranger des
+  règles impératives de son pays (Rome I, art. 6). La version française des CGU prévaut.
+- **Âge minimum** : 13 ans pour un compte. En dessous, la loi américaine COPPA impose un
+  consentement parental vérifiable. La base légale du compte est le contrat, pas le
+  consentement : l'âge du consentement de l'art. 8 RGPD ne s'applique donc pas.
+- **Acceptation** : une case non pré-cochée à l'inscription. L'API exige
+  `RegisterCommand.acceptTerms` (`@AssertTrue`, booléen primitif). Elle enregistre
+  `users.terms_version` (la valeur de `TermsVersion.CURRENT`) et
+  `users.terms_accepted_at`. Le frontend affiche la même date (`TERMS_VERSION` dans
+  `features/legal/legal-dates.ts`) : les deux constantes changent ensemble.
+
+**Raison** : le contenu change rarement et chaque modification doit être relue en PR. Un
+CMS ou une table n'apporterait rien. Stocker la version acceptée est la seule manière de
+prouver l'acceptation et de savoir qui doit ré-accepter quand les CGU changent.
+
+**Règle** : la politique de confidentialité ne décrit que ce que le code fait réellement
+(durées, cookies, sous-traitants). Tout changement de ces éléments dans le code (nouveau
+cookie, nouveau sous-traitant, nouvelle durée, sauvegardes) s'accompagne de la mise à
+jour de `/privacy` et de sa date.
 
 ---
 
