@@ -1,0 +1,274 @@
+<!-- Every statement here must match what the code does (retention periods, cookies,
+     processors). Changing one of them in the code means updating this page. -->
+@if (language() === 'en') {
+  <article>
+    <h1>Privacy Policy</h1>
+    <p class="meta">
+      Last updated: {{ updated() }} · <app-language-switch [language]="language()" />
+    </p>
+
+    <h2>1. Who is responsible</h2>
+    <p>
+      The data controller is the publisher of Ageguessr, a private individual (see the
+      <a routerLink="/legal-notice">Legal notice</a>). For any question or request about your data:
+      <a href="mailto:contact@ageguessr.app">contact&#64;ageguessr.app</a>.
+    </p>
+
+    <h2>2. Playing without an account</h2>
+    <p>
+      We do not ask for anything. Like any website, your IP address and the technical details of
+      your requests pass through our network provider and our server to deliver the pages; our
+      server does not keep access logs. Your theme choice (dark or light) is stored on your device
+      only and never sent to us.
+    </p>
+
+    <h2>3. With an account: what we process and why</h2>
+    <ul>
+      <li>
+        <strong>To provide your account</strong> (performance of the contract, GDPR art. 6(1)(b)):
+        your email address, your username, your password (stored only as a bcrypt hash: we never see
+        it), whether your email is confirmed, your account's creation date, and session and security
+        tokens (stored hashed).
+      </li>
+      <li>
+        <strong>To send you service emails</strong> (same basis): confirming your address, resetting
+        your password, securing or deleting your account. We send no newsletter and no advertising.
+      </li>
+      <li>
+        <strong>To protect accounts and the Service</strong> (legitimate interest, art. 6(1)(f)):
+        the number of failed sign-in attempts and a temporary lock after too many, and, on sign-in
+        and account requests, your IP address in an anti-abuse counter.
+      </li>
+      <li>
+        <strong>To prove you accepted the Terms</strong> (legitimate interest): the version of the
+        Terms you accepted and when.
+      </li>
+    </ul>
+    <p>
+      Your username may be shown to other players (for example to your friends, once that feature
+      exists). Your email address is never shown.
+    </p>
+
+    <h2>4. How long we keep it</h2>
+    <ul>
+      <li>
+        Account data: until you delete your account. Deletion is immediate and permanent, including
+        tokens.
+      </li>
+      <li>
+        Tokens expire on their own: 90 days for staying signed in, 1 to 24 hours for links sent by
+        email.
+      </li>
+      <li>IP address in the anti-abuse counter: 1 minute.</li>
+      <li>Emails at our email provider: 30 days.</li>
+    </ul>
+
+    <h2>5. Who else processes it</h2>
+    <p>We do not sell your data, show ads, or use any audience measurement tool.</p>
+    <ul>
+      <li>
+        <strong>OVH SAS</strong> (France): hosting of the server and database, in the Gravelines
+        data centre, France.
+      </li>
+      <li>
+        <strong>Cloudflare, Inc.</strong> (United States): domain name system, delivery and
+        protection of the site. It processes your IP address and request data.
+      </li>
+      <li>
+        <strong>Resend</strong> (United States): sending of service emails. It processes your email
+        address and the content of these emails, kept for 30 days.
+      </li>
+    </ul>
+    <p>
+      Transfers to the United States are covered by these providers' certification under the EU-U.S.
+      Data Privacy Framework and by the European Commission's standard contractual clauses.
+    </p>
+
+    <h2>6. Cookies and local storage</h2>
+    <ul>
+      <li>
+        <code>ageguessr_refresh_token</code> (cookie, 90 days): keeps you signed in. Not readable by
+        scripts.
+      </li>
+      <li><code>ageguessr-theme</code> (local storage): remembers your theme choice.</li>
+      <li>
+        Cloudflare may set security cookies (such as <code>__cf_bm</code>) to tell humans from bots.
+      </li>
+    </ul>
+    <p>
+      All of them are strictly necessary or store a choice you made, so they do not require your
+      consent. There is no analytics or advertising cookie, hence no cookie banner.
+    </p>
+
+    <h2>7. Your rights</h2>
+    <p>
+      You can access your data, have it corrected or erased, receive it in a portable format, object
+      to its processing based on legitimate interest, and ask for its processing to be restricted.
+      You can change your username and delete your account yourself from your account page; for
+      everything else, write to
+      <a href="mailto:contact@ageguessr.app">contact&#64;ageguessr.app</a> from the address of your
+      account. We answer within one month. You can also lodge a complaint with the CNIL (<a
+        href="https://www.cnil.fr"
+        >cnil.fr</a
+      >) or with the data protection authority of your country.
+    </p>
+
+    <h2>8. Children</h2>
+    <p>
+      Accounts are for people aged 13 and over. If you believe a child under 13 has created an
+      account, write to us and we will delete it.
+    </p>
+
+    <h2>9. Security</h2>
+    <p>
+      Connections are encrypted (HTTPS). Passwords and tokens are only stored hashed. Sign-in
+      attempts are limited, and an account is temporarily locked after repeated failures.
+    </p>
+
+    <h2>10. Changes</h2>
+    <p>
+      This policy may be updated; the date at the top changes accordingly. If you have an account,
+      you will be told of any significant change.
+    </p>
+  </article>
+} @else {
+  <article lang="fr">
+    <h1>Politique de confidentialité</h1>
+    <p class="meta">
+      Dernière mise à jour : {{ updated() }} · <app-language-switch [language]="language()" />
+    </p>
+
+    <h2>1. Responsable du traitement</h2>
+    <p>
+      Le responsable du traitement est l'éditeur d'Ageguessr, une personne physique (voir les
+      <a routerLink="/legal-notice" [queryParams]="{ lang: 'fr' }">mentions légales</a>). Pour toute
+      question ou demande sur vos données :
+      <a href="mailto:contact@ageguessr.app">contact&#64;ageguessr.app</a>.
+    </p>
+
+    <h2>2. Jouer sans compte</h2>
+    <p>
+      Nous ne vous demandons rien. Comme pour tout site, votre adresse IP et les informations
+      techniques de vos requêtes transitent par notre prestataire réseau et notre serveur pour
+      afficher les pages ; notre serveur ne conserve pas de journal des accès. Votre choix de thème
+      (sombre ou clair) est enregistré sur votre appareil uniquement et ne nous est jamais envoyé.
+    </p>
+
+    <h2>3. Avec un compte : données traitées et finalités</h2>
+    <ul>
+      <li>
+        <strong>Fournir votre compte</strong> (exécution du contrat, RGPD art. 6.1.b) : votre
+        adresse email, votre pseudo, votre mot de passe (conservé uniquement sous forme de hash
+        bcrypt : nous ne le voyons jamais), la confirmation ou non de votre email, la date de
+        création du compte, et des jetons de session et de sécurité (conservés hachés).
+      </li>
+      <li>
+        <strong>Vous envoyer les emails du service</strong> (même base) : confirmation de votre
+        adresse, réinitialisation du mot de passe, sécurisation ou suppression du compte. Aucune
+        newsletter, aucune publicité.
+      </li>
+      <li>
+        <strong>Protéger les comptes et le Service</strong> (intérêt légitime, art. 6.1.f) : le
+        nombre d'échecs de connexion et un blocage temporaire après trop d'échecs, et, lors des
+        requêtes de connexion et de compte, votre adresse IP dans un compteur anti-abus.
+      </li>
+      <li>
+        <strong>Prouver votre acceptation des CGU</strong> (intérêt légitime) : la version des
+        conditions acceptée et sa date.
+      </li>
+    </ul>
+    <p>
+      Votre pseudo peut être visible par d'autres joueurs (par exemple vos amis, quand cette
+      fonction existera). Votre adresse email n'est jamais affichée.
+    </p>
+
+    <h2>4. Durées de conservation</h2>
+    <ul>
+      <li>
+        Données du compte : jusqu'à la suppression de votre compte. La suppression est immédiate et
+        définitive, jetons compris.
+      </li>
+      <li>
+        Les jetons expirent d'eux-mêmes : 90 jours pour rester connecté, de 1 à 24 heures pour les
+        liens envoyés par email.
+      </li>
+      <li>Adresse IP dans le compteur anti-abus : 1 minute.</li>
+      <li>Emails chez notre prestataire d'envoi : 30 jours.</li>
+    </ul>
+
+    <h2>5. Destinataires et sous-traitants</h2>
+    <p>
+      Nous ne vendons pas vos données, n'affichons pas de publicité et n'utilisons aucun outil de
+      mesure d'audience.
+    </p>
+    <ul>
+      <li>
+        <strong>OVH SAS</strong> (France) : hébergement du serveur et de la base de données, dans le
+        datacenter de Gravelines, en France.
+      </li>
+      <li>
+        <strong>Cloudflare, Inc.</strong> (États-Unis) : nom de domaine, acheminement et protection
+        du site. Traite votre adresse IP et les données de vos requêtes.
+      </li>
+      <li>
+        <strong>Resend</strong> (États-Unis) : envoi des emails du service. Traite votre adresse
+        email et le contenu de ces emails, conservés 30 jours.
+      </li>
+    </ul>
+    <p>
+      Les transferts vers les États-Unis sont encadrés par la certification de ces prestataires au
+      Data Privacy Framework UE–États-Unis et par les clauses contractuelles types de la Commission
+      européenne.
+    </p>
+
+    <h2>6. Cookies et stockage local</h2>
+    <ul>
+      <li>
+        <code>ageguessr_refresh_token</code> (cookie, 90 jours) : vous garde connecté. Illisible par
+        les scripts.
+      </li>
+      <li><code>ageguessr-theme</code> (stockage local) : retient votre choix de thème.</li>
+      <li>
+        Cloudflare peut déposer des cookies de sécurité (comme <code>__cf_bm</code>) pour distinguer
+        les humains des robots.
+      </li>
+    </ul>
+    <p>
+      Tous sont strictement nécessaires ou retiennent un choix que vous avez fait : ils ne
+      requièrent pas votre consentement. Il n'y a aucun cookie de mesure d'audience ou de publicité,
+      donc pas de bannière cookies.
+    </p>
+
+    <h2>7. Vos droits</h2>
+    <p>
+      Vous pouvez accéder à vos données, les faire rectifier ou effacer, les recevoir dans un format
+      portable, vous opposer aux traitements fondés sur l'intérêt légitime et demander la limitation
+      d'un traitement. Vous pouvez modifier votre pseudo et supprimer votre compte vous-même depuis
+      la page de votre compte ; pour le reste, écrivez à
+      <a href="mailto:contact@ageguessr.app">contact&#64;ageguessr.app</a> depuis l'adresse de votre
+      compte. Nous répondons sous un mois. Vous pouvez aussi adresser une réclamation à la CNIL (<a
+        href="https://www.cnil.fr"
+        >cnil.fr</a
+      >) ou à l'autorité de protection des données de votre pays.
+    </p>
+
+    <h2>8. Mineurs</h2>
+    <p>
+      Les comptes sont réservés aux personnes de 13 ans et plus. Si vous pensez qu'un enfant de
+      moins de 13 ans a créé un compte, écrivez-nous et nous le supprimerons.
+    </p>
+
+    <h2>9. Sécurité</h2>
+    <p>
+      Les connexions sont chiffrées (HTTPS). Les mots de passe et les jetons ne sont conservés que
+      hachés. Les tentatives de connexion sont limitées, et un compte est temporairement bloqué
+      après des échecs répétés.
+    </p>
+
+    <h2>10. Modifications</h2>
+    <p>
+      Cette politique peut évoluer ; la date en haut de page change alors. Si vous avez un compte,
+      vous serez informé de toute modification importante.
+    </p>
+  </article>
+}

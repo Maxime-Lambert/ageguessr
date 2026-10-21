@@ -1,0 +1,204 @@
+@if (language() === 'en') {
+  <article>
+    <h1>Terms of Use</h1>
+    <p class="meta">
+      Last updated: {{ updated() }} · <app-language-switch [language]="language()" />
+    </p>
+
+    <h2>1. About these Terms</h2>
+    <p>
+      These Terms govern your use of Ageguessr, available at ageguessr.app (the "Service"),
+      published by the individual named in the <a routerLink="/legal-notice">Legal notice</a>. Using
+      the Service means you accept them. Creating an account requires accepting them explicitly.
+    </p>
+
+    <h2>2. The Service</h2>
+    <p>
+      Ageguessr is a free daily game: guess the age of people from their photo. You can play without
+      an account. An account lets you keep your history and, as these features become available,
+      compare scores with friends. The publisher may change, add or remove features at any time.
+    </p>
+
+    <h2>3. Your account</h2>
+    <ul>
+      <li>You must be at least 13 years old to create an account.</li>
+      <li>Use an email address you own: it is needed to confirm your account and recover it.</li>
+      <li>
+        An account is personal. Keep your password secret: you are responsible for what is done with
+        your account.
+      </li>
+      <li>You can delete your account at any time from your account page.</li>
+    </ul>
+
+    <h2>4. Acceptable use</h2>
+    <p>You agree not to:</p>
+    <ul>
+      <li>
+        choose a username that is offensive, hateful, sexual, impersonates someone or breaks the
+        law;
+      </li>
+      <li>
+        play with bots or scripts, collect the game's content automatically, or obtain answers by
+        any means other than playing;
+      </li>
+      <li>attack the Service, overload it, or try to get around its security or its limits.</li>
+    </ul>
+
+    <h2>5. Suspension and termination</h2>
+    <p>
+      If these Terms are broken, the publisher may rename an offending username, or suspend or
+      delete the account concerned. Where possible, you will be told why by email first, except when
+      urgent action is needed or the law requires otherwise.
+    </p>
+
+    <h2>6. Intellectual property</h2>
+    <p>
+      The Service and its elements (name, design, code) belong to the publisher or to its licensors.
+      Photos and facts come from Wikimedia projects and are used under their own licences, credited
+      where they appear. You may use the Service for your personal, non-commercial use only.
+    </p>
+
+    <h2>7. Availability and liability</h2>
+    <p>
+      The Service is provided free of charge, as is. It may be interrupted, for example for
+      maintenance, and its content (ages, facts) comes from community-maintained sources that may
+      contain errors. The publisher's liability is limited to the extent permitted by law. Nothing
+      in these Terms limits liability that cannot be limited under the law that applies to you.
+    </p>
+
+    <h2>8. Personal data</h2>
+    <p>
+      How your data is processed is described in the
+      <a routerLink="/privacy">Privacy Policy</a>.
+    </p>
+
+    <h2>9. Changes to these Terms</h2>
+    <p>
+      These Terms may be updated; the date at the top of this page changes accordingly. If you have
+      an account, you will be told of any significant change and asked to accept the new version. If
+      you do not accept it, you can delete your account.
+    </p>
+
+    <h2>10. Governing law and disputes</h2>
+    <p>
+      These Terms are governed by French law. If you are a consumer living in another country, you
+      also keep the protection of the mandatory rules of the law of your country, and you may bring
+      a claim before its courts. Before any claim, please write to
+      <a href="mailto:contact@ageguessr.app">contact&#64;ageguessr.app</a> so that we can look for
+      an amicable solution. Failing that, the French courts have jurisdiction, subject to the rules
+      protecting consumers.
+    </p>
+
+    <h2>11. Languages</h2>
+    <p>
+      These Terms are available in English and French. If the two versions differ, the French
+      version prevails.
+    </p>
+  </article>
+} @else {
+  <article lang="fr">
+    <h1>Conditions générales d'utilisation</h1>
+    <p class="meta">
+      Dernière mise à jour : {{ updated() }} · <app-language-switch [language]="language()" />
+    </p>
+
+    <h2>1. Objet</h2>
+    <p>
+      Les présentes conditions encadrent l'utilisation d'Ageguessr, accessible sur ageguessr.app (le
+      « Service »), édité par la personne désignée dans les
+      <a routerLink="/legal-notice" [queryParams]="{ lang: 'fr' }">mentions légales</a>. Utiliser le
+      Service vaut acceptation. La création d'un compte exige une acceptation expresse.
+    </p>
+
+    <h2>2. Le Service</h2>
+    <p>
+      Ageguessr est un jeu quotidien gratuit : deviner l'âge de personnes à partir de leur photo. On
+      peut jouer sans compte. Un compte permet de garder son historique et, à mesure que ces
+      fonctions arrivent, de comparer ses scores avec ses amis. L'éditeur peut modifier, ajouter ou
+      retirer des fonctions à tout moment.
+    </p>
+
+    <h2>3. Votre compte</h2>
+    <ul>
+      <li>Il faut avoir au moins 13 ans pour créer un compte.</li>
+      <li>
+        Utilisez une adresse email dont vous êtes titulaire : elle sert à confirmer et à récupérer
+        votre compte.
+      </li>
+      <li>
+        Un compte est personnel. Gardez votre mot de passe secret : vous êtes responsable de l'usage
+        qui est fait de votre compte.
+      </li>
+      <li>Vous pouvez supprimer votre compte à tout moment depuis la page de votre compte.</li>
+    </ul>
+
+    <h2>4. Règles d'utilisation</h2>
+    <p>Vous vous engagez à ne pas :</p>
+    <ul>
+      <li>
+        choisir un pseudo offensant, haineux, à caractère sexuel, usurpant l'identité d'autrui ou
+        contraire à la loi ;
+      </li>
+      <li>
+        jouer au moyen de robots ou de scripts, collecter automatiquement le contenu du jeu, ou
+        obtenir les réponses autrement qu'en jouant ;
+      </li>
+      <li>
+        attaquer le Service, le surcharger, ou tenter de contourner sa sécurité ou ses limites.
+      </li>
+    </ul>
+
+    <h2>5. Suspension et résiliation</h2>
+    <p>
+      En cas de manquement aux présentes conditions, l'éditeur peut renommer un pseudo litigieux, ou
+      suspendre ou supprimer le compte concerné. Dans la mesure du possible, le motif vous est
+      d'abord indiqué par email, sauf urgence ou obligation légale contraire.
+    </p>
+
+    <h2>6. Propriété intellectuelle</h2>
+    <p>
+      Le Service et ses éléments (nom, design, code) appartiennent à l'éditeur ou à ses concédants.
+      Les photos et les faits proviennent des projets Wikimedia et sont utilisés selon leur propre
+      licence, crédités là où ils apparaissent. Vous ne pouvez utiliser le Service que pour un usage
+      personnel et non commercial.
+    </p>
+
+    <h2>7. Disponibilité et responsabilité</h2>
+    <p>
+      Le Service est fourni gratuitement, en l'état. Il peut être interrompu, par exemple pour
+      maintenance, et son contenu (âges, faits) provient de sources communautaires qui peuvent
+      comporter des erreurs. La responsabilité de l'éditeur est limitée dans la mesure permise par
+      la loi. Rien dans ces conditions ne limite une responsabilité qui ne peut l'être selon la loi
+      qui vous est applicable.
+    </p>
+
+    <h2>8. Données personnelles</h2>
+    <p>
+      Le traitement de vos données est décrit dans la
+      <a routerLink="/privacy" [queryParams]="{ lang: 'fr' }">politique de confidentialité</a>.
+    </p>
+
+    <h2>9. Modification des conditions</h2>
+    <p>
+      Ces conditions peuvent évoluer ; la date en haut de page change alors. Si vous avez un compte,
+      vous serez informé de toute modification importante et invité à accepter la nouvelle version.
+      Si vous la refusez, vous pouvez supprimer votre compte.
+    </p>
+
+    <h2>10. Droit applicable et litiges</h2>
+    <p>
+      Les présentes conditions sont régies par le droit français. Si vous êtes un consommateur
+      résidant dans un autre pays, vous conservez la protection des règles impératives de la loi de
+      votre pays et pouvez saisir ses juridictions. Avant toute action, écrivez à
+      <a href="mailto:contact@ageguessr.app">contact&#64;ageguessr.app</a> pour rechercher une
+      solution amiable. À défaut, les tribunaux français sont compétents, sous réserve des règles
+      protectrices des consommateurs.
+    </p>
+
+    <h2>11. Langues</h2>
+    <p>
+      Ces conditions existent en anglais et en français. En cas de divergence, la version française
+      prévaut.
+    </p>
+  </article>
+}

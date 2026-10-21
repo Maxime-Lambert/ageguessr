@@ -213,10 +213,10 @@ site. À l'inscription, on fait accepter les CGU, on fait confirmer l'âge minim
   qu'avec la Phase 3 (route absente → redirection vers l'accueil).
 
 ## Phase 3 — Les trois pages (frontend)
-- [ ] `features/legal/legal-notice/` : éditeur non professionnel, contact, hébergeur OVH
+- [x] `features/legal/legal-notice/` : éditeur non professionnel, contact, hébergeur OVH
       (téléphone vérifié), crédits (polices OFL ; photos Wikimedia, à compléter en
       Semaine 2)
-- [ ] `features/legal/terms/` :
+- [x] `features/legal/terms/` :
   - objet ;
   - accès sans compte et avec compte ;
   - âge minimum de 13 ans ;
@@ -228,7 +228,7 @@ site. À l'inscription, on fait accepter les CGU, on fait confirmer l'âge minim
   - modification des CGU ;
   - droit applicable et juridiction ;
   - version française prévalente.
-- [ ] `features/legal/privacy/` :
+- [x] `features/legal/privacy/` :
   - responsable de traitement et contact ;
   - données, finalités et bases légales (contrat pour le compte, intérêt légitime pour
     la sécurité et le rate limiting) ;
@@ -241,8 +241,8 @@ site. À l'inscription, on fait accepter les CGU, on fait confirmer l'âge minim
   - réclamation auprès de la CNIL ;
   - mineurs ;
   - modifications.
-- [ ] Routes dans `app.routes.ts`, `?lang=fr` avec lien de bascule, `<title>` par page
-- [ ] Contrôle visuel mobile et desktop, dans les deux thèmes
+- [x] Routes dans `app.routes.ts`, `?lang=fr` avec lien de bascule, `<title>` par page
+- [x] Contrôle visuel mobile et desktop, dans les deux thèmes
 
 ### Tests
 - **Unitaire frontend** : chaque page affiche l'anglais par défaut et le français avec
@@ -250,6 +250,24 @@ site. À l'inscription, on fait accepter les CGU, on fait confirmer l'âge minim
 - **Interface (Playwright)** : `legal.spec.ts`, les trois pages s'affichent dans les deux
   langues, la bascule fonctionne, pas de défilement horizontal à 360 px.
 - **Omis** : backend, pas concerné par cette phase.
+
+### Phase Summary
+- Points vérifiés pendant la rédaction :
+  - téléphone d'OVH : +33 9 72 10 10 07 (forme internationale du 1007) ;
+  - plateforme européenne ODR fermée le 20/07/2025 (règlement 2024/3228) : plus
+    d'obligation de lien ;
+  - médiation de la consommation : vise les professionnels, sans objet ici ;
+  - Cloudflare : certifié DPF, clauses types en repli.
+- Pièces communes :
+  - `legal-language.ts` : signal `en`/`fr` lu dans `?lang` ;
+  - `language-switch` ;
+  - `legal-dates.ts` : `TERMS_VERSION`, miroir de `TermsVersion.CURRENT` côté API,
+    et `displayDate` via `Intl` ;
+  - `legal-page.css` : partagé via `styleUrl`, encapsulé par page.
+- Pas de sauvegarde PostgreSQL aujourd'hui, donc rien à annoncer. Quand la sauvegarde
+  arrivera (Semaine 8), il faudra ajouter sa durée à la page de confidentialité.
+- `pnpm test` : 99 verts ; Playwright `component` : 37 verts, dont `legal.spec.ts`
+  (bascule de langue, pas de défilement horizontal à 360 px, pied de page en bas).
 
 ## Phase 4 — Documentation
 - [ ] `docs/decisions/architecture.md` : section « Pages légales » (éditeur anonyme, droit
