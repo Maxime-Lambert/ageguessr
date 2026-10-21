@@ -51,4 +51,24 @@ test.describe('header', () => {
     );
     expect(overflow).toBeLessThanOrEqual(0);
   });
+
+  test('declares the site icons, each served as an image', async ({ page, request }) => {
+    await asGuest(page);
+    await page.goto('/');
+
+    const icons = {
+      'link[rel="icon"][type="image/svg+xml"]': 'image/svg+xml',
+      'link[rel="icon"][sizes="32x32"]': /^image\/(x-icon|vnd\.microsoft\.icon)/,
+      'link[rel="apple-touch-icon"]': 'image/png',
+    };
+    for (const [selector, type] of Object.entries(icons)) {
+      const href = await page.locator(selector).getAttribute('href');
+      expect(href, selector).toBeTruthy();
+      // The SPA fallback answers 200 with index.html for any unknown path: the content
+      // type, not the status, tells a missing icon apart.
+      const response = await request.get(href!);
+      expect(response.status(), href!).toBe(200);
+      expect(response.headers()['content-type'], href!).toMatch(type);
+    }
+  });
 });

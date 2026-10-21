@@ -70,8 +70,9 @@ En gras : sous le seuil.
   - « A » de Fraunces **converti en tracé SVG** (`<path>`), pour ne pas dépendre des
     polices installées chez le visiteur (le `<text>` actuel retombe sur Georgia) ;
   - instance de la police variable figée en graisse 600, `opsz` 144 (optique « titre »),
-    via `fontTools.varLib.instancer` dans un venv Python jetable du scratchpad. La
-    commande est notée dans `frontend/public/README.md` pour pouvoir régénérer ;
+    via un script Node jetable (`fontkit` + `wawoff2` + `@resvg/resvg-js`, pas de venv
+    Python sur la machine). La méthode est notée dans `frontend/public/README.md` ;
+    **révisé en Phase 2 : graisse 700, `opsz` 9**, voir le Phase Summary ;
   - fond `--color-background` sombre, lettre `--color-accent`, coin `rx` ≈ 3/64 (« coins
     peu arrondis », comme `--radius-sm`) ;
   - fichiers : `favicon.svg` (navigateurs modernes), `favicon.ico` 32×32 (anciens
@@ -124,14 +125,24 @@ Le test garde-fou échouait sur 15 paires avant correction, 36/36 après.
   - pas de QA e2e : aucun parcours utilisateur ne change.
 
 ## Phase 2 — Favicon et wordmark
-- [ ] Générer le tracé du « A » (Fraunces 600, `opsz` 144) → `frontend/public/favicon.svg`
-- [ ] Générer `favicon.ico` (32×32) et `apple-touch-icon.png` (180×180)
-- [ ] `frontend/src/index.html` : `<link rel="icon" href="favicon.ico" sizes="32x32">`,
+- [x] Générer le tracé du « A » (Fraunces **700, `opsz` 9** — voir Phase Summary) → `frontend/public/favicon.svg`
+- [x] Générer `favicon.ico` (32×32) et `apple-touch-icon.png` (180×180)
+- [x] `frontend/src/index.html` : `<link rel="icon" href="favicon.ico" sizes="32x32">`,
       `<link rel="icon" type="image/svg+xml" href="favicon.svg">`,
       `<link rel="apple-touch-icon" href="apple-touch-icon.png">`
-- [ ] `frontend/public/README.md` : commande de régénération et licence OFL
-- [ ] Vérifier le wordmark : graisse et `opsz` effectifs dans le navigateur, ajuster les
+- [x] `frontend/public/README.md` : commande de régénération et licence OFL
+- [x] Vérifier le wordmark : graisse et `opsz` effectifs dans le navigateur, ajuster les
       classes de `header.html` seulement si l'écart est visible
+
+### Phase Summary
+- Instance révisée : `opsz` 144 donnait des déliés invisibles à 32 px. L'optique la plus
+  petite (`opsz` 9, graisse 700) reste lisible en onglet, vérifié sur un rendu 32 px
+  agrandi.
+- Le « A » est en `--color-accent` sombre corrigé (#7779EB).
+- Wordmark inchangé : Fraunces 400, `opsz` automatique selon la taille, conforme.
+- Caddy (`try_files {path} /index.html`) renvoie 200 pour un fichier absent : le test
+  vérifie le type MIME, pas seulement le statut.
+- Playwright `component` : 29 verts.
 
 ### Tests
 - **Interface (Playwright)** : dans `e2e/component/header.spec.ts`, vérifier que les trois
