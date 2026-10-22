@@ -10,7 +10,7 @@
           id="email"
           type="email"
           formControlName="email"
-          class="border-border bg-background mt-1 w-full rounded-md border px-3 py-2"
+          class="border-input-border bg-background mt-1 w-full rounded-md border px-3 py-2"
         />
       </div>
 
@@ -23,7 +23,7 @@
           autocomplete="username"
           aria-describedby="username-hint"
           (input)="usernameTaken.set(false)"
-          class="border-border bg-background mt-1 w-full rounded-md border px-3 py-2"
+          class="border-input-border bg-background mt-1 w-full rounded-md border px-3 py-2"
         />
         @if (usernameTaken()) {
           <p id="username-hint" class="text-danger mt-1 text-sm">This username is already taken.</p>
@@ -46,7 +46,7 @@
           formControlName="password"
           autocomplete="new-password"
           (input)="passwordRefusal.set(null)"
-          class="border-border bg-background mt-1 w-full rounded-md border px-3 py-2"
+          class="border-input-border bg-background mt-1 w-full rounded-md border px-3 py-2"
         />
         @if (form.controls.password.hasError('maxUtf8Bytes')) {
           <p class="text-danger mt-1 text-sm">{{ passwordTooLongMessage }}</p>
@@ -67,8 +67,36 @@
           id="confirmPassword"
           type="password"
           formControlName="confirmPassword"
-          class="border-border bg-background mt-1 w-full rounded-md border px-3 py-2"
+          class="border-input-border bg-background mt-1 w-full rounded-md border px-3 py-2"
         />
+      </div>
+
+      <div>
+        <div class="flex items-start gap-2">
+          <input
+            id="acceptTerms"
+            type="checkbox"
+            formControlName="acceptTerms"
+            aria-describedby="accept-terms-error"
+            class="accent-accent mt-1 size-4 shrink-0"
+          />
+          <!-- New tab: following a link must not lose what was typed in the form. -->
+          <label for="acceptTerms" class="text-sm">
+            I'm at least 13 and I accept the
+            <a routerLink="/terms" target="_blank" rel="noopener" class="text-accent underline"
+              >Terms</a
+            >
+            and the
+            <a routerLink="/privacy" target="_blank" rel="noopener" class="text-accent underline"
+              >Privacy Policy</a
+            >.
+          </label>
+        </div>
+        @if (form.controls.acceptTerms.invalid && form.controls.acceptTerms.touched) {
+          <p id="accept-terms-error" class="text-danger mt-1 text-sm">
+            You need to accept the Terms to create an account.
+          </p>
+        }
       </div>
 
       @if (errorMessage()) {

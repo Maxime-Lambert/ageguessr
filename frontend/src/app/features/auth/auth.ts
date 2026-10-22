@@ -36,8 +36,18 @@ export class Auth {
   // concurrent callers share one refresh avoids that race.
   private refreshInFlight: Observable<string> | null = null;
 
-  register(email: string, username: string, password: string): Observable<RegisterResponse> {
-    return this.http.post<RegisterResponse>('/api/auth/register', { email, username, password });
+  register(
+    email: string,
+    username: string,
+    password: string,
+    acceptTerms: boolean,
+  ): Observable<RegisterResponse> {
+    return this.http.post<RegisterResponse>('/api/auth/register', {
+      email,
+      username,
+      password,
+      acceptTerms,
+    });
   }
 
   login(email: string, password: string): Observable<AuthUser> {

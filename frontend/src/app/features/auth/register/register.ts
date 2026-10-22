@@ -31,6 +31,11 @@ export class Register {
     }),
     password: new FormControl('', { nonNullable: true, validators: NEW_PASSWORD_VALIDATORS }),
     confirmPassword: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+    // Never pre-checked: acceptance must be an explicit action (the API refuses false too).
+    acceptTerms: new FormControl(false, {
+      nonNullable: true,
+      validators: [Validators.requiredTrue],
+    }),
   });
 
   readonly submitting = signal(false);
@@ -46,7 +51,7 @@ export class Register {
       return;
     }
 
-    const { email, username, password, confirmPassword } = this.form.getRawValue();
+    const { email, username, password, confirmPassword, acceptTerms } = this.form.getRawValue();
     if (password !== confirmPassword) {
       this.errorMessage.set("Passwords don't match.");
       return;
@@ -56,7 +61,7 @@ export class Register {
     this.errorMessage.set(null);
     this.usernameTaken.set(false);
     this.passwordRefusal.set(null);
-    this.auth.register(email, username, password).subscribe({
+    this.auth.register(email, username, password, acceptTerms).subscribe({
       next: () => this.router.navigate(['/check-email'], { queryParams: { email } }),
       error: (error: HttpErrorResponse) => {
         this.submitting.set(false);

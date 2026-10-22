@@ -2,10 +2,12 @@ package app.ageguessr.features.auth.Register;
 
 import app.ageguessr.features.auth.EmailVerificationService;
 import app.ageguessr.features.auth.PasswordPolicy;
+import app.ageguessr.features.auth.TermsVersion;
 import app.ageguessr.features.auth.User;
 import app.ageguessr.features.auth.UserRepository;
 import app.ageguessr.shared.exceptions.ConflictException;
 import java.time.Clock;
+import java.time.Instant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,13 +32,16 @@ public class RegisterHandler {
             throw new ConflictException("USERNAME_TAKEN", "This username is already taken");
         }
 
+        Instant now = clock.instant();
         User user = User.builder()
                 .email(command.email())
                 .username(command.username())
                 .passwordHash(passwordEncoder.encode(command.password()))
                 .emailVerified(false)
                 .failedLoginAttempts(0)
-                .createdAt(clock.instant())
+                .createdAt(now)
+                .termsVersion(TermsVersion.CURRENT)
+                .termsAcceptedAt(now)
                 .build();
         user = userRepository.save(user);
 
