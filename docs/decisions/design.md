@@ -239,6 +239,3 @@ un logo. Méthode de régénération : `frontend/public/README.md`.
 ## À définir
 
 - **Modèle économique** : gratuit, freemium, ou autre — non tranché
-- **Mentions légales / CGU / RGPD** : à traiter avant toute ouverture publique —
-  juridiction et libellés à adapter à une audience internationale (pas uniquement
-  française)

@@ -6,6 +6,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import app.ageguessr.TestcontainersConfiguration;
+import app.ageguessr.functional.auth.AuthFlows.RegisterPayload;
+import app.ageguessr.features.auth.TermsVersion;
 import app.ageguessr.features.auth.UserRepository;
 import app.ageguessr.shared.email.RecordingEmailSender;
 import java.util.UUID;
@@ -50,8 +52,37 @@ class RegisterFunctionalTest {
         assertThat(userRepository.findByEmailIgnoreCase(email)).hasValueSatisfying(user -> {
             assertThat(user.isEmailVerified()).isFalse();
             assertThat(user.getUsername()).startsWith("u-");
+            assertThat(user.getTermsVersion()).isEqualTo(TermsVersion.CURRENT);
+            assertThat(user.getTermsAcceptedAt()).isNotNull();
         });
         assertThat(emailSender.lastMessageTo(email)).isNotNull();
+    }
+
+    /** The checkbox is in the form, but a client calling the API directly must not skip it. */
+    @Test
+    void rejectsARegistrationThatDoesNotAcceptTheTerms() throws Exception {
+        String email = "no-terms-" + UUID.randomUUID() + "@x.com";
+
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(
+                                new RegisterPayload(email, AuthFlows.randomUsername(), "tortoise-violin-42", false))))
+                .andExpect(status().isBadRequest());
+
+        assertThat(userRepository.findByEmailIgnoreCase(email)).isEmpty();
+    }
+
+    @Test
+    void rejectsARegistrationWithoutTheTermsField() throws Exception {
+        String email = "missing-terms-" + UUID.randomUUID() + "@x.com";
+        String body = """
+                {"email": "%s", "username": "%s", "password": "tortoise-violin-42"}
+                """.formatted(email, AuthFlows.randomUsername());
+
+        mockMvc.perform(post("/api/auth/register").contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isBadRequest());
+
+        assertThat(userRepository.findByEmailIgnoreCase(email)).isEmpty();
     }
 
     @Test
@@ -191,6 +222,4 @@ class RegisterFunctionalTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorCode").value("PASSWORD_TOO_COMMON"));
     }
-
-    private record RegisterPayload(String email, String username, String password) {}
 }

@@ -7,6 +7,7 @@ test.describe('register form', () => {
     await page.locator('#username').fill('Player');
     await page.locator('#password').fill('tortoise-violin-42');
     await page.locator('#confirmPassword').fill('different-violin-42');
+    await page.locator('#acceptTerms').check();
     await page.getByRole('button', { name: 'Create account' }).click();
 
     await expect(page.getByText("Passwords don't match.")).toBeVisible();
@@ -22,6 +23,7 @@ test.describe('register form', () => {
     await page.locator('#username').fill('Player');
     await page.locator('#password').fill('tortoise-violin-42');
     await page.locator('#confirmPassword').fill('tortoise-violin-42');
+    await page.locator('#acceptTerms').check();
     await page.getByRole('button', { name: 'Create account' }).click();
 
     await expect(page.getByText('An account with this email already exists.')).toBeVisible();
@@ -41,6 +43,7 @@ test.describe('register form', () => {
     await page.locator('#username').fill('Player');
     await page.locator('#password').fill('tortoise-violin-42');
     await page.locator('#confirmPassword').fill('tortoise-violin-42');
+    await page.locator('#acceptTerms').check();
     await page.getByRole('button', { name: 'Create account' }).click();
 
     await expect(page).toHaveURL(/\/check-email/);
@@ -69,6 +72,7 @@ test.describe('register form', () => {
     await page.locator('#username').fill('Taken');
     await page.locator('#password').fill('tortoise-violin-42');
     await page.locator('#confirmPassword').fill('tortoise-violin-42');
+    await page.locator('#acceptTerms').check();
     await page.getByRole('button', { name: 'Create account' }).click();
 
     await expect(page.getByText('This username is already taken.')).toBeVisible();
@@ -88,6 +92,7 @@ test.describe('register form', () => {
     await page.locator('#username').fill('Player');
     await page.locator('#password').fill('qwerty123456');
     await page.locator('#confirmPassword').fill('qwerty123456');
+    await page.locator('#acceptTerms').check();
     await page.getByRole('button', { name: 'Create account' }).click();
 
     await expect(page.getByText('This password is too common.')).toBeVisible();
@@ -123,9 +128,44 @@ test.describe('register form', () => {
     await page.locator('#username').fill('Taken');
     await page.locator('#password').fill('tortoise-violin-42');
     await page.locator('#confirmPassword').fill('tortoise-violin-42');
+    await page.locator('#acceptTerms').check();
     await submit.click();
 
     await expect(page.getByText('This username is already taken.')).toBeVisible();
     await expect(submit).toHaveCSS('cursor', 'pointer');
+  });
+
+  test('cannot create an account without accepting the Terms', async ({ page }) => {
+    let called = false;
+    await page.route('**/api/auth/register', (route) => {
+      called = true;
+      return route.fulfill({ status: 201, contentType: 'application/json', body: '{}' });
+    });
+
+    await page.goto('/register');
+    await expect(page.locator('#acceptTerms')).not.toBeChecked();
+    await page.locator('#email').fill('user@x.com');
+    await page.locator('#username').fill('Player');
+    await page.locator('#password').fill('tortoise-violin-42');
+    await page.locator('#confirmPassword').fill('tortoise-violin-42');
+    await page.getByRole('button', { name: 'Create account' }).click();
+
+    await expect(
+      page.getByText('You need to accept the Terms to create an account.'),
+    ).toBeVisible();
+    expect(called).toBe(false);
+  });
+
+  test('opens the Terms in a new tab, keeping what was typed', async ({ page }) => {
+    await page.goto('/register');
+    await page.locator('#email').fill('user@x.com');
+
+    const [terms] = await Promise.all([
+      page.waitForEvent('popup'),
+      page.locator('form').getByRole('link', { name: 'Terms', exact: true }).click(),
+    ]);
+
+    await expect(terms).toHaveURL(/\/terms$/);
+    await expect(page.locator('#email')).toHaveValue('user@x.com');
   });
 });

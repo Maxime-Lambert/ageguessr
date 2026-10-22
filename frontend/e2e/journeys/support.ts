@@ -36,6 +36,7 @@ export async function signUp(
   await page.locator('#username').fill(account.username);
   await page.locator('#password').fill(account.password);
   await page.locator('#confirmPassword').fill(account.password);
+  await page.locator('#acceptTerms').check();
   await page.getByRole('button', { name: 'Create account' }).click();
   await expect(page).toHaveURL(/\/check-email/);
 

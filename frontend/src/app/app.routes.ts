@@ -52,5 +52,21 @@ export const routes: Routes = [
         (m) => m.ConfirmAccountDeletion,
       ),
   },
+  {
+    path: 'legal-notice',
+    title: 'Legal notice · Ageguessr',
+    loadComponent: () =>
+      import('./features/legal/legal-notice/legal-notice').then((m) => m.LegalNotice),
+  },
+  {
+    path: 'terms',
+    title: 'Terms of Use · Ageguessr',
+    loadComponent: () => import('./features/legal/terms/terms').then((m) => m.Terms),
+  },
+  {
+    path: 'privacy',
+    title: 'Privacy Policy · Ageguessr',
+    loadComponent: () => import('./features/legal/privacy/privacy').then((m) => m.Privacy),
+  },
   { path: '**', redirectTo: '' },
 ];
