@@ -10,7 +10,7 @@
           id="email"
           type="email"
           formControlName="email"
-          class="border-border bg-background mt-1 w-full rounded-md border px-3 py-2"
+          class="border-input-border bg-background mt-1 w-full rounded-md border px-3 py-2"
         />
       </div>
 
@@ -23,7 +23,7 @@
           autocomplete="username"
           aria-describedby="username-hint"
           (input)="usernameTaken.set(false)"
-          class="border-border bg-background mt-1 w-full rounded-md border px-3 py-2"
+          class="border-input-border bg-background mt-1 w-full rounded-md border px-3 py-2"
         />
         @if (usernameTaken()) {
           <p id="username-hint" class="text-danger mt-1 text-sm">This username is already taken.</p>
@@ -46,7 +46,7 @@
           formControlName="password"
           autocomplete="new-password"
           (input)="passwordRefusal.set(null)"
-          class="border-border bg-background mt-1 w-full rounded-md border px-3 py-2"
+          class="border-input-border bg-background mt-1 w-full rounded-md border px-3 py-2"
         />
         @if (form.controls.password.hasError('maxUtf8Bytes')) {
           <p class="text-danger mt-1 text-sm">{{ passwordTooLongMessage }}</p>
@@ -67,7 +67,7 @@
           id="confirmPassword"
           type="password"
           formControlName="confirmPassword"
-          class="border-border bg-background mt-1 w-full rounded-md border px-3 py-2"
+          class="border-input-border bg-background mt-1 w-full rounded-md border px-3 py-2"
         />
       </div>
 

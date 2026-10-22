@@ -12,21 +12,29 @@
   --font-sans: 'Inter', system-ui, sans-serif;
   --font-display: 'Fraunces Variable', 'Fraunces', system-ui, serif;
 
-  /* Archive/vieille photo — sombre par defaut, voir docs/decisions/design.md */
+  /* Archive/vieille photo — sombre par defaut, voir docs/decisions/design.md.
+     Contrastes WCAG AA verifies par src/app/design-tokens.spec.ts */
   --color-background: #17130f;
   --color-surface: #221c15;
   --color-foreground: #ede3d2;
   --color-muted: #9c8f79;
   --color-border: #3a3021;
-  --color-accent: #6467e8;
-  --color-accent-foreground: #ffffff;
+  /* Bord des champs de formulaire : 3:1 minimum (WCAG 1.4.11), --color-border reste
+     decoratif (separateurs, cartes) */
+  --color-input-border: #736855;
+  --color-accent: #7779eb;
+  /* Texte sombre : le blanc ne passe pas 4.5:1 sur l'accent eclairci du theme sombre */
+  --color-accent-foreground: #17130f;
 
   /* Indicateur chaud/froid du jeu — volontairement distinct de --color-accent */
   --color-hot: #e2572b;
+  --color-hot-foreground: #17130f;
   --color-cold: #3e92b0;
+  --color-cold-foreground: #17130f;
 
   /* Erreurs de formulaire — brique mate, distincte de --color-hot (voir design.md) */
-  --color-danger: #c24b3f;
+  --color-danger: #cc675d;
+  --color-danger-foreground: #17130f;
 
   --radius-sm: 0.25rem;
   --radius-md: 0.375rem;
@@ -37,15 +45,19 @@
   --color-background: #f5eedf;
   --color-surface: #fffcf5;
   --color-foreground: #241d14;
-  --color-muted: #79705e;
+  --color-muted: #746b5a;
   --color-border: #ddd0b5;
+  --color-input-border: #928772;
   --color-accent: #4548b0;
   --color-accent-foreground: #ffffff;
 
   --color-hot: #c8431d;
+  --color-hot-foreground: #ffffff;
   --color-cold: #1f6e89;
+  --color-cold-foreground: #ffffff;
 
   --color-danger: #b23a2e;
+  --color-danger-foreground: #ffffff;
 }
 
 /* Tailwind v4 a retire le curseur "main" des boutons (retour au comportement natif du
