@@ -336,9 +336,11 @@ site. À l'inscription, on fait accepter les CGU, on fait confirmer l'âge minim
   acceptée et sa date sont enregistrées.
 - Bug corrigé en route : les erreurs de requête (JSON malformé, 405, 415) renvoyaient
   500 en prod.
-- **Reste à faire côté utilisateur avant la release** : `contact@ageguessr.app`
-  fonctionnelle (Zimbra OVH, DNS chez Cloudflare : validation du domaine en cours, puis
-  MX, SPF, DKIM et SRV).
+- `contact@ageguessr.app` : boîte Zimbra OVH configurée par l'utilisateur. DNS vérifié
+  le 2026-10-22 : MX OVH, SPF `include:mx.ovh.com`, DKIM `ovhmo-selector-1/2`, DMARC
+  `p=none`. Pas de SRV `_autodiscover` (configuration automatique des clients mail
+  seulement, pas nécessaire à la réception). La réception réelle reste à confirmer
+  après la release (Verification Plan).
 
 ## Deployment Plan
 - La migration Flyway `V3` ne fait qu'ajouter des colonnes nullables : pas de
