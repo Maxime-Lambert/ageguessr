@@ -9,10 +9,12 @@ la suivante).
 - [x] Docker Compose local fonctionnel (PostgreSQL + Redis)
 - [x] Authentification complète (inscription, connexion, JWT + refresh token rotatif,
       jeu possible sans compte) — PR #1
-- [ ] Charte graphique définie (`docs/decisions/design.md`) — couleurs, typo, formes,
-      icônes, ton (actuellement uniquement esquissé, pas de session de design dédiée)
-- [ ] Mise en place technique de la charte (tokens Tailwind, polices, toggle thème)
-- [ ] Logo/wordmark Ageguessr + favicon
+- [x] Charte graphique définie (`docs/decisions/design.md`) — couleurs vérifiées WCAG AA,
+      typo, formes, icônes, ton « enquête » à l'essai — PR `chore/design-charter`
+- [x] Mise en place technique de la charte (tokens Tailwind, polices, toggle thème,
+      test de contraste des tokens) — PR `chore/design-charter`
+- [x] Logo/wordmark Ageguessr + favicon (« A » Fraunces, SVG + ICO + Apple touch icon)
+      — PR `chore/design-charter`
 - [x] Mentions légales, CGU et politique de confidentialité (EN + FR, droit français,
       acceptation des CGU versionnée à l'inscription, 13 ans minimum) — PR
       `feature/legal-pages`
@@ -47,6 +49,9 @@ la suivante).
 - [ ] Écran de résultat (âge réel, identité révélée, points gagnés)
 - [ ] Enchaînement des 3 personnes du jour + récapitulatif final
 - [ ] Page d'accueil publique
+- [ ] Vocabulaire de jeu centralisé dans un seul fichier (essai du ton « enquête »,
+      critère de validation au premier playtest — voir `docs/decisions/design.md`)
+- [ ] Trancher le duotone des photos sur de vraies photos Commons
 
 ## Semaine 5 — Compte utilisateur + historique
 - [x] Inscription/connexion (frontend) + navigation (en-tête invité/connecté) — PR
