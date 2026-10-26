@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 /**
  * Decides whether a photo gives the person's age exactly. Validated on real data in the
- * spike of plans/active-plan.md (Phase 1): the declared date alone is not enough, since
+ * spike of plans/done/people-sourcing.md (Phase 1): the declared date alone is not enough, since
  * an old print scanned years later is often "dated" with the scan or upload day. The
  * camera's EXIF must agree, and no year in the file name may contradict it.
  */

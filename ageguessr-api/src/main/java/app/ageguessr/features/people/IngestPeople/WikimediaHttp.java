@@ -25,7 +25,7 @@ import tools.jackson.databind.ObjectMapper;
  *   <li>a pause before every request, so the ingestion never hammers a shared service;
  *   <li>retries on 429 and 5xx, on network errors, and on the MediaWiki "maxlag" error -
  *       which comes back as an HTTP 200 whose body says {"error": {"code": "maxlag"}}, so
- *       the status alone is not enough (seen in the spike, plans/active-plan.md Phase 1);
+ *       the status alone is not enough (seen in the spike, plans/done/people-sourcing.md Phase 1);
  *   <li>the server's Retry-After when it gives one, otherwise exponential backoff.
  * </ul>
  */

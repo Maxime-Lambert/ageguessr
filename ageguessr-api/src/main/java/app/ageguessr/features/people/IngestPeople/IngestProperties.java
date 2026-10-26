@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Positive;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
-/** Tuning of the people ingestion. See plans/active-plan.md for how the defaults were chosen. */
+/** Tuning of the people ingestion. See plans/done/people-sourcing.md for how the defaults were chosen. */
 @Validated
 @ConfigurationProperties("app.people.ingest")
 public record IngestProperties(

@@ -18,7 +18,7 @@ import tools.jackson.databind.JsonNode;
 
 /**
  * Lists people from Wikidata, most notable first, through QLever: the public Wikidata
- * SPARQL service times out on the ranking (plans/active-plan.md, Phase 1).
+ * SPARQL service times out on the ranking (plans/done/people-sourcing.md, Phase 1).
  *
  * <p>One small query per kind of data, assembled in Java. A single query joining the
  * ranking, birth and death statements and labels ran close to QLever's 30 s limit, then

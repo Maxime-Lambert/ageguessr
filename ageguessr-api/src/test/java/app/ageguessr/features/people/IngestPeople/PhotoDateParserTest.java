@@ -9,7 +9,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-/** Inputs below are real values seen in the spike (plans/active-plan.md, Phase 1). */
+/** Inputs below are real values seen in the spike (plans/done/people-sourcing.md, Phase 1). */
 class PhotoDateParserTest {
 
     @ParameterizedTest

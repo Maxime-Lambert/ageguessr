@@ -737,7 +737,7 @@ Status: Complete
 
 
 ## Phase 7 : Documentation, confidentialité, revues, PR
-Status: In progress (docs faites, revues en cours)
+Status: Complete
 
 - [x] `docs/decisions/architecture.md` : réécrire « Sourcing des personnes » (âge sur la
       photo, photo datée de façon fiable, plus de repli sur la date d'upload, sources
@@ -754,7 +754,7 @@ Status: In progress (docs faites, revues en cours)
 - [x] Agent `code-reviewer` sur le diff (sourcing externe, RGPD, droit à l'image,
       licences, SSRF) ; corriger, ou remonter la question du droit à l'image à
       l'utilisateur.
-- [ ] `./mvnw test` + `pnpm test` + `pnpm lint` verts, puis `/pr` vers `develop`.
+- [x] `./mvnw test` + `pnpm test` + `pnpm lint` verts, puis `/pr` vers `develop`.
 
 ### Verification Plan
 - `cd ageguessr-api && ./mvnw test` → vert ; `cd frontend && pnpm test && pnpm lint` →
@@ -817,8 +817,74 @@ Nouveaux tests :
 
 
 ## Final Recap
-_(à écrire quand toutes les phases sont finies)_
+**Livré** (PR `feature/people-sourcing` → `develop`) : la chaîne complète qui construit
+le pool de personnes du jeu.
+- **Liste** : personnalités Wikidata classées par notoriété via QLever, en 5 petites
+  requêtes par page.
+- **Dates** : naissance au jour près et décès, avec les rangs Wikidata.
+- **Photos** : candidates Commons (`P18` + `depicts`), gardées seulement si la date de
+  prise de vue donne un **âge exact**. Date déclarée, corroborée par l'EXIF, non
+  contredite par le nom de fichier.
+- **Sélection** : au moins 10 ans d'écart entre deux photos d'une même personne, 5 au
+  maximum.
+- **Stockage** : images ré-encodées sans métadonnées dans Postgres, statut de curation
+  `PENDING`.
+- **Endpoint** anti-triche `GET /api/images/{publicId}` qui ne sert que les photos
+  `APPROVED`, avec un seul 404 pour tous les refus.
+- **Effacement physique** des photos d'une personne exclue (trigger Postgres).
+- **Section 8 de `/privacy`** (EN + FR) pour les personnalités (art. 14 RGPD).
+
+**Chiffres clés** :
+- Spike : ~30 % des personnes avec `P18` ont une photo à âge exact corroborée par
+  l'EXIF, soit des dizaines de milliers de personnes.
+- Runs réels de 30 personnes : ~5 min, ~1,4 photo par personne, ~170 Ko par image.
+- **~43 % des photos automatiques montrent un groupe, une foule ou personne**, d'où la
+  curation manuelle obligatoire.
+- Tests : 483 backend, 138 frontend. Mutation `IngestPeople` : 94 %.
+
+**Écarts par rapport au plan initial, tous décidés avec l'utilisateur ou imposés par le
+réel** :
+- âge sur la photo plutôt qu'âge actuel ;
+- EXIF strict ;
+- écart de 10 ans au lieu d'une photo par année et par âge ;
+- curation manuelle ;
+- client QLever refondu (la requête unique dépassait le délai) ;
+- vignettes servies par `thumb.wikimedia.org` ;
+- `fetchFiles` en POST (HTTP 414) ;
+- profil `ingest` avec `server.port=-1` et arrêt explicite de la JVM ;
+- labels QLever lus via `STRSTARTS`.
+
+**Hors scope, à faire ensuite** :
+- **`feature/photo-curation`** : rôle admin, endpoints approuver/rejeter, page Angular,
+  pose de `excluded`.
+- **Droit à l'image** des personnes vivantes à trancher avant toute approbation.
+- **Crédit photo** (auteur + licence) à la révélation du round, en Semaine 4, avant de
+  servir des photos aux joueurs.
+- Régénération du `publicId` d'une photo resélectionnée (Semaine 3).
+- Plan dédié aux indices événementiels.
+
+**Problème d'outillage trouvé en route et corrigé à part** : PIT n'avait jamais
+fonctionné (PR #16, mergée).
 
 ## Deployment Plan
-_(à écrire quand toutes les phases sont finies : lancement de l'ingestion sur le VPS
-via `docker-compose.prod.yml`, volume de données attendu, impact sur les backups)_
+1. **Merge de la PR dans `develop`**, puis release `develop` → `main`, en **merge
+   commit** (voir la mémoire du projet sur les releases).
+2. **Au démarrage de l'API en prod**, Flyway applique V4 : trois tables vides, plus le
+   trigger. Rien n'est servi tant qu'aucune photo n'est `APPROVED`. Le déploiement est
+   donc sans effet visible pour les joueurs.
+3. **Ne pas lancer l'ingestion en production avant** :
+   - la PR `feature/photo-curation`, sinon les photos s'accumulent sans moyen de les
+     valider ;
+   - la vérification de l'espace disque du VPS. Ordre de grandeur : ~3 000 personnes ×
+     ~1,4 photo × ~170 Ko ≈ **0,7 Go** dans Postgres, à ajouter au volume des backups.
+4. **Lancer l'ingestion** (quand les conditions ci-dessus sont réunies) :
+   - en dehors des heures de pointe de QLever, depuis le VPS, avec l'image de l'API et
+     le profil `ingest`. Par exemple :
+     `docker compose -f docker-compose.prod.yml run --rm api --spring.profiles.active=prod,ingest --limit=3000`
+     (adapter au nom réel du service et aux profils de prod) ;
+   - durée attendue : **~8 h**. En cas d'arrêt (QLever en 429 prolongé, coupure), la
+     relancer : elle reprend sans doublon ;
+   - aucun secret supplémentaire : Wikidata, QLever et Commons sont publics. Le
+     User-Agent est configurable via `WIKIMEDIA_USER_AGENT`.
+5. **Après l'ingestion** : contrôler le bilan dans les logs (personnes gardées, rejets
+   par motif) et la taille de la base. Puis passe de curation.

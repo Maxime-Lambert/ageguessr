@@ -1,4 +1,4 @@
--- Personnalites du jeu, ingerees depuis Wikidata (voir plans/active-plan.md). Les
+-- Personnalites du jeu, ingerees depuis Wikidata (voir plans/done/people-sourcing.md). Les
 -- donnees sont publiques mais restent des donnees personnelles : "excluded" sert aux
 -- demandes de retrait, une personne exclue n'est plus jamais reingeree ni servie.
 CREATE TABLE people (
@@ -39,7 +39,7 @@ CREATE TABLE person_photos (
     public_id UUID NOT NULL,
     -- Curation manuelle : une photo n'entre dans le jeu qu'une fois APPROVED. Le
     -- spike a montre que ~43 % des photos retenues automatiquement montrent un groupe,
-    -- une foule ou personne (plans/active-plan.md). Une photo REJECTED n'est jamais
+    -- une foule ou personne (plans/done/people-sourcing.md). Une photo REJECTED n'est jamais
     -- reproposee et ne bloque ni son annee ni son age.
     review_status VARCHAR(16) NOT NULL DEFAULT 'PENDING',
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),

@@ -12,7 +12,7 @@ import tools.jackson.databind.JsonNode;
 /**
  * Runs the parsing, filter, evaluator and selector over everything recorded for Mallika
  * Sherawat (Q262665, born 1976-10-24) and checks that the Java rules give what the spike
- * measured by hand: 5 valid photos out of 26 (plans/active-plan.md, Phase 1).
+ * measured by hand: 5 valid photos out of 26 (plans/done/people-sourcing.md, Phase 1).
  */
 class SpikeRegressionTest {
 

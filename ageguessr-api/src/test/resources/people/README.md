@@ -1,7 +1,7 @@
 # Fixtures Wikidata / Commons
 
 Réponses réelles enregistrées le 2026-10-26 pendant le spike de
-`plans/active-plan.md` (Phase 1), puis lors de la refonte du client QLever (Phase 5). Elles sont reformatées (indentation) mais pas
+`plans/done/people-sourcing.md` (Phase 1), puis lors de la refonte du client QLever (Phase 5). Elles sont reformatées (indentation) mais pas
 modifiées. Les tests de parsing les rejouent avec `MockRestServiceServer`, sans réseau.
 
 Sources : données Wikidata et Structured Data on Commons sous CC0. Les champs
