@@ -177,7 +177,7 @@ class WikidataClientTest {
         WikidataClient client = new WikidataClient(
                 Fixtures.http(builder.build(), d -> {}, Duration.ZERO, 1), properties());
 
-        assertThat(client.fetchPeople(0, 500)).isEmpty();
+        assertThat(client.fetchPeople(0, 500, 1930)).isEmpty();
         server.verify();
     }
 
@@ -185,9 +185,18 @@ class WikidataClientTest {
     void fetchesAPageThenItsDetailsRestrictedToThePageQids() {
         MockRestServiceServer server = expectFivePosts("LIMIT+500+OFFSET+1000");
 
-        List<PersonRecord> page = client(server).fetchPeople(1000, 500);
+        List<PersonRecord> page = client(server).fetchPeople(1000, 500, 1930);
 
         assertThat(page).hasSize(7);
+        server.verify();
+    }
+
+    @Test
+    void ranksOnlyPeopleBornFromTheGivenYear() {
+        MockRestServiceServer server = expectFivePosts("FILTER%28YEAR%28%3Fbirth%29+%3E%3D+1930%29");
+
+        client(server).fetchPeople(0, 500, 1930);
+
         server.verify();
     }
 
@@ -200,7 +209,7 @@ class WikidataClientTest {
         WikidataClient client = new WikidataClient(
                 Fixtures.http(builder.build(), d -> {}, Duration.ZERO, 1), properties());
 
-        assertThat(client.fetchPeople(0, 500)).isEmpty();
+        assertThat(client.fetchPeople(0, 500, 1930)).isEmpty();
         server.verify();
     }
 

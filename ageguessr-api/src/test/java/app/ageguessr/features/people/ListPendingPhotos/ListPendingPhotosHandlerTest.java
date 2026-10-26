@@ -5,7 +5,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import app.ageguessr.features.people.CurationProperties;
 import app.ageguessr.features.people.PendingPhoto;
 import app.ageguessr.features.people.Person;
 import app.ageguessr.features.people.PersonPhoto;
@@ -32,7 +31,7 @@ class ListPendingPhotosHandlerTest {
         when(photos.findByPersonIdIn(List.of(person.getId()))).thenReturn(List.of(later, pending, earlier));
         when(photos.countPending()).thenReturn(42L);
 
-        PendingPhotosResponse response = handler(false).handle(new ListPendingPhotosQuery(20));
+        PendingPhotosResponse response = handler().handle(new ListPendingPhotosQuery(20));
 
         assertThat(response.totalPending()).isEqualTo(42);
         PendingPhotosResponse.Item item = response.items().getFirst();
@@ -41,7 +40,6 @@ class ListPendingPhotosHandlerTest {
         assertThat(item.person().deathDate()).isEqualTo(LocalDate.of(2010, 1, 1));
         assertThat(item.ageAtPhoto()).isEqualTo(40);
         assertThat(item.commonsFile()).isEqualTo("Photo 1990.jpg");
-        assertThat(item.approvable()).isTrue();
         // The photo itself is not among its siblings, which come oldest first.
         assertThat(item.otherPhotos())
                 .extracting(PendingPhotosResponse.OtherPhoto::photoId)
@@ -52,20 +50,10 @@ class ListPendingPhotosHandlerTest {
     }
 
     @Test
-    void aLivingPersonIsNotApprovableWhileItIsDisabled() {
-        Person living = person(null);
-        PersonPhoto pending = photo(living, 1990, ReviewStatus.PENDING);
-        when(photos.findPending(any(Pageable.class))).thenReturn(List.of(new PendingPhoto(pending, living)));
-
-        assertThat(handler(false).handle(new ListPendingPhotosQuery(20)).items().getFirst().approvable()).isFalse();
-        assertThat(handler(true).handle(new ListPendingPhotosQuery(20)).items().getFirst().approvable()).isTrue();
-    }
-
-    @Test
     void anEmptyQueue() {
         when(photos.findPending(any(Pageable.class))).thenReturn(List.of());
 
-        PendingPhotosResponse response = handler(false).handle(new ListPendingPhotosQuery(20));
+        PendingPhotosResponse response = handler().handle(new ListPendingPhotosQuery(20));
 
         assertThat(response.items()).isEmpty();
         assertThat(response.totalPending()).isZero();
@@ -78,7 +66,7 @@ class ListPendingPhotosHandlerTest {
             return List.of();
         });
 
-        handler(false).handle(new ListPendingPhotosQuery(7));
+        handler().handle(new ListPendingPhotosQuery(7));
     }
 
     @Test
@@ -86,8 +74,8 @@ class ListPendingPhotosHandlerTest {
         assertThat(new ListPendingPhotosQuery(null).limit()).isEqualTo(20);
     }
 
-    private ListPendingPhotosHandler handler(boolean allowLiving) {
-        return new ListPendingPhotosHandler(photos, new CurationProperties(allowLiving));
+    private ListPendingPhotosHandler handler() {
+        return new ListPendingPhotosHandler(photos);
     }
 
     private static Person person(LocalDate death) {

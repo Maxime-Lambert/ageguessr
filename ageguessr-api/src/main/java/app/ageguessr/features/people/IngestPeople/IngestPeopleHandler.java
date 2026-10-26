@@ -61,7 +61,7 @@ class IngestPeopleHandler {
         }
         int offset = 0;
         while (report.peopleKept() < command.targetPeople()) {
-            List<PersonRecord> page = wikidata.fetchPeople(offset, properties.pageSize());
+            List<PersonRecord> page = wikidata.fetchPeople(offset, properties.pageSize(), properties.minBirthYear());
             if (page.isEmpty()) {
                 log.warn("Wikidata list exhausted before reaching {} people", command.targetPeople());
                 break;

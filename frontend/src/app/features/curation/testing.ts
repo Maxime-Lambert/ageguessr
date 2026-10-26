@@ -1,6 +1,6 @@
 import { PendingPhoto } from './models';
 
-/** A pending photo of a deceased person, approvable unless overridden. */
+/** A pending photo of a deceased person. */
 export function pendingPhoto(id: string, overrides: Partial<PendingPhoto> = {}): PendingPhoto {
   return {
     photoId: id,
@@ -22,7 +22,6 @@ export function pendingPhoto(id: string, overrides: Partial<PendingPhoto> = {}):
     licenseShortName: 'CC BY-SA 4.0',
     licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0',
     authorText: 'Someone',
-    approvable: true,
     otherPhotos: [],
     ...overrides,
   };

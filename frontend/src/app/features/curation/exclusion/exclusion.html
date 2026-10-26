@@ -2,10 +2,10 @@
   class="bg-surface border-border rounded-lg border p-4 sm:p-6"
   aria-labelledby="exclusion-title"
 >
-  <h2 id="exclusion-title" class="font-display text-xl">Removal request</h2>
+  <h2 id="exclusion-title" class="font-display text-xl">Exclude a person</h2>
   <p class="text-muted mt-1 text-sm">
-    Find the person by name or Wikidata ID. Excluding them deletes all their photos and keeps them
-    out of every future ingestion.
+    On a removal request, or under the editorial line above. Find the person by name or Wikidata ID.
+    Excluding them deletes all their photos and keeps them out of every future ingestion.
   </p>
 
   <form class="mt-4 flex flex-wrap items-end gap-2" [formGroup]="form" (ngSubmit)="search()">

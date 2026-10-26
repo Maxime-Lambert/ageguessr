@@ -74,7 +74,7 @@ export class Curation implements OnDestroy {
 
   decide(decision: ReviewDecision): void {
     const item = this.current();
-    if (!item || this.busy() || (decision === 'APPROVED' && !item.approvable)) {
+    if (!item || this.busy()) {
       return;
     }
     this.busy.set(true);
@@ -243,9 +243,6 @@ export class Curation implements OnDestroy {
 
 function errorMessage(error: HttpErrorResponse): string {
   const code = (error.error as ApiErrorResponse | null)?.errorCode;
-  if (code === 'LIVING_PERSON_APPROVAL_DISABLED') {
-    return "Photos of living people can't be approved until image rights are settled.";
-  }
   if (code === 'PHOTO_SLOT_TAKEN') {
     return 'Another photo of this person already has this age or year.';
   }

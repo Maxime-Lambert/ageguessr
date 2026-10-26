@@ -1,6 +1,5 @@
 package app.ageguessr.features.people.ListPendingPhotos;
 
-import app.ageguessr.features.people.CurationProperties;
 import app.ageguessr.features.people.PendingPhoto;
 import app.ageguessr.features.people.Person;
 import app.ageguessr.features.people.PersonPhoto;
@@ -19,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class ListPendingPhotosHandler {
 
     private final PersonPhotoRepository photos;
-    private final CurationProperties curation;
 
     @Transactional(readOnly = true)
     public PendingPhotosResponse handle(ListPendingPhotosQuery query) {
@@ -57,7 +55,6 @@ public class ListPendingPhotosHandler {
                 photo.getLicenseShortName(),
                 photo.getLicenseUrl(),
                 photo.getAuthorText(),
-                curation.canApprove(person),
                 siblings.stream()
                         .filter(s -> !s.getId().equals(photo.getId()))
                         .sorted((a, b) -> a.getTakenFrom().compareTo(b.getTakenFrom()))

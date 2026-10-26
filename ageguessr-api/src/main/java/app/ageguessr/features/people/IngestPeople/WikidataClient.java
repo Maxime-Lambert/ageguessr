@@ -42,10 +42,13 @@ class WikidataClient {
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
             """;
 
-    // The QID breaks sitelinks ties, so that pages never overlap.
+    // The QID breaks sitelinks ties, so that pages never overlap. DISTINCT: a person with
+    // several birth dates would otherwise come once per date.
     private static final String PAGE = """
             SELECT DISTINCT ?person ?sitelinks WHERE {
-              ?person wdt:P31 wd:Q5 ; wdt:P18 ?image ; wikibase:sitelinks ?sitelinks .
+              ?person wdt:P31 wd:Q5 ; wdt:P18 ?image ; wikibase:sitelinks ?sitelinks ;
+                      wdt:P569 ?birth .
+              FILTER(YEAR(?birth) >= %d)
             }
             ORDER BY DESC(?sitelinks) ?person
             LIMIT %d OFFSET %d
@@ -110,12 +113,18 @@ class WikidataClient {
         this.properties = properties;
     }
 
-    /** People ranked {@code offset} to {@code offset + limit - 1} by notoriety. Fewer (or none) past the end. */
-    List<PersonRecord> fetchPeople(int offset, int limit) {
-        return details(query(PAGE.formatted(limit, offset)));
+    /**
+     * People born in {@code minBirthYear} or later, ranked {@code offset} to
+     * {@code offset + limit - 1} by notoriety. Fewer (or none) past the end.
+     */
+    List<PersonRecord> fetchPeople(int offset, int limit, int minBirthYear) {
+        return details(query(PAGE.formatted(minBirthYear, limit, offset)));
     }
 
-    /** One person by QID, to (re)ingest them alone. Empty if they are not a human with a P18 image. */
+    /**
+     * One person by QID, to (re)ingest them alone. Empty if they are not a human with a P18
+     * image. No birth year filter: naming someone is a deliberate choice.
+     */
     Optional<PersonRecord> fetchPerson(String wikidataId) {
         // Checked before it reaches the query text: the QID comes from the command line.
         if (!WikidataId.isValid(wikidataId)) {

@@ -39,7 +39,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import tools.jackson.databind.ObjectMapper;
 
-/** The curation endpoints through the real security chain. app.curation.allow-living-approval is false in tests. */
+/** The curation endpoints through the real security chain. */
 @SpringBootTest
 @AutoConfigureMockMvc
 @Import({TestcontainersConfiguration.class, AuthFunctionalTestConfig.class})
@@ -109,7 +109,6 @@ class CurationFunctionalTest {
                 .andExpect(jsonPath("$.items[0].person.nameEn").value("Jane Doe"))
                 .andExpect(jsonPath("$.items[0].ageAtPhoto").value(26))
                 .andExpect(jsonPath("$.items[0].commonsFile").value("Jane 1976.jpg"))
-                .andExpect(jsonPath("$.items[0].approvable").value(true))
                 .andExpect(jsonPath("$.items[0].otherPhotos[0].ageAtPhoto").value(40))
                 .andExpect(jsonPath("$.items[0].otherPhotos[0].reviewStatus").value("APPROVED"));
     }
@@ -150,15 +149,13 @@ class CurationFunctionalTest {
     }
 
     @Test
-    void refusesToApproveALivingPersonButLetsTheAdminRejectIt() throws Exception {
+    void approvesAPhotoOfALivingPerson() throws Exception {
         PersonPhoto pending = store(living("Q1"), "A.jpg", 1976, ReviewStatus.PENDING);
 
         mockMvc.perform(asAdmin(reviewRequest(pending.getId(), "APPROVED")))
-                .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.errorCode").value("LIVING_PERSON_APPROVAL_DISABLED"));
-        mockMvc.perform(asAdmin(reviewRequest(pending.getId(), "REJECTED")))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.reviewStatus").value("REJECTED"));
+                .andExpect(jsonPath("$.reviewStatus").value("APPROVED"));
+        mockMvc.perform(get("/api/images/" + pending.getPublicId())).andExpect(status().isOk());
     }
 
     @Test

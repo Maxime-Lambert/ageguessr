@@ -30,7 +30,6 @@ function pending(id: string, alive: boolean) {
     licenseShortName: 'CC BY-SA 4.0',
     licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0',
     authorText: 'Someone',
-    approvable: !alive,
     otherPhotos: [],
   };
 }
@@ -81,18 +80,17 @@ test.describe('photo curation', () => {
     await expect(page.getByRole('heading', { name: 'Person p2' })).toBeVisible();
     expect(reviews).toEqual([{ photoId: 'p1', decision: 'APPROVED' }]);
 
-    // Living person: approving is disabled, and the A key does nothing.
-    await expect(page.getByRole('button', { name: 'Approve (A)' })).toBeDisabled();
+    // A living person is approved like anyone else.
     await page.keyboard.press('a');
-    await expect(page.getByRole('heading', { name: 'Person p2' })).toBeVisible();
-    expect(reviews).toHaveLength(1);
+    await expect.poll(() => reviews.length).toBe(2);
+    expect(reviews[1]).toEqual({ photoId: 'p2', decision: 'APPROVED' });
 
     await page.keyboard.press('u');
-    await expect(page.getByRole('heading', { name: 'Person p1' })).toBeVisible();
-    expect(reviews.at(-1)).toEqual({ photoId: 'p1', decision: 'PENDING' });
+    await expect(page.getByRole('heading', { name: 'Person p2' })).toBeVisible();
+    expect(reviews.at(-1)).toEqual({ photoId: 'p2', decision: 'PENDING' });
   });
 
-  test('typing in the removal search never reviews a photo', async ({ page }) => {
+  test('typing in the exclusion search never reviews a photo', async ({ page }) => {
     await asLoggedIn(page, ADMIN);
     const reviews = await mockAdminApi(page);
     await page.goto('/admin/curation');

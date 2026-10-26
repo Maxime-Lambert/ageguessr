@@ -8,7 +8,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import app.ageguessr.features.people.CurationProperties;
 import app.ageguessr.features.people.Person;
 import app.ageguessr.features.people.PersonPhoto;
 import app.ageguessr.features.people.PersonPhotoRepository;
@@ -34,10 +33,10 @@ class ReviewPhotoHandlerTest {
     private final PersonRepository people = mock(PersonRepository.class);
 
     @Test
-    void approvesAPhotoOfADeceasedPersonAndRecordsWhoAndWhen() {
+    void approvesAPhotoAndRecordsWhoAndWhen() {
         PersonPhoto photo = stored(person(LocalDate.of(1990, 1, 1), false));
 
-        ReviewPhotoResponse response = handler(false).handle(ADMIN, photo.getId(), new ReviewPhotoCommand(ReviewStatus.APPROVED));
+        ReviewPhotoResponse response = handler().handle(ADMIN, photo.getId(), new ReviewPhotoCommand(ReviewStatus.APPROVED));
 
         assertThat(response).isEqualTo(new ReviewPhotoResponse(photo.getId(), ReviewStatus.APPROVED));
         assertThat(photo.getReviewStatus()).isEqualTo(ReviewStatus.APPROVED);
@@ -47,31 +46,19 @@ class ReviewPhotoHandlerTest {
     }
 
     @Test
-    void refusesToApproveALivingPersonWhileItIsDisabled() {
+    void approvesAPhotoOfALivingPerson() {
         PersonPhoto photo = stored(person(null, false));
 
-        assertThatThrownBy(() -> handler(false).handle(ADMIN, photo.getId(), new ReviewPhotoCommand(ReviewStatus.APPROVED)))
-                .isInstanceOf(ConflictException.class)
-                .extracting(e -> ((ConflictException) e).getErrorCode())
-                .isEqualTo(ReviewPhotoHandler.LIVING_PERSON_APPROVAL_DISABLED);
-        assertThat(photo.getReviewStatus()).isEqualTo(ReviewStatus.PENDING);
-        verify(photos, never()).saveAndFlush(any());
-    }
-
-    @Test
-    void approvesALivingPersonOnceItIsAllowed() {
-        PersonPhoto photo = stored(person(null, false));
-
-        handler(true).handle(ADMIN, photo.getId(), new ReviewPhotoCommand(ReviewStatus.APPROVED));
+        handler().handle(ADMIN, photo.getId(), new ReviewPhotoCommand(ReviewStatus.APPROVED));
 
         assertThat(photo.getReviewStatus()).isEqualTo(ReviewStatus.APPROVED);
     }
 
     @Test
-    void canAlwaysRejectALivingPerson() {
+    void rejectsAPhoto() {
         PersonPhoto photo = stored(person(null, false));
 
-        handler(false).handle(ADMIN, photo.getId(), new ReviewPhotoCommand(ReviewStatus.REJECTED));
+        handler().handle(ADMIN, photo.getId(), new ReviewPhotoCommand(ReviewStatus.REJECTED));
 
         assertThat(photo.getReviewStatus()).isEqualTo(ReviewStatus.REJECTED);
     }
@@ -81,7 +68,7 @@ class ReviewPhotoHandlerTest {
         PersonPhoto photo = stored(person(null, false));
         photo.setReviewStatus(ReviewStatus.REJECTED);
 
-        handler(false).handle(ADMIN, photo.getId(), new ReviewPhotoCommand(ReviewStatus.PENDING));
+        handler().handle(ADMIN, photo.getId(), new ReviewPhotoCommand(ReviewStatus.PENDING));
 
         assertThat(photo.getReviewStatus()).isEqualTo(ReviewStatus.PENDING);
     }
@@ -92,7 +79,7 @@ class ReviewPhotoHandlerTest {
         photo.setReviewStatus(ReviewStatus.REJECTED);
         when(photos.saveAndFlush(photo)).thenThrow(new DataIntegrityViolationException("person_photos_person_age_unique_idx"));
 
-        assertThatThrownBy(() -> handler(false).handle(ADMIN, photo.getId(), new ReviewPhotoCommand(ReviewStatus.PENDING)))
+        assertThatThrownBy(() -> handler().handle(ADMIN, photo.getId(), new ReviewPhotoCommand(ReviewStatus.PENDING)))
                 .isInstanceOf(ConflictException.class)
                 .extracting(e -> ((ConflictException) e).getErrorCode())
                 .isEqualTo(ReviewPhotoHandler.PHOTO_SLOT_TAKEN);
@@ -102,7 +89,7 @@ class ReviewPhotoHandlerTest {
     void anUnknownPhotoIsNotFound() {
         when(photos.findById(any())).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> handler(true).handle(ADMIN, UUID.randomUUID(), new ReviewPhotoCommand(ReviewStatus.APPROVED)))
+        assertThatThrownBy(() -> handler().handle(ADMIN, UUID.randomUUID(), new ReviewPhotoCommand(ReviewStatus.APPROVED)))
                 .isInstanceOf(NotFoundException.class);
     }
 
@@ -110,14 +97,13 @@ class ReviewPhotoHandlerTest {
     void aPhotoOfAnExcludedPersonIsNotFound() {
         PersonPhoto photo = stored(person(LocalDate.of(1990, 1, 1), true));
 
-        assertThatThrownBy(() -> handler(true).handle(ADMIN, photo.getId(), new ReviewPhotoCommand(ReviewStatus.APPROVED)))
+        assertThatThrownBy(() -> handler().handle(ADMIN, photo.getId(), new ReviewPhotoCommand(ReviewStatus.APPROVED)))
                 .isInstanceOf(NotFoundException.class);
         verify(photos, never()).saveAndFlush(any());
     }
 
-    private ReviewPhotoHandler handler(boolean allowLiving) {
-        return new ReviewPhotoHandler(
-                photos, people, new CurationProperties(allowLiving), Clock.fixed(NOW, ZoneOffset.UTC));
+    private ReviewPhotoHandler handler() {
+        return new ReviewPhotoHandler(photos, people, Clock.fixed(NOW, ZoneOffset.UTC));
     }
 
     private Person person(LocalDate death, boolean excluded) {

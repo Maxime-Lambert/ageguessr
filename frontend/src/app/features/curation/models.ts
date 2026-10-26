@@ -33,7 +33,6 @@ export interface PendingPhoto {
   licenseShortName: string;
   licenseUrl: string | null;
   authorText: string | null;
-  approvable: boolean;
   otherPhotos: OtherPhoto[];
 }
 

@@ -322,9 +322,14 @@ jour de `/privacy` et de sa date.
 **Décision** : le joueur devine **l'âge de la personne sur la photo**. Personnes
 vivantes et décédées sont acceptées. Le pool est construit par une **ingestion
 ponctuelle**, pas pendant les parties :
-- **Liste des personnes** : humains (`P31 = Q5`) avec une image `P18`, par sitelinks
-  décroissants (notoriété), interrogés sur **QLever** (`qlever.dev`). Le SPARQL public
-  de Wikidata dépasse son délai sur ce classement.
+- **Liste des personnes** : humains (`P31 = Q5`) avec une image `P18`, **nés en 1930
+  ou après** (`app.people.ingest.min-birth-year`), par sitelinks décroissants
+  (notoriété), interrogés sur **QLever** (`qlever.dev`). Le SPARQL public de Wikidata
+  dépasse son délai sur ce classement.
+  - Pourquoi 1930 : sans ce filtre, 41 des 300 personnes les plus connues seulement
+    sont vivantes, et les figures historiques n'ont presque jamais de photo à date
+    corroborée par l'EXIF. Le jeu veut des photos récentes et de bonne qualité. Une
+    ingestion par QID (`--qid`) ignore le filtre.
   - Cinq petites requêtes par page de 500 : classement, naissances, décès, images,
     labels. Elles sont assemblées en Java, environ 7 s par page. Une requête unique en
     jointure dépassait la limite de 30 s de QLever.
@@ -354,11 +359,23 @@ ponctuelle**, pas pendant les parties :
     A / R / → / U.
   - Endpoints `/api/admin/photos/**` ; décisions tracées (`reviewed_at`,
     `reviewed_by`).
-  - `app.curation.allow-living-approval` (`false` par défaut) : le serveur refuse
-    d'approuver une personne vivante tant que le droit à l'image n'est pas tranché.
+  - Personnes vivantes et décédées s'approuvent de la même façon (voir « Droit à
+    l'image » plus bas).
+- **Ligne éditoriale** (décision du 2026-10-26) : rien qui puisse raviver un
+  traumatisme. Sont exclus, avec le bouton d'exclusion de la page de curation :
+  - les auteurs de violences de masse : dictateurs, criminels de guerre, terroristes ;
+  - les dirigeants d'un pays actuellement en guerre.
+
+  Les condamnations non violentes (fraude, corruption…) ne sont pas un motif
+  d'exclusion. Le rappel est affiché sur la page de curation.
+  - Pas de filtre automatique : la propriété Wikidata « condamné pour » (`P1399`)
+    signale Jésus, Alan Turing, Galilée ou Messi, et pas Staline ni Mao.
 - **Demande de retrait** : depuis la page de curation, recherche par nom (insensible
   aux accents, extension `unaccent`) ou par QID, puis « Exclure ». Les photos sont
   effacées par le trigger V4 et l'exclusion est confirmée à la personne sous un mois.
+  - La ligne `people` d'une personne exclue (nom, naissance, QID, `excluded`) est
+    conservée **tant que le jeu existe**, pour empêcher toute ré-ingestion ; elle est
+    supprimée si le jeu s'arrête.
   - Pour une personne **pas encore ingérée**, noter le QID et l'exclure après
     l'ingestion. Une liste de blocage préalable sera ajoutée si le cas se présente.
 - **Commande** : profil Spring `ingest` (`IngestPeopleRunner`, `--limit`, `--qid`),
@@ -392,19 +409,20 @@ couverture mondiale. Le reste découle de l'exigence d'un âge exact :
 **Limites connues** :
 - QLever, service tiers, répond 429 quand une requête dépasse son délai. Une ingestion
   peut donc s'arrêter ; on la relance (idempotente).
-- **Droit à l'image des personnes vivantes, à trancher avant d'approuver la moindre
-  photo d'une personne vivante.** Les licences libres de Commons couvrent le droit
-  d'auteur, pas le droit à l'image (art. 9 du Code civil ; régimes différents à
-  l'étranger). Un jeu n'est pas l'usage « information » que la jurisprudence tolère
-  pour les personnalités publiques. Options relevées par la revue `code-reviewer` du
-  2026-10-26 :
-  - avis juridique ;
-  - lancement limité aux personnes décédées (la date de décès est déjà connue) ;
-  - écarter les fichiers marqués `{{Personality rights}}` sur Commons.
-- **Ligne éditoriale à définir** : les personnes les plus connues incluent des figures
-  comme des dictateurs ou des criminels (Adolf Hitler apparaît dans les 5 premières).
-  La curation permet de les rejeter au cas par cas ; une politique explicite reste à
-  décider.
+- **Droit à l'image des personnes vivantes : risque accepté** (décision du
+  2026-10-26). Les licences libres de Commons couvrent le droit d'auteur, pas le droit
+  à l'image (art. 9 du Code civil ; régimes différents à l'étranger), et un jeu n'est
+  pas l'usage « information » que la jurisprudence tolère pour les personnalités
+  publiques. Les personnes vivantes sont pourtant voulues, et même prioritaires : ce
+  sont elles qui ont des photos récentes et de bonne qualité. Le risque est couvert
+  par le retrait : toute demande mène à l'exclusion, qui efface les photos.
+  - Options écartées, relevées par la revue `code-reviewer` : avis juridique,
+    lancement limité aux personnes décédées. Écarter les fichiers marqués
+    `{{Personality rights}}` sur Commons reste possible si les demandes de retrait
+    se multiplient.
+  - Aux États-Unis, le *right of publicity* (État par État, ex. Californie, New York)
+    peut ouvrir droit à des dommages-intérêts même après retrait. À réexaminer si
+    l'audience américaine devient significative.
 - **Attribution CC BY / BY-SA** : l'auteur et la licence sont stockés, mais leur
   affichage à la révélation du round (Semaine 4) n'existe pas encore. Aucune photo ne
   doit être servie à des joueurs avant cet affichage.

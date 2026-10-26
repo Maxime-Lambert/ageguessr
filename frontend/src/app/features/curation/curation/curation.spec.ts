@@ -118,26 +118,12 @@ describe('Curation', () => {
     expect(page.textContent).toContain('2 left to review');
   });
 
-  it('cannot approve a living person while it is disabled, but can reject them', () => {
-    start([
-      pendingPhoto('p1', {
-        approvable: false,
-        person: { ...pendingPhoto('p1').person, deathDate: null },
-      }),
-    ]);
+  it('approves a living person like anyone else', () => {
+    start([pendingPhoto('p1', { person: { ...pendingPhoto('p1').person, deathDate: null } })]);
 
-    const approve = [...page.querySelectorAll('button')].find((b) =>
-      b.textContent?.includes('Approve'),
-    );
-    expect(approve?.disabled).toBe(true);
-    expect(page.textContent).toContain('Living person: approving is disabled');
     expect(page.textContent).toContain('Alive');
-
     press('a');
-    http.expectNone('/api/admin/photos/p1/review');
-
-    press('r');
-    expectReview('p1', 'REJECTED');
+    expectReview('p1', 'APPROVED');
     refillWithNothingNew(0);
   });
 

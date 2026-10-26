@@ -6,6 +6,11 @@ visage jusqu'au corps entier**. Cet outil sert aussi à traiter les demandes de 
 (exclusion d'une personne, qui efface ses photos). ~43 % de rejets attendus, d'après
 `plans/done/people-sourcing.md`.
 
+> **Retiré en Phase 6 (2026-10-26)** : le blocage de l'approbation des personnes
+> vivantes (`app.curation.allow-living-approval`, `CurationProperties`, champ
+> `approvable`, 409 `LIVING_PERSON_APPROVAL_DISABLED`). Les phases 1 à 5 le décrivent
+> encore tel qu'il a été construit ; il n'existe plus dans le code.
+
 ## For Future Agents
 Au fil du travail : cocher les cases `- [x]`. Quand une phase est finie, passer son
 statut à `Complete` et écrire son **Phase Summary**. Lancer le **Verification Plan** de
@@ -41,11 +46,9 @@ vérité, pas la conversation.
 - **Exclusion depuis la page de curation** : bouton « Exclure cette personne » avec
   confirmation explicite, plus une **recherche par nom ou QID** pour traiter une
   demande de retrait reçue par email.
-- **Approbation des personnes vivantes bloquée par réglage** :
-  `app.curation.allow-living-approval`, `false` par défaut. Tant qu'il est à `false`, le
-  serveur refuse d'approuver la photo d'une personne sans date de décès, en attendant
-  que le droit à l'image soit tranché. Le rejet reste toujours possible. Le front
-  désactive le bouton « Approuver » et explique pourquoi.
+- ~~**Approbation des personnes vivantes bloquée par réglage**~~ : retiré en Phase 6.
+  L'utilisateur accepte le risque du droit à l'image et veut des personnes vivantes en
+  priorité (2026-10-26).
 
 ## Hypothèses
 - **Retrait d'une personne pas encore ingérée** : hors scope. `people` impose une date
@@ -341,9 +344,8 @@ Corrigé avec un `FormGroup`.
 - compte supprimé ensuite : `reviewed_by` passe à `NULL`, `reviewed_at` est conservé ;
   les 10 comptes locaux sont intacts.
 
-**Point éditorial soulevé, à trancher par l'utilisateur** : les personnes les plus
-connues incluent des figures comme Adolf Hitler. La curation permet de les rejeter au
-cas par cas ; une politique éditoriale explicite reste à décider.
+**Point éditorial soulevé** : les personnes les plus connues incluent des figures
+comme Adolf Hitler. Tranché en Phase 6.
 
 
 ## Phase 5 : Docs, revues, PR
@@ -400,9 +402,51 @@ Tous les 🔴 et 🟠 corrigés :
   exercés seulement par les tests fonctionnels, exclus de PIT.
 
 
+## Phase 6 : Décisions éditoriales de l'utilisateur (2026-10-26)
+Status: Complete
+
+Décisions :
+- personnes vivantes : aucune restriction, elles sont même prioritaires (photos
+  récentes et de bonne qualité). Retrait sur demande avec l'exclusion existante ;
+- ligne éditoriale : rien qui puisse raviver un traumatisme. Exclure les auteurs de
+  violences de masse (dictateurs, criminels de guerre, terroristes) et les dirigeants
+  d'un pays actuellement en guerre. Les condamnations non violentes ne comptent pas ;
+- ingestion limitée aux personnes nées en 1930 ou après.
+
+Constat : la propriété Wikidata `P1399` (« condamné pour ») ne peut pas servir de
+filtre automatique. Dans le top 300, elle signale Jésus, Alan Turing, Galilée, Oscar
+Wilde et Messi, et pas Staline ni Mao. La ligne éditoriale passe donc par la curation.
+
+- [x] Retirer `CurationProperties` / `CurationConfig`, `app.curation.allow-living-approval`,
+      le 409 `LIVING_PERSON_APPROVAL_DISABLED` et le champ `approvable` (back, front,
+      tests).
+- [x] Rappel de la ligne éditoriale sur la page de curation ; section d'exclusion
+      renommée « Exclude a person » (retrait sur demande ou ligne éditoriale).
+- [x] `app.people.ingest.min-birth-year=1930` : filtre `YEAR(?birth) >= 1930` dans la
+      requête de classement QLever (mesurée : 7,4 s à froid pour 500 personnes). Pas de
+      filtre pour `--qid`.
+- [x] Docs : `architecture.md` (décisions, limites connues), `roadmap.md`.
+- [x] Tests complets, revues `code-reviewer` et `architecture-reviewer`.
+
+### Verification Plan
+- `cd ageguessr-api && ./mvnw test` : 0 échec.
+- `cd frontend && pnpm test && pnpm lint` ; Playwright component : 0 échec.
+- `grep -rn "approvable\|LIVING_PERSON\|allow-living" ageguessr-api/src frontend/src frontend/e2e` : rien.
+
+### Phase Summary
+Garde-fou des vivants retiré partout, rappel éditorial sur la page, ingestion limitée
+aux personnes nées en 1930 ou après (top de la liste : Obama, Trump, Michael Jackson,
+Poutine, G. W. Bush…). Tests : back **560/560** (−3 tests du garde-fou, +1 filtre de
+naissance, 1 fonctionnel réécrit), front **165/165**, lint et `tsc` OK, Playwright
+**42/42**, grep des vestiges vide. Revues : aucun 🔴 ; 🟠 architecture (vestiges dans
+les phases 1–5 du plan) corrigé par une note en tête du plan ; 🟡 sécurité (*right of
+publicity* américain, durée de conservation des personnes exclues) ajoutés à
+`architecture.md`.
+
+
 ## Final Recap
 _(à écrire quand toutes les phases sont finies)_
 
 ## Deployment Plan
 _(à écrire quand toutes les phases sont finies : migrations V5/V6, rôle admin à poser en
-SQL en prod, réglage `allow-living-approval`)_
+SQL en prod)_

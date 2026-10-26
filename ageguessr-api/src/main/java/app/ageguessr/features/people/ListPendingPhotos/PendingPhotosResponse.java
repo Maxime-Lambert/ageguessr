@@ -24,8 +24,6 @@ public record PendingPhotosResponse(long totalPending, List<Item> items) {
             String licenseShortName,
             String licenseUrl,
             String authorText,
-            /** False for a living person while approving them is disabled (CurationProperties). */
-            boolean approvable,
             /** The person's other photos, to see the age gap at a glance. */
             List<OtherPhoto> otherPhotos) {}
 

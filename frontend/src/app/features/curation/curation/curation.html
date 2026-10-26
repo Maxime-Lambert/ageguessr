@@ -11,6 +11,12 @@
     at least from the face to the full body. Shortcuts: <kbd>A</kbd> approve, <kbd>R</kbd> reject,
     <kbd>→</kbd> skip, <kbd>U</kbd> undo.
   </p>
+  <p class="text-muted text-sm">
+    Editorial line: nothing that could reopen a trauma.
+    <strong class="text-foreground">Exclude</strong> the perpetrators of mass violence (dictators,
+    war criminals, terrorists) and the leaders of a country currently at war, with the form at the
+    bottom of the page.
+  </p>
 
   @if (message()) {
     <p class="text-danger text-sm" role="alert">{{ message() }}</p>
@@ -119,19 +125,11 @@
           </div>
         }
 
-        @if (!item.approvable) {
-          <p class="text-muted" id="not-approvable">
-            Living person: approving is disabled until image rights are settled. You can still
-            reject the photo.
-          </p>
-        }
-
         <div class="flex flex-wrap gap-2 pt-2">
           <button
             type="button"
             (click)="decide('APPROVED')"
-            [disabled]="busy() || !item.approvable"
-            [attr.aria-describedby]="item.approvable ? null : 'not-approvable'"
+            [disabled]="busy()"
             class="bg-accent text-accent-foreground rounded-md px-4 py-2 font-medium disabled:opacity-50"
           >
             Approve (A)
