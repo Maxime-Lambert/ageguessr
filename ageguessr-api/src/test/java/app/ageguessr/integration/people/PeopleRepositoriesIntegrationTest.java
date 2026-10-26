@@ -11,6 +11,7 @@ import app.ageguessr.features.people.PersonRepository;
 import app.ageguessr.features.people.PhotoDateSource;
 import app.ageguessr.features.people.PhotoImage;
 import app.ageguessr.features.people.PhotoImageRepository;
+import app.ageguessr.features.people.ReviewStatus;
 import jakarta.persistence.EntityManager;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -190,6 +191,53 @@ class PeopleRepositoriesIntegrationTest {
     }
 
     @Test
+    void doesNotServeAPhotoThatIsPendingOrRejected() {
+        Person person = savePerson("Q1");
+        PersonPhoto pending = photoRepository.saveAndFlush(
+                photo(person, "A.jpg", 1976).reviewStatus(ReviewStatus.PENDING).build());
+        PersonPhoto rejected = photoRepository.saveAndFlush(
+                photo(person, "B.jpg", 1990).reviewStatus(ReviewStatus.REJECTED).build());
+        saveImage(pending);
+        saveImage(rejected);
+
+        assertThat(imageRepository.findServableByPublicId(pending.getPublicId())).isEmpty();
+        assertThat(imageRepository.findServableByPublicId(rejected.getPublicId())).isEmpty();
+    }
+
+    @Test
+    void aRejectedPhotoFreesItsYearAndAge() {
+        Person person = savePerson("Q1");
+        photoRepository.saveAndFlush(photo(person, "A.jpg", 1976).reviewStatus(ReviewStatus.REJECTED).build());
+
+        PersonPhoto sameYearAndAge = savePhoto(person, "B.jpg", 1976);
+
+        assertThat(sameYearAndAge.getId()).isNotNull();
+    }
+
+    @Test
+    void aPendingPhotoStillHoldsItsYearAndAge() {
+        Person person = savePerson("Q1");
+        photoRepository.saveAndFlush(photo(person, "A.jpg", 1976).reviewStatus(ReviewStatus.PENDING).build());
+
+        assertThatThrownBy(() -> savePhoto(person, "B.jpg", 1976)).isInstanceOf(DataIntegrityViolationException.class);
+    }
+
+    @Test
+    void rejectsAnUnknownReviewStatus() {
+        Person person = savePerson("Q1");
+        PersonPhoto photo = savePhoto(person, "A.jpg", 1976);
+
+        assertThatThrownBy(() -> {
+                    entityManager
+                            .createNativeQuery("UPDATE person_photos SET review_status = 'MAYBE' WHERE id = :id")
+                            .setParameter("id", photo.getId())
+                            .executeUpdate();
+                    entityManager.flush();
+                })
+                .hasStackTraceContaining("person_photos_review_status");
+    }
+
+    @Test
     void doesNotServeTheImageOfAnExcludedPerson() {
         Person person = personRepository.saveAndFlush(person("Q1").excluded(true).build());
         PersonPhoto photo = savePhoto(person, "A.jpg", 1976);
@@ -265,6 +313,7 @@ class PeopleRepositoriesIntegrationTest {
                 .authorText("Someone")
                 .sourceUrl("https://commons.wikimedia.org/wiki/File:" + file)
                 .publicId(UUID.randomUUID())
+                .reviewStatus(ReviewStatus.APPROVED)
                 .createdAt(Instant.now());
     }
 

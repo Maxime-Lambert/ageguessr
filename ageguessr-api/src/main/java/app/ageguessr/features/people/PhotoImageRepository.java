@@ -9,8 +9,9 @@ import org.springframework.data.repository.query.Param;
 public interface PhotoImageRepository extends JpaRepository<PhotoImage, UUID> {
 
     /**
-     * Resolves the public id in one query and ignores excluded people, so the caller
-     * cannot tell "unknown id" from "person removed on request".
+     * Resolves the public id in one query and ignores excluded people and photos not
+     * approved at curation, so the caller cannot tell "unknown id" from "removed on
+     * request" or "not reviewed yet".
      */
     @Query(
             """
@@ -19,6 +20,7 @@ public interface PhotoImageRepository extends JpaRepository<PhotoImage, UUID> {
               AND i.photoId = ph.id
               AND p.id = ph.personId
               AND p.excluded = false
+              AND ph.reviewStatus = app.ageguessr.features.people.ReviewStatus.APPROVED
             """)
     Optional<PhotoImage> findServableByPublicId(@Param("publicId") UUID publicId);
 }

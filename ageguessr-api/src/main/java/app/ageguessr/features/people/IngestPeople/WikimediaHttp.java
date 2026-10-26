@@ -1,5 +1,7 @@
 package app.ageguessr.features.people.IngestPeople;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -55,27 +57,57 @@ class WikimediaHttp {
     }
 
     JsonNode get(URI uri) {
-        return call(uri, () -> restClient.get().uri(uri));
+        return call(uri, () -> restClient.get().uri(uri), this::readJson);
     }
 
     /** SPARQL queries are POSTed: they are too long for a URL. */
     JsonNode postForm(URI uri, MultiValueMap<String, String> form) {
-        return call(uri, () -> restClient.post().uri(uri).contentType(MediaType.APPLICATION_FORM_URLENCODED).body(form));
+        return call(
+                uri,
+                () -> restClient.post().uri(uri).contentType(MediaType.APPLICATION_FORM_URLENCODED).body(form),
+                this::readJson);
     }
 
-    private JsonNode call(URI uri, Supplier<RestClient.RequestHeadersSpec<?>> request) {
+    /**
+     * Raw bytes, refused beyond {@code maxBytes}. The body is read up to one byte past the
+     * limit and no further, so an oversized file never lands in memory whole.
+     */
+    byte[] getBytes(URI uri, long maxBytes) {
+        return call(uri, () -> restClient.get().uri(uri), body -> {
+            byte[] bytes = body.readNBytes((int) Math.min(Integer.MAX_VALUE - 8, maxBytes + 1));
+            return bytes.length > maxBytes
+                    ? Outcome.fail("body larger than " + maxBytes + " bytes")
+                    : Outcome.ok(bytes);
+        });
+    }
+
+    @FunctionalInterface
+    private interface BodyReader<T> {
+        Outcome<T> read(InputStream body) throws IOException;
+    }
+
+    private <T> T call(URI uri, Supplier<RestClient.RequestHeadersSpec<?>> request, BodyReader<T> reader) {
         String lastFailure = "no attempt";
         for (int attempt = 1; attempt <= maxAttempts; attempt++) {
             sleep(pause);
-            Outcome outcome;
+            Outcome<T> outcome;
             try {
-                outcome = request.get().exchange((req, res) -> read(res.getStatusCode(), res.getHeaders().getFirst("Retry-After"),
-                        res.getBody().readAllBytes()));
+                outcome = request.get().exchange((req, res) -> {
+                    Optional<Duration> serverWait = parseRetryAfter(res.getHeaders().getFirst("Retry-After"));
+                    HttpStatusCode status = res.getStatusCode();
+                    if (status.value() == HttpStatus.TOO_MANY_REQUESTS.value() || status.is5xxServerError()) {
+                        return Outcome.<T>retry("HTTP " + status.value(), serverWait);
+                    }
+                    if (!status.is2xxSuccessful()) {
+                        return Outcome.<T>fail("HTTP " + status.value());
+                    }
+                    return reader.read(res.getBody()).withRetryAfter(serverWait);
+                });
             } catch (ResourceAccessException e) {
                 outcome = Outcome.retry("network error: " + e.getMessage(), Optional.empty());
             }
-            if (outcome.body() != null) {
-                return outcome.body();
+            if (outcome.value() != null) {
+                return outcome.value();
             }
             if (!outcome.retryable()) {
                 throw new WikimediaUnavailableException(uri.getHost() + " refused the request: " + outcome.failure());
@@ -89,23 +121,16 @@ class WikimediaHttp {
                 uri.getHost() + " still failing after " + maxAttempts + " attempts: " + lastFailure);
     }
 
-    private Outcome read(HttpStatusCode status, String retryAfter, byte[] bytes) {
-        Optional<Duration> serverWait = parseRetryAfter(retryAfter);
-        if (status.value() == HttpStatus.TOO_MANY_REQUESTS.value() || status.is5xxServerError()) {
-            return Outcome.retry("HTTP " + status.value(), serverWait);
-        }
-        if (!status.is2xxSuccessful()) {
-            return Outcome.fail("HTTP " + status.value());
-        }
+    private Outcome<JsonNode> readJson(InputStream in) throws IOException {
         JsonNode body;
         try {
-            body = objectMapper.readTree(new String(bytes, StandardCharsets.UTF_8));
+            body = objectMapper.readTree(new String(in.readAllBytes(), StandardCharsets.UTF_8));
         } catch (RuntimeException e) {
             // Jackson 3 only throws unchecked exceptions. A truncated body is worth a retry.
-            return Outcome.retry("unreadable JSON body", serverWait);
+            return Outcome.retry("unreadable JSON body", Optional.empty());
         }
         if ("maxlag".equals(body.path("error").path("code").asString(""))) {
-            return Outcome.retry("maxlag", serverWait);
+            return Outcome.retry("maxlag", Optional.empty());
         }
         return Outcome.ok(body);
     }
@@ -141,18 +166,23 @@ class WikimediaHttp {
         }
     }
 
-    private record Outcome(JsonNode body, boolean retryable, String failure, Optional<Duration> retryAfter) {
+    private record Outcome<T>(T value, boolean retryable, String failure, Optional<Duration> retryAfter) {
 
-        static Outcome ok(JsonNode body) {
-            return new Outcome(body, false, null, Optional.empty());
+        static <T> Outcome<T> ok(T value) {
+            return new Outcome<>(value, false, null, Optional.empty());
         }
 
-        static Outcome retry(String failure, Optional<Duration> retryAfter) {
-            return new Outcome(null, true, failure, retryAfter);
+        static <T> Outcome<T> retry(String failure, Optional<Duration> retryAfter) {
+            return new Outcome<>(null, true, failure, retryAfter);
         }
 
-        static Outcome fail(String failure) {
-            return new Outcome(null, false, failure, Optional.empty());
+        static <T> Outcome<T> fail(String failure) {
+            return new Outcome<>(null, false, failure, Optional.empty());
+        }
+
+        /** The server's Retry-After applies to a retry the body reader asks for (maxlag). */
+        Outcome<T> withRetryAfter(Optional<Duration> serverWait) {
+            return retryable && retryAfter.isEmpty() ? new Outcome<>(value, true, failure, serverWait) : this;
         }
     }
 }

@@ -37,7 +37,13 @@ CREATE TABLE person_photos (
     author_text VARCHAR(1024),
     source_url VARCHAR(1024) NOT NULL,
     public_id UUID NOT NULL,
+    -- Curation manuelle : une photo n'entre dans le jeu qu'une fois APPROVED. Le
+    -- spike a montre que ~43 % des photos retenues automatiquement montrent un groupe,
+    -- une foule ou personne (plans/active-plan.md). Une photo REJECTED n'est jamais
+    -- reproposee et ne bloque ni son annee ni son age.
+    review_status VARCHAR(16) NOT NULL DEFAULT 'PENDING',
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    CONSTRAINT person_photos_review_status CHECK (review_status IN ('PENDING', 'APPROVED', 'REJECTED')),
     CONSTRAINT person_photos_interval_ordered CHECK (taken_from <= taken_to),
     -- Une date au jour, au mois ou a l'annee tient toujours dans une seule annee : ca
     -- donne un sens a "l'annee de la photo" utilisee par l'index unique plus bas.
@@ -49,10 +55,12 @@ CREATE TABLE person_photos (
 CREATE UNIQUE INDEX person_photos_person_file_unique_idx ON person_photos (person_id, commons_file);
 -- Au plus une photo par age et par annee civile pour une meme personne : deux photos au
 -- meme age n'apportent rien au jeu. Les deux sont necessaires, une meme annee pouvant
--- couvrir deux ages (avant/apres l'anniversaire) et un meme age deux annees.
-CREATE UNIQUE INDEX person_photos_person_age_unique_idx ON person_photos (person_id, age_at_photo);
+-- couvrir deux ages (avant/apres l'anniversaire) et un meme age deux annees. Index
+-- partiels : une photo rejetee a la curation libere son annee et son age.
+CREATE UNIQUE INDEX person_photos_person_age_unique_idx
+    ON person_photos (person_id, age_at_photo) WHERE review_status <> 'REJECTED';
 CREATE UNIQUE INDEX person_photos_person_year_unique_idx
-    ON person_photos (person_id, (EXTRACT(YEAR FROM taken_from)));
+    ON person_photos (person_id, (EXTRACT(YEAR FROM taken_from))) WHERE review_status <> 'REJECTED';
 CREATE UNIQUE INDEX person_photos_public_id_unique_idx ON person_photos (public_id);
 
 -- Octets de l'image dans une table a part : Hibernate ne sait pas charger une colonne

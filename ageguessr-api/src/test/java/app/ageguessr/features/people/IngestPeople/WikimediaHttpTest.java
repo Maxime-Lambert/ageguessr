@@ -151,6 +151,23 @@ class WikimediaHttpTest {
     }
 
     @Test
+    void readsBytesUpToTheLimit() {
+        server.expect(requestTo(API)).andRespond(withSuccess(new byte[] {1, 2, 3}, MediaType.IMAGE_JPEG));
+
+        assertThat(http.getBytes(API, 3)).containsExactly(1, 2, 3);
+    }
+
+    @Test
+    void refusesBytesOverTheLimitWithoutRetrying() {
+        server.expect(times(1), requestTo(API)).andRespond(withSuccess(new byte[] {1, 2, 3, 4}, MediaType.IMAGE_JPEG));
+
+        assertThatThrownBy(() -> http.getBytes(API, 3))
+                .isInstanceOf(WikimediaUnavailableException.class)
+                .hasMessageContaining("larger than 3 bytes");
+        server.verify();
+    }
+
+    @Test
     void stopsWaitingWhenInterrupted() {
         WikimediaHttp interrupted = new WikimediaHttp(
                 RestClient.builder().build(), Fixtures.MAPPER, d -> { throw new InterruptedException(); }, PAUSE, 3);

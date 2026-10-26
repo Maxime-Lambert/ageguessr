@@ -23,7 +23,7 @@ import lombok.Setter;
  * <p>Only {@code publicId} may leave the API before a round ends. The Commons file name,
  * source URL and date would give the answer away (the file name usually contains the
  * person's name). The bytes live in {@link PhotoImage}, so loading a photo never loads
- * the image.
+ * the image. Only APPROVED photos are served or played (see {@link ReviewStatus}).
  */
 @Entity
 @Table(name = "person_photos")
@@ -63,6 +63,9 @@ public class PersonPhoto {
     private String sourceUrl;
 
     private UUID publicId;
+
+    @Enumerated(EnumType.STRING)
+    private ReviewStatus reviewStatus;
 
     private Instant createdAt;
 }

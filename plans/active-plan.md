@@ -105,6 +105,33 @@ vérité, pas la conversation.
   Ces règles se raisonnent par personne, pas par photo. Elles sont reportées dans
   `docs/roadmap.md`.
 
+## Décisions validées avec l'utilisateur (2026-10-26, après le premier vrai run)
+- **Exigence produit** : une photo ne montre qu'**une seule personne**, cadrée au
+  minimum du visage jusqu'au corps entier.
+- **Vérification par curation manuelle** (choix de l'utilisateur, contre la vision
+  Claude et la détection de visages locale). Sur le run de 30 personnes, j'ai revu
+  visuellement les 46 photos :
+  - 21 conviennent ;
+  - 5 sont limites (personne seule mais petite dans le cadre) ;
+  - **20 sont inutilisables (~43 %)** : groupes, foules, scène vue de loin, voire
+    **personne du tout** (Pelé : un stade ; Ariana Grande 2026 : un jeu de lumières).
+
+  Cause : les fichiers `depicts` ne listent que le sujet principal voulu par le
+  contributeur, pas toutes les personnes dans le cadre. Les `P18` sont presque toujours
+  de bons portraits.
+- **Découpage** :
+  - **Cette PR** : `person_photos.review_status` (`PENDING` / `APPROVED` /
+    `REJECTED`, défaut `PENDING`). Seules les photos `APPROVED` sont servies.
+  - Une photo `REJECTED` n'est jamais reproposée (`knownFiles`). Elle ne compte plus
+    dans le plafond ni dans l'écart minimal : les index uniques âge/année sont
+    **partiels** (`WHERE review_status <> 'REJECTED'`).
+  - **PR suivante** `feature/photo-curation` (plan dédié) : rôle admin, endpoints
+    approuver/rejeter, page Angular qui enchaîne les photos en attente avec des
+    raccourcis clavier.
+- V4 est modifiée plutôt que d'ajouter une V5 : elle n'a été appliquée que sur la base
+  locale de dev, réinitialisée à la main (tables `people*` et ligne V4 de
+  `flyway_schema_history`, comptes locaux conservés).
+
 ## Hypothèses (non tranchées, à confirmer par le spike de la Phase 1)
 - **Notoriété : pas de seuil, un objectif de taille.** L'ingestion parcourt les
   humains ayant un `P18`, par sitelinks décroissants, jusqu'à avoir retenu
@@ -536,26 +563,30 @@ Vérifications :
   de 60 s, même résultat).
 
 ## Phase 5 : Ré-encodage, handler et runner d'ingestion
-Status: Not started
+Status: In progress (code et tests faits, ingestion réelle en cours)
 
-- [ ] `features/people/IngestPeople/ImageDownloader.java` : allow-list
+- [x] `features/people/IngestPeople/ImageDownloader.java` : allow-list
       `upload.wikimedia.org`, plafond d'octets.
-- [ ] `features/people/IngestPeople/ImageReencoder.java` : contrôle des dimensions avant
+- [x] `features/people/IngestPeople/ImageReencoder.java` : contrôle des dimensions avant
       décodage, puis ré-encodage JPEG sans métadonnées.
-- [ ] `features/people/IngestPeople/IngestPeopleHandler.java` : orchestration par
+- [x] `features/people/IngestPeople/IngestPeopleHandler.java` : orchestration par
       personne, transaction par personne, idempotence, `excluded` respecté, échec d'une
       personne loggé sans arrêter le lot. Bilan final loggé (personnes vues, retenues,
       photos ajoutées, rejets par motif).
-- [ ] `features/people/IngestPeople/IngestPeopleRunner.java` : `ApplicationRunner`
+- [x] `features/people/IngestPeople/IngestPeopleRunner.java` : `ApplicationRunner`
       `@Profile("ingest")`. Options : `--limit=N`, `--qid=Q…` (une seule personne).
-- [ ] `ageguessr-api/src/main/resources/application-ingest.properties` :
+- [x] `ageguessr-api/src/main/resources/application-ingest.properties` :
       `spring.main.web-application-type=none`.
-- [ ] Tests unitaires : `ImageReencoderTest` (un JPEG avec EXIF en entrée → aucun EXIF
+- [x] Tests unitaires : `ImageReencoderTest` (un JPEG avec EXIF en entrée → aucun EXIF
       en sortie, image trop grande rejetée, fichier corrompu rejeté),
       `ImageDownloaderTest` (hôte refusé, taille dépassée), `IngestPeopleHandlerTest`
       (clients mockés : rejeu sans doublon, personne exclue ignorée, échec isolé).
-- [ ] Ingestion réelle en local : `--limit=30`. Vérifier en base et visuellement 10
-      images servies. Noter le bilan ici.
+- [x] Ingestion réelle en local : `--limit=30`. Vérifier en base et visuellement 10
+      images servies. Noter le bilan ici. *(fait sur les 46 images, voir le Phase
+      Summary)*
+- [x] Ajouté : statut de curation `review_status`, avec un rejet jamais reproposé qui
+      libère son année et son âge.
+- [ ] Relancer `--limit=30` après le correctif des labels et noter le bilan final.
 
 ### Verification Plan
 - `cd ageguessr-api && ./mvnw test` → vert.
@@ -568,7 +599,64 @@ Status: Not started
   métadonnée EXIF/XMP/IPTC.
 
 ### Phase Summary
-_(à écrire quand la phase est finie)_
+_(provisoire)_
+
+**Livré** :
+- `ImageDownloader` : allow-list `upload.wikimedia.org` **et `thumb.wikimedia.org`**,
+  HTTPS seul, sans port ni userinfo. Plafond d'octets lu en flux, avec la retry de
+  `WikimediaHttp`, généralisée aux octets.
+- `ImageReencoder` : dimensions vérifiées avant décodage (20 M pixels max),
+  conversion RVB, JPEG qualité 0,85 sans aucune métadonnée.
+- `IngestPeopleHandler`, `PeopleStore` (une transaction par personne), `IngestReport`,
+  `PersonSkip`.
+- `IngestPeopleRunner` (`--limit`, `--qid` validé par regex).
+- Profil `ingest` avec **`server.port=-1`** : `web-application-type=none` faisait
+  échouer `SecurityConfig`, faute de bean `HttpSecurity`.
+- Le runner **termine explicitement la JVM** (`SpringApplication.exit` +
+  `System.exit`) : sans ça, les pools et le client HTTP la gardaient en vie après le
+  bilan.
+- Nouveau cas : une date de naissance modifiée sur Wikidata entre deux runs donne
+  `BIRTH_DATE_CHANGED` (personne laissée intacte, warning pour vérification
+  manuelle).
+
+**Risque relevé** : QLever renvoie un **429 quand une requête dépasse son délai**
+(`"Operation timed out. Last operation: Sort…"`), pas seulement en cas de quota. Le
+2026-10-26 après-midi, même la petite requête de fixture a échoué pendant plus de 10
+minutes. Le client retente bien les 429. Mais si QLever reste surchargé plus longtemps
+que nos tentatives, la page en cours échoue et le run s'arrête proprement : il suffit
+de relancer (idempotent).
+
+À prévoir pour la production :
+- lancer l'ingestion aux heures creuses ;
+- éventuellement mettre en cache la liste des personnes (QID + sitelinks), ce qui
+  éviterait de retrier 1,4 M de lignes à chaque page.
+
+**Bugs trouvés en conditions réelles et corrigés** :
+1. Wikimedia sert les vignettes depuis `thumb.wikimedia.org`, et en 960 px (taille
+   standard) au lieu de 800.
+2. La JVM ne s'arrêtait pas.
+3. Le profil `ingest` ne démarrait pas.
+4. **Labels QLever** : `FILTER(LANG(?l) = "en")` rate le label anglais de Cristiano
+   Ronaldo, alors que `STRSTARTS(LANG(?l), "en")` le trouve. On prend maintenant toutes
+   les variantes `en*` / `fr*` et on préfère la langue exacte en Java.
+
+**Run réel `--limit=30` (avant le correctif des labels)** :
+- 78 personnes vues, 30 gardées (38 %), **44 photos**, **237 s**.
+- Personnes écartées : `BIRTH_DATE_UNUSABLE` 16, `NO_NAME` 4 (en partie à cause du bug
+  de labels), `NO_VALID_PHOTO` 28.
+- Photos rejetées : `GROUP_PHOTO` 777, `NOT_SELECTED` 367, `NOT_DATED` 229,
+  `AMBIGUOUS_AGE` 148, `LICENSE_NOT_ALLOWED` 145, `BEFORE_PHOTOGRAPHY` 34,
+  `EXIF_CONFLICT` 28, `NO_EXIF_DATE` 28, `CONFLICTING_DATES` 26,
+  `FILE_NAME_YEAR_CONFLICT` 21.
+- **172 Ko par image en moyenne** (max 389 Ko) ; 43 dates `BOTH`, 2 `{{Information}}`
+  seules, 1 SDC seule.
+- Projection pour 3 000 personnes : ~7 900 personnes vues, **~6 h 30** d'ingestion,
+  ~0,8 Go d'images.
+- Relancer le même QID n'ajoute que ce qui manque (2006 déjà là, 2016 ajoutée), et le
+  process s'arrête seul.
+- Images extraites de la base : uniquement les segments APP0, DQT, SOF0, DHT et SOS.
+  Ni EXIF, ni commentaire, ni nom, ni auteur, ni URL.
+- Revue visuelle : ~43 % inutilisables, d'où la curation manuelle (voir les décisions).
 
 ## Phase 6 : Endpoint `GET /api/images/{id}`
 Status: Not started

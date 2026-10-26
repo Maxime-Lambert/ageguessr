@@ -96,6 +96,75 @@ class WikidataClientTest {
     }
 
     @Test
+    void fetchesOnePersonByQid() {
+        URI qlever = URI.create("https://qlever.example/api/wikidata");
+        RestClient.Builder builder = RestClient.builder();
+        MockRestServiceServer server = MockRestServiceServer.bindTo(builder).build();
+        WikidataClient client = new WikidataClient(
+                new WikimediaHttp(builder.build(), Fixtures.MAPPER, d -> {}, Duration.ZERO, 1), properties(qlever));
+        server.expect(requestTo(qlever))
+                .andExpect(content().string(Matchers.containsString("VALUES+%3Fperson+%7B+wd%3AQ1001+%7D")))
+                .andRespond(withSuccess(Fixtures.text("qlever-selection.json"), MediaType.APPLICATION_JSON));
+
+        assertThat(client.fetchPerson("Q1001")).isPresent();
+        server.verify();
+    }
+
+    @Test
+    void refusesSomethingThatIsNotAQidBeforeBuildingTheQuery() {
+        WikidataClient client = new WikidataClient(
+                new WikimediaHttp(RestClient.builder().build(), Fixtures.MAPPER, d -> {}, Duration.ZERO, 1),
+                properties(URI.create("https://qlever.example")));
+
+        for (String bad : new String[] {"Q0", "42", "Q42 } ?x ?y ?z", "q42", "Q1234567890123"}) {
+            org.assertj.core.api.Assertions.assertThatThrownBy(() -> client.fetchPerson(bad))
+                    .as(bad)
+                    .isInstanceOf(IllegalArgumentException.class);
+        }
+    }
+
+    @Test
+    void prefersTheExactLanguageOverARegionalVariantWhateverTheRowOrder() {
+        PersonRecord person = WikidataClient.group(Fixtures.MAPPER.readTree("""
+                        [
+                          %s,
+                          %s
+                        ]
+                        """.formatted(
+                                row("Jane (UK)", "en-gb", "Jeanne (Canada)", "fr-ca"),
+                                row("Jane", "en", "Jeanne", "fr"))))
+                .getFirst();
+
+        assertThat(person.nameEn()).isEqualTo("Jane");
+        assertThat(person.nameFr()).isEqualTo("Jeanne");
+    }
+
+    @Test
+    void fallsBackToARegionalVariantWhenTheExactLanguageIsMissing() {
+        PersonRecord person = WikidataClient.group(Fixtures.MAPPER.readTree(
+                        "[" + row("Jane (US)", "en-us", null, null) + "]"))
+                .getFirst();
+
+        assertThat(person.nameEn()).isEqualTo("Jane (US)");
+        assertThat(person.nameFr()).isNull();
+    }
+
+    private static String row(String en, String enLang, String fr, String frLang) {
+        StringBuilder json = new StringBuilder("""
+                {"person": {"value": "http://www.wikidata.org/entity/Q1"}, "sitelinks": {"value": "10"},
+                 "birth": {"value": "1950-03-10T00:00:00Z"}, "birthPrecision": {"value": "11"},
+                 "birthCalendar": {"value": "http://www.wikidata.org/entity/Q1985727"},
+                 "birthRank": {"value": "http://wikiba.se/ontology#NormalRank"}""");
+        if (en != null) {
+            json.append(", \"labelEn\": {\"value\": \"%s\"}, \"labelEnLang\": {\"value\": \"%s\"}".formatted(en, enLang));
+        }
+        if (fr != null) {
+            json.append(", \"labelFr\": {\"value\": \"%s\"}, \"labelFrLang\": {\"value\": \"%s\"}".formatted(fr, frLang));
+        }
+        return json.append("}").toString();
+    }
+
+    @Test
     void anEmptyPageMeansTheEndOfTheList() {
         assertThat(WikidataClient.group(Fixtures.MAPPER.readTree("[]"))).isEmpty();
     }
