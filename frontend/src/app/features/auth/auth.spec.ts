@@ -3,7 +3,13 @@ import { provideHttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { Auth } from './auth';
 
-const USER = { id: '1', email: 'user@x.com', username: 'Player', emailVerified: true };
+const USER = {
+  id: '1',
+  email: 'user@x.com',
+  username: 'Player',
+  emailVerified: true,
+  role: 'USER' as const,
+};
 
 describe('Auth', () => {
   let service: Auth;
@@ -32,13 +38,20 @@ describe('Auth', () => {
     expect(service.accessToken()).toBe('access-token');
 
     const meReq = httpMock.expectOne('/api/auth/me');
-    meReq.flush({ id: '1', email: 'user@x.com', username: 'Player', emailVerified: true });
+    meReq.flush({
+      id: '1',
+      email: 'user@x.com',
+      username: 'Player',
+      emailVerified: true,
+      role: 'USER',
+    });
 
     expect(service.currentUser()).toEqual({
       id: '1',
       email: 'user@x.com',
       username: 'Player',
       emailVerified: true,
+      role: 'USER',
     });
     expect(service.isAuthenticated()).toBe(true);
     expect(result).toEqual({
@@ -46,6 +59,7 @@ describe('Auth', () => {
       email: 'user@x.com',
       username: 'Player',
       emailVerified: true,
+      role: 'USER',
     });
   });
 
@@ -56,6 +70,7 @@ describe('Auth', () => {
       email: 'user@x.com',
       username: 'Player',
       emailVerified: true,
+      role: 'USER',
     });
 
     service.logout().subscribe();

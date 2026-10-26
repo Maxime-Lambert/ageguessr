@@ -1,6 +1,8 @@
 package app.ageguessr.features.auth;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -51,4 +53,9 @@ public class User {
     private String termsVersion;
 
     private Instant termsAcceptedAt;
+
+    /** Defaults to USER for every account created in code, like the column default. */
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private UserRole role = UserRole.USER;
 }

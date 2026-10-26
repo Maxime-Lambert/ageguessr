@@ -1,8 +1,12 @@
+export type UserRole = 'USER' | 'ADMIN';
+
 export interface AuthUser {
   id: string;
   email: string;
   username: string;
   emailVerified: boolean;
+  /** Only decides what the interface shows: the API checks the role on every admin request. */
+  role: UserRole;
 }
 
 export interface LoginResponse {

@@ -82,9 +82,13 @@ describe('Login return URL', () => {
     component.form.setValue({ email: 'user@x.com', password: 'tortoise-violin-42' });
     component.submit();
     httpMock.expectOne('/api/auth/login').flush({ accessToken: 'token' });
-    httpMock
-      .expectOne('/api/auth/me')
-      .flush({ id: '1', email: 'user@x.com', username: 'Player', emailVerified: true });
+    httpMock.expectOne('/api/auth/me').flush({
+      id: '1',
+      email: 'user@x.com',
+      username: 'Player',
+      emailVerified: true,
+      role: 'USER',
+    });
 
     return navigateSpy.mock.calls[0][0] as string;
   }

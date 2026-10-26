@@ -1,5 +1,6 @@
 package app.ageguessr.config;
 
+import app.ageguessr.features.auth.AuthTokenService;
 import java.util.Base64;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -11,6 +12,8 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 
 /**
  * Issues and validates access tokens with a single shared HS256 secret — no separate
@@ -36,5 +39,21 @@ public class JwtConfig {
     @Bean
     JwtDecoder jwtDecoder(SecretKey jwtSecretKey) {
         return NimbusJwtDecoder.withSecretKey(jwtSecretKey).macAlgorithm(MacAlgorithm.HS256).build();
+    }
+
+    /**
+     * Turns the "roles" claim (["ADMIN"]) into ROLE_ADMIN authorities, which
+     * SecurityConfig checks on /api/admin/**. Picked up by the resource server as the
+     * only JwtAuthenticationConverter bean. Without it, Spring would read the standard
+     * "scope" claim, which these tokens do not carry.
+     */
+    @Bean
+    JwtAuthenticationConverter jwtAuthenticationConverter() {
+        JwtGrantedAuthoritiesConverter roles = new JwtGrantedAuthoritiesConverter();
+        roles.setAuthoritiesClaimName(AuthTokenService.ROLES_CLAIM);
+        roles.setAuthorityPrefix("ROLE_");
+        JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
+        converter.setJwtGrantedAuthoritiesConverter(roles);
+        return converter;
     }
 }

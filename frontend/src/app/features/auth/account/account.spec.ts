@@ -5,7 +5,13 @@ import { provideRouter } from '@angular/router';
 import { Auth } from '../auth';
 import { Account } from './account';
 
-const USER = { id: '1', email: 'me@x.com', username: 'Player', emailVerified: true };
+const USER = {
+  id: '1',
+  email: 'me@x.com',
+  username: 'Player',
+  emailVerified: true,
+  role: 'USER' as const,
+};
 const WRONG_PASSWORD = {
   body: { errorCode: 'INVALID_CURRENT_PASSWORD', message: 'nope' },
   options: { status: 403, statusText: 'Forbidden' },

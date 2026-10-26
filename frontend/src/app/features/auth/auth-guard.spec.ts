@@ -29,7 +29,13 @@ describe('authGuard', () => {
   });
 
   it('allows navigation when authenticated', async () => {
-    auth.currentUser.set({ id: '1', email: 'user@x.com', username: 'Player', emailVerified: true });
+    auth.currentUser.set({
+      id: '1',
+      email: 'user@x.com',
+      username: 'Player',
+      emailVerified: true,
+      role: 'USER',
+    });
     auth.sessionChecked.set(true);
 
     expect(await firstValueFrom(run())).toBe(true);
@@ -51,7 +57,13 @@ describe('authGuard', () => {
     expect(decided).toBeUndefined();
 
     // The restore completes and turns out to be a valid session.
-    auth.currentUser.set({ id: '1', email: 'user@x.com', username: 'Player', emailVerified: true });
+    auth.currentUser.set({
+      id: '1',
+      email: 'user@x.com',
+      username: 'Player',
+      emailVerified: true,
+      role: 'USER',
+    });
     auth.sessionChecked.set(true);
     TestBed.tick();
 

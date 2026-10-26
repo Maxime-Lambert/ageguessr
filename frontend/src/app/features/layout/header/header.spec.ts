@@ -42,7 +42,13 @@ describe('Header', () => {
 
   it('shows the username and a log out button once logged in', () => {
     auth.sessionChecked.set(true);
-    auth.currentUser.set({ id: '1', email: 'me@x.com', username: 'Player', emailVerified: true });
+    auth.currentUser.set({
+      id: '1',
+      email: 'me@x.com',
+      username: 'Player',
+      emailVerified: true,
+      role: 'USER',
+    });
 
     expect(links()).toEqual(expect.arrayContaining(['Player', 'Log out']));
     expect(links()).not.toContain('Log in');
@@ -51,7 +57,13 @@ describe('Header', () => {
   it('logging out returns to the home page as a guest', () => {
     const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigate');
     auth.sessionChecked.set(true);
-    auth.currentUser.set({ id: '1', email: 'me@x.com', username: 'Player', emailVerified: true });
+    auth.currentUser.set({
+      id: '1',
+      email: 'me@x.com',
+      username: 'Player',
+      emailVerified: true,
+      role: 'USER',
+    });
 
     fixture.componentInstance.logout();
     httpMock.expectOne('/api/auth/logout').flush(null);

@@ -59,6 +59,10 @@ public class SecurityConfig {
                         // behind a 401. GET only: nothing else exists on these paths.
                         .requestMatchers(HttpMethod.GET, PUBLIC_GAME_GET_PATHS)
                         .permitAll()
+                        // Admin tools (photo curation): checked here, by path, so that the
+                        // features behind them never need to know about roles.
+                        .requestMatchers("/api/admin/**")
+                        .hasRole("ADMIN")
                         .anyRequest()
                         .authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
