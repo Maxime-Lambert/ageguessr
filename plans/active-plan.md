@@ -89,6 +89,9 @@ vérité, pas la conversation.
 
   - L'écart ne change pas le nombre de personnes gardées, seulement le nombre de photos
     par personne.
+  - **À réévaluer après la première vraie ingestion** (Phase 5 et production) : si le
+    volume de photos est trop faible, l'utilisateur envisage de descendre à 5 ans. Il
+    suffit de changer la propriété, sans toucher au code.
 - **Nombre de photos par personne plafonné et configurable** :
   `app.people.ingest.max-photos-per-person`, 5 par défaut. Les photos déjà stockées
   comptent dans le plafond et bloquent leur année et leur âge lors d'une
@@ -351,7 +354,7 @@ recherche `haswbstatement:P180=<QID> filetype:bitmap` (50 résultats max), plus 
   l'utilisateur.
 
 ## Phase 2 : Schéma de données et entités
-Status: In progress (code écrit, test d'intégration non exécuté : Docker indisponible dans WSL le 2026-10-26)
+Status: Complete
 
 - [x] `ageguessr-api/src/main/resources/db/migration/V4__create_people_tables.sql` :
   - `people` (`id uuid pk`, `wikidata_id varchar unique not null`, `name_en`,
@@ -391,16 +394,15 @@ _(provisoire)_ Écarts par rapport à la liste ci-dessus :
   racine de la feature.
 - Index uniques `(person_id, age_at_photo)` et `(person_id, EXTRACT(YEAR FROM
   taken_from))`, et `CHECK person_photos_interval_within_a_year` (décision de
-  l'utilisateur, voir plus haut). L'immutabilité de l'expression d'index reste à
-  confirmer par le test d'intégration.
+  l'utilisateur, voir plus haut). Postgres accepte bien l'index sur
+  `EXTRACT(YEAR FROM taken_from)`.
 - La requête du futur endpoint est déjà dans le repository :
   `PhotoImageRepository.findServableByPublicId` (jointure qui ignore les personnes
   exclues).
 
-`ArchitectureTests` est vert. **`PeopleRepositoriesIntegrationTest` (21 tests) n'a pas pu
-tourner** : Testcontainers ne trouve pas Docker (`docker` absent de la distro WSL,
-intégration WSL de Docker Desktop désactivée ou Docker arrêté). À relancer avant de
-passer la phase en `Complete`.
+Vérifié le 2026-10-26, une fois Docker relancé : `PeopleRepositoriesIntegrationTest`
+(20 tests) est vert, et `./mvnw test` complet donne 306 tests verts. `ddl-auto=validate`
+confirme donc que les entités et la V4 concordent.
 
 ## Phase 3 : Règles métier des dates (cœur pur)
 Status: Complete
