@@ -1,0 +1,378 @@
+{
+ "head": {
+  "vars": [
+   "person",
+   "sitelinks",
+   "image",
+   "birth",
+   "birthPrecision",
+   "birthCalendar",
+   "birthRank",
+   "death",
+   "labelEn",
+   "labelFr"
+  ]
+ },
+ "results": {
+  "bindings": [
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1001"
+    },
+    "sitelinks": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "287"
+    },
+    "image": {
+     "type": "uri",
+     "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Mahatma-Gandhi%2C%20studio%2C%201931.jpg"
+    },
+    "birth": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+     "type": "literal",
+     "value": "1869-10-02T00:00:00Z"
+    },
+    "birthPrecision": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "11"
+    },
+    "birthCalendar": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1985727"
+    },
+    "birthRank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#NormalRank"
+    },
+    "death": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+     "type": "literal",
+     "value": "1948-01-30T00:00:00Z"
+    },
+    "labelEn": {
+     "type": "literal",
+     "value": "Mahatma Gandhi",
+     "xml:lang": "en"
+    },
+    "labelFr": {
+     "type": "literal",
+     "value": "Mohandas Karamchand Gandhi",
+     "xml:lang": "fr"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1002250"
+    },
+    "sitelinks": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "67"
+    },
+    "image": {
+     "type": "uri",
+     "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Duncan%20Haldane.jpg"
+    },
+    "birth": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+     "type": "literal",
+     "value": "1951-11-14T00:00:00Z"
+    },
+    "birthPrecision": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "11"
+    },
+    "birthCalendar": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1985727"
+    },
+    "birthRank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#DeprecatedRank"
+    },
+    "labelEn": {
+     "type": "literal",
+     "value": "Duncan Haldane",
+     "xml:lang": "en"
+    },
+    "labelFr": {
+     "type": "literal",
+     "value": "Duncan Haldane",
+     "xml:lang": "fr"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1002250"
+    },
+    "sitelinks": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "67"
+    },
+    "image": {
+     "type": "uri",
+     "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Duncan%20Haldane.jpg"
+    },
+    "birth": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+     "type": "literal",
+     "value": "1951-09-14T00:00:00Z"
+    },
+    "birthPrecision": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "11"
+    },
+    "birthCalendar": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1985727"
+    },
+    "birthRank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#NormalRank"
+    },
+    "labelEn": {
+     "type": "literal",
+     "value": "Duncan Haldane",
+     "xml:lang": "en"
+    },
+    "labelFr": {
+     "type": "literal",
+     "value": "Duncan Haldane",
+     "xml:lang": "fr"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1004037"
+    },
+    "sitelinks": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "77"
+    },
+    "image": {
+     "type": "uri",
+     "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Frederik%20X%20in%20Helsinki%2C%202025.jpg"
+    },
+    "birth": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+     "type": "literal",
+     "value": "1968-05-26T00:00:00Z"
+    },
+    "birthPrecision": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "11"
+    },
+    "birthCalendar": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1985727"
+    },
+    "birthRank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#NormalRank"
+    },
+    "labelEn": {
+     "type": "literal",
+     "value": "Frederik X of Denmark",
+     "xml:lang": "en"
+    },
+    "labelFr": {
+     "type": "literal",
+     "value": "Frédéric X de Danemark",
+     "xml:lang": "fr"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q100440"
+    },
+    "sitelinks": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "60"
+    },
+    "image": {
+     "type": "uri",
+     "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Larry%20Hagman%202010.jpg"
+    },
+    "birth": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+     "type": "literal",
+     "value": "1931-09-21T00:00:00Z"
+    },
+    "birthPrecision": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "11"
+    },
+    "birthCalendar": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1985727"
+    },
+    "birthRank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#NormalRank"
+    },
+    "death": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+     "type": "literal",
+     "value": "2012-11-23T00:00:00Z"
+    },
+    "labelEn": {
+     "type": "literal",
+     "value": "Larry Hagman",
+     "xml:lang": "en"
+    },
+    "labelFr": {
+     "type": "literal",
+     "value": "Larry Hagman",
+     "xml:lang": "fr"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q10068"
+    },
+    "sitelinks": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "63"
+    },
+    "image": {
+     "type": "uri",
+     "value": "http://commons.wikimedia.org/wiki/Special:FilePath/25th%20Laureus%20World%20Sports%20Awards%20-%20Lindsey%20Vonn%20-%20240421%20160319.jpg"
+    },
+    "birth": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+     "type": "literal",
+     "value": "1984-10-18T00:00:00Z"
+    },
+    "birthPrecision": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "11"
+    },
+    "birthCalendar": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1985727"
+    },
+    "birthRank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#NormalRank"
+    },
+    "labelEn": {
+     "type": "literal",
+     "value": "Lindsey Vonn",
+     "xml:lang": "en"
+    },
+    "labelFr": {
+     "type": "literal",
+     "value": "Lindsey Vonn",
+     "xml:lang": "fr"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q10068"
+    },
+    "sitelinks": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "63"
+    },
+    "image": {
+     "type": "uri",
+     "value": "http://commons.wikimedia.org/wiki/Special:FilePath/2017%20Audi%20FIS%20Ski%20Weltcup%20Garmisch-Partenkirchen%20Damen%20-%20Lindsey%20Vonn%20-%20by%202eight%20-%208SC8048.jpg"
+    },
+    "birth": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+     "type": "literal",
+     "value": "1984-10-18T00:00:00Z"
+    },
+    "birthPrecision": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "11"
+    },
+    "birthCalendar": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1985727"
+    },
+    "birthRank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#NormalRank"
+    },
+    "labelEn": {
+     "type": "literal",
+     "value": "Lindsey Vonn",
+     "xml:lang": "en"
+    },
+    "labelFr": {
+     "type": "literal",
+     "value": "Lindsey Vonn",
+     "xml:lang": "fr"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q10085"
+    },
+    "sitelinks": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "51"
+    },
+    "image": {
+     "type": "uri",
+     "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Internationale%20Sportnacht%20Davos%202014.jpg"
+    },
+    "birth": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+     "type": "literal",
+     "value": "1983-05-02T00:00:00Z"
+    },
+    "birthPrecision": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "11"
+    },
+    "birthCalendar": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1985727"
+    },
+    "birthRank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#NormalRank"
+    },
+    "labelEn": {
+     "type": "literal",
+     "value": "Tina Maze",
+     "xml:lang": "en"
+    },
+    "labelFr": {
+     "type": "literal",
+     "value": "Tina Maze",
+     "xml:lang": "fr"
+    }
+   }
+  ]
+ },
+ "meta": {
+  "query-time-ms": 1035,
+  "result-size-total": 8
+ }
+}

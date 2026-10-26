@@ -1,0 +1,60 @@
+{
+ "batchcomplete": true,
+ "query": {
+  "pages": [
+   {
+    "pageid": 22867467,
+    "ns": 6,
+    "title": "File:Marie-Thérèse Kerschbaumer (1988) by Guenter Prust.jpg",
+    "imagerepository": "local",
+    "imageinfo": [
+     {
+      "thumburl": "https://upload.wikimedia.org/wikipedia/commons/b/bb/Marie-Th%C3%A9r%C3%A8se_Kerschbaumer_%281988%29_by_Guenter_Prust.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "thumbwidth": 800,
+      "thumbheight": 1042,
+      "thumbattribs": {
+       "src": "https://upload.wikimedia.org/wikipedia/commons/b/bb/Marie-Th%C3%A9r%C3%A8se_Kerschbaumer_%281988%29_by_Guenter_Prust.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+       "decoding": "async",
+       "loading": "lazy",
+       "width": 800,
+       "height": 1042
+      },
+      "url": "https://upload.wikimedia.org/wikipedia/commons/b/bb/Marie-Th%C3%A9r%C3%A8se_Kerschbaumer_%281988%29_by_Guenter_Prust.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "descriptionurl": "https://commons.wikimedia.org/wiki/File:Marie-Th%C3%A9r%C3%A8se_Kerschbaumer_(1988)_by_Guenter_Prust.jpg",
+      "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=22867467",
+      "metadata": [
+       {
+        "name": "MEDIAWIKI_EXIF_VERSION",
+        "value": 1
+       }
+      ],
+      "extmetadata": {
+       "DateTimeOriginal": {
+        "value": "2012-11-26 04:53:09",
+        "source": "commons-desc-page"
+       },
+       "Artist": {
+        "value": "Günter Prust",
+        "source": "commons-desc-page"
+       },
+       "LicenseShortName": {
+        "value": "CC BY 3.0",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "UsageTerms": {
+        "value": "Creative Commons Attribution 3.0",
+        "source": "commons-desc-page"
+       },
+       "LicenseUrl": {
+        "value": "https://creativecommons.org/licenses/by/3.0",
+        "source": "commons-desc-page"
+       }
+      },
+      "mime": "image/jpeg"
+     }
+    ]
+   }
+  ]
+ }
+}

@@ -1,0 +1,19 @@
+{
+ "batchcomplete": true,
+ "query": {
+  "searchinfo": {
+   "totalhits": 1
+  },
+  "search": [
+   {
+    "ns": 6,
+    "title": "File:Vero Charles Driffield - Ferdinand Hurter (ca.1880).jpg",
+    "pageid": 83232603,
+    "size": 1062,
+    "wordcount": 15,
+    "snippet": "The original description page was here. All following user names refer to de.wikipedia. English",
+    "timestamp": "2024-01-29T23:47:51Z"
+   }
+  ]
+ }
+}

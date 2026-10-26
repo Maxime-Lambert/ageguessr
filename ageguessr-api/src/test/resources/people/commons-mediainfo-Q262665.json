@@ -1,0 +1,6157 @@
+{
+ "entities": {
+  "M3983874": {
+   "pageid": 3983874,
+   "ns": 6,
+   "title": "File:Mallika Sherawat at Dasavathaaram release by IndiaFM.jpg",
+   "lastrevid": 1080891830,
+   "modified": "2025-09-04T19:49:59Z",
+   "type": "mediainfo",
+   "id": "M3983874",
+   "labels": {},
+   "descriptions": {},
+   "statements": {
+    "P6305": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6305",
+       "hash": "441356d964e475d603c1f6be54a3397c35a7241a",
+       "datavalue": {
+        "value": "2008030310010794",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M3983874$57CE799C-5DA2-49BA-B745-92B4474EB0D9",
+      "rank": "normal"
+     }
+    ],
+    "P170": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P170",
+       "hash": "aefed5efe969b7a784eb2c714fad23c4c7a409fa",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 4939834,
+         "id": "Q4939834"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M3983874$BC2E4B83-B648-4B0F-A0A8-C7EC3FE37290",
+      "rank": "normal"
+     }
+    ],
+    "P571": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P571",
+       "hash": "6afd6245d6095de5a8c5e77e1b612bbd4de83345",
+       "datavalue": {
+        "value": {
+         "time": "+2008-01-01T00:00:00Z",
+         "timezone": 0,
+         "before": 0,
+         "after": 0,
+         "precision": 9,
+         "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+        },
+        "type": "time"
+       }
+      },
+      "type": "statement",
+      "id": "M3983874$526912B4-8A7A-4682-92E5-28A2F0326FFC",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "5570347fdc76d2a80732f51ea10ee4b144a084e0",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 50423863,
+         "id": "Q50423863"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M3983874$7C6648F4-EB08-4247-A0FE-1FB013814E62",
+      "rank": "normal"
+     }
+    ],
+    "P275": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P275",
+       "hash": "079171cc72edf939cc43c28db72cff68862260f9",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 14947546,
+         "id": "Q14947546"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M3983874$0E093724-518B-4471-9839-10C4D9BE8007",
+      "rank": "normal"
+     }
+    ],
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "4b59bc97cdcc43caf3b9f267cb85b1b9c46c779c",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 262665,
+         "id": "Q262665"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M3983874$8D3683B0-187A-4A54-AADA-44AAB043A232",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M3983874$DA77A27C-8542-4CB0-88E6-10D899BFAA4B",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M11018379": {
+   "pageid": 11018379,
+   "ns": 6,
+   "title": "File:Mallika at ShaadiSepehle audiorelease.jpg",
+   "lastrevid": 736360375,
+   "modified": "2023-02-27T13:41:20Z",
+   "type": "mediainfo",
+   "id": "M11018379",
+   "labels": {},
+   "descriptions": {},
+   "statements": {
+    "P6305": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6305",
+       "hash": "441356d964e475d603c1f6be54a3397c35a7241a",
+       "datavalue": {
+        "value": "2008030310010794",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M11018379$D80117C0-7823-46C1-8A8B-9E47A6D864E8",
+      "rank": "normal"
+     }
+    ],
+    "P170": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P170",
+       "hash": "aefed5efe969b7a784eb2c714fad23c4c7a409fa",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 4939834,
+         "id": "Q4939834"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M11018379$A6AAF861-BF90-4344-A4DD-F9BEE2897F35",
+      "rank": "normal"
+     }
+    ],
+    "P7482": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P7482",
+       "hash": "b82dd47222a210c6dc1f428b693c2fbf7b0e0d6e",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 74228490,
+         "id": "Q74228490"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P973": [
+        {
+         "snaktype": "value",
+         "property": "P973",
+         "hash": "ab150240e2782cf480dda98a8346d1f503dc4bb1",
+         "datavalue": {
+          "value": "http://www.bollywoodhungama.com/stills/partiesnevents/Audio_release_of_Shaadi_Se_Pehle/still12364.html",
+          "type": "string"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P973"
+      ],
+      "id": "M11018379$E3F913FD-54AF-4EFD-B5B6-2B3060A1CB4D",
+      "rank": "normal"
+     }
+    ],
+    "P571": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P571",
+       "hash": "380c6e60db9a2197aa49d182f35100016d17e26c",
+       "datavalue": {
+        "value": {
+         "time": "+2006-02-16T00:00:00Z",
+         "timezone": 0,
+         "before": 0,
+         "after": 0,
+         "precision": 11,
+         "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+        },
+        "type": "time"
+       }
+      },
+      "type": "statement",
+      "id": "M11018379$7B30206A-2823-45A0-8F03-5F51E83EE889",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "5570347fdc76d2a80732f51ea10ee4b144a084e0",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 50423863,
+         "id": "Q50423863"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M11018379$9DE624B4-5E39-4139-91F5-204D60F5732F",
+      "rank": "normal"
+     }
+    ],
+    "P275": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P275",
+       "hash": "079171cc72edf939cc43c28db72cff68862260f9",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 14947546,
+         "id": "Q14947546"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M11018379$8626BFEF-4B2F-44F9-BDDD-BDAC3A6A34F8",
+      "rank": "normal"
+     }
+    ],
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "4b59bc97cdcc43caf3b9f267cb85b1b9c46c779c",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 262665,
+         "id": "Q262665"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M11018379$0FD3CCDE-43A1-4790-899D-FD278996AE89",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M14956440": {
+   "pageid": 14956440,
+   "ns": 6,
+   "title": "File:ROMY2011 a21 Mallika Sherawat.jpg",
+   "lastrevid": 1203006331,
+   "modified": "2026-04-24T21:28:45Z",
+   "type": "mediainfo",
+   "id": "M14956440",
+   "labels": {},
+   "descriptions": {},
+   "statements": {
+    "P7482": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P7482",
+       "hash": "83568a288a8b8b4714a68e7239d8406833762864",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 66458942,
+         "id": "Q66458942"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M14956440$3DE2DA08-1489-4985-A93F-2F5C575DE72D",
+      "rank": "normal"
+     }
+    ],
+    "P571": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P571",
+       "hash": "6dad2fc641a0410c36efc4b37817e3b2dd43524c",
+       "datavalue": {
+        "value": {
+         "time": "+2011-04-16T00:00:00Z",
+         "timezone": 0,
+         "before": 0,
+         "after": 0,
+         "precision": 11,
+         "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+        },
+        "type": "time"
+       }
+      },
+      "type": "statement",
+      "id": "M14956440$3484231C-3BA4-4857-94E4-998EAAB850BB",
+      "rank": "normal"
+     }
+    ],
+    "P275": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P275",
+       "hash": "a35b4558d66c92eacbe2f569697ffb1934e0316e",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 14946043,
+         "id": "Q14946043"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M14956440$9260700C-EF50-46D9-BB78-C2886637AF48",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "5570347fdc76d2a80732f51ea10ee4b144a084e0",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 50423863,
+         "id": "Q50423863"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M14956440$CE969C2B-3777-4857-9731-06927D2957CA",
+      "rank": "normal"
+     }
+    ],
+    "P4082": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P4082",
+       "hash": "97ab3a0149829a4b4732509819ede89fad23d311",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 64100,
+         "id": "Q64100"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M14956440$ADC0BB55-4FDA-4BB3-927F-FF29C31AC57C",
+      "rank": "normal"
+     }
+    ],
+    "P793": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P793",
+       "hash": "bea43fe1524fdf2d5e30480e0acffd422f96a34a",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 2165360,
+         "id": "Q2165360"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M14956440$cc9eb794-47de-9990-3fed-03b8d7b86a85",
+      "rank": "normal"
+     }
+    ],
+    "P1259": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1259",
+       "hash": "46ad8ac7ed7c26e6bf8a0b0bc7b596650d90c368",
+       "datavalue": {
+        "value": {
+         "latitude": 48.206197,
+         "longitude": 16.365075,
+         "altitude": null,
+         "precision": 1e-06,
+         "globe": "http://www.wikidata.org/entity/Q2"
+        },
+        "type": "globecoordinate"
+       }
+      },
+      "type": "statement",
+      "id": "M14956440$6E5C477E-E824-48E3-A9B7-29C980995C35",
+      "rank": "normal"
+     }
+    ],
+    "P6757": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6757",
+       "hash": "49f120186c4b8f37679dbe8be400a80d09464310",
+       "datavalue": {
+        "value": {
+         "amount": "+0.01666666666666666666",
+         "unit": "http://www.wikidata.org/entity/Q11574"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M14956440$010C52F7-5C0D-429B-9CC3-A824A5DFDDAC",
+      "rank": "normal"
+     }
+    ],
+    "P6790": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6790",
+       "hash": "50b3baa77d65cf3f696474e95269dc558104bdd1",
+       "datavalue": {
+        "value": {
+         "amount": "+4",
+         "unit": "1"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M14956440$01D35EB0-2D3D-4796-89F8-C284918467ED",
+      "rank": "normal"
+     }
+    ],
+    "P2151": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2151",
+       "hash": "20109209dc84fe5c36c949b774a794eb6b56cf8d",
+       "datavalue": {
+        "value": {
+         "amount": "+25",
+         "unit": "http://www.wikidata.org/entity/Q174789"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M14956440$8AF27C44-E1AA-4AC2-8ADE-6DA9003B7EC1",
+      "rank": "normal"
+     }
+    ],
+    "P6789": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6789",
+       "hash": "65c2f0864b9a7e4b57edfa997bc864da39b2e0fd",
+       "datavalue": {
+        "value": {
+         "amount": "+400",
+         "unit": "1"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M14956440$E1883CB8-29E7-4D4F-A57B-5E84F0727A7C",
+      "rank": "normal"
+     }
+    ],
+    "P31": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P31",
+       "hash": "78817782cf2abc9d185934ba3b526591e12840f2",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 125191,
+         "id": "Q125191"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M14956440$53454429-62BA-4CD7-B133-178079A1F846",
+      "rank": "normal"
+     }
+    ],
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "4b59bc97cdcc43caf3b9f267cb85b1b9c46c779c",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 262665,
+         "id": "Q262665"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M14956440$70A4FE24-8A56-49C3-8C02-7A35BACFB32F",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M14956440$F4A0E746-AF36-4FAA-8215-C145B673953C",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M14956453": {
+   "pageid": 14956453,
+   "ns": 6,
+   "title": "File:ROMY2011 b06 Mallika Sherawat.jpg",
+   "lastrevid": 1265351846,
+   "modified": "2026-08-22T07:54:40Z",
+   "type": "mediainfo",
+   "id": "M14956453",
+   "labels": {},
+   "descriptions": {},
+   "statements": {
+    "P571": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P571",
+       "hash": "e99304464ce474485b3222cdeb9d8dd797aedb69",
+       "datavalue": {
+        "value": {
+         "time": "+2011-04-17T00:00:00Z",
+         "timezone": 0,
+         "before": 0,
+         "after": 0,
+         "precision": 11,
+         "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+        },
+        "type": "time"
+       }
+      },
+      "type": "statement",
+      "id": "M14956453$1BE40F86-40E7-42B8-BD6E-896AACC51360",
+      "rank": "normal"
+     }
+    ],
+    "P275": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P275",
+       "hash": "a35b4558d66c92eacbe2f569697ffb1934e0316e",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 14946043,
+         "id": "Q14946043"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M14956453$E781E05B-40BC-4B6F-8018-4E45757E991D",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "5570347fdc76d2a80732f51ea10ee4b144a084e0",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 50423863,
+         "id": "Q50423863"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M14956453$7BA0850F-D090-4BCF-B075-3DB9B98A0EC4",
+      "rank": "normal"
+     }
+    ],
+    "P7482": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P7482",
+       "hash": "83568a288a8b8b4714a68e7239d8406833762864",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 66458942,
+         "id": "Q66458942"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M14956453$2CC97703-175D-41BC-A409-058D41ECD924",
+      "rank": "normal"
+     }
+    ],
+    "P4082": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P4082",
+       "hash": "97ab3a0149829a4b4732509819ede89fad23d311",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 64100,
+         "id": "Q64100"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M14956453$D29E8465-6B0D-4B0A-8658-FF870574909C",
+      "rank": "normal"
+     }
+    ],
+    "P793": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P793",
+       "hash": "bea43fe1524fdf2d5e30480e0acffd422f96a34a",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 2165360,
+         "id": "Q2165360"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M14956453$527431fa-44b7-8c21-0465-2d1d87e4ee5d",
+      "rank": "normal"
+     }
+    ],
+    "P1259": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1259",
+       "hash": "46ad8ac7ed7c26e6bf8a0b0bc7b596650d90c368",
+       "datavalue": {
+        "value": {
+         "latitude": 48.206197,
+         "longitude": 16.365075,
+         "altitude": null,
+         "precision": 1e-06,
+         "globe": "http://www.wikidata.org/entity/Q2"
+        },
+        "type": "globecoordinate"
+       }
+      },
+      "type": "statement",
+      "id": "M14956453$E138C063-D46F-4416-BEA7-B6AFAFC21FE8",
+      "rank": "normal"
+     }
+    ],
+    "P6757": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6757",
+       "hash": "7ac2241c962ab66d5539e55451e27f957316719c",
+       "datavalue": {
+        "value": {
+         "amount": "+0.008",
+         "unit": "http://www.wikidata.org/entity/Q11574"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M14956453$710D37BB-84F7-4A57-835C-E57D18605ECC",
+      "rank": "normal"
+     }
+    ],
+    "P6790": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6790",
+       "hash": "a80c8aa6c375a2b6438c939f1b7cd0377b54b205",
+       "datavalue": {
+        "value": {
+         "amount": "+2.8",
+         "unit": "1"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M14956453$E6A20551-0BA4-452C-9DFD-10DBD8AE13DB",
+      "rank": "normal"
+     }
+    ],
+    "P2151": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2151",
+       "hash": "b040beeac1aede008f987feda03b78412fe03a8b",
+       "datavalue": {
+        "value": {
+         "amount": "+26",
+         "unit": "http://www.wikidata.org/entity/Q174789"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M14956453$7705E6FB-8207-44A5-9627-6F18EB7D7234",
+      "rank": "normal"
+     }
+    ],
+    "P6789": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6789",
+       "hash": "bcecc2e41692f5515c720e13f8f7effb3b4205b7",
+       "datavalue": {
+        "value": {
+         "amount": "+800",
+         "unit": "1"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M14956453$689649C6-5335-4B15-B984-E000B7147DAA",
+      "rank": "normal"
+     }
+    ],
+    "P31": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P31",
+       "hash": "78817782cf2abc9d185934ba3b526591e12840f2",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 125191,
+         "id": "Q125191"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M14956453$100CB022-F70E-44A9-9308-570BA9C61CC6",
+      "rank": "normal"
+     }
+    ],
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "4b59bc97cdcc43caf3b9f267cb85b1b9c46c779c",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 262665,
+         "id": "Q262665"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M14956453$36A8B51C-584C-440E-8B16-158FF270FF58",
+      "rank": "normal"
+     },
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "b1ee3ed0c17b594beb7f21d1cad14458bffcd874",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 116887,
+         "id": "Q116887"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M14956453$cfb6be99-411d-f0a0-1a87-d6218c80ad7c",
+      "rank": "normal"
+     },
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "e026e50ffc97e7531557c978070a47fde9531e60",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 100699738,
+         "id": "Q100699738"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M14956453$4b0c4df5-4db9-0a5a-07a0-268103daf626",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M14956453$65194320-916E-4028-8A9F-D517D7AF184B",
+      "rank": "normal"
+     }
+    ],
+    "P3575": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P3575",
+       "hash": "e1460a349a2a9040f9f6e03010c0ea621bc7c71d",
+       "datavalue": {
+        "value": {
+         "amount": "+351862",
+         "unit": "http://www.wikidata.org/entity/Q8799"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M14956453$6905037E-8AD1-46B0-8B34-4F8FE630131A",
+      "rank": "normal"
+     }
+    ],
+    "P2048": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2048",
+       "hash": "502f4b21e66f102655e25617bbfc137733ac9502",
+       "datavalue": {
+        "value": {
+         "amount": "+1064",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M14956453$DDAFBCAC-7770-478C-8941-9F77D7C58F29",
+      "rank": "normal"
+     }
+    ],
+    "P2049": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2049",
+       "hash": "197cbb80dc41964a1a3f5bb48536e432e05cfd84",
+       "datavalue": {
+        "value": {
+         "amount": "+892",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M14956453$D3A53902-7425-4B9E-B053-A10ABB5DD5DC",
+      "rank": "normal"
+     }
+    ],
+    "P4092": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P4092",
+       "hash": "8c4ee7a74a4a112016960bce68fade540eace858",
+       "datavalue": {
+        "value": "9a3abb1c5e82b35a3e06d601c7ca18f6fe545990",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P459": [
+        {
+         "snaktype": "value",
+         "property": "P459",
+         "hash": "75dff03c151b13fbab93742164121c16a6aa0de1",
+         "datavalue": {
+          "value": {
+           "entity-type": "item",
+           "numeric-id": 13414952,
+           "id": "Q13414952"
+          },
+          "type": "wikibase-entityid"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P459"
+      ],
+      "id": "M14956453$73349F81-1621-4869-BD95-5BCAF8CD629F",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M16877222": {
+   "pageid": 16877222,
+   "ns": 6,
+   "title": "File:Mallika Sherawat Mahesh Bhatt Pooja Bhatt still4.jpg",
+   "lastrevid": 1201605859,
+   "modified": "2026-04-22T09:21:57Z",
+   "type": "mediainfo",
+   "id": "M16877222",
+   "labels": {},
+   "descriptions": {},
+   "statements": {
+    "P6305": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6305",
+       "hash": "441356d964e475d603c1f6be54a3397c35a7241a",
+       "datavalue": {
+        "value": "2008030310010794",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M16877222$A98A6B2C-9D3E-4A3A-B23E-A68ABA421198",
+      "rank": "normal"
+     }
+    ],
+    "P170": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P170",
+       "hash": "aefed5efe969b7a784eb2c714fad23c4c7a409fa",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 4939834,
+         "id": "Q4939834"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M16877222$58F5266E-3E07-44E0-B1EA-52176D7ED02E",
+      "rank": "normal"
+     }
+    ],
+    "P7482": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P7482",
+       "hash": "b82dd47222a210c6dc1f428b693c2fbf7b0e0d6e",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 74228490,
+         "id": "Q74228490"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P973": [
+        {
+         "snaktype": "value",
+         "property": "P973",
+         "hash": "6242f4c68972a4b37951212f91b0fadf05ae0d29",
+         "datavalue": {
+          "value": "http://www.bollywoodhungama.com/stills/partiesnevents/Murder_Success_Celebration_Party/still1085.html",
+          "type": "string"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P973"
+      ],
+      "id": "M16877222$036E333D-4093-4C19-8986-0095C5126997",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "5570347fdc76d2a80732f51ea10ee4b144a084e0",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 50423863,
+         "id": "Q50423863"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M16877222$1932B944-2B6C-4846-8490-C802BFBB6A12",
+      "rank": "normal"
+     }
+    ],
+    "P275": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P275",
+       "hash": "079171cc72edf939cc43c28db72cff68862260f9",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 14947546,
+         "id": "Q14947546"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M16877222$E567C05E-FB89-4797-B171-536F9B9AA20C",
+      "rank": "normal"
+     }
+    ],
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "4b59bc97cdcc43caf3b9f267cb85b1b9c46c779c",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 262665,
+         "id": "Q262665"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M16877222$6CD91424-300B-42C8-A760-BE747CF45C48",
+      "rank": "normal"
+     }
+    ],
+    "P3575": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P3575",
+       "hash": "8dc1aed6f4e57c0959fa7424268aab4688418349",
+       "datavalue": {
+        "value": {
+         "amount": "+30027",
+         "unit": "http://www.wikidata.org/entity/Q8799"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M16877222$C974C246-4C20-4B17-BBAE-08C48F4A8AEE",
+      "rank": "normal"
+     }
+    ],
+    "P2048": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2048",
+       "hash": "216a4d578eac742ee4ed46c3f32e702a47a39490",
+       "datavalue": {
+        "value": {
+         "amount": "+265",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M16877222$7AA43157-AAE7-4838-B0A9-F675664D6D47",
+      "rank": "normal"
+     }
+    ],
+    "P2049": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2049",
+       "hash": "1b930479bd15fef991d94ed14549b9f315dea152",
+       "datavalue": {
+        "value": {
+         "amount": "+400",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M16877222$A7A3210F-1CAA-4BE8-BB0B-871DF5ABE562",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M16877222$34857A6F-994C-4FA8-8BFA-278E38CB6D12",
+      "rank": "normal"
+     }
+    ],
+    "P4092": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P4092",
+       "hash": "caa0cbb99ffca20ed3b44756328b27b92619ae78",
+       "datavalue": {
+        "value": "4bb9e72eb574ccbdc435518f19cf06320380e52a",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P459": [
+        {
+         "snaktype": "value",
+         "property": "P459",
+         "hash": "75dff03c151b13fbab93742164121c16a6aa0de1",
+         "datavalue": {
+          "value": {
+           "entity-type": "item",
+           "numeric-id": 13414952,
+           "id": "Q13414952"
+          },
+          "type": "wikibase-entityid"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P459"
+      ],
+      "id": "M16877222$224F5705-E50E-4ACE-ACA6-F6F6C41C498A",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M16877292": {
+   "pageid": 16877292,
+   "ns": 6,
+   "title": "File:Mallika Sherawat Mahesh Bhatt still11.jpg",
+   "lastrevid": 1083181310,
+   "modified": "2025-09-09T11:55:31Z",
+   "type": "mediainfo",
+   "id": "M16877292",
+   "labels": {},
+   "descriptions": {},
+   "statements": {
+    "P6305": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6305",
+       "hash": "441356d964e475d603c1f6be54a3397c35a7241a",
+       "datavalue": {
+        "value": "2008030310010794",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M16877292$8CD0A3E4-2639-4C62-ABA3-AE60A6119689",
+      "rank": "normal"
+     }
+    ],
+    "P170": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P170",
+       "hash": "aefed5efe969b7a784eb2c714fad23c4c7a409fa",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 4939834,
+         "id": "Q4939834"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M16877292$DA43DFEE-E695-4898-9045-3C756E14D1E4",
+      "rank": "normal"
+     }
+    ],
+    "P7482": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P7482",
+       "hash": "b82dd47222a210c6dc1f428b693c2fbf7b0e0d6e",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 74228490,
+         "id": "Q74228490"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P973": [
+        {
+         "snaktype": "value",
+         "property": "P973",
+         "hash": "2274cfba85eca795a673486e3d21cdf07da6829a",
+         "datavalue": {
+          "value": "http://www.bollywoodhungama.com/stills/partiesnevents/Mahurat_of_Awarapan/still15488.html",
+          "type": "string"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P973"
+      ],
+      "id": "M16877292$C5D3D0EF-1100-4778-A146-B8415FB286C0",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "5570347fdc76d2a80732f51ea10ee4b144a084e0",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 50423863,
+         "id": "Q50423863"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M16877292$96FF63FA-F7A2-4B97-AD38-142484A490AC",
+      "rank": "normal"
+     }
+    ],
+    "P275": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P275",
+       "hash": "079171cc72edf939cc43c28db72cff68862260f9",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 14947546,
+         "id": "Q14947546"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M16877292$E3703051-A09A-43C0-8F7C-C0A7A0D3A6BF",
+      "rank": "normal"
+     }
+    ],
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "4b59bc97cdcc43caf3b9f267cb85b1b9c46c779c",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 262665,
+         "id": "Q262665"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M16877292$703F6802-23BB-4EBE-A4BC-B13DBE2920BA",
+      "rank": "normal"
+     }
+    ],
+    "P3575": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P3575",
+       "hash": "d9ec04c3049d999acc51754a2cd3482255a715f8",
+       "datavalue": {
+        "value": {
+         "amount": "+113830",
+         "unit": "http://www.wikidata.org/entity/Q8799"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M16877292$193E802E-B04B-46AA-98D4-E8B8D6DE828A",
+      "rank": "normal"
+     }
+    ],
+    "P2048": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2048",
+       "hash": "70eacd4ad068e85248c889ece12f7b3905c6ecb4",
+       "datavalue": {
+        "value": {
+         "amount": "+902",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M16877292$3F8E20A6-6C76-419E-BC90-18F8AD4D82B6",
+      "rank": "normal"
+     }
+    ],
+    "P2049": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2049",
+       "hash": "5a793505dad705545a38c70e1f264ac385b632eb",
+       "datavalue": {
+        "value": {
+         "amount": "+600",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M16877292$AA4DA6CB-67F7-488A-AD03-6815E294ED59",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M16877292$FF7E5766-1187-4286-B5F4-71FB512F70D3",
+      "rank": "normal"
+     }
+    ],
+    "P4092": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P4092",
+       "hash": "abff01a5fc0f1f7fb9b2b3f6f31ac9a34cd3f11b",
+       "datavalue": {
+        "value": "4f15cf5c1a55fd54a957ab57ebdb8cb652868cea",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P459": [
+        {
+         "snaktype": "value",
+         "property": "P459",
+         "hash": "75dff03c151b13fbab93742164121c16a6aa0de1",
+         "datavalue": {
+          "value": {
+           "entity-type": "item",
+           "numeric-id": 13414952,
+           "id": "Q13414952"
+          },
+          "type": "wikibase-entityid"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P459"
+      ],
+      "id": "M16877292$DA47A39E-845E-4745-8BFF-F58A4D4BF920",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M21937616": {
+   "pageid": 21937616,
+   "ns": 6,
+   "title": "File:Mallika Sherawat promotes 'Kismet Love Paisa Dilli' (2012) at Pritam Da Dhaba.jpg",
+   "lastrevid": 734339737,
+   "modified": "2023-02-21T02:57:11Z",
+   "type": "mediainfo",
+   "id": "M21937616",
+   "labels": {},
+   "descriptions": {},
+   "statements": {
+    "P170": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P170",
+       "hash": "aefed5efe969b7a784eb2c714fad23c4c7a409fa",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 4939834,
+         "id": "Q4939834"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M21937616$31D178DF-94B9-49A3-A93F-DE8F6F538B36",
+      "rank": "normal"
+     }
+    ],
+    "P6305": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6305",
+       "hash": "441356d964e475d603c1f6be54a3397c35a7241a",
+       "datavalue": {
+        "value": "2008030310010794",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M21937616$8E6AC844-2A81-4D3A-B297-5C556E14AC4E",
+      "rank": "normal"
+     }
+    ],
+    "P7482": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P7482",
+       "hash": "b82dd47222a210c6dc1f428b693c2fbf7b0e0d6e",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 74228490,
+         "id": "Q74228490"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P973": [
+        {
+         "snaktype": "value",
+         "property": "P973",
+         "hash": "87ddd85c32b6f9d87cf48ec09f18c8d9142b3d6f",
+         "datavalue": {
+          "value": "http://www.bollywoodhungama.com/more/photos/view/stills/parties-and-events/id/1566082",
+          "type": "string"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P973"
+      ],
+      "id": "M21937616$B02116F7-5118-425D-8ED3-0AF8BC9B6EC0",
+      "rank": "normal"
+     }
+    ],
+    "P571": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P571",
+       "hash": "979f7ae901cd08a064548e459e80c2f5908a9c5a",
+       "datavalue": {
+        "value": {
+         "time": "+2012-10-06T00:00:00Z",
+         "timezone": 0,
+         "before": 0,
+         "after": 0,
+         "precision": 11,
+         "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+        },
+        "type": "time"
+       }
+      },
+      "type": "statement",
+      "id": "M21937616$A5377298-C791-4931-B4C4-B034E599CF50",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "5570347fdc76d2a80732f51ea10ee4b144a084e0",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 50423863,
+         "id": "Q50423863"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M21937616$CD742455-408E-431A-B9DD-4384AF2E6B43",
+      "rank": "normal"
+     }
+    ],
+    "P275": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P275",
+       "hash": "079171cc72edf939cc43c28db72cff68862260f9",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 14947546,
+         "id": "Q14947546"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M21937616$F0D8C50F-04FB-478A-B005-51944C51FDFC",
+      "rank": "normal"
+     }
+    ],
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "4b59bc97cdcc43caf3b9f267cb85b1b9c46c779c",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 262665,
+         "id": "Q262665"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M21937616$89DC5F67-BFFE-49E2-AFB0-09A1F7CADEE0",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M24176664": {
+   "pageid": 24176664,
+   "ns": 6,
+   "title": "File:Mallika Sherawat at White House Correspondents Dinner.jpg",
+   "lastrevid": 1252274603,
+   "modified": "2026-07-26T10:27:56Z",
+   "type": "mediainfo",
+   "id": "M24176664",
+   "labels": {},
+   "descriptions": {},
+   "statements": {
+    "P170": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P170",
+       "hash": "aefed5efe969b7a784eb2c714fad23c4c7a409fa",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 4939834,
+         "id": "Q4939834"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M24176664$D584B6C5-5E76-4C2F-AD45-B4572BEC48EA",
+      "rank": "normal"
+     }
+    ],
+    "P6305": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6305",
+       "hash": "441356d964e475d603c1f6be54a3397c35a7241a",
+       "datavalue": {
+        "value": "2008030310010794",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M24176664$AC87A737-D894-461D-88F1-F335DD0D3528",
+      "rank": "normal"
+     }
+    ],
+    "P7482": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P7482",
+       "hash": "b82dd47222a210c6dc1f428b693c2fbf7b0e0d6e",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 74228490,
+         "id": "Q74228490"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P973": [
+        {
+         "snaktype": "value",
+         "property": "P973",
+         "hash": "cdef9b4385ece50f5e3722a385d89c2cf4cef32e",
+         "datavalue": {
+          "value": "http://www.bollywoodhungama.com/more/photos/view/stills/parties-and-events/id/1339834",
+          "type": "string"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P973"
+      ],
+      "id": "M24176664$06E50AE8-4A1A-41FD-96C9-FF7A0F94B6D2",
+      "rank": "normal"
+     }
+    ],
+    "P571": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P571",
+       "hash": "f599faf57f5c5bda1d108e82eccf8470babbf47d",
+       "datavalue": {
+        "value": {
+         "time": "+2011-05-02T00:00:00Z",
+         "timezone": 0,
+         "before": 0,
+         "after": 0,
+         "precision": 11,
+         "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+        },
+        "type": "time"
+       }
+      },
+      "type": "statement",
+      "id": "M24176664$A679CA93-AF25-474F-8DF3-842C5D2EE87F",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "5570347fdc76d2a80732f51ea10ee4b144a084e0",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 50423863,
+         "id": "Q50423863"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M24176664$792A79BE-2D21-41B3-B6B2-4CA1B881DAE8",
+      "rank": "normal"
+     }
+    ],
+    "P275": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P275",
+       "hash": "079171cc72edf939cc43c28db72cff68862260f9",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 14947546,
+         "id": "Q14947546"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M24176664$9044A2EF-292D-478D-BAC3-231745A459E5",
+      "rank": "normal"
+     }
+    ],
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "4b59bc97cdcc43caf3b9f267cb85b1b9c46c779c",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 262665,
+         "id": "Q262665"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M24176664$D008A064-D588-4AB4-BABB-6F80148E0054",
+      "rank": "normal"
+     },
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "534f48f874f8846f8693121e1bab2d078a9c5b34",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 76,
+         "id": "Q76"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M24176664$E8878894-EFFD-42A2-8F2F-61E372F2DAE4",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M24176664$C464AB6D-27CE-4AEA-B10A-23ABACD45B40",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M26392974": {
+   "pageid": 26392974,
+   "ns": 6,
+   "title": "File:Mallika Sherawat Cannes 2013.jpg",
+   "lastrevid": 1232264823,
+   "modified": "2026-06-16T09:21:40Z",
+   "type": "mediainfo",
+   "id": "M26392974",
+   "labels": {},
+   "descriptions": {},
+   "statements": {
+    "P793": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P793",
+       "hash": "941879df70901f9d38f24f41a16b0ead619edacb",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 2891443,
+         "id": "Q2891443"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M26392974$6F4ED67B-77C4-4DD5-9B19-95D2C68E6F56",
+      "rank": "normal"
+     }
+    ],
+    "P6305": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6305",
+       "hash": "3b47413ff02a9a1ac1fa73e9aeddd6567d13b1bc",
+       "datavalue": {
+        "value": "2012010510013998",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M26392974$CE85EB62-AD8E-45BC-AE16-847D020F6600",
+      "rank": "normal"
+     }
+    ],
+    "P571": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P571",
+       "hash": "94b77b423389bc2ef2f052a1d2a316dd1338078f",
+       "datavalue": {
+        "value": {
+         "time": "+2013-05-01T00:00:00Z",
+         "timezone": 0,
+         "before": 0,
+         "after": 0,
+         "precision": 10,
+         "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+        },
+        "type": "time"
+       }
+      },
+      "type": "statement",
+      "id": "M26392974$E0EF4451-4A10-4A4C-8D50-BD5B05A1C890",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "5570347fdc76d2a80732f51ea10ee4b144a084e0",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 50423863,
+         "id": "Q50423863"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M26392974$FACBDF9D-A450-4A16-AE9F-D658C236AA41",
+      "rank": "normal"
+     }
+    ],
+    "P275": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P275",
+       "hash": "a35b4558d66c92eacbe2f569697ffb1934e0316e",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 14946043,
+         "id": "Q14946043"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M26392974$A6AF02A9-634C-44C7-8B55-35FFA928B8B1",
+      "rank": "normal"
+     }
+    ],
+    "P7482": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P7482",
+       "hash": "83568a288a8b8b4714a68e7239d8406833762864",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 66458942,
+         "id": "Q66458942"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M26392974$8C8175FA-DE9D-4E66-B6C7-308B89569214",
+      "rank": "normal"
+     }
+    ],
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "4b59bc97cdcc43caf3b9f267cb85b1b9c46c779c",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 262665,
+         "id": "Q262665"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M26392974$AD30172E-A0F5-4B2D-B352-C848E6EDC559",
+      "rank": "normal"
+     }
+    ],
+    "P3575": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P3575",
+       "hash": "4fba185e69a8416f7f956b8034d4cdef45957899",
+       "datavalue": {
+        "value": {
+         "amount": "+38560",
+         "unit": "http://www.wikidata.org/entity/Q8799"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M26392974$E8788AA8-4299-4F9A-A06F-5E14522B52C1",
+      "rank": "normal"
+     }
+    ],
+    "P2048": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2048",
+       "hash": "67c7a289dcd212ab92bb732137c7f98e8024e520",
+       "datavalue": {
+        "value": {
+         "amount": "+800",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M26392974$E81C0932-724A-4E8A-A2CA-003BC21FF13B",
+      "rank": "normal"
+     }
+    ],
+    "P2049": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2049",
+       "hash": "e5fc6491688a4fb2cb4031b5264f804cc9552cbf",
+       "datavalue": {
+        "value": {
+         "amount": "+566",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M26392974$7270F490-1ED1-4624-BD1D-2C86289EDFF1",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M26392974$BDAC6423-6419-4B4C-853C-FAFCE43CAF00",
+      "rank": "normal"
+     }
+    ],
+    "P4092": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P4092",
+       "hash": "26e25b223aa81d200acfd0f09548ea15f36f662c",
+       "datavalue": {
+        "value": "6174b47d1b564a8e7c3832bdc51751113a2a2e2b",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P459": [
+        {
+         "snaktype": "value",
+         "property": "P459",
+         "hash": "75dff03c151b13fbab93742164121c16a6aa0de1",
+         "datavalue": {
+          "value": {
+           "entity-type": "item",
+           "numeric-id": 13414952,
+           "id": "Q13414952"
+          },
+          "type": "wikibase-entityid"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P459"
+      ],
+      "id": "M26392974$FDBC36FF-C3F9-4079-AC8F-7C96F8DC39D5",
+      "rank": "normal"
+     }
+    ],
+    "P10408": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P10408",
+       "hash": "eddf2f2ea91ce63741043d5c492eac05628d7f6d",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 2891443,
+         "id": "Q2891443"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M26392974$25e726c0-4f31-8f93-e27a-8ec87fd37c8a",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M29292877": {
+   "pageid": 29292877,
+   "ns": 6,
+   "title": "File:Mallika Sherawat at the launch of BACHELORETTE INDIA.jpg",
+   "lastrevid": 756709391,
+   "modified": "2023-04-30T17:22:08Z",
+   "type": "mediainfo",
+   "id": "M29292877",
+   "labels": {},
+   "descriptions": {},
+   "statements": {
+    "P170": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P170",
+       "hash": "aefed5efe969b7a784eb2c714fad23c4c7a409fa",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 4939834,
+         "id": "Q4939834"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M29292877$A36C6967-AD44-49BF-A281-AF14A4A4EF35",
+      "rank": "normal"
+     }
+    ],
+    "P7482": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P7482",
+       "hash": "b82dd47222a210c6dc1f428b693c2fbf7b0e0d6e",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 74228490,
+         "id": "Q74228490"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P973": [
+        {
+         "snaktype": "value",
+         "property": "P973",
+         "hash": "461b6f9a407ca972b66dbf4d13d3d32f1da4fac7",
+         "datavalue": {
+          "value": "http://www.bollywoodhungama.com/celebritymicro/images/id/4023/category/parties/type/view/imageid/2160469",
+          "type": "string"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P973"
+      ],
+      "id": "M29292877$029BB456-3CC1-4CE2-9D62-ADEE59B37AB5",
+      "rank": "normal"
+     }
+    ],
+    "P6305": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6305",
+       "hash": "441356d964e475d603c1f6be54a3397c35a7241a",
+       "datavalue": {
+        "value": "2008030310010794",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M29292877$99211554-A228-4846-8168-C23ED167F4DA",
+      "rank": "normal"
+     }
+    ],
+    "P571": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P571",
+       "hash": "2306241e0ddbe193ea382b5b389b4995bde9c445",
+       "datavalue": {
+        "value": {
+         "time": "+2013-10-03T00:00:00Z",
+         "timezone": 0,
+         "before": 0,
+         "after": 0,
+         "precision": 11,
+         "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+        },
+        "type": "time"
+       }
+      },
+      "type": "statement",
+      "id": "M29292877$4EF2FB20-9A08-4030-8FE7-F10682862C75",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "5570347fdc76d2a80732f51ea10ee4b144a084e0",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 50423863,
+         "id": "Q50423863"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M29292877$5F1EE6E2-99D1-4F14-AD2C-5E58372424F2",
+      "rank": "normal"
+     }
+    ],
+    "P275": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P275",
+       "hash": "079171cc72edf939cc43c28db72cff68862260f9",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 14947546,
+         "id": "Q14947546"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M29292877$2157B0AC-7DE3-4AFB-9055-CBF098AC7E4E",
+      "rank": "normal"
+     }
+    ],
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "4b59bc97cdcc43caf3b9f267cb85b1b9c46c779c",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 262665,
+         "id": "Q262665"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M29292877$E151D5BB-DA06-455E-9D6A-A56A5E619EF7",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M29293151": {
+   "pageid": 29293151,
+   "ns": 6,
+   "title": "File:Mallika Sherwat announced as the BACHELORETTE.jpg",
+   "lastrevid": 756709404,
+   "modified": "2023-04-30T17:22:11Z",
+   "type": "mediainfo",
+   "id": "M29293151",
+   "labels": {},
+   "descriptions": {},
+   "statements": {
+    "P170": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P170",
+       "hash": "aefed5efe969b7a784eb2c714fad23c4c7a409fa",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 4939834,
+         "id": "Q4939834"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M29293151$314C585B-D7A1-4884-B5F3-573015C217FA",
+      "rank": "normal"
+     }
+    ],
+    "P7482": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P7482",
+       "hash": "b82dd47222a210c6dc1f428b693c2fbf7b0e0d6e",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 74228490,
+         "id": "Q74228490"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P973": [
+        {
+         "snaktype": "value",
+         "property": "P973",
+         "hash": "44cb36025b5799ce3741b288e25e99a805985c28",
+         "datavalue": {
+          "value": "http://www.bollywoodhungama.com/celebritymicro/images/id/4023/category/parties/type/view/imageid/1795100/",
+          "type": "string"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P973"
+      ],
+      "id": "M29293151$5FFE6625-38FF-402B-82DD-5524BD1E2A37",
+      "rank": "normal"
+     }
+    ],
+    "P6305": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6305",
+       "hash": "441356d964e475d603c1f6be54a3397c35a7241a",
+       "datavalue": {
+        "value": "2008030310010794",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M29293151$08A155DE-6B4A-4A2B-A351-6AFC79F0CB36",
+      "rank": "normal"
+     }
+    ],
+    "P571": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P571",
+       "hash": "dbdd017577137037d5a1b13f748337a31edaccc6",
+       "datavalue": {
+        "value": {
+         "time": "+2013-04-22T00:00:00Z",
+         "timezone": 0,
+         "before": 0,
+         "after": 0,
+         "precision": 11,
+         "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+        },
+        "type": "time"
+       }
+      },
+      "type": "statement",
+      "id": "M29293151$C505E645-43C7-4898-8488-5F2A135873DF",
+      "rank": "normal"
+     }
+    ],
+    "P275": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P275",
+       "hash": "079171cc72edf939cc43c28db72cff68862260f9",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 14947546,
+         "id": "Q14947546"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M29293151$38DA33C1-E034-49AF-8591-A66B32DDFF44",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "5570347fdc76d2a80732f51ea10ee4b144a084e0",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 50423863,
+         "id": "Q50423863"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M29293151$484684BA-BDFE-4DCE-9F66-0615D9DD939A",
+      "rank": "normal"
+     }
+    ],
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "4b59bc97cdcc43caf3b9f267cb85b1b9c46c779c",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 262665,
+         "id": "Q262665"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M29293151$95015864-C879-4F64-8C47-68D3FD98103D",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M29293178": {
+   "pageid": 29293178,
+   "ns": 6,
+   "title": "File:Mallika Sherawat at Spanish Theme New Year's eve press meet.jpg",
+   "lastrevid": 1070075263,
+   "modified": "2025-08-11T10:10:40Z",
+   "type": "mediainfo",
+   "id": "M29293178",
+   "labels": {},
+   "descriptions": {},
+   "statements": {
+    "P170": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P170",
+       "hash": "aefed5efe969b7a784eb2c714fad23c4c7a409fa",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 4939834,
+         "id": "Q4939834"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M29293178$4699DD4C-0E38-43E0-9925-7DB4BD9F53A9",
+      "rank": "normal"
+     }
+    ],
+    "P7482": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P7482",
+       "hash": "b82dd47222a210c6dc1f428b693c2fbf7b0e0d6e",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 74228490,
+         "id": "Q74228490"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P973": [
+        {
+         "snaktype": "value",
+         "property": "P973",
+         "hash": "dafe5deedda69f2730ab389908903bfa5d27b156",
+         "datavalue": {
+          "value": "http://www.bollywoodhungama.com/celebritymicro/images/id/4023/category/parties/type/view/imageid/1395757/",
+          "type": "string"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P973"
+      ],
+      "id": "M29293178$A6B9F006-68B8-4850-9D6A-9557599F362E",
+      "rank": "normal"
+     }
+    ],
+    "P6305": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6305",
+       "hash": "441356d964e475d603c1f6be54a3397c35a7241a",
+       "datavalue": {
+        "value": "2008030310010794",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M29293178$9C3C1927-1570-492A-B1F6-97A542EE64AF",
+      "rank": "normal"
+     }
+    ],
+    "P571": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P571",
+       "hash": "5a337cc2ea42a97fcfe345b1bc78aa852c74b3c8",
+       "datavalue": {
+        "value": {
+         "time": "+2011-12-10T00:00:00Z",
+         "timezone": 0,
+         "before": 0,
+         "after": 0,
+         "precision": 11,
+         "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+        },
+        "type": "time"
+       }
+      },
+      "type": "statement",
+      "id": "M29293178$1A302C8D-947F-4E30-B032-0410CD30E0E0",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "5570347fdc76d2a80732f51ea10ee4b144a084e0",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 50423863,
+         "id": "Q50423863"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M29293178$92035A7E-1C76-40DB-ACA5-1F3A27EE6300",
+      "rank": "normal"
+     }
+    ],
+    "P275": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P275",
+       "hash": "079171cc72edf939cc43c28db72cff68862260f9",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 14947546,
+         "id": "Q14947546"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M29293178$52D3A85C-D926-4B9B-BA8E-25088D2C3928",
+      "rank": "normal"
+     }
+    ],
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "4b59bc97cdcc43caf3b9f267cb85b1b9c46c779c",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 262665,
+         "id": "Q262665"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M29293178$02167A22-AAE1-4FB6-9264-F5134F41BAF0",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M30255514": {
+   "pageid": 30255514,
+   "ns": 6,
+   "title": "File:Mallika meets Cancer Patients.jpg",
+   "lastrevid": 734487718,
+   "modified": "2023-02-21T12:40:19Z",
+   "type": "mediainfo",
+   "id": "M30255514",
+   "labels": {},
+   "descriptions": {},
+   "statements": {
+    "P170": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P170",
+       "hash": "aefed5efe969b7a784eb2c714fad23c4c7a409fa",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 4939834,
+         "id": "Q4939834"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M30255514$041B6E5E-4AFC-4EC9-9589-09DB80C900AB",
+      "rank": "normal"
+     }
+    ],
+    "P6305": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6305",
+       "hash": "441356d964e475d603c1f6be54a3397c35a7241a",
+       "datavalue": {
+        "value": "2008030310010794",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M30255514$E7EAB1C1-B404-474A-AE35-7B8630836CE1",
+      "rank": "normal"
+     }
+    ],
+    "P7482": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P7482",
+       "hash": "b82dd47222a210c6dc1f428b693c2fbf7b0e0d6e",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 74228490,
+         "id": "Q74228490"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P973": [
+        {
+         "snaktype": "value",
+         "property": "P973",
+         "hash": "0b9ce9664e93d4e816463666e23736ccfba01dfc",
+         "datavalue": {
+          "value": "http://www.bollywoodhungama.com/more/photos/view/stills/parties-and-events/id/1533061",
+          "type": "string"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P973"
+      ],
+      "id": "M30255514$2CA5AB16-A221-499C-B557-D623B4347FAF",
+      "rank": "normal"
+     }
+    ],
+    "P571": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P571",
+       "hash": "c2d61d9485b4e75ffdb064ef48626bb8ed667ba6",
+       "datavalue": {
+        "value": {
+         "time": "+2013-12-20T00:00:00Z",
+         "timezone": 0,
+         "before": 0,
+         "after": 0,
+         "precision": 11,
+         "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+        },
+        "type": "time"
+       }
+      },
+      "type": "statement",
+      "id": "M30255514$7F779695-470F-4A87-9A9A-C3C58E0B7501",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "5570347fdc76d2a80732f51ea10ee4b144a084e0",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 50423863,
+         "id": "Q50423863"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M30255514$01386446-4753-4CC6-8FB4-087149879A10",
+      "rank": "normal"
+     }
+    ],
+    "P275": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P275",
+       "hash": "079171cc72edf939cc43c28db72cff68862260f9",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 14947546,
+         "id": "Q14947546"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M30255514$970843AF-DECF-4400-BA1F-9524DB0ACB34",
+      "rank": "normal"
+     }
+    ],
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "4b59bc97cdcc43caf3b9f267cb85b1b9c46c779c",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 262665,
+         "id": "Q262665"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M30255514$89C8EAF9-6426-4952-8856-E897576B5AC8",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M30255564": {
+   "pageid": 30255564,
+   "ns": 6,
+   "title": "File:Mallika Sherawat at Hisss Photo Call.jpg",
+   "lastrevid": 1232250219,
+   "modified": "2026-06-16T08:50:38Z",
+   "type": "mediainfo",
+   "id": "M30255564",
+   "labels": {},
+   "descriptions": {},
+   "statements": {
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "d212531289407195f179212bff8e4b08b2b3fbbc",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 245183,
+         "id": "Q245183"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M30255564$383E029C-3C47-40EB-8FA7-3389304FA775",
+      "rank": "normal"
+     },
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "4b59bc97cdcc43caf3b9f267cb85b1b9c46c779c",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 262665,
+         "id": "Q262665"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M30255564$169D0271-91D5-4A7A-8A80-2789E6A50E5B",
+      "rank": "normal"
+     }
+    ],
+    "P6305": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6305",
+       "hash": "441356d964e475d603c1f6be54a3397c35a7241a",
+       "datavalue": {
+        "value": "2008030310010794",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M30255564$DB5C28A6-6F70-4428-A2E4-8E119CB7C225",
+      "rank": "normal"
+     }
+    ],
+    "P170": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P170",
+       "hash": "aefed5efe969b7a784eb2c714fad23c4c7a409fa",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 4939834,
+         "id": "Q4939834"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M30255564$D1F0D287-88BD-427D-9946-D0FF4482B263",
+      "rank": "normal"
+     }
+    ],
+    "P7482": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P7482",
+       "hash": "b82dd47222a210c6dc1f428b693c2fbf7b0e0d6e",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 74228490,
+         "id": "Q74228490"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P973": [
+        {
+         "snaktype": "value",
+         "property": "P973",
+         "hash": "342409d3a7847742ed71b0b4354aa001666c132c",
+         "datavalue": {
+          "value": "http://www.bollywoodhungama.com/celebritymicro/images/id/4023/category/parties/type/view/imageid/1216695/",
+          "type": "string"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P973"
+      ],
+      "id": "M30255564$86DD08AA-6030-4DAE-B65B-53D8C891B528",
+      "rank": "normal"
+     }
+    ],
+    "P571": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P571",
+       "hash": "c2d61d9485b4e75ffdb064ef48626bb8ed667ba6",
+       "datavalue": {
+        "value": {
+         "time": "+2013-12-20T00:00:00Z",
+         "timezone": 0,
+         "before": 0,
+         "after": 0,
+         "precision": 11,
+         "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+        },
+        "type": "time"
+       }
+      },
+      "type": "statement",
+      "id": "M30255564$7BD20351-9825-48E0-BCA6-E20D8AD0627A",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "5570347fdc76d2a80732f51ea10ee4b144a084e0",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 50423863,
+         "id": "Q50423863"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M30255564$EDF020FE-B047-4984-8666-5F9D55F3716E",
+      "rank": "normal"
+     }
+    ],
+    "P275": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P275",
+       "hash": "079171cc72edf939cc43c28db72cff68862260f9",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 14947546,
+         "id": "Q14947546"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M30255564$2C52CBBE-C92D-41F3-AA43-3FF6986DED1E",
+      "rank": "normal"
+     }
+    ],
+    "P793": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P793",
+       "hash": "d1d54c87b42dd5375f42f53717e539dd181c9f6f",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 553210,
+         "id": "Q553210"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M30255564$7ea0c4a3-40e4-33e9-b7c5-02ac40bbe1ba",
+      "rank": "normal"
+     }
+    ],
+    "P10408": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P10408",
+       "hash": "b7b8a1a1eb74d0c560c8501757febf9c600e5df3",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 553210,
+         "id": "Q553210"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M30255564$4FD7648D-6E3C-4395-9EF9-E955B58B2621",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M33029583": {
+   "pageid": 33029583,
+   "ns": 6,
+   "title": "File:Mallika Sherawat Cannes 2014.jpg",
+   "lastrevid": 1278122727,
+   "modified": "2026-09-18T09:54:29Z",
+   "type": "mediainfo",
+   "id": "M33029583",
+   "labels": {},
+   "descriptions": {},
+   "statements": {
+    "P793": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P793",
+       "hash": "a386e2a542adf6c4ecf55b2230a875c10d4b4044",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 15303094,
+         "id": "Q15303094"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M33029583$F0BD1AD1-F322-42B0-8973-E0CA71231852",
+      "rank": "normal"
+     }
+    ],
+    "P6305": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6305",
+       "hash": "3b47413ff02a9a1ac1fa73e9aeddd6567d13b1bc",
+       "datavalue": {
+        "value": "2012010510013998",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M33029583$79A79F4C-77DF-493B-9529-5AED89D1563E",
+      "rank": "normal"
+     }
+    ],
+    "P571": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P571",
+       "hash": "a7e1b5fed368ffa9f4fe5223b099ffaebb506147",
+       "datavalue": {
+        "value": {
+         "time": "+2014-05-01T00:00:00Z",
+         "timezone": 0,
+         "before": 0,
+         "after": 0,
+         "precision": 10,
+         "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+        },
+        "type": "time"
+       }
+      },
+      "type": "statement",
+      "id": "M33029583$3F46D47F-D101-4DA3-94A1-331F25B244F9",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "5570347fdc76d2a80732f51ea10ee4b144a084e0",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 50423863,
+         "id": "Q50423863"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M33029583$08FAA4EB-0957-4AF0-8A45-2E1A2B7769E1",
+      "rank": "normal"
+     }
+    ],
+    "P275": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P275",
+       "hash": "a35b4558d66c92eacbe2f569697ffb1934e0316e",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 14946043,
+         "id": "Q14946043"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M33029583$1D36E36D-EB53-4A57-9F2D-97B31C8B2F23",
+      "rank": "normal"
+     }
+    ],
+    "P7482": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P7482",
+       "hash": "83568a288a8b8b4714a68e7239d8406833762864",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 66458942,
+         "id": "Q66458942"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M33029583$E381B486-C46C-4AD2-B446-7EB8EA881E93",
+      "rank": "normal"
+     }
+    ],
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "4b59bc97cdcc43caf3b9f267cb85b1b9c46c779c",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 262665,
+         "id": "Q262665"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M33029583$8EEAA855-CD43-4361-86E7-085095D4A794",
+      "rank": "normal"
+     }
+    ],
+    "P3575": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P3575",
+       "hash": "5d9417c3b4480f0829acddf39b2e51fe38d37049",
+       "datavalue": {
+        "value": {
+         "amount": "+78884",
+         "unit": "http://www.wikidata.org/entity/Q8799"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M33029583$D3F3808C-3AEE-44D0-A890-A2C0A5EF1429",
+      "rank": "normal"
+     }
+    ],
+    "P2048": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2048",
+       "hash": "67c7a289dcd212ab92bb732137c7f98e8024e520",
+       "datavalue": {
+        "value": {
+         "amount": "+800",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M33029583$89CEF136-802F-417D-AACD-32697914EA03",
+      "rank": "normal"
+     }
+    ],
+    "P2049": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2049",
+       "hash": "41b664efc3b8a33ceea6370def36294bcf66e350",
+       "datavalue": {
+        "value": {
+         "amount": "+304",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M33029583$4010757D-6FD4-402E-AC81-FC28FB1B6FEB",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M33029583$4811DF85-AA8C-4DF3-845B-F1F2CF14E65E",
+      "rank": "normal"
+     }
+    ],
+    "P4092": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P4092",
+       "hash": "7ee7bab468f7b1318ea5f73a892aa45ef9be1251",
+       "datavalue": {
+        "value": "8457fa6efe547aaf3f9c871481e0a485bab33e45",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P459": [
+        {
+         "snaktype": "value",
+         "property": "P459",
+         "hash": "75dff03c151b13fbab93742164121c16a6aa0de1",
+         "datavalue": {
+          "value": {
+           "entity-type": "item",
+           "numeric-id": 13414952,
+           "id": "Q13414952"
+          },
+          "type": "wikibase-entityid"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P459"
+      ],
+      "id": "M33029583$752E03E3-794D-400F-B2BE-E6E0AFAFE675",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M33157215": {
+   "pageid": 33157215,
+   "ns": 6,
+   "title": "File:Mallika Sherawat Cannes 2014 2.jpg",
+   "lastrevid": 902229346,
+   "modified": "2024-07-22T21:39:55Z",
+   "type": "mediainfo",
+   "id": "M33157215",
+   "labels": {},
+   "descriptions": {},
+   "statements": {
+    "P793": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P793",
+       "hash": "a386e2a542adf6c4ecf55b2230a875c10d4b4044",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 15303094,
+         "id": "Q15303094"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M33157215$2E45C9EB-418E-4256-8EE0-0E13A790293B",
+      "rank": "normal"
+     }
+    ],
+    "P6305": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6305",
+       "hash": "3b47413ff02a9a1ac1fa73e9aeddd6567d13b1bc",
+       "datavalue": {
+        "value": "2012010510013998",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M33157215$A7982DE2-BE85-4048-AFB9-504C7F0B78D4",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "5570347fdc76d2a80732f51ea10ee4b144a084e0",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 50423863,
+         "id": "Q50423863"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M33157215$7B4F3143-3A65-4BB8-8417-5A17325FAB1D",
+      "rank": "normal"
+     }
+    ],
+    "P275": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P275",
+       "hash": "a35b4558d66c92eacbe2f569697ffb1934e0316e",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 14946043,
+         "id": "Q14946043"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M33157215$05437B4F-D712-4EB3-9C57-5A835A720F15",
+      "rank": "normal"
+     }
+    ],
+    "P7482": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P7482",
+       "hash": "83568a288a8b8b4714a68e7239d8406833762864",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 66458942,
+         "id": "Q66458942"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M33157215$ADA1E69E-CACC-4BDB-A284-31EE7E4BA85C",
+      "rank": "normal"
+     }
+    ],
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "4b59bc97cdcc43caf3b9f267cb85b1b9c46c779c",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 262665,
+         "id": "Q262665"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M33157215$07F7BE90-44A2-4DF3-B54C-3F67E1C36569",
+      "rank": "normal"
+     }
+    ],
+    "P3575": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P3575",
+       "hash": "e25325f36041a7da293bb28a1f8a35262525c246",
+       "datavalue": {
+        "value": {
+         "amount": "+53690",
+         "unit": "http://www.wikidata.org/entity/Q8799"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M33157215$67F87230-1F87-4B67-8F28-DEDF7123AEEB",
+      "rank": "normal"
+     }
+    ],
+    "P2048": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2048",
+       "hash": "67c7a289dcd212ab92bb732137c7f98e8024e520",
+       "datavalue": {
+        "value": {
+         "amount": "+800",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M33157215$DFDAF3A6-084E-4564-A0DE-CCD3B2FCCB32",
+      "rank": "normal"
+     }
+    ],
+    "P2049": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2049",
+       "hash": "e5fc6491688a4fb2cb4031b5264f804cc9552cbf",
+       "datavalue": {
+        "value": {
+         "amount": "+566",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M33157215$81D3BFC9-D65D-45BA-8E2E-DC43909B5BB3",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M33157215$C3827A6C-47E9-4BF8-B9A9-4E54CA31B914",
+      "rank": "normal"
+     }
+    ],
+    "P4092": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P4092",
+       "hash": "0dd1b36f1fb9251c2ee7bc0b6e66f14690e0ac0b",
+       "datavalue": {
+        "value": "f5b25252246a50dc2a0a71a08f88716e9787ed62",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P459": [
+        {
+         "snaktype": "value",
+         "property": "P459",
+         "hash": "75dff03c151b13fbab93742164121c16a6aa0de1",
+         "datavalue": {
+          "value": {
+           "entity-type": "item",
+           "numeric-id": 13414952,
+           "id": "Q13414952"
+          },
+          "type": "wikibase-entityid"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P459"
+      ],
+      "id": "M33157215$94382A4C-CA2F-4DBF-B7F7-CDDD4E2F4C2F",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M34922951": {
+   "pageid": 34922951,
+   "ns": 6,
+   "title": "File:Pyaar-ke-Side-Effects Official-Poster.jpg",
+   "lastrevid": 1002721131,
+   "modified": "2025-02-26T12:08:41Z",
+   "type": "mediainfo",
+   "id": "M34922951",
+   "labels": {},
+   "descriptions": {},
+   "statements": {
+    "P6305": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6305",
+       "hash": "fc0a909008f4d4db76f33f5c31d62c8ee79f353b",
+       "datavalue": {
+        "value": "2010072310033738",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M34922951$D356F412-8750-4DDD-8405-2775955B44E5",
+      "rank": "normal"
+     }
+    ],
+    "P571": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P571",
+       "hash": "f93886749026efa69c736ce8dd0df3510d9625a3",
+       "datavalue": {
+        "value": {
+         "time": "+2006-07-15T00:00:00Z",
+         "timezone": 0,
+         "before": 0,
+         "after": 0,
+         "precision": 11,
+         "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+        },
+        "type": "time"
+       }
+      },
+      "type": "statement",
+      "id": "M34922951$7E4C2EE0-C5FA-4678-AFEC-D922E1856510",
+      "rank": "normal"
+     }
+    ],
+    "P275": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P275",
+       "hash": "a35b4558d66c92eacbe2f569697ffb1934e0316e",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 14946043,
+         "id": "Q14946043"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M34922951$64E46D9B-D139-4DFC-9123-DB428E6E2874",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "5570347fdc76d2a80732f51ea10ee4b144a084e0",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 50423863,
+         "id": "Q50423863"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M34922951$1222E9A7-48BD-49CB-A0C6-6AB4E5CA8E40",
+      "rank": "normal"
+     }
+    ],
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "4b59bc97cdcc43caf3b9f267cb85b1b9c46c779c",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 262665,
+         "id": "Q262665"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M34922951$643060D8-E77E-42FE-AC4A-9D6156201FD4",
+      "rank": "normal"
+     }
+    ],
+    "P3575": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P3575",
+       "hash": "9b8e5415ef62dcf3721fddb67eaf940f83ad13a3",
+       "datavalue": {
+        "value": {
+         "amount": "+675823",
+         "unit": "http://www.wikidata.org/entity/Q8799"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M34922951$31E74DB2-7863-4464-8C06-D911511EDE07",
+      "rank": "normal"
+     }
+    ],
+    "P2048": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2048",
+       "hash": "5232e5b64c5164fc4ec60d1122cc6bc8ebe89987",
+       "datavalue": {
+        "value": {
+         "amount": "+900",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M34922951$7513E491-D039-40AA-BECC-56C6830C0D39",
+      "rank": "normal"
+     }
+    ],
+    "P2049": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2049",
+       "hash": "5a793505dad705545a38c70e1f264ac385b632eb",
+       "datavalue": {
+        "value": {
+         "amount": "+600",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M34922951$51C73BEC-0647-4229-BC31-F26990134355",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M34922951$C6729671-9F98-4A8B-B622-1858C132C132",
+      "rank": "normal"
+     }
+    ],
+    "P4092": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P4092",
+       "hash": "d8a478a784129e428e0c15fb0be45ad88b8513a3",
+       "datavalue": {
+        "value": "92986ea2dbf02eee3781a301fabf132314b2a01f",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P459": [
+        {
+         "snaktype": "value",
+         "property": "P459",
+         "hash": "75dff03c151b13fbab93742164121c16a6aa0de1",
+         "datavalue": {
+          "value": {
+           "entity-type": "item",
+           "numeric-id": 13414952,
+           "id": "Q13414952"
+          },
+          "type": "wikibase-entityid"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P459"
+      ],
+      "id": "M34922951$B1222BE8-2A3A-4A27-83B2-9EC5F3543493",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M40992325": {
+   "pageid": 40992325,
+   "ns": 6,
+   "title": "File:Mallika Sherawat.jpg",
+   "lastrevid": 997049211,
+   "modified": "2025-02-11T06:53:26Z",
+   "type": "mediainfo",
+   "id": "M40992325",
+   "labels": {},
+   "descriptions": {},
+   "statements": {
+    "P571": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P571",
+       "hash": "ff708a8d4a9e9183d28de7ad74fd185645024bb6",
+       "datavalue": {
+        "value": {
+         "time": "+2004-03-30T00:00:00Z",
+         "timezone": 0,
+         "before": 0,
+         "after": 0,
+         "precision": 11,
+         "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+        },
+        "type": "time"
+       }
+      },
+      "type": "statement",
+      "id": "M40992325$A40BE26B-93BB-478F-B447-1981CD62C44A",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "5570347fdc76d2a80732f51ea10ee4b144a084e0",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 50423863,
+         "id": "Q50423863"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M40992325$FECD06EA-3313-4BB4-BFCD-CA4C057E4FF4",
+      "rank": "normal"
+     }
+    ],
+    "P275": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P275",
+       "hash": "ec6e754c5042e13b53376139e505ebd6708745a4",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 18199165,
+         "id": "Q18199165"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M40992325$BF745212-E2FC-425C-9AD7-915FFE713385",
+      "rank": "normal"
+     }
+    ],
+    "P7482": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P7482",
+       "hash": "83568a288a8b8b4714a68e7239d8406833762864",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 66458942,
+         "id": "Q66458942"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M40992325$6D3165DA-C59C-4D96-B685-1EDCA0A6BD48",
+      "rank": "normal"
+     }
+    ],
+    "P170": [
+     {
+      "mainsnak": {
+       "snaktype": "somevalue",
+       "property": "P170",
+       "hash": "d3550e860f988c6675fff913440993f58f5c40c5"
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P3831": [
+        {
+         "snaktype": "value",
+         "property": "P3831",
+         "hash": "c5e04952fd00011abf931be1b701f93d9e6fa5d7",
+         "datavalue": {
+          "value": {
+           "entity-type": "item",
+           "numeric-id": 33231,
+           "id": "Q33231"
+          },
+          "type": "wikibase-entityid"
+         }
+        }
+       ],
+       "P2093": [
+        {
+         "snaktype": "value",
+         "property": "P2093",
+         "hash": "5a3ef6ae3efdc899061711df7d3fc84e3fe529df",
+         "datavalue": {
+          "value": "Sureshsharmaptv63",
+          "type": "string"
+         }
+        }
+       ],
+       "P4174": [
+        {
+         "snaktype": "value",
+         "property": "P4174",
+         "hash": "88a9d12bc63c6f27944dd81ff2a671cf3adabda1",
+         "datavalue": {
+          "value": "Sureshsharmaptv63",
+          "type": "string"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P3831",
+       "P2093",
+       "P4174"
+      ],
+      "id": "M40992325$F0B02A03-3F6B-49BE-93D1-2C371E7D8710",
+      "rank": "normal"
+     }
+    ],
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "4b59bc97cdcc43caf3b9f267cb85b1b9c46c779c",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 262665,
+         "id": "Q262665"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M40992325$4DD120A4-FCAD-40AC-A310-3DF27221AD84",
+      "rank": "normal"
+     }
+    ],
+    "P3575": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P3575",
+       "hash": "9e421bbf8e2bebdc50d3d8d9ae9de6776d611104",
+       "datavalue": {
+        "value": {
+         "amount": "+44279",
+         "unit": "http://www.wikidata.org/entity/Q8799"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M40992325$5380AB64-FBB4-4E5C-BD9C-F385B6B238F9",
+      "rank": "normal"
+     }
+    ],
+    "P2048": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2048",
+       "hash": "c7328322e1c67cbc65ac308ae2e1c73c90edb6d6",
+       "datavalue": {
+        "value": {
+         "amount": "+417",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M40992325$F585372E-9D87-4599-9A78-28201F02A9CC",
+      "rank": "normal"
+     }
+    ],
+    "P2049": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2049",
+       "hash": "b824551553834e0cdcff596b302a602540ae76a0",
+       "datavalue": {
+        "value": {
+         "amount": "+628",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M40992325$6EEEB69D-46D6-4AEB-85CD-340FAB51810F",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M40992325$2BFFEB44-14F9-4A5D-B375-6A42C3FBAAD7",
+      "rank": "normal"
+     }
+    ],
+    "P4092": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P4092",
+       "hash": "92bcb7f7415c45bac4b2e720017ec308a8629131",
+       "datavalue": {
+        "value": "3e66b5d3e0c63a1ab49d526467fa939e38d0f85c",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P459": [
+        {
+         "snaktype": "value",
+         "property": "P459",
+         "hash": "75dff03c151b13fbab93742164121c16a6aa0de1",
+         "datavalue": {
+          "value": {
+           "entity-type": "item",
+           "numeric-id": 13414952,
+           "id": "Q13414952"
+          },
+          "type": "wikibase-entityid"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P459"
+      ],
+      "id": "M40992325$69E47073-DAF7-4B0B-8343-23C3BED115ED",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M47979115": {
+   "pageid": 47979115,
+   "ns": 6,
+   "title": "File:The Myth 007 (7271376614).jpg",
+   "lastrevid": 1232232022,
+   "modified": "2026-06-16T08:00:44Z",
+   "type": "mediainfo",
+   "id": "M47979115",
+   "labels": {},
+   "descriptions": {},
+   "statements": {
+    "P7482": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P7482",
+       "hash": "b82dd47222a210c6dc1f428b693c2fbf7b0e0d6e",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 74228490,
+         "id": "Q74228490"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P973": [
+        {
+         "snaktype": "value",
+         "property": "P973",
+         "hash": "567d8e3bbc0e181da9ba965db4b49e81210663ad",
+         "datavalue": {
+          "value": "https://www.flickr.com/photos/tonyshek/7271376614/",
+          "type": "string"
+         }
+        }
+       ],
+       "P137": [
+        {
+         "snaktype": "value",
+         "property": "P137",
+         "hash": "3d8cd4c1ab91d3d9a14900210faaebf1a98b947b",
+         "datavalue": {
+          "value": {
+           "entity-type": "item",
+           "numeric-id": 103204,
+           "id": "Q103204"
+          },
+          "type": "wikibase-entityid"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P973",
+       "P137"
+      ],
+      "id": "M47979115$28F1AF81-F72E-4815-8A26-232183BB2219",
+      "rank": "normal"
+     }
+    ],
+    "P170": [
+     {
+      "mainsnak": {
+       "snaktype": "somevalue",
+       "property": "P170",
+       "hash": "d3550e860f988c6675fff913440993f58f5c40c5"
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P2699": [
+        {
+         "snaktype": "value",
+         "property": "P2699",
+         "hash": "0428904050d555e7670d0df1da75efb34de52721",
+         "datavalue": {
+          "value": "https://www.flickr.com/people/57638320@N00",
+          "type": "string"
+         }
+        }
+       ],
+       "P3267": [
+        {
+         "snaktype": "value",
+         "property": "P3267",
+         "hash": "2494a533c866b535a0d48db3274fa0b03b997a36",
+         "datavalue": {
+          "value": "57638320@N00",
+          "type": "string"
+         }
+        }
+       ],
+       "P2093": [
+        {
+         "snaktype": "value",
+         "property": "P2093",
+         "hash": "959e07be7001cbcd82c66edffdf4046cd9cc434b",
+         "datavalue": {
+          "value": "GabboT",
+          "type": "string"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P2699",
+       "P3267",
+       "P2093"
+      ],
+      "id": "M47979115$0FC907A4-00FF-48A4-B25D-9C4629F755CA",
+      "rank": "normal"
+     }
+    ],
+    "P275": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P275",
+       "hash": "a62aa88e8696cafc169e9591e6d34b5d3ec5b93e",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 19068220,
+         "id": "Q19068220"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M47979115$A44B856C-33BA-4922-88CF-3C1D0C40C23E",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "5570347fdc76d2a80732f51ea10ee4b144a084e0",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 50423863,
+         "id": "Q50423863"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M47979115$5C7D94B5-7566-45D0-9D5C-8CE6E653703F",
+      "rank": "normal"
+     }
+    ],
+    "P571": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P571",
+       "hash": "3668ac4a1f5dae920c8fa91e03bc3d3ae133c980",
+       "datavalue": {
+        "value": {
+         "time": "+2006-08-02T00:00:00Z",
+         "timezone": 0,
+         "before": 0,
+         "after": 0,
+         "precision": 11,
+         "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+        },
+        "type": "time"
+       }
+      },
+      "type": "statement",
+      "id": "M47979115$9D6AA1E3-97B1-4ED9-B07C-C6A6015A09C8",
+      "rank": "normal"
+     }
+    ],
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "4b59bc97cdcc43caf3b9f267cb85b1b9c46c779c",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 262665,
+         "id": "Q262665"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M47979115$34D16B62-0682-4A3E-A37B-6EE3735F6A0D",
+      "rank": "normal"
+     }
+    ],
+    "P12120": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P12120",
+       "hash": "c139ee536e388032b359b016f99265a864160db2",
+       "datavalue": {
+        "value": "7271376614",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M47979115$B21708DB-ACE1-4F65-B262-9E5FDE5E108E",
+      "rank": "normal"
+     }
+    ],
+    "P10408": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P10408",
+       "hash": "70012f1dbe2a0a210ea2646f7ea614fc22221d7a",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 140247157,
+         "id": "Q140247157"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M47979115$8A518E1A-72D6-4398-9F4B-107761680B73",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M47979118": {
+   "pageid": 47979118,
+   "ns": 6,
+   "title": "File:The Myth 009 (7271376864).jpg",
+   "lastrevid": 1232232040,
+   "modified": "2026-06-16T08:00:46Z",
+   "type": "mediainfo",
+   "id": "M47979118",
+   "labels": {},
+   "descriptions": {},
+   "statements": {
+    "P7482": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P7482",
+       "hash": "b82dd47222a210c6dc1f428b693c2fbf7b0e0d6e",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 74228490,
+         "id": "Q74228490"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P973": [
+        {
+         "snaktype": "value",
+         "property": "P973",
+         "hash": "f5a36537a07824bf3c174aa37e89a274578bcfbf",
+         "datavalue": {
+          "value": "https://www.flickr.com/photos/tonyshek/7271376864/",
+          "type": "string"
+         }
+        }
+       ],
+       "P137": [
+        {
+         "snaktype": "value",
+         "property": "P137",
+         "hash": "3d8cd4c1ab91d3d9a14900210faaebf1a98b947b",
+         "datavalue": {
+          "value": {
+           "entity-type": "item",
+           "numeric-id": 103204,
+           "id": "Q103204"
+          },
+          "type": "wikibase-entityid"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P973",
+       "P137"
+      ],
+      "id": "M47979118$7F2656D7-3E19-4193-A38F-814633597FE3",
+      "rank": "normal"
+     }
+    ],
+    "P170": [
+     {
+      "mainsnak": {
+       "snaktype": "somevalue",
+       "property": "P170",
+       "hash": "d3550e860f988c6675fff913440993f58f5c40c5"
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P2699": [
+        {
+         "snaktype": "value",
+         "property": "P2699",
+         "hash": "0428904050d555e7670d0df1da75efb34de52721",
+         "datavalue": {
+          "value": "https://www.flickr.com/people/57638320@N00",
+          "type": "string"
+         }
+        }
+       ],
+       "P3267": [
+        {
+         "snaktype": "value",
+         "property": "P3267",
+         "hash": "2494a533c866b535a0d48db3274fa0b03b997a36",
+         "datavalue": {
+          "value": "57638320@N00",
+          "type": "string"
+         }
+        }
+       ],
+       "P2093": [
+        {
+         "snaktype": "value",
+         "property": "P2093",
+         "hash": "959e07be7001cbcd82c66edffdf4046cd9cc434b",
+         "datavalue": {
+          "value": "GabboT",
+          "type": "string"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P2699",
+       "P3267",
+       "P2093"
+      ],
+      "id": "M47979118$3AB1F1FE-F117-4280-99D8-6D4B08476543",
+      "rank": "normal"
+     }
+    ],
+    "P275": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P275",
+       "hash": "a62aa88e8696cafc169e9591e6d34b5d3ec5b93e",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 19068220,
+         "id": "Q19068220"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M47979118$3098CA49-B9F5-477B-9AAC-51BC3F68BE11",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "5570347fdc76d2a80732f51ea10ee4b144a084e0",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 50423863,
+         "id": "Q50423863"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M47979118$BFF9CD39-E31F-4F20-AB76-DE1DAD038FAB",
+      "rank": "normal"
+     }
+    ],
+    "P571": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P571",
+       "hash": "3668ac4a1f5dae920c8fa91e03bc3d3ae133c980",
+       "datavalue": {
+        "value": {
+         "time": "+2006-08-02T00:00:00Z",
+         "timezone": 0,
+         "before": 0,
+         "after": 0,
+         "precision": 11,
+         "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+        },
+        "type": "time"
+       }
+      },
+      "type": "statement",
+      "id": "M47979118$AAA9A6E9-6226-467F-B89E-8800A3E226AE",
+      "rank": "normal"
+     }
+    ],
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "4b59bc97cdcc43caf3b9f267cb85b1b9c46c779c",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 262665,
+         "id": "Q262665"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M47979118$45AC8826-13F9-4094-98AC-D15CCD18CFBB",
+      "rank": "normal"
+     }
+    ],
+    "P12120": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P12120",
+       "hash": "53361cbb2f05009cb4df310f3f7fac73b72ffea1",
+       "datavalue": {
+        "value": "7271376864",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M47979118$6BEB6197-BC4F-4299-8A1E-6538233FAE82",
+      "rank": "normal"
+     }
+    ],
+    "P10408": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P10408",
+       "hash": "70012f1dbe2a0a210ea2646f7ea614fc22221d7a",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 140247157,
+         "id": "Q140247157"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M47979118$6C2FC3E9-4C18-4438-9A63-FBE980F1C487",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M47979146": {
+   "pageid": 47979146,
+   "ns": 6,
+   "title": "File:The Myth 008 (7271376754).jpg",
+   "lastrevid": 1232232030,
+   "modified": "2026-06-16T08:00:45Z",
+   "type": "mediainfo",
+   "id": "M47979146",
+   "labels": {},
+   "descriptions": {},
+   "statements": {
+    "P7482": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P7482",
+       "hash": "b82dd47222a210c6dc1f428b693c2fbf7b0e0d6e",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 74228490,
+         "id": "Q74228490"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P973": [
+        {
+         "snaktype": "value",
+         "property": "P973",
+         "hash": "b2c0c479826b0cf60b73c89826d0914b9a54388f",
+         "datavalue": {
+          "value": "https://www.flickr.com/photos/tonyshek/7271376754/",
+          "type": "string"
+         }
+        }
+       ],
+       "P137": [
+        {
+         "snaktype": "value",
+         "property": "P137",
+         "hash": "3d8cd4c1ab91d3d9a14900210faaebf1a98b947b",
+         "datavalue": {
+          "value": {
+           "entity-type": "item",
+           "numeric-id": 103204,
+           "id": "Q103204"
+          },
+          "type": "wikibase-entityid"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P973",
+       "P137"
+      ],
+      "id": "M47979146$8512EFAC-CEAA-4CE0-A680-D8DAD2835BF8",
+      "rank": "normal"
+     }
+    ],
+    "P170": [
+     {
+      "mainsnak": {
+       "snaktype": "somevalue",
+       "property": "P170",
+       "hash": "d3550e860f988c6675fff913440993f58f5c40c5"
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P2699": [
+        {
+         "snaktype": "value",
+         "property": "P2699",
+         "hash": "0428904050d555e7670d0df1da75efb34de52721",
+         "datavalue": {
+          "value": "https://www.flickr.com/people/57638320@N00",
+          "type": "string"
+         }
+        }
+       ],
+       "P3267": [
+        {
+         "snaktype": "value",
+         "property": "P3267",
+         "hash": "2494a533c866b535a0d48db3274fa0b03b997a36",
+         "datavalue": {
+          "value": "57638320@N00",
+          "type": "string"
+         }
+        }
+       ],
+       "P2093": [
+        {
+         "snaktype": "value",
+         "property": "P2093",
+         "hash": "959e07be7001cbcd82c66edffdf4046cd9cc434b",
+         "datavalue": {
+          "value": "GabboT",
+          "type": "string"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P2699",
+       "P3267",
+       "P2093"
+      ],
+      "id": "M47979146$38E2DA7E-0E8D-4A41-8F48-86F4D781AA50",
+      "rank": "normal"
+     }
+    ],
+    "P275": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P275",
+       "hash": "a62aa88e8696cafc169e9591e6d34b5d3ec5b93e",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 19068220,
+         "id": "Q19068220"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M47979146$17E31746-C637-4B0D-852B-979D58599121",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "5570347fdc76d2a80732f51ea10ee4b144a084e0",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 50423863,
+         "id": "Q50423863"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M47979146$34FC5E8B-E7FE-4D53-94E5-901994776025",
+      "rank": "normal"
+     }
+    ],
+    "P571": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P571",
+       "hash": "3668ac4a1f5dae920c8fa91e03bc3d3ae133c980",
+       "datavalue": {
+        "value": {
+         "time": "+2006-08-02T00:00:00Z",
+         "timezone": 0,
+         "before": 0,
+         "after": 0,
+         "precision": 11,
+         "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+        },
+        "type": "time"
+       }
+      },
+      "type": "statement",
+      "id": "M47979146$4A30A70D-D424-414E-99D5-8FFF993BEEC6",
+      "rank": "normal"
+     }
+    ],
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "4b59bc97cdcc43caf3b9f267cb85b1b9c46c779c",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 262665,
+         "id": "Q262665"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M47979146$929C9459-4A98-44A4-9641-F49283427EA2",
+      "rank": "normal"
+     }
+    ],
+    "P12120": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P12120",
+       "hash": "2fc382bc98c25c8f592ef6f8bf5fc34a56fcfa3c",
+       "datavalue": {
+        "value": "7271376754",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M47979146$F9BAB566-168B-4881-B23E-90A2927C2365",
+      "rank": "normal"
+     }
+    ],
+    "P3575": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P3575",
+       "hash": "c4b16b0b499474006c753c829024d3f2ef8f91be",
+       "datavalue": {
+        "value": {
+         "amount": "+451682",
+         "unit": "http://www.wikidata.org/entity/Q8799"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M47979146$6BA09BEC-5625-418A-A26C-326E17711B38",
+      "rank": "normal"
+     }
+    ],
+    "P2048": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2048",
+       "hash": "1f369137cecc923bbeb326fcec4713c6e5c4e4b9",
+       "datavalue": {
+        "value": {
+         "amount": "+891",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M47979146$64E5DFCE-940F-4932-A510-57EAF5DDD0E1",
+      "rank": "normal"
+     }
+    ],
+    "P2049": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2049",
+       "hash": "17e9a86c5f73e178ff734f0aa838e0b724c5fd48",
+       "datavalue": {
+        "value": {
+         "amount": "+636",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M47979146$9C9E36DE-1B3E-4072-AA86-CD95F36CFDEF",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M47979146$3620CF50-CA2A-4359-96AE-3F80A8D2126C",
+      "rank": "normal"
+     }
+    ],
+    "P4092": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P4092",
+       "hash": "84893221216bac18d8e820d8cc7dd3f94a25eeae",
+       "datavalue": {
+        "value": "fdc02131c473385ce14af2119d99465835ae6160",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P459": [
+        {
+         "snaktype": "value",
+         "property": "P459",
+         "hash": "75dff03c151b13fbab93742164121c16a6aa0de1",
+         "datavalue": {
+          "value": {
+           "entity-type": "item",
+           "numeric-id": 13414952,
+           "id": "Q13414952"
+          },
+          "type": "wikibase-entityid"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P459"
+      ],
+      "id": "M47979146$57E4C65F-8ED2-45E4-81C1-BB366259000E",
+      "rank": "normal"
+     }
+    ],
+    "P10408": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P10408",
+       "hash": "70012f1dbe2a0a210ea2646f7ea614fc22221d7a",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 140247157,
+         "id": "Q140247157"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M47979146$6EDAA1DD-659E-43CC-886D-358CEBCE8549",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M49092252": {
+   "pageid": 49092252,
+   "ns": 6,
+   "title": "File:Cannes 2016 17.jpg",
+   "lastrevid": 1247063000,
+   "modified": "2026-07-12T22:12:03Z",
+   "type": "mediainfo",
+   "id": "M49092252",
+   "labels": {},
+   "descriptions": {},
+   "statements": {
+    "P793": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P793",
+       "hash": "912559090b38b5a2103282064719d3852c85195c",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 21061237,
+         "id": "Q21061237"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M49092252$49D4A7E2-A625-4757-89CD-C2F00B2FF7AC",
+      "rank": "normal"
+     }
+    ],
+    "P6305": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6305",
+       "hash": "3b47413ff02a9a1ac1fa73e9aeddd6567d13b1bc",
+       "datavalue": {
+        "value": "2012010510013998",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M49092252$1028CDC7-9A7D-4570-84C6-5C491AA1D36F",
+      "rank": "normal"
+     }
+    ],
+    "P275": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P275",
+       "hash": "a35b4558d66c92eacbe2f569697ffb1934e0316e",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 14946043,
+         "id": "Q14946043"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M49092252$3F003E74-5137-44D7-ACE8-C06F289139C7",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "5570347fdc76d2a80732f51ea10ee4b144a084e0",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 50423863,
+         "id": "Q50423863"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M49092252$4BB29A67-4E3C-4FF3-89B4-ABA8C3C74B54",
+      "rank": "normal"
+     }
+    ],
+    "P571": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P571",
+       "hash": "5d293568b32fa780f32d96c78fb852cb283801eb",
+       "datavalue": {
+        "value": {
+         "time": "+2016-05-14T00:00:00Z",
+         "timezone": 0,
+         "before": 0,
+         "after": 0,
+         "precision": 11,
+         "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+        },
+        "type": "time"
+       }
+      },
+      "type": "statement",
+      "id": "M49092252$8600D5DC-22D8-44B8-A5A5-AF4EE759051B",
+      "rank": "normal"
+     }
+    ],
+    "P7482": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P7482",
+       "hash": "83568a288a8b8b4714a68e7239d8406833762864",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 66458942,
+         "id": "Q66458942"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M49092252$96B188DC-D47A-417E-8299-CB41FB43B866",
+      "rank": "normal"
+     }
+    ],
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "4b59bc97cdcc43caf3b9f267cb85b1b9c46c779c",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 262665,
+         "id": "Q262665"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M49092252$45C53D1D-ECB2-4303-B019-68452AF3A8C0",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M49092252$0AA2372E-F656-4C5F-B6FF-2CCA9F8A2FE3",
+      "rank": "normal"
+     }
+    ],
+    "P4092": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P4092",
+       "hash": "c59e6b293228e4182aa1c07efd2d3371b9d6d668",
+       "datavalue": {
+        "value": "d9f8a144954179034e5348d64948c8049312e41e",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P459": [
+        {
+         "snaktype": "value",
+         "property": "P459",
+         "hash": "75dff03c151b13fbab93742164121c16a6aa0de1",
+         "datavalue": {
+          "value": {
+           "entity-type": "item",
+           "numeric-id": 13414952,
+           "id": "Q13414952"
+          },
+          "type": "wikibase-entityid"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P459"
+      ],
+      "id": "M49092252$7A823801-3896-4588-A615-598776D1D6AF",
+      "rank": "normal"
+     }
+    ],
+    "P3575": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P3575",
+       "hash": "c67ca9b44a36f90f1ab4172bc615dd5e93c4cab4",
+       "datavalue": {
+        "value": {
+         "amount": "+51240",
+         "unit": "http://www.wikidata.org/entity/Q8799"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M49092252$71963466-4C08-489D-A90B-24BCE3B6DC0D",
+      "rank": "normal"
+     }
+    ],
+    "P2048": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2048",
+       "hash": "67c7a289dcd212ab92bb732137c7f98e8024e520",
+       "datavalue": {
+        "value": {
+         "amount": "+800",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M49092252$9740B26A-6B8A-468E-8EEE-43A19F8110CE",
+      "rank": "normal"
+     }
+    ],
+    "P2049": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2049",
+       "hash": "a92e7dd0dcb1c9bb4a2a2d0b63be8cc59a3c7a49",
+       "datavalue": {
+        "value": {
+         "amount": "+564",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M49092252$2326994B-DE33-40AF-BEF1-09DE86ACA636",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M50229521": {
+   "pageid": 50229521,
+   "ns": 6,
+   "title": "File:Mallika Sherawat Cannes 141 (28039077121).jpg",
+   "lastrevid": 1246984048,
+   "modified": "2026-07-12T17:29:23Z",
+   "type": "mediainfo",
+   "id": "M50229521",
+   "labels": {},
+   "descriptions": {},
+   "statements": {
+    "P793": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P793",
+       "hash": "912559090b38b5a2103282064719d3852c85195c",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 21061237,
+         "id": "Q21061237"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M50229521$7B4007B8-E9A0-48A6-9BF8-1529DCB31AAF",
+      "rank": "normal"
+     }
+    ],
+    "P275": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P275",
+       "hash": "a62aa88e8696cafc169e9591e6d34b5d3ec5b93e",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 19068220,
+         "id": "Q19068220"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M50229521$144E12A1-89DD-4A52-B804-3A605B92CE41",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "5570347fdc76d2a80732f51ea10ee4b144a084e0",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 50423863,
+         "id": "Q50423863"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M50229521$327EA775-A648-40ED-8BE0-31EDA3A2AAEA",
+      "rank": "normal"
+     }
+    ],
+    "P571": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P571",
+       "hash": "5d293568b32fa780f32d96c78fb852cb283801eb",
+       "datavalue": {
+        "value": {
+         "time": "+2016-05-14T00:00:00Z",
+         "timezone": 0,
+         "before": 0,
+         "after": 0,
+         "precision": 11,
+         "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+        },
+        "type": "time"
+       }
+      },
+      "type": "statement",
+      "id": "M50229521$77009414-08FE-4EEF-BF3D-6F140537CD6D",
+      "rank": "normal"
+     }
+    ],
+    "P7482": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P7482",
+       "hash": "b82dd47222a210c6dc1f428b693c2fbf7b0e0d6e",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 74228490,
+         "id": "Q74228490"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P973": [
+        {
+         "snaktype": "value",
+         "property": "P973",
+         "hash": "06abd54ca51feb97cc8a2f9904bb8162794d38e8",
+         "datavalue": {
+          "value": "https://www.flickr.com/photos/tonyshek/28039077121/",
+          "type": "string"
+         }
+        }
+       ],
+       "P137": [
+        {
+         "snaktype": "value",
+         "property": "P137",
+         "hash": "3d8cd4c1ab91d3d9a14900210faaebf1a98b947b",
+         "datavalue": {
+          "value": {
+           "entity-type": "item",
+           "numeric-id": 103204,
+           "id": "Q103204"
+          },
+          "type": "wikibase-entityid"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P973",
+       "P137"
+      ],
+      "id": "M50229521$1116B801-26BC-4FB5-92BF-D7CF56D1700E",
+      "rank": "normal"
+     }
+    ],
+    "P170": [
+     {
+      "mainsnak": {
+       "snaktype": "somevalue",
+       "property": "P170",
+       "hash": "d3550e860f988c6675fff913440993f58f5c40c5"
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P3267": [
+        {
+         "snaktype": "value",
+         "property": "P3267",
+         "hash": "2494a533c866b535a0d48db3274fa0b03b997a36",
+         "datavalue": {
+          "value": "57638320@N00",
+          "type": "string"
+         }
+        }
+       ],
+       "P2699": [
+        {
+         "snaktype": "value",
+         "property": "P2699",
+         "hash": "0428904050d555e7670d0df1da75efb34de52721",
+         "datavalue": {
+          "value": "https://www.flickr.com/people/57638320@N00",
+          "type": "string"
+         }
+        }
+       ],
+       "P2093": [
+        {
+         "snaktype": "value",
+         "property": "P2093",
+         "hash": "959e07be7001cbcd82c66edffdf4046cd9cc434b",
+         "datavalue": {
+          "value": "GabboT",
+          "type": "string"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P3267",
+       "P2699",
+       "P2093"
+      ],
+      "id": "M50229521$2FCE2644-CDA1-4CDF-A9EB-0DEF43952806",
+      "rank": "normal"
+     }
+    ],
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "4b59bc97cdcc43caf3b9f267cb85b1b9c46c779c",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 262665,
+         "id": "Q262665"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M50229521$770CEA1A-F571-46B0-9C0D-CCA72E2734F4",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M50229521$C41598F3-7545-49CA-80D3-DD7EAC2C38D9",
+      "rank": "normal"
+     }
+    ],
+    "P4092": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P4092",
+       "hash": "2ca3bbaaad117b3af7e64142f64223fb90a25107",
+       "datavalue": {
+        "value": "4b8b4d99a27b0bf335e8deec05d8783ab598311b",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P459": [
+        {
+         "snaktype": "value",
+         "property": "P459",
+         "hash": "75dff03c151b13fbab93742164121c16a6aa0de1",
+         "datavalue": {
+          "value": {
+           "entity-type": "item",
+           "numeric-id": 13414952,
+           "id": "Q13414952"
+          },
+          "type": "wikibase-entityid"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P459"
+      ],
+      "id": "M50229521$86307E1E-1398-4879-AE98-65F3F8367956",
+      "rank": "normal"
+     }
+    ],
+    "P3575": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P3575",
+       "hash": "0fb7e4d06b840d5f0c2a9e1c8c6ad55e4e0f670f",
+       "datavalue": {
+        "value": {
+         "amount": "+964054",
+         "unit": "http://www.wikidata.org/entity/Q8799"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M50229521$955C10F0-BAB7-4140-80F1-948EBD6A3026",
+      "rank": "normal"
+     }
+    ],
+    "P2048": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2048",
+       "hash": "5020314b6fa9ac5987c4f39bc679eb334fbd0520",
+       "datavalue": {
+        "value": {
+         "amount": "+2674",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M50229521$D0AED8CE-524E-4AFF-AAC6-716B26EDFFF1",
+      "rank": "normal"
+     }
+    ],
+    "P2049": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2049",
+       "hash": "b99d94d50068f9aaeb72e31926103605b5603e1d",
+       "datavalue": {
+        "value": {
+         "amount": "+1911",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M50229521$494CAA76-E7B6-480A-9B33-161819F56957",
+      "rank": "normal"
+     }
+    ],
+    "P6789": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6789",
+       "hash": "0da92ec36d908f4db3213c0a29dd32a394febb53",
+       "datavalue": {
+        "value": {
+         "amount": "+200",
+         "unit": "1"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M50229521$144E1E35-2FE9-48D3-BD56-0CB91979328F",
+      "rank": "normal"
+     }
+    ],
+    "P6757": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6757",
+       "hash": "10f067d983009108718bf9b2f073259c9b92cfbf",
+       "datavalue": {
+        "value": {
+         "amount": "+0.0125",
+         "unit": "http://www.wikidata.org/entity/Q11574"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M50229521$B7CB318B-8152-4DA8-81BA-A677E30A4CF1",
+      "rank": "normal"
+     }
+    ],
+    "P6790": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6790",
+       "hash": "7e6187af800cf4d85b7217afac31dc36cd69dd48",
+       "datavalue": {
+        "value": {
+         "amount": "+5.6",
+         "unit": "1"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M50229521$74776133-5287-43D6-A55C-4611A43378EE",
+      "rank": "normal"
+     }
+    ],
+    "P2151": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2151",
+       "hash": "d2ae40fbee01d2d091fa160bff1eaee11a14b86b",
+       "datavalue": {
+        "value": {
+         "amount": "+38.2",
+         "unit": "http://www.wikidata.org/entity/Q174789"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M50229521$B8A6D89B-6E91-4970-9DD3-0EBFE39FA1A2",
+      "rank": "normal"
+     }
+    ],
+    "P31": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P31",
+       "hash": "78817782cf2abc9d185934ba3b526591e12840f2",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 125191,
+         "id": "Q125191"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M50229521$EC273C1D-D757-46A2-B543-933732C8387C",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M51536887": {
+   "pageid": 51536887,
+   "ns": 6,
+   "title": "File:Mallika Sherawat performs Puja at a pandal in Kolkata on Dussehra 2013 (01).jpg",
+   "lastrevid": 1094538779,
+   "modified": "2025-10-03T13:48:16Z",
+   "type": "mediainfo",
+   "id": "M51536887",
+   "labels": {},
+   "descriptions": {},
+   "statements": {
+    "P170": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P170",
+       "hash": "aefed5efe969b7a784eb2c714fad23c4c7a409fa",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 4939834,
+         "id": "Q4939834"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M51536887$F80B1828-795D-46C2-869B-15CCCBA397F5",
+      "rank": "normal"
+     }
+    ],
+    "P6305": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6305",
+       "hash": "441356d964e475d603c1f6be54a3397c35a7241a",
+       "datavalue": {
+        "value": "2008030310010794",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M51536887$13E4DC27-7E55-403D-A2B9-24B1C93C3121",
+      "rank": "normal"
+     }
+    ],
+    "P7482": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P7482",
+       "hash": "b82dd47222a210c6dc1f428b693c2fbf7b0e0d6e",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 74228490,
+         "id": "Q74228490"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P973": [
+        {
+         "snaktype": "value",
+         "property": "P973",
+         "hash": "b781b492ee180b90cd217144383b0564e397bcd6",
+         "datavalue": {
+          "value": "http://www.bollywoodhungama.com/news/parties-and-events/mallika-sherawat-performs-puja-at-a-pandal-in-kolkata-on-dusshera/mallika-sherawat-performs-puja-at-a-pandal-in-kolkata-on-dusshera-4",
+          "type": "string"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P973"
+      ],
+      "id": "M51536887$549EDDC7-793A-4909-B3DF-89DAD019E984",
+      "rank": "normal"
+     }
+    ],
+    "P571": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P571",
+       "hash": "b8852cf9ea618e7e42fbbba99c95c136d01016e1",
+       "datavalue": {
+        "value": {
+         "time": "+2013-10-15T00:00:00Z",
+         "timezone": 0,
+         "before": 0,
+         "after": 0,
+         "precision": 11,
+         "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+        },
+        "type": "time"
+       }
+      },
+      "type": "statement",
+      "id": "M51536887$735C1D3B-B83C-4F89-9E53-B28CF6933118",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "5570347fdc76d2a80732f51ea10ee4b144a084e0",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 50423863,
+         "id": "Q50423863"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M51536887$3784A25F-B18A-4DC2-A1A4-7FFE0C12D95D",
+      "rank": "normal"
+     }
+    ],
+    "P275": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P275",
+       "hash": "079171cc72edf939cc43c28db72cff68862260f9",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 14947546,
+         "id": "Q14947546"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M51536887$5A661679-B9C8-4E01-A163-4B7F6BD409AE",
+      "rank": "normal"
+     }
+    ],
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "4b59bc97cdcc43caf3b9f267cb85b1b9c46c779c",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 262665,
+         "id": "Q262665"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M51536887$AB933F24-11A9-4A65-8EAE-7D8569382D10",
+      "rank": "normal"
+     },
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "7a5090b56dd55334d4703ba3139323727ed1ba04",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 172827,
+         "id": "Q172827"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M51536887$000BA4EE-F588-47A3-948D-EC1BB3FA69B3",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M51536887$639EEB8E-426A-4280-8662-8ECAD752D08F",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M195126366": {
+   "pageid": 195126366,
+   "ns": 6,
+   "title": "File:Mallika Sherawat 2016 (facecrop).jpg",
+   "lastrevid": 1254290942,
+   "modified": "2026-07-30T15:19:13Z",
+   "type": "mediainfo",
+   "id": "M195126366",
+   "labels": {},
+   "descriptions": {},
+   "statements": {
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "4b59bc97cdcc43caf3b9f267cb85b1b9c46c779c",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 262665,
+         "id": "Q262665"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M195126366$7A98AF03-0367-43C1-A284-397D5B3D2A90",
+      "rank": "normal"
+     }
+    ],
+    "P3575": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P3575",
+       "hash": "68da3cb2376ca13486c2e237c71f97056d4c23ec",
+       "datavalue": {
+        "value": {
+         "amount": "+18408",
+         "unit": "http://www.wikidata.org/entity/Q8799"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M195126366$D4007F2B-329C-4811-B6EF-8958CD9148F3",
+      "rank": "normal"
+     }
+    ],
+    "P2048": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2048",
+       "hash": "bdbda4ab98d45b7c0f570262e7a9864542c2d0a6",
+       "datavalue": {
+        "value": {
+         "amount": "+379",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M195126366$A9C2A380-2E04-46FF-9E15-7388350AF640",
+      "rank": "normal"
+     }
+    ],
+    "P2049": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2049",
+       "hash": "a10be4fd81e584d41169cbdbb19f87ddeb85377e",
+       "datavalue": {
+        "value": {
+         "amount": "+337",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M195126366$820192BB-D9AB-4B70-B141-8FFF7F55038F",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M195126366$59986EAF-CFBA-4319-85F6-9AB4B0C67B49",
+      "rank": "normal"
+     }
+    ],
+    "P4092": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P4092",
+       "hash": "1b498e0ea30e6036a457c8238f4c32bc4c3ab708",
+       "datavalue": {
+        "value": "8d5d45c12aaf487dcd639b824526751106691291",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P459": [
+        {
+         "snaktype": "value",
+         "property": "P459",
+         "hash": "75dff03c151b13fbab93742164121c16a6aa0de1",
+         "datavalue": {
+          "value": {
+           "entity-type": "item",
+           "numeric-id": 13414952,
+           "id": "Q13414952"
+          },
+          "type": "wikibase-entityid"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P459"
+      ],
+      "id": "M195126366$17A0E06F-D9E2-47F8-8E71-E2842D040949",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "5570347fdc76d2a80732f51ea10ee4b144a084e0",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 50423863,
+         "id": "Q50423863"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M195126366$1B52D35B-E314-4AD4-9270-3A83E34FC0E2",
+      "rank": "normal"
+     }
+    ],
+    "P275": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P275",
+       "hash": "a35b4558d66c92eacbe2f569697ffb1934e0316e",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 14946043,
+         "id": "Q14946043"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M195126366$891887E3-C542-4090-B8FB-BFB2953430B2",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M195592378": {
+   "pageid": 195592378,
+   "ns": 6,
+   "title": "File:Mallika Sherawat Cannes 2016 17 (cropped).jpg",
+   "lastrevid": 1254290972,
+   "modified": "2026-07-30T15:19:17Z",
+   "type": "mediainfo",
+   "id": "M195592378",
+   "labels": {},
+   "descriptions": {},
+   "statements": {
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "4b59bc97cdcc43caf3b9f267cb85b1b9c46c779c",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 262665,
+         "id": "Q262665"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M195592378$25C70C74-9498-46C7-978C-A834C554BAB9",
+      "rank": "normal"
+     }
+    ],
+    "P3575": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P3575",
+       "hash": "e205cccc2a72c4d3c061a340b82f76e47b3f4a23",
+       "datavalue": {
+        "value": {
+         "amount": "+23814",
+         "unit": "http://www.wikidata.org/entity/Q8799"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M195592378$446C15C5-D5F2-4FF7-9466-302EF98EEF62",
+      "rank": "normal"
+     }
+    ],
+    "P2048": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2048",
+       "hash": "3b97a6fb55589ebb0d754fdf6421c51f411ebce7",
+       "datavalue": {
+        "value": {
+         "amount": "+457",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M195592378$1E68D8CF-4032-49B1-B11C-2F1E4E01F1A0",
+      "rank": "normal"
+     }
+    ],
+    "P2049": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2049",
+       "hash": "18a4782e919caf4af01b9435c6c7238b0a44471e",
+       "datavalue": {
+        "value": {
+         "amount": "+372",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M195592378$B8C3679A-CD13-4E31-ACC8-E9E6A081FF67",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M195592378$1569C475-30EF-4CA6-8805-51766DB631CF",
+      "rank": "normal"
+     }
+    ],
+    "P4092": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P4092",
+       "hash": "a6afe37befcb64acd2d18d7df47ee8ee854c670e",
+       "datavalue": {
+        "value": "8eea017991339667e7908ab519a4d4aafbecc5ff",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P459": [
+        {
+         "snaktype": "value",
+         "property": "P459",
+         "hash": "75dff03c151b13fbab93742164121c16a6aa0de1",
+         "datavalue": {
+          "value": {
+           "entity-type": "item",
+           "numeric-id": 13414952,
+           "id": "Q13414952"
+          },
+          "type": "wikibase-entityid"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P459"
+      ],
+      "id": "M195592378$C8EEA278-EA3D-475D-9E5B-36EC22302C5E",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "5570347fdc76d2a80732f51ea10ee4b144a084e0",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 50423863,
+         "id": "Q50423863"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M195592378$2560F920-F9C8-42B7-A309-2884BD1891F3",
+      "rank": "normal"
+     }
+    ],
+    "P275": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P275",
+       "hash": "a35b4558d66c92eacbe2f569697ffb1934e0316e",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 14946043,
+         "id": "Q14946043"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M195592378$A3E6C6E0-A9DB-4052-B4B1-260EB5C14993",
+      "rank": "normal"
+     }
+    ]
+   }
+  }
+ },
+ "success": 1
+}

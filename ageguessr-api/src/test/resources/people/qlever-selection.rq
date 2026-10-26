@@ -1,0 +1,24 @@
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX ps: <http://www.wikidata.org/prop/statement/>
+PREFIX psv: <http://www.wikidata.org/prop/statement/value/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?person ?sitelinks ?image ?birth ?birthPrecision ?birthCalendar ?birthRank ?death ?labelEn ?labelFr WHERE {
+  ?person wdt:P31 wd:Q5 ;
+          wdt:P18 ?image ;
+          wikibase:sitelinks ?sitelinks .
+  FILTER(?sitelinks >= 50)
+  ?person p:P569 ?birthStatement .
+  ?birthStatement psv:P569 ?birthValue ;
+                  wikibase:rank ?birthRank .
+  ?birthValue wikibase:timeValue ?birth ;
+              wikibase:timePrecision ?birthPrecision ;
+              wikibase:timeCalendarModel ?birthCalendar .
+  OPTIONAL { ?person wdt:P570 ?death }
+  OPTIONAL { ?person rdfs:label ?labelEn FILTER(LANG(?labelEn) = "en") }
+  OPTIONAL { ?person rdfs:label ?labelFr FILTER(LANG(?labelFr) = "fr") }
+}
+ORDER BY ?person
+LIMIT 8
