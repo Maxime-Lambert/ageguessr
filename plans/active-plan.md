@@ -464,23 +464,23 @@ Correctif vérifié en local : `pitest-maven` 1.30.1 avec la dépendance de plug
 Le `pom.xml` de cette branche est resté inchangé.
 
 ## Phase 4 : Clients Wikidata et Commons
-Status: Not started
+Status: Complete
 
-- [ ] `config/WikimediaClientConfig.java` : bean `RestClient` (User-Agent, timeouts).
+- [x] `config/WikimediaClientConfig.java` : bean `RestClient` (User-Agent, timeouts).
       Propriétés `app.wikimedia.*` dans `application.properties` (pause entre
       requêtes, nombre de tentatives, seuil de sitelinks, plafond de photos, largeur de
       vignette, taille max d'image).
-- [ ] `features/people/IngestPeople/WikidataClient.java` : requête SPARQL du spike, puis
+- [x] `features/people/IngestPeople/WikidataClient.java` : requête SPARQL du spike, puis
       `wbgetentities` (labels en/fr, `P569`, `P570`, `P18`, sitelinks).
-- [ ] `features/people/IngestPeople/CommonsClient.java` : recherche
+- [x] `features/people/IngestPeople/CommonsClient.java` : recherche
       `haswbstatement:P180`, `imageinfo` (URL de vignette, MIME, `extmetadata`,
       métadonnées EXIF) et MediaInfo (`P571`, `P180`, `P31`), avec `maxlag` et retry
       sur 429/503.
-- [ ] `features/people/IngestPeople/PhotoCandidateFilter.java` : licence en allow-list,
+- [x] `features/people/IngestPeople/PhotoCandidateFilter.java` : licence en allow-list,
       une seule personne représentée, photographie, MIME.
-- [ ] `features/people/IngestPeople/AttributionSanitizer.java` : auteur HTML → texte
+- [x] `features/people/IngestPeople/AttributionSanitizer.java` : auteur HTML → texte
       brut.
-- [ ] Tests unitaires sur les fixtures du spike (`MockRestServiceServer`), retry/backoff
+- [x] Tests unitaires sur les fixtures du spike (`MockRestServiceServer`), retry/backoff
       compris, plus des tests des filtres et du nettoyage.
 
 ### Verification Plan
@@ -488,7 +488,52 @@ Status: Not started
   → vert.
 
 ### Phase Summary
-_(à écrire quand la phase est finie)_
+Livré (`features/people/IngestPeople/` sauf mention contraire) :
+- **`WikimediaHttp`** : couche HTTP commune aux deux clients.
+  - Pause de politesse avant chaque requête.
+  - Retry sur 429, 5xx, erreur réseau, JSON tronqué et `maxlag`, qui arrive en HTTP 200.
+  - `Retry-After` respecté (plafonné à 60 s), sinon backoff exponentiel. Pas de retry
+    sur les autres 4xx.
+  - Les attentes passent par l'interface `Sleeper`, simulée dans les tests.
+- **`WikidataClient`** : requête QLever paginée par personne (sous-requête
+  `DISTINCT … ORDER BY DESC(?sitelinks) ?person LIMIT/OFFSET`), avec regroupement des
+  lignes en `PersonRecord`.
+  - Vérifiée en réel : ~28 s par page, d'où des pages de 500 personnes
+    (`app.people.ingest.page-size`).
+- **`DeathStatement` / `DeathDateSelector`** : mêmes règles de rang que la naissance.
+  - Une date de décès au mois ou à l'année est acceptée, en gardant son premier jour
+    (prudent).
+  - Une date inconnue (`somevalue`) ou à la décennie exclut la personne.
+  - Cas réel : Theodor Schwann, avec deux dates de décès dont une `preferred`.
+- **`CommonsClient`** : recherche `depicts`, `imageinfo` par lots de 50, MediaInfo
+  (`P571` grégoriens non dépréciés, compte des `P180` non dépréciés).
+  - `statements: []` est traité comme « aucune donnée ».
+  - Seul l'EXIF `DateTimeOriginal` est lu, jamais `DateTime`.
+- **`PhotoEvaluator`** accepte désormais **plusieurs** `P571` par fichier : ils doivent
+  se recouper, sinon la photo est rejetée (`CONFLICTING_DATES`).
+- **`PhotoCandidateFilter`** :
+  - JPEG uniquement ;
+  - allow-list de licences par regex : `CC0`, `CC BY`, `CC BY-SA` (+ version et port),
+    `Public domain`, `PD-*` ;
+  - `NC`/`ND` refusés par token, pour que « PD-Finland » reste accepté ;
+  - « Attribution », GFDL et « Copyrighted free use » refusés.
+- **`AttributionSanitizer`** : jsoup (nouvelle dépendance `org.jsoup:jsoup:1.23.2`)
+  réduit le HTML de l'auteur en texte, tronqué à 1 024 caractères.
+- `config/WikimediaClientConfig` : `RestClient` dédié (User-Agent, timeouts, pas de
+  redirections). Il est construit avec `RestClient.builder()`, parce que Spring Boot 4
+  ne fournit le bean `RestClient.Builder` qu'avec `spring-boot-starter-restclient`.
+- `WikimediaProperties` et `IngestProperties` sont des records `@ConfigurationProperties`
+  **validés au démarrage**. Dans `src/test/resources/application.properties`, ils
+  pointent vers des hôtes `.invalid` : aucun test ne peut joindre Wikimedia.
+
+Vérifications :
+- **`SpikeRegressionTest`** : sur les 26 fichiers enregistrés de Mallika Sherawat, la
+  chaîne Java (parsing, filtre, évaluateur) retrouve exactement les 5 photos du spike.
+  Le sélecteur à 10 ans en garde 2 : 2016 (39 ans) et 2006 (29 ans).
+- `./mvnw test` complet : **391 tests verts**, plus 3 ajoutés ensuite.
+- Mutation sur `IngestPeople.*` : **222/227 tués**. Les 3 vrais trous ont été comblés
+  par des tests. Les 2 survivants restants sont équivalents (`>` contre `>=` au plafond
+  de 60 s, même résultat).
 
 ## Phase 5 : Ré-encodage, handler et runner d'ingestion
 Status: Not started

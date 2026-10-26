@@ -3,6 +3,7 @@ package app.ageguessr.features.people.IngestPeople;
 import app.ageguessr.features.people.PhotoDateSource;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -26,15 +27,24 @@ final class PhotoEvaluator {
 
     private PhotoEvaluator() {}
 
-    /** What Commons tells about one file's date. {@code structuredDate} comes from SDC "inception" (P571). */
+    /**
+     * What Commons tells about one file's date. {@code structuredDates} are the SDC
+     * "inception" (P571) values: a file can carry several, which must then overlap.
+     */
     record Evidence(
             String fileTitle,
-            Optional<PhotoDate> structuredDate,
+            List<PhotoDate> structuredDates,
             String informationDate,
             String exifDateTimeOriginal) {}
 
     static PhotoEvaluation evaluate(Evidence evidence, LocalDate birth, LocalDate death, LocalDate today) {
-        Optional<PhotoDate> structured = evidence.structuredDate();
+        Optional<PhotoDate> structured = Optional.empty();
+        for (PhotoDate inception : evidence.structuredDates()) {
+            structured = structured.isEmpty() ? Optional.of(inception) : structured.get().intersection(inception);
+            if (structured.isEmpty()) {
+                return new PhotoEvaluation.Rejected(PhotoRejection.CONFLICTING_DATES);
+            }
+        }
         Optional<PhotoDate> information = PhotoDateParser.parseInformationDate(evidence.informationDate());
 
         PhotoDate date;
