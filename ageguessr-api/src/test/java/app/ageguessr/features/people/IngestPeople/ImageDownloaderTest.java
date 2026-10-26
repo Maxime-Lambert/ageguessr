@@ -29,8 +29,8 @@ class ImageDownloaderTest {
     void setUp() {
         RestClient.Builder builder = RestClient.builder();
         server = MockRestServiceServer.bindTo(builder).build();
-        WikimediaHttp http = new WikimediaHttp(builder.build(), Fixtures.MAPPER, d -> {}, Duration.ZERO, 2);
-        downloader = new ImageDownloader(http, 10);
+        WikimediaHttp http = Fixtures.http(builder.build(), d -> {}, Duration.ZERO, 2);
+        downloader = new ImageDownloader(http, Fixtures.ingestProperties(10));
     }
 
     @Test

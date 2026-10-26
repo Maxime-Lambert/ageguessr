@@ -36,7 +36,7 @@ class ArchitectureTests {
     @ArchTest
     static final ArchRule only_the_people_ingestion_makes_outbound_http_calls = noClasses()
             .that()
-            .resideOutsideOfPackages("app.ageguessr.features.people.IngestPeople..", "app.ageguessr.config..")
+            .resideOutsideOfPackage("app.ageguessr.features.people.IngestPeople..")
             .should()
             .dependOnClassesThat()
             .haveFullyQualifiedName("org.springframework.web.client.RestClient");

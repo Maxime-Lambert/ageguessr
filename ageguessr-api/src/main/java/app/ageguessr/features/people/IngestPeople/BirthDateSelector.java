@@ -17,19 +17,12 @@ final class BirthDateSelector {
     private BirthDateSelector() {}
 
     /**
-     * Wikidata ranks: a deprecated statement is known to be wrong and is ignored; when a
-     * statement is preferred, the normal ones are ignored. The remaining statements must
+     * Statements of the best rank ({@link WikidataRank#best}); they must
      * all say the same day, to the day, in the Gregorian calendar. A Julian date is
      * excluded rather than converted: it is rare for people who were photographed.
      */
     static Optional<LocalDate> select(List<BirthStatement> statements) {
-        List<BirthStatement> notDeprecated = statements.stream()
-                .filter(s -> s.rank() != BirthStatement.Rank.DEPRECATED)
-                .toList();
-        boolean anyPreferred = notDeprecated.stream().anyMatch(s -> s.rank() == BirthStatement.Rank.PREFERRED);
-        List<BirthStatement> retained = anyPreferred
-                ? notDeprecated.stream().filter(s -> s.rank() == BirthStatement.Rank.PREFERRED).toList()
-                : notDeprecated;
+        List<BirthStatement> retained = WikidataRank.best(statements, BirthStatement::rank);
         if (retained.isEmpty()
                 || retained.stream().anyMatch(s -> s.precision() != PhotoDate.PRECISION_DAY
                         || !GREGORIAN.equals(s.calendarModel()))) {

@@ -82,16 +82,16 @@ class WikidataClientTest {
     void keepsEachBirthStatementWithItsRank() {
         assertThat(people.get("Q1002250").births())
                 .containsExactlyInAnyOrder(
-                        new BirthStatement("1951-11-14T00:00:00Z", 11, BirthDateSelector.GREGORIAN, BirthStatement.Rank.DEPRECATED),
-                        new BirthStatement("1951-09-14T00:00:00Z", 11, BirthDateSelector.GREGORIAN, BirthStatement.Rank.NORMAL));
+                        new BirthStatement("1951-11-14T00:00:00Z", 11, BirthDateSelector.GREGORIAN, WikidataRank.DEPRECATED),
+                        new BirthStatement("1951-09-14T00:00:00Z", 11, BirthDateSelector.GREGORIAN, WikidataRank.NORMAL));
     }
 
     @Test
     void keepsEachDeathStatementWithItsRank() {
         assertThat(people.get("Q76745").deaths())
                 .containsExactlyInAnyOrder(
-                        new DeathStatement("1882-01-12T00:00:00Z", 11, BirthStatement.Rank.NORMAL),
-                        new DeathStatement("1882-01-11T00:00:00Z", 11, BirthStatement.Rank.PREFERRED));
+                        new DeathStatement("1882-01-12T00:00:00Z", 11, WikidataRank.NORMAL),
+                        new DeathStatement("1882-01-11T00:00:00Z", 11, WikidataRank.PREFERRED));
         assertThat(people.get("Q1002250").deaths()).isEmpty();
     }
 
@@ -114,7 +114,7 @@ class WikidataClientTest {
 
         PersonRecord person = WikidataClient.assemble(page("Q1"), empty(), deaths, empty(), empty()).getFirst();
 
-        assertThat(person.deaths()).containsExactly(new DeathStatement(null, null, BirthStatement.Rank.NORMAL));
+        assertThat(person.deaths()).containsExactly(new DeathStatement(null, null, WikidataRank.NORMAL));
     }
 
     @Test
@@ -151,6 +151,37 @@ class WikidataClientTest {
     }
 
     @Test
+    void skipsRowsWhoseQidIsNotWellFormed() {
+        JsonNode ranking = Fixtures.MAPPER.readTree("""
+                [{"person": {"value": "http://www.wikidata.org/entity/Q1 } ?x ?y ?z"}, "sitelinks": {"value": "9"}},
+                 {"person": {"value": "https://evil.example/entity/Q2"}, "sitelinks": {"value": "8"}},
+                 {"person": {"value": "http://www.wikidata.org/entity/Q3"}, "sitelinks": {"value": "7"}}]
+                """);
+
+        assertThat(WikidataClient.assemble(ranking, empty(), empty(), empty(), empty()))
+                .extracting(PersonRecord::wikidataId)
+                .containsExactly("Q3");
+    }
+
+    @Test
+    void neverPutsAMalformedQidFromQleverIntoADetailQuery() {
+        RestClient.Builder builder = RestClient.builder();
+        MockRestServiceServer server = MockRestServiceServer.bindTo(builder).build();
+        server.expect(requestTo(QLEVER))
+                .andRespond(withSuccess("""
+                        {"results": {"bindings": [
+                          {"person": {"value": "http://www.wikidata.org/entity/Q1 } DROP ALL"}, "sitelinks": {"value": "9"}}
+                        ]}}
+                        """, MediaType.APPLICATION_JSON));
+        server.expect(never(), requestTo(QLEVER));
+        WikidataClient client = new WikidataClient(
+                Fixtures.http(builder.build(), d -> {}, Duration.ZERO, 1), properties());
+
+        assertThat(client.fetchPeople(0, 500)).isEmpty();
+        server.verify();
+    }
+
+    @Test
     void fetchesAPageThenItsDetailsRestrictedToThePageQids() {
         MockRestServiceServer server = expectFivePosts("LIMIT+500+OFFSET+1000");
 
@@ -167,7 +198,7 @@ class WikidataClientTest {
         server.expect(requestTo(QLEVER)).andRespond(withSuccess(emptyResult(), MediaType.APPLICATION_JSON));
         server.expect(never(), requestTo(QLEVER));
         WikidataClient client = new WikidataClient(
-                new WikimediaHttp(builder.build(), Fixtures.MAPPER, d -> {}, Duration.ZERO, 1), properties());
+                Fixtures.http(builder.build(), d -> {}, Duration.ZERO, 1), properties());
 
         assertThat(client.fetchPeople(0, 500)).isEmpty();
         server.verify();
@@ -184,7 +215,7 @@ class WikidataClientTest {
     @Test
     void refusesSomethingThatIsNotAQidBeforeBuildingTheQuery() {
         WikidataClient client = new WikidataClient(
-                new WikimediaHttp(RestClient.builder().build(), Fixtures.MAPPER, d -> {}, Duration.ZERO, 1), properties());
+                Fixtures.http(RestClient.builder().build(), d -> {}, Duration.ZERO, 1), properties());
 
         for (String bad : new String[] {"Q0", "42", "Q42 } ?x ?y ?z", "q42", "Q1234567890123"}) {
             assertThatThrownBy(() -> client.fetchPerson(bad)).as(bad).isInstanceOf(IllegalArgumentException.class);
@@ -223,7 +254,7 @@ class WikidataClientTest {
 
     private WikidataClient client(MockRestServiceServer server) {
         return new WikidataClient(
-                new WikimediaHttp(builder.build(), Fixtures.MAPPER, d -> {}, Duration.ZERO, 1), properties());
+                Fixtures.http(builder.build(), d -> {}, Duration.ZERO, 1), properties());
     }
 
     private static JsonNode bindings(String fixture) {

@@ -35,6 +35,9 @@ la suivante).
 - [ ] Curation manuelle des photos : rôle admin, approuver/rejeter, page enchaînant les
       photos en attente (~43 % des photos automatiques sont inutilisables : groupes,
       foules…) — PR `feature/photo-curation`
+- [ ] **Avant d'approuver la moindre photo d'une personne vivante** : trancher le droit
+      à l'image (avis juridique, ou lancement limité aux personnes décédées) — voir
+      `docs/decisions/architecture.md`, « Sourcing des personnes », limites connues
 - [ ] Ingestion en production (~3 000 personnes, ~8 h, ~0,8 Go), puis passe de
       curation
 - [ ] Ingestion + curation des indices événementiels par catégorie et par année
@@ -58,7 +61,8 @@ la suivante).
 ## Semaine 4 — Interface de jeu
 - [ ] Écran principal : photo, input d'âge, jauge chaud/froid
 - [ ] Sélection de catégorie d'indice + affichage de l'indice
-- [ ] Écran de résultat (âge réel, identité révélée, points gagnés)
+- [ ] Écran de résultat (âge réel, identité révélée, points gagnés, **crédit de la photo :
+      auteur + licence**, obligatoire avant de servir des photos CC BY / BY-SA aux joueurs)
 - [ ] Enchaînement des 3 personnes du jour + récapitulatif final
 - [ ] Page d'accueil publique
 - [ ] Vocabulaire de jeu centralisé dans un seul fichier (essai du ton « enquête »,

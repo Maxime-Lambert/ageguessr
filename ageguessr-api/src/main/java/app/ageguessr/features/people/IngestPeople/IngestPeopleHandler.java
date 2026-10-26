@@ -126,10 +126,9 @@ class IngestPeopleHandler {
         }
         store.save(record, birth.get(), death, newPhotos);
         report.personKept(newPhotos.size());
-        log.info(
-                "{} {}: {} photo(s) added, {} already stored",
-                record.wikidataId(), record.nameEn() != null ? record.nameEn() : record.nameFr(),
-                newPhotos.size(), kept.size());
+        // QIDs only in logs, never names or file titles (which usually contain the name):
+        // a person removed on request must not linger in log files.
+        log.info("{}: {} photo(s) added, {} already stored", record.wikidataId(), newPhotos.size(), kept.size());
         return Optional.empty();
     }
 
@@ -194,7 +193,7 @@ class IngestPeopleHandler {
                         image));
             } catch (ImageRejectedException e) {
                 report.photoRejected("IMAGE_" + e.reason().name());
-                log.warn("{}: image of {} rejected: {}", record.wikidataId(), file.title(), e.getMessage());
+                log.warn("{}: an image was rejected ({})", record.wikidataId(), e.reason());
             }
         }
         return newPhotos;

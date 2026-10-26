@@ -7,7 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Optional;
 import java.util.function.Supplier;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -30,31 +30,23 @@ import tools.jackson.databind.ObjectMapper;
  * </ul>
  */
 @Component
+@RequiredArgsConstructor
 class WikimediaHttp {
 
     static final Duration MAX_BACKOFF = Duration.ofSeconds(60);
 
+    /**
+     * Largest JSON answer read. The biggest real ones (50 Commons files with metadata) are
+     * a few hundred KB; the cap only guards the ingestion against running out of memory.
+     */
+    static final int MAX_JSON_BYTES = 50 * 1024 * 1024;
+
+    @Qualifier("wikimediaRestClient")
     private final RestClient restClient;
+
     private final ObjectMapper objectMapper;
     private final Sleeper sleeper;
-    private final Duration pause;
-    private final int maxAttempts;
-
-    @Autowired
-    WikimediaHttp(
-            @Qualifier("wikimediaRestClient") RestClient restClient,
-            ObjectMapper objectMapper,
-            WikimediaProperties properties) {
-        this(restClient, objectMapper, Sleeper.REAL, Duration.ofMillis(properties.requestPauseMs()), properties.maxAttempts());
-    }
-
-    WikimediaHttp(RestClient restClient, ObjectMapper objectMapper, Sleeper sleeper, Duration pause, int maxAttempts) {
-        this.restClient = restClient;
-        this.objectMapper = objectMapper;
-        this.sleeper = sleeper;
-        this.pause = pause;
-        this.maxAttempts = maxAttempts;
-    }
+    private final WikimediaProperties properties;
 
     JsonNode get(URI uri) {
         return call(uri, () -> restClient.get().uri(uri), this::readJson);
@@ -88,8 +80,9 @@ class WikimediaHttp {
 
     private <T> T call(URI uri, Supplier<RestClient.RequestHeadersSpec<?>> request, BodyReader<T> reader) {
         String lastFailure = "no attempt";
+        int maxAttempts = properties.maxAttempts();
         for (int attempt = 1; attempt <= maxAttempts; attempt++) {
-            sleep(pause);
+            sleep(Duration.ofMillis(properties.requestPauseMs()));
             Outcome<T> outcome;
             try {
                 outcome = request.get().exchange((req, res) -> {
@@ -122,9 +115,13 @@ class WikimediaHttp {
     }
 
     private Outcome<JsonNode> readJson(InputStream in) throws IOException {
+        byte[] bytes = in.readNBytes(MAX_JSON_BYTES + 1);
+        if (bytes.length > MAX_JSON_BYTES) {
+            return Outcome.fail("JSON body larger than " + MAX_JSON_BYTES + " bytes");
+        }
         JsonNode body;
         try {
-            body = objectMapper.readTree(new String(in.readAllBytes(), StandardCharsets.UTF_8));
+            body = objectMapper.readTree(new String(bytes, StandardCharsets.UTF_8));
         } catch (RuntimeException e) {
             // Jackson 3 only throws unchecked exceptions. A truncated body is worth a retry.
             return Outcome.retry("unreadable JSON body", Optional.empty());

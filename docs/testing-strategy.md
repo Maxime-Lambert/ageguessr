@@ -34,6 +34,10 @@ Teste un handler contre un vrai PostgreSQL (Testcontainers) : vérifie que la re
 Spring Data JPA fait ce qu'on attend, que les contraintes DB sont respectées.
 **Ne couvre pas** : le pipeline HTTP (filtres de sécurité, routing) — c'est le rôle du
 test fonctionnel.
+**Exception d'emplacement** : un composant package-private d'un use case (ex.
+`PeopleStore`) se teste contre la base dans le package de la feature
+(`features/<F>/<UseCase>/*IntegrationTest.java`). On ne le rend pas public juste pour
+qu'il soit accessible depuis `integration/`.
 
 ### Fonctionnel backend
 Teste un endpoint de bout en bout via `@SpringBootTest` (`webEnvironment = RANDOM_PORT`)

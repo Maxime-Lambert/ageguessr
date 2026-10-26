@@ -126,14 +126,17 @@ class WikidataClient {
     }
 
     private List<PersonRecord> details(JsonNode ranking) {
-        Map<String, Integer> sitelinks = new LinkedHashMap<>();
+        Set<String> qids = new LinkedHashSet<>();
         for (JsonNode row : ranking) {
-            sitelinks.put(qid(row), Integer.parseInt(value(row, "sitelinks")));
+            String qid = qid(row);
+            if (qid != null) {
+                qids.add(qid);
+            }
         }
-        if (sitelinks.isEmpty()) {
+        if (qids.isEmpty()) {
             return List.of();
         }
-        String values = sitelinks.keySet().stream().map(q -> "wd:" + q).collect(Collectors.joining(" "));
+        String values = qids.stream().map(q -> "wd:" + q).collect(Collectors.joining(" "));
         return assemble(
                 ranking,
                 query(BIRTHS.formatted(values)),
@@ -147,7 +150,10 @@ class WikidataClient {
             JsonNode ranking, JsonNode births, JsonNode deaths, JsonNode images, JsonNode labels) {
         Map<String, Builder> people = new LinkedHashMap<>();
         for (JsonNode row : ranking) {
-            people.put(qid(row), new Builder(qid(row), Integer.parseInt(value(row, "sitelinks"))));
+            String qid = qid(row);
+            if (qid != null) {
+                people.put(qid, new Builder(qid, Integer.parseInt(value(row, "sitelinks"))));
+            }
         }
         for (JsonNode row : births) {
             Builder person = people.get(qid(row));
@@ -193,9 +199,18 @@ class WikidataClient {
         return http.postForm(properties.qleverUrl(), form).path("results").path("bindings");
     }
 
+    /**
+     * The row's QID, or null if it is not a well-formed one. QIDs from the ranking go
+     * back into the detail queries' text (VALUES): each one is checked like the
+     * command-line --qid, so a malformed answer can never alter a query.
+     */
     private static String qid(JsonNode row) {
         String uri = value(row, "person");
-        return uri.startsWith(ENTITY_PREFIX) ? uri.substring(ENTITY_PREFIX.length()) : uri;
+        if (uri == null || !uri.startsWith(ENTITY_PREFIX)) {
+            return null;
+        }
+        String id = uri.substring(ENTITY_PREFIX.length());
+        return QID.matcher(id).matches() ? id : null;
     }
 
     private static String value(JsonNode row, String variable) {
@@ -203,12 +218,12 @@ class WikidataClient {
         return node.isMissingNode() ? null : node.asString();
     }
 
-    private static BirthStatement.Rank rank(String uri) {
+    private static WikidataRank rank(String uri) {
         String name = uri.startsWith(RANK_PREFIX) ? uri.substring(RANK_PREFIX.length()) : uri;
         return switch (name) {
-            case "PreferredRank" -> BirthStatement.Rank.PREFERRED;
-            case "DeprecatedRank" -> BirthStatement.Rank.DEPRECATED;
-            default -> BirthStatement.Rank.NORMAL;
+            case "PreferredRank" -> WikidataRank.PREFERRED;
+            case "DeprecatedRank" -> WikidataRank.DEPRECATED;
+            default -> WikidataRank.NORMAL;
         };
     }
 

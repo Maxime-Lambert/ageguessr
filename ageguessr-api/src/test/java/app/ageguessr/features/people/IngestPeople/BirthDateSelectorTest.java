@@ -1,8 +1,8 @@
 package app.ageguessr.features.people.IngestPeople;
 
-import static app.ageguessr.features.people.IngestPeople.BirthStatement.Rank.DEPRECATED;
-import static app.ageguessr.features.people.IngestPeople.BirthStatement.Rank.NORMAL;
-import static app.ageguessr.features.people.IngestPeople.BirthStatement.Rank.PREFERRED;
+import static app.ageguessr.features.people.IngestPeople.WikidataRank.DEPRECATED;
+import static app.ageguessr.features.people.IngestPeople.WikidataRank.NORMAL;
+import static app.ageguessr.features.people.IngestPeople.WikidataRank.PREFERRED;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
@@ -85,7 +85,7 @@ class BirthDateSelectorTest {
         assertThat(BirthDateSelector.select(List.of(day("1951-02-30", NORMAL)))).isEmpty();
     }
 
-    private static BirthStatement day(String isoDay, BirthStatement.Rank rank) {
+    private static BirthStatement day(String isoDay, WikidataRank rank) {
         return new BirthStatement(isoDay + "T00:00:00Z", 11, BirthDateSelector.GREGORIAN, rank);
     }
 }

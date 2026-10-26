@@ -750,8 +750,8 @@ Status: In progress (docs faites, revues en cours)
       « photo datée »), « Endpoint proxy d'image ». « Schéma de données final » reste
       partiel : les personnes sont faites, les catégories et événements restent pour
       le plan des indices.
-- [ ] Agent `architecture-reviewer` sur le diff ; corriger.
-- [ ] Agent `code-reviewer` sur le diff (sourcing externe, RGPD, droit à l'image,
+- [x] Agent `architecture-reviewer` sur le diff ; corriger.
+- [x] Agent `code-reviewer` sur le diff (sourcing externe, RGPD, droit à l'image,
       licences, SSRF) ; corriger, ou remonter la question du droit à l'image à
       l'utilisateur.
 - [ ] `./mvnw test` + `pnpm test` + `pnpm lint` verts, puis `/pr` vers `develop`.
@@ -763,7 +763,58 @@ Status: In progress (docs faites, revues en cours)
 - CI de la PR verte.
 
 ### Phase Summary
-_(à écrire quand la phase est finie)_
+**Docs** :
+- `architecture.md` réécrit : « Sourcing des personnes » et « Anti-triche sur
+  l'image ».
+- `/privacy` section 8 (EN + FR, date passée au 2026-10-26).
+- `roadmap.md` (Semaine 2, prérequis avant approbation, crédit photo en Semaine 4).
+- `testing-strategy.md` (exception d'emplacement pour les tests d'intégration de
+  classes package-private).
+
+**Revues du 2026-10-26** : aucun point bloquant. Tout est corrigé dans cette PR, à la
+demande de l'utilisateur (« corrige tout d'un coup »).
+
+`architecture-reviewer` :
+- 🟠 Double constructeur avec `@Autowired` (`WikimediaHttp`, `ImageDownloader`) →
+  constructeur unique `@RequiredArgsConstructor`. `Sleeper` devient un bean, et
+  `lombok.config` recopie `@Qualifier` sur le constructeur généré.
+- 🟡 `WikimediaClientConfig` déplacé de `config/` vers `IngestPeople/`
+  (package-private). La règle ArchUnit `RestClient` ne tolère donc plus que
+  `IngestPeople..`.
+- 🟡 `BirthStatement.Rank` remplacé par l'enum partagé `WikidataRank`.
+- 🟡 Filtre de rang dédupliqué dans `WikidataRank.best`.
+
+`code-reviewer` :
+- 🟠 Effacement physique : un **trigger Postgres dans V4** supprime photos et images
+  dès qu'une personne passe `excluded` ; la ligne `people` reste.
+- 🟠 Droit à l'image des personnes vivantes → **prérequis avant d'approuver la moindre
+  photo d'une personne vivante** (`architecture.md` et roadmap). C'est une décision
+  produit/juridique, pas du code.
+- 🟡 QID renvoyés par QLever validés par la regex avant interpolation dans `VALUES` ;
+  ligne ignorée sinon.
+- 🟡 Réponses JSON plafonnées à 50 Mo (`WikimediaHttp.MAX_JSON_BYTES`).
+- 🟡 Logs d'ingestion : QID seuls, ni nom ni titre de fichier.
+- 🟡 `/privacy` : « sources accessibles au public », intérêt légitime précisé,
+  suppression confirmée sous un mois.
+- 🟡 Attribution CC BY / BY-SA : prérequis inscrit à la Semaine 4 (crédit à la
+  révélation) avant de servir des photos aux joueurs.
+
+**Run complet après corrections (2026-10-26)** :
+- backend `./mvnw test` : **483/483** ;
+- frontend `pnpm test` : **138/138** ; lint et Prettier OK ;
+- `./scripts/run-mutation-tests.sh` : code 0 en 279 s.
+  - Global : 453/571 tués (79 %), test strength 93 %.
+  - **`IngestPeople` : 350/371 tués (94 %), test strength 96 %.**
+  - `GetImage` était à 0/4 : il n'est couvert que par le test fonctionnel, exclu de
+    PIT. `GetImageHandlerTest` a été ajouté (3 tests).
+
+Nouveaux tests :
+- `WikidataRankTest` ;
+- plafond JSON ;
+- QID mal formés ignorés et jamais interpolés ;
+- trigger d'exclusion, plus le contre-test « une mise à jour sans exclusion garde les
+  photos ».
+
 
 ## Final Recap
 _(à écrire quand toutes les phases sont finies)_

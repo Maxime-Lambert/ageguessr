@@ -40,7 +40,7 @@ class WikimediaHttpTest {
     void setUp() {
         RestClient.Builder builder = RestClient.builder();
         server = MockRestServiceServer.bindTo(builder).build();
-        http = new WikimediaHttp(builder.build(), Fixtures.MAPPER, waits::add, PAUSE, 3);
+        http = Fixtures.http(builder.build(), waits::add, PAUSE, 3);
     }
 
     @Test
@@ -168,9 +168,20 @@ class WikimediaHttpTest {
     }
 
     @Test
+    void refusesAJsonBodyOverTheCapWithoutRetrying() {
+        byte[] huge = new byte[WikimediaHttp.MAX_JSON_BYTES + 1];
+        java.util.Arrays.fill(huge, (byte) ' ');
+        server.expect(times(1), requestTo(API)).andRespond(withSuccess(huge, MediaType.APPLICATION_JSON));
+
+        assertThatThrownBy(() -> http.get(API))
+                .isInstanceOf(WikimediaUnavailableException.class)
+                .hasMessageContaining("JSON body larger than");
+        server.verify();
+    }
+
+    @Test
     void stopsWaitingWhenInterrupted() {
-        WikimediaHttp interrupted = new WikimediaHttp(
-                RestClient.builder().build(), Fixtures.MAPPER, d -> { throw new InterruptedException(); }, PAUSE, 3);
+        WikimediaHttp interrupted = Fixtures.http(RestClient.builder().build(), d -> { throw new InterruptedException(); }, PAUSE, 3);
 
         assertThatThrownBy(() -> interrupted.get(API)).isInstanceOf(WikimediaUnavailableException.class);
         assertThat(Thread.interrupted()).isTrue();

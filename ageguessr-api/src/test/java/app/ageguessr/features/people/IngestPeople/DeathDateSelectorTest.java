@@ -1,8 +1,8 @@
 package app.ageguessr.features.people.IngestPeople;
 
-import static app.ageguessr.features.people.IngestPeople.BirthStatement.Rank.DEPRECATED;
-import static app.ageguessr.features.people.IngestPeople.BirthStatement.Rank.NORMAL;
-import static app.ageguessr.features.people.IngestPeople.BirthStatement.Rank.PREFERRED;
+import static app.ageguessr.features.people.IngestPeople.WikidataRank.DEPRECATED;
+import static app.ageguessr.features.people.IngestPeople.WikidataRank.NORMAL;
+import static app.ageguessr.features.people.IngestPeople.WikidataRank.PREFERRED;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;

@@ -270,6 +270,41 @@ class PeopleRepositoriesIntegrationTest {
     }
 
     @Test
+    void excludingAPersonDeletesTheirPhotosAndImagesButKeepsThePerson() {
+        Person person = savePerson("Q1");
+        PersonPhoto first = savePhoto(person, "A.jpg", 1976);
+        PersonPhoto second = savePhoto(person, "B.jpg", 1990);
+        saveImage(first);
+        saveImage(second);
+        PersonPhoto survivor = savePhoto(savePerson("Q2"), "C.jpg", 1976);
+        saveImage(survivor);
+
+        person.setExcluded(true);
+        personRepository.saveAndFlush(person);
+        // The deletion happens in Postgres (trigger): bypass Hibernate's cache.
+        entityManager.clear();
+
+        assertThat(personRepository.findByWikidataId("Q1")).get().extracting(Person::isExcluded).isEqualTo(true);
+        assertThat(photoRepository.findByPersonId(person.getId())).isEmpty();
+        assertThat(imageRepository.findById(first.getId())).isEmpty();
+        assertThat(imageRepository.findById(second.getId())).isEmpty();
+        assertThat(photoRepository.findById(survivor.getId())).isPresent();
+        assertThat(imageRepository.findById(survivor.getId())).isPresent();
+    }
+
+    @Test
+    void updatingAnotherFieldOfAnIncludedPersonKeepsTheirPhotos() {
+        Person person = savePerson("Q1");
+        savePhoto(person, "A.jpg", 1976);
+
+        person.setSitelinks(99);
+        personRepository.saveAndFlush(person);
+        entityManager.clear();
+
+        assertThat(photoRepository.findByPersonId(person.getId())).hasSize(1);
+    }
+
+    @Test
     void listsThePhotosOfOnePerson() {
         Person person = savePerson("Q1");
         savePhoto(person, "A.jpg", 1976);

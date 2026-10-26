@@ -1,7 +1,5 @@
-package app.ageguessr.config;
+package app.ageguessr.features.people.IngestPeople;
 
-import app.ageguessr.features.people.IngestPeople.IngestProperties;
-import app.ageguessr.features.people.IngestPeople.WikimediaProperties;
 import java.net.http.HttpClient;
 import java.time.Duration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -13,12 +11,14 @@ import org.springframework.web.client.RestClient;
 
 /**
  * HTTP client for Wikidata (via QLever) and Wikimedia Commons, used only by the people
- * ingestion. Wikimedia requires a descriptive User-Agent, and without timeouts a stalled
- * SPARQL query would hang the ingestion forever.
+ * ingestion, hence kept in this use case rather than in config/. Wikimedia requires a
+ * descriptive User-Agent, and without timeouts a stalled SPARQL query would hang the
+ * ingestion forever. Redirects are not followed: a redirect must never take a download
+ * past the host allow-list of ImageDownloader.
  */
 @Configuration
 @EnableConfigurationProperties({WikimediaProperties.class, IngestProperties.class})
-public class WikimediaClientConfig {
+class WikimediaClientConfig {
 
     @Bean
     RestClient wikimediaRestClient(WikimediaProperties properties) {
@@ -35,5 +35,10 @@ public class WikimediaClientConfig {
                 .requestFactory(requestFactory)
                 .defaultHeader(HttpHeaders.USER_AGENT, properties.userAgent())
                 .build();
+    }
+
+    @Bean
+    Sleeper sleeper() {
+        return Sleeper.REAL;
     }
 }

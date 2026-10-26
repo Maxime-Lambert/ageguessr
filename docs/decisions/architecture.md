@@ -346,13 +346,29 @@ couverture mondiale. Le reste découle de l'exigence d'un âge exact :
 - Nom, dates de naissance et de décès, et photos de personnalités publiques, collectés
   indirectement (art. 14 RGPD).
 - Base légale : intérêt légitime. Information donnée dans `/privacy` (section 8).
-- `people.excluded` traite les demandes de retrait : une personne exclue n'est plus
-  jamais réingérée ni servie.
+- `people.excluded` traite les demandes de retrait. Poser l'exclusion **supprime
+  physiquement** les photos et images de la personne, par un trigger Postgres déclaré
+  dans V4 : ça marche quel que soit le chemin (SQL à la main, page de curation). La
+  ligne `people` reste, pour que l'ingestion ne réajoute jamais la personne.
+- Les logs d'ingestion ne contiennent que des QID, jamais de nom ni de titre de fichier
+  (qui contient souvent le nom). Une personne retirée ne subsiste donc pas dans les
+  logs.
 
 **Limites connues** :
 - QLever, service tiers, répond 429 quand une requête dépasse son délai. Une ingestion
   peut donc s'arrêter ; on la relance (idempotente).
-- Le droit à l'image des personnes vivantes est à réévaluer avant le lancement public.
+- **Droit à l'image des personnes vivantes, à trancher avant d'approuver la moindre
+  photo d'une personne vivante.** Les licences libres de Commons couvrent le droit
+  d'auteur, pas le droit à l'image (art. 9 du Code civil ; régimes différents à
+  l'étranger). Un jeu n'est pas l'usage « information » que la jurisprudence tolère
+  pour les personnalités publiques. Options relevées par la revue `code-reviewer` du
+  2026-10-26 :
+  - avis juridique ;
+  - lancement limité aux personnes décédées (la date de décès est déjà connue) ;
+  - écarter les fichiers marqués `{{Personality rights}}` sur Commons.
+- **Attribution CC BY / BY-SA** : l'auteur et la licence sont stockés, mais leur
+  affichage à la révélation du round (Semaine 4) n'existe pas encore. Aucune photo ne
+  doit être servie à des joueurs avant cet affichage.
 
 ### Sourcing des indices événementiels par catégorie
 **Décision** : pages Wikipédia par année et catégorie (ex. `1976_in_music`,

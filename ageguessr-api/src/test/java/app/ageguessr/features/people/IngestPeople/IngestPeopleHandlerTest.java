@@ -140,7 +140,7 @@ class IngestPeopleHandlerTest {
     void skipsAPersonWithoutATrustworthyBirthDate() {
         PersonRecord yearOnly = new PersonRecord(
                 "Q1", 50, "Jane", null, Set.of("Jane main.jpg"),
-                List.of(new BirthStatement("1950-00-00T00:00:00Z", 9, BirthDateSelector.GREGORIAN, BirthStatement.Rank.NORMAL)),
+                List.of(new BirthStatement("1950-00-00T00:00:00Z", 9, BirthDateSelector.GREGORIAN, WikidataRank.NORMAL)),
                 List.of());
         when(wikidata.fetchPeople(0, 3)).thenReturn(List.of(yearOnly), List.of());
 
@@ -154,7 +154,7 @@ class IngestPeopleHandlerTest {
     void skipsAPersonWhoseDeathDateIsUnknown() {
         PersonRecord unknownDeath = new PersonRecord(
                 "Q1", 50, "Jane", null, Set.of("Jane main.jpg"), List.of(birth()),
-                List.of(new DeathStatement(null, null, BirthStatement.Rank.NORMAL)));
+                List.of(new DeathStatement(null, null, WikidataRank.NORMAL)));
         when(wikidata.fetchPeople(0, 3)).thenReturn(List.of(unknownDeath), List.of());
 
         IngestReport report = handler.handle(new IngestPeopleCommand(1, null));
@@ -166,7 +166,7 @@ class IngestPeopleHandlerTest {
     void passesTheDeathDateToTheRulesAndTheStore() {
         PersonRecord died = new PersonRecord(
                 "Q1", 50, "Jane", null, Set.of("Jane main.jpg"), List.of(birth()),
-                List.of(new DeathStatement("1985-01-01T00:00:00Z", 11, BirthStatement.Rank.NORMAL)));
+                List.of(new DeathStatement("1985-01-01T00:00:00Z", 11, WikidataRank.NORMAL)));
         when(wikidata.fetchPeople(0, 3)).thenReturn(List.of(died));
         photos("Q1", photo("File:Alive 1976.jpg", 1976), photo("File:Grave 1990.jpg", 1990));
 
@@ -346,7 +346,7 @@ class IngestPeopleHandlerTest {
     private record CommonsFileAndInfo(CommonsFile file, MediaInfo info) {}
 
     private static BirthStatement birth() {
-        return new BirthStatement("1950-03-10T00:00:00Z", 11, BirthDateSelector.GREGORIAN, BirthStatement.Rank.NORMAL);
+        return new BirthStatement("1950-03-10T00:00:00Z", 11, BirthDateSelector.GREGORIAN, WikidataRank.NORMAL);
     }
 
     private static PersonRecord person(String qid) {

@@ -34,7 +34,7 @@ class CommonsClientTest {
     void setUp() {
         RestClient.Builder builder = RestClient.builder();
         server = MockRestServiceServer.bindTo(builder).build();
-        WikimediaHttp http = new WikimediaHttp(builder.build(), Fixtures.MAPPER, d -> {}, Duration.ZERO, 1);
+        WikimediaHttp http = Fixtures.http(builder.build(), d -> {}, Duration.ZERO, 1);
         WikimediaProperties properties = new WikimediaProperties(
                 "test-agent", URI.create("https://qlever.example"), URI.create(API), 0, 1, 1, 1);
         client = new CommonsClient(http, properties, new IngestProperties(3000, 500, 5, 10, 50, 800, 5_000_000));

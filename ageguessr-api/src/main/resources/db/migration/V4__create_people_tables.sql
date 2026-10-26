@@ -72,3 +72,22 @@ CREATE TABLE person_photo_images (
     width INT NOT NULL,
     height INT NOT NULL
 );
+
+-- Droit a l'effacement : exclure une personne (demande de retrait) supprime
+-- physiquement ses photos et leurs images (ON DELETE CASCADE vers
+-- person_photo_images). La ligne people reste, avec excluded = TRUE, pour que
+-- l'ingestion ne la reajoute jamais. Un trigger plutot que du code applicatif : la
+-- suppression a lieu quelle que soit la facon dont l'exclusion est posee (SQL a la
+-- main aujourd'hui, page de curation demain).
+CREATE FUNCTION delete_photos_of_excluded_person() RETURNS TRIGGER AS $$
+BEGIN
+    DELETE FROM person_photos WHERE person_id = NEW.id;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER people_excluded_deletes_photos
+    AFTER INSERT OR UPDATE OF excluded ON people
+    FOR EACH ROW
+    WHEN (NEW.excluded)
+    EXECUTE FUNCTION delete_photos_of_excluded_person();

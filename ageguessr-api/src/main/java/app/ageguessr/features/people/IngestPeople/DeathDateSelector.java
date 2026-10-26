@@ -4,8 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 /**
- * Turns a person's P570 statements into the date photos must not be later than. Same
- * rank rules as {@link BirthDateSelector}. Unlike the birth, a death known only to the
+ * Turns a person's P570 statements into the date photos must not be later than, from
+ * the statements of the best rank ({@link WikidataRank#best}). Unlike the birth, a death known only to the
  * month or year is usable: the earliest possible day is kept, which can only reject
  * more photos, never accept one taken after the death.
  */
@@ -24,13 +24,7 @@ final class DeathDateSelector {
     record Unusable() implements Outcome {}
 
     static Outcome select(List<DeathStatement> statements) {
-        List<DeathStatement> notDeprecated = statements.stream()
-                .filter(s -> s.rank() != BirthStatement.Rank.DEPRECATED)
-                .toList();
-        boolean anyPreferred = notDeprecated.stream().anyMatch(s -> s.rank() == BirthStatement.Rank.PREFERRED);
-        List<DeathStatement> retained = anyPreferred
-                ? notDeprecated.stream().filter(s -> s.rank() == BirthStatement.Rank.PREFERRED).toList()
-                : notDeprecated;
+        List<DeathStatement> retained = WikidataRank.best(statements, DeathStatement::rank);
         if (retained.isEmpty()) {
             return new Alive();
         }

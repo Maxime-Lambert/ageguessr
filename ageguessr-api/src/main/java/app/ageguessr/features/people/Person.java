@@ -16,8 +16,9 @@ import lombok.Setter;
 
 /**
  * A public figure sourced from Wikidata. Personal data even though it is public:
- * {@code excluded} records a takedown request, and an excluded person is never
- * re-ingested nor served (see V4__create_people_tables.sql).
+ * {@code excluded} records a takedown request. Setting it deletes the person's photos and
+ * images in the database itself (trigger in V4__create_people_tables.sql); the row stays
+ * so that the ingestion never adds the person back.
  */
 @Entity
 @Table(name = "people")

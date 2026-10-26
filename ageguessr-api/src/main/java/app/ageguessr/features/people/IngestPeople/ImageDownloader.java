@@ -4,7 +4,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Locale;
 import java.util.Set;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 /**
@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
  * arbitrary address on someone else's say-so (SSRF).
  */
 @Component
+@RequiredArgsConstructor
 class ImageDownloader {
 
     /**
@@ -22,23 +23,13 @@ class ImageDownloader {
     static final Set<String> ALLOWED_HOSTS = Set.of("upload.wikimedia.org", "thumb.wikimedia.org");
 
     private final WikimediaHttp http;
-    private final long maxBytes;
-
-    @Autowired
-    ImageDownloader(WikimediaHttp http, IngestProperties properties) {
-        this(http, properties.maxImageBytes());
-    }
-
-    ImageDownloader(WikimediaHttp http, long maxBytes) {
-        this.http = http;
-        this.maxBytes = maxBytes;
-    }
+    private final IngestProperties properties;
 
     /** @throws ImageRejectedException for a URL outside the allow-list or a file over the size cap */
     byte[] download(String url) {
         URI uri = allowed(url);
         try {
-            return http.getBytes(uri, maxBytes);
+            return http.getBytes(uri, properties.maxImageBytes());
         } catch (WikimediaUnavailableException e) {
             throw new ImageRejectedException(ImageRejectedException.Reason.DOWNLOAD_FAILED, e.getMessage());
         }
