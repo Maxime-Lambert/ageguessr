@@ -737,16 +737,16 @@ Status: Complete
 
 
 ## Phase 7 : Documentation, confidentialité, revues, PR
-Status: Not started
+Status: In progress (docs faites, revues en cours)
 
-- [ ] `docs/decisions/architecture.md` : réécrire « Sourcing des personnes » (âge sur la
+- [x] `docs/decisions/architecture.md` : réécrire « Sourcing des personnes » (âge sur la
       photo, photo datée de façon fiable, plus de repli sur la date d'upload, sources
       de date retenues, stockage ré-encodé, ingestion manuelle, attribution à la
       révélation, `excluded`).
-- [ ] Section `/privacy` (EN + FR) dans `frontend/src/app/features/legal/` : données des
+- [x] Section `/privacy` (EN + FR) dans `frontend/src/app/features/legal/` : données des
       personnalités, source, base légale, demande de retrait via
       contact@ageguessr.app. Mettre à jour les specs existantes.
-- [ ] `docs/roadmap.md` : cocher « Client Wikidata », « Stratégie photo » (reformulée en
+- [x] `docs/roadmap.md` : cocher « Client Wikidata », « Stratégie photo » (reformulée en
       « photo datée »), « Endpoint proxy d'image ». « Schéma de données final » reste
       partiel : les personnes sont faites, les catégories et événements restent pour
       le plan des indices.

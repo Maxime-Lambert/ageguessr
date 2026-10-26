@@ -24,15 +24,25 @@ la suivante).
       passerelle Caddy partagée du VPS) — PR #2
 
 ## Semaine 2 — Données du jeu
-- [ ] Client Wikidata (recherche par notoriété/sitelinks, extraction date de naissance
-      `P569`, photo `P18`)
-- [ ] Stratégie "photo la plus récente possible" (heuristique Commons à valider sur un
-      échantillon réel avant généralisation — voir `docs/decisions/architecture.md`)
-- [ ] Endpoint proxy d'image anti-triche (`/api/images/{id}`, jamais l'URL Commons brute)
+- [x] Client Wikidata via QLever (classement par sitelinks, `P569`/`P570` avec rangs et
+      précision, `P18`, labels EN/FR) — PR `feature/people-sourcing`
+- [x] Photos datées avec âge exact : date déclarée (SDC/`{{Information}}`) corroborée
+      par l'EXIF, au moins 10 ans d'écart entre deux photos d'une même personne,
+      validées sur échantillon réel (spike de 400 personnes, puis 2 runs de 30) —
+      PR `feature/people-sourcing`
+- [x] Endpoint proxy d'image anti-triche (`/api/images/{id}`, copie ré-encodée sans
+      métadonnées, jamais l'URL Commons) — PR `feature/people-sourcing`
+- [ ] Curation manuelle des photos : rôle admin, approuver/rejeter, page enchaînant les
+      photos en attente (~43 % des photos automatiques sont inutilisables : groupes,
+      foules…) — PR `feature/photo-curation`
+- [ ] Ingestion en production (~3 000 personnes, ~8 h, ~0,8 Go), puis passe de
+      curation
 - [ ] Ingestion + curation des indices événementiels par catégorie et par année
       (pages Wikipedia "YYYY in music/sports/politics...", parsing + vérification sur
       échantillon avant d'industrialiser)
-- [ ] Schéma de données final : personnes, catégories d'indices, événements par année
+- [ ] Schéma de données final : personnes et photos faites (V4, PR
+      `feature/people-sourcing`) ; catégories d'indices et événements par année restent
+      à faire avec le plan des indices
 
 ## Semaine 3 — Moteur de jeu
 - [ ] Algorithme de sélection quotidienne (3 personnes/jour, minuit UTC, pas de
