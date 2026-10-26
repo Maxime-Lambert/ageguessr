@@ -207,16 +207,16 @@ filtrent `ROLE_*` et `SCOPE_*`.
 
 
 ## Phase 2 : File d'attente, image et revue (backend)
-Status: Not started
+Status: Complete
 
-- [ ] `V6__add_photo_review_audit.sql` ; `PersonPhoto.reviewedAt`, `reviewedBy`.
-- [ ] Propriété `app.curation.allow-living-approval=false` (+ fichier de test).
-- [ ] `ListPendingPhotos/` (query, handler, controller, réponse) et requête de
+- [x] `V6__add_photo_review_audit.sql` ; `PersonPhoto.reviewedAt`, `reviewedBy`.
+- [x] Propriété `app.curation.allow-living-approval=false` (+ fichier de test).
+- [x] `ListPendingPhotos/` (query, handler, controller, réponse) et requête de
       repository (tri sitelinks puis date).
-- [ ] `GetPhotoForReview/` (`no-store`).
-- [ ] `ReviewPhoto/` (commande `@Valid`, règle des vivants, conversion de la violation
+- [x] `GetPhotoForReview/` (`no-store`).
+- [x] `ReviewPhoto/` (commande `@Valid`, règle des vivants, conversion de la violation
       d'index en `ConflictException` avec `errorCode`).
-- [ ] Tests unitaires, intégration et fonctionnels de ces trois use cases.
+- [x] Tests unitaires, intégration et fonctionnels de ces trois use cases.
 
 ### Verification Plan
 - `cd ageguessr-api && ./mvnw test` → vert.
@@ -225,7 +225,30 @@ Status: Not started
   attendu ; une revue `APPROVED` rend l'image publique servie.
 
 ### Phase Summary
-_(à écrire quand la phase est finie)_
+**Livré** :
+- `V6` : `reviewed_at`, `reviewed_by` (FK `users`, `ON DELETE SET NULL`), plus un index
+  partiel `person_photos_pending_idx`.
+- `CurationProperties.canApprove(Person)` : une règle unique pour le drapeau
+  `approvable` de la file et pour la revue. `CurationConfig` l'active.
+- `PendingPhoto` (projection JPQL `new …(ph, p)`), et dans `PersonPhotoRepository` :
+  `findPending` (sitelinks décroissants, puis date, puis id pour un ordre stable),
+  `countPending`, `findByPersonIdIn` (les autres photos des personnes du lot, en une
+  seule requête).
+- `ListPendingPhotos/` : `?limit` vaut 20 par défaut, compris entre 1 et 50. Le défaut
+  est posé dans le constructeur compact du record, avant la validation.
+- `GetPhotoForReview/` : tout statut, `Cache-Control: no-store`.
+- `ReviewPhoto/` : `PUT`, `{"decision": …}`. 409 `LIVING_PERSON_APPROVAL_DISABLED` ;
+  la violation d'index partiel devient 409 `PHOTO_SLOT_TAKEN` ; personne exclue → 404.
+
+**Tests** :
+- unitaires : 15 ;
+- intégration : 29 (+3 : ordre de la file, lecture groupée, `reviewed_by` remis à
+  `NULL` quand le compte admin est supprimé) ;
+- fonctionnels : `CurationFunctionalTest` (9). Il obtient de vrais jetons en créant les
+  utilisateurs directement puis en appelant `AuthTokenService.issueAccessToken`.
+
+Vérification manuelle (curl sur données locales) reportée à la Phase 4, avec la page.
+
 
 ## Phase 3 : Recherche et exclusion (backend)
 Status: Not started
