@@ -25,8 +25,3 @@ export interface RegisterResponse {
 
 /** Same rule as the backend's @Username constraint, which stays the source of truth. */
 export const USERNAME_PATTERN = /^[A-Za-z0-9_-]{3,20}$/;
-
-export interface ApiErrorResponse {
-  errorCode: string;
-  message: string;
-}

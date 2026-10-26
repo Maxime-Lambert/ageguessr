@@ -1,5 +1,6 @@
 package app.ageguessr.features.auth;
 
+import app.ageguessr.shared.security.JwtClaims;
 import app.ageguessr.shared.security.OpaqueTokenGenerator;
 import java.time.Clock;
 import java.time.Duration;
@@ -20,9 +21,6 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class AuthTokenService {
-
-    /** Role names, read back into Spring authorities by the JwtAuthenticationConverter in JwtConfig. */
-    public static final String ROLES_CLAIM = "roles";
 
     private final JwtEncoder jwtEncoder;
     private final RefreshTokenRepository refreshTokenRepository;
@@ -61,7 +59,7 @@ public class AuthTokenService {
                     // Read from the database at every issuance, refresh included: a
                     // demotion done in SQL takes effect within one access-token lifetime.
                     if (user.getRole() == UserRole.ADMIN) {
-                        c.put(ROLES_CLAIM, List.of(UserRole.ADMIN.name()));
+                        c.put(JwtClaims.ROLES, List.of(UserRole.ADMIN.name()));
                     }
                 })
                 .build();

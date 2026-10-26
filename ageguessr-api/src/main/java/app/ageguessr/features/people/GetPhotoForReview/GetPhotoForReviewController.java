@@ -1,10 +1,9 @@
 package app.ageguessr.features.people.GetPhotoForReview;
 
-import app.ageguessr.features.people.PhotoImage;
+import app.ageguessr.shared.web.ImageContentType;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.CacheControl;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,10 +21,10 @@ public class GetPhotoForReviewController {
 
     @GetMapping("/api/admin/photos/{photoId}/image")
     ResponseEntity<byte[]> image(@PathVariable UUID photoId) {
-        PhotoImage image = handler.handle(new GetPhotoForReviewQuery(photoId));
+        ReviewImageResponse image = handler.handle(new GetPhotoForReviewQuery(photoId));
         return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(image.getContentType()))
+                .contentType(ImageContentType.of(image.contentType()))
                 .cacheControl(CacheControl.noStore())
-                .body(image.getContent());
+                .body(image.content());
     }
 }

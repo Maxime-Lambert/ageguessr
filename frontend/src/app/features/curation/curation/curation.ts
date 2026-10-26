@@ -1,6 +1,6 @@
+import { ApiErrorResponse } from '../../../shared/api-error';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, computed, inject, signal } from '@angular/core';
-import { ApiErrorResponse } from '../../auth/models';
 import { CurationApi } from '../curation-api';
 import { Exclusion } from '../exclusion/exclusion';
 import { PendingPhoto, PhotoDateSource, ReviewDecision, displayName } from '../models';

@@ -1,6 +1,5 @@
 package app.ageguessr.features.people.GetPhotoForReview;
 
-import app.ageguessr.features.people.PhotoImage;
 import app.ageguessr.features.people.PhotoImageRepository;
 import app.ageguessr.shared.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +14,9 @@ public class GetPhotoForReviewHandler {
     private final PhotoImageRepository images;
 
     @Transactional(readOnly = true)
-    public PhotoImage handle(GetPhotoForReviewQuery query) {
-        return images.findById(query.photoId()).orElseThrow(() -> new NotFoundException("Photo not found"));
+    public ReviewImageResponse handle(GetPhotoForReviewQuery query) {
+        return images.findById(query.photoId())
+                .map(image -> new ReviewImageResponse(image.getContent(), image.getContentType()))
+                .orElseThrow(() -> new NotFoundException("Photo not found"));
     }
 }

@@ -1,6 +1,6 @@
 package app.ageguessr.config;
 
-import app.ageguessr.features.auth.AuthTokenService;
+import app.ageguessr.shared.security.JwtClaims;
 import java.util.Base64;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -50,7 +50,7 @@ public class JwtConfig {
     @Bean
     JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter roles = new JwtGrantedAuthoritiesConverter();
-        roles.setAuthoritiesClaimName(AuthTokenService.ROLES_CLAIM);
+        roles.setAuthoritiesClaimName(JwtClaims.ROLES);
         roles.setAuthorityPrefix("ROLE_");
         JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
         converter.setJwtGrantedAuthoritiesConverter(roles);

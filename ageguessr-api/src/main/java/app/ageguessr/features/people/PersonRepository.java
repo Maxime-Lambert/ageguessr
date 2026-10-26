@@ -18,8 +18,8 @@ public interface PersonRepository extends JpaRepository<Person, UUID> {
     @Query(
             value = """
                     SELECT * FROM people
-                    WHERE unaccent(lower(coalesce(name_en, ''))) LIKE unaccent(lower('%' || :fragment || '%'))
-                       OR unaccent(lower(coalesce(name_fr, ''))) LIKE unaccent(lower('%' || :fragment || '%'))
+                    WHERE unaccent(lower(coalesce(name_en, ''))) LIKE unaccent(lower('%' || :fragment || '%')) ESCAPE '\\'
+                       OR unaccent(lower(coalesce(name_fr, ''))) LIKE unaccent(lower('%' || :fragment || '%')) ESCAPE '\\'
                     ORDER BY sitelinks DESC, id
                     LIMIT :limit
                     """,

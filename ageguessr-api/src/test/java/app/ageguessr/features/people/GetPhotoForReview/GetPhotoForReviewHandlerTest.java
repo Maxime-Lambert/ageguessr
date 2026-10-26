@@ -23,7 +23,10 @@ class GetPhotoForReviewHandlerTest {
         PhotoImage image = PhotoImage.builder().photoId(id).content(new byte[] {1}).contentType("image/jpeg").build();
         when(images.findById(id)).thenReturn(Optional.of(image));
 
-        assertThat(handler.handle(new GetPhotoForReviewQuery(id))).isSameAs(image);
+        ReviewImageResponse response = handler.handle(new GetPhotoForReviewQuery(id));
+
+        assertThat(response.content()).containsExactly(1);
+        assertThat(response.contentType()).isEqualTo("image/jpeg");
     }
 
     @Test

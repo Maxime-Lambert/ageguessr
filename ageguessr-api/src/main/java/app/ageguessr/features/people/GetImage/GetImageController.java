@@ -1,9 +1,9 @@
 package app.ageguessr.features.people.GetImage;
 
+import app.ageguessr.shared.web.ImageContentType;
 import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.CacheControl;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,7 +26,7 @@ public class GetImageController {
     ResponseEntity<byte[]> image(@PathVariable String publicId) {
         ImageResponse image = handler.handle(new GetImageQuery(publicId));
         return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(image.contentType()))
+                .contentType(ImageContentType.of(image.contentType()))
                 .cacheControl(CacheControl.maxAge(CACHE_DURATION).cachePublic())
                 .body(image.content());
     }

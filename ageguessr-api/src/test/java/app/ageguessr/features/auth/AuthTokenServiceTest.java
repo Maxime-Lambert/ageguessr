@@ -3,6 +3,7 @@ package app.ageguessr.features.auth;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
+import app.ageguessr.shared.security.JwtClaims;
 import app.ageguessr.shared.security.OpaqueTokenGenerator;
 import java.time.Clock;
 import java.time.Instant;
@@ -40,14 +41,14 @@ class AuthTokenServiceTest {
     void anAdminTokenCarriesTheAdminRole() {
         Jwt jwt = decoder.decode(service.issueAccessToken(user(UserRole.ADMIN)));
 
-        assertThat(jwt.getClaimAsStringList(AuthTokenService.ROLES_CLAIM)).containsExactly("ADMIN");
+        assertThat(jwt.getClaimAsStringList(JwtClaims.ROLES)).containsExactly("ADMIN");
     }
 
     @Test
     void aRegularTokenCarriesNoRoleClaimAtAll() {
         Jwt jwt = decoder.decode(service.issueAccessToken(user(UserRole.USER)));
 
-        assertThat(jwt.hasClaim(AuthTokenService.ROLES_CLAIM)).isFalse();
+        assertThat(jwt.hasClaim(JwtClaims.ROLES)).isFalse();
         assertThat(jwt.getClaimAsString("email")).isEqualTo("someone@x.com");
     }
 

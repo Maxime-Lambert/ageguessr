@@ -4,11 +4,11 @@ import app.ageguessr.features.people.Person;
 import app.ageguessr.features.people.PersonPhoto;
 import app.ageguessr.features.people.PersonPhotoRepository;
 import app.ageguessr.features.people.PersonRepository;
+import app.ageguessr.features.people.WikidataId;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class SearchPeopleHandler {
 
     static final int MAX_RESULTS = 20;
-    private static final Pattern QID = Pattern.compile("^Q[1-9][0-9]{0,11}$");
 
     private final PersonRepository people;
     private final PersonPhotoRepository photos;
@@ -29,7 +28,7 @@ public class SearchPeopleHandler {
     public SearchPeopleResponse handle(SearchPeopleQuery query) {
         String text = query.query().strip();
         String upper = text.toUpperCase(Locale.ROOT);
-        List<Person> found = QID.matcher(upper).matches()
+        List<Person> found = WikidataId.isValid(upper)
                 ? people.findByWikidataId(upper).map(List::of).orElse(List.of())
                 : people.searchByName(escapeLikeWildcards(text), MAX_RESULTS);
         Map<UUID, Long> photoCounts = photos.findByPersonIdIn(found.stream().map(Person::getId).toList()).stream()

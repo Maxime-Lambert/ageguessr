@@ -352,14 +352,53 @@ Status: In progress (docs faites, revues en cours ; PR après merge de #17)
 - [x] `docs/decisions/architecture.md` : rôles et curation, procédure de retrait
       (y compris pour une personne pas encore ingérée), risque « admin sans TOTP ».
 - [x] `docs/roadmap.md` : cocher la curation.
-- [ ] Agents `architecture-reviewer` et `code-reviewer` ; corriger.
+- [x] Agents `architecture-reviewer` et `code-reviewer` ; corriger.
 - [ ] Rebaser sur `develop` (après merge de #17), tests complets + mutation, `/pr`.
 
 ### Verification Plan
 - Backend, frontend, mutation verts ; CI de la PR verte.
 
 ### Phase Summary
-_(à écrire quand la phase est finie)_
+_(provisoire : il reste le rebase sur `develop` après le merge de #17, puis la PR)_
+
+**Revues du 2026-10-26** :
+- `code-reviewer` : aucun 🔴 ni 🟠, 3 🟡.
+- `architecture-reviewer` : 2 🔴, 4 🟠, 5 🟡.
+
+Tous les 🔴 et 🟠 corrigés :
+- 🔴 `config/JwtConfig` importait `features.auth` : le nom du claim passe dans
+  `shared/security/JwtClaims`. Nouvelle règle ArchUnit
+  `config_does_not_depend_on_features`.
+- 🔴 Front : `curation` importait `ApiErrorResponse` depuis `auth` : déplacé dans
+  `src/app/shared/api-error.ts`.
+- 🟠 `GetPhotoForReviewHandler` renvoie un record `ReviewImageResponse`, plus l'entité.
+- 🟠 Regex de QID dupliquée : `features/people/WikidataId`, utilisé par
+  `SearchPeopleHandler` et `WikidataClient`.
+- 🟠 `CurationFunctionalTest` obtient ses jetons par le vrai parcours
+  (`AuthFlows.registerAndVerify` + `login`). `AuthFlows` devient public ; un jeton
+  admin est mis en cache par test.
+- 🟠 `adminGuard` déplacé dans `features/auth/` : `curation` ne dépend plus de `auth`.
+
+🟡 appliqués :
+- `ESCAPE '\'` explicite dans `searchByName` ;
+- `shared/web/ImageContentType` : seul un `image/*` est servi tel quel, tout le reste
+  part en `application/octet-stream`. Appliqué aux deux endpoints d'image, le public
+  compris.
+
+🟡 non appliqués (maintenabilité, sans impact actuel) :
+- deux requêtes (liste + compte) pour la file ;
+- fixtures dupliquées entre Vitest et Playwright, et entre classes de test Java ;
+- taille de `curation.ts`. À extraire dans un service `CurationQueue` si la page grossit.
+
+**Run complet après corrections** :
+- backend **561/561** ;
+- front unitaires **165/165**, lint, `tsc` et Prettier OK ;
+- Playwright component **42/42** ;
+- mutation : code 0 en 323 s, test strength **100 %** sur les packages de curation
+  (`ExcludePerson`, `GetPhotoForReview`, `ListPendingPhotos`, `ReviewPhoto`,
+  `SearchPeople`, `shared.web`). Les mutants non couverts sont dans les contrôleurs,
+  exercés seulement par les tests fonctionnels, exclus de PIT.
+
 
 ## Final Recap
 _(à écrire quand toutes les phases sont finies)_

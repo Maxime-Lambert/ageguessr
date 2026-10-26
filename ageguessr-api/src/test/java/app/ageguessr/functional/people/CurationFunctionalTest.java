@@ -10,7 +10,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import app.ageguessr.TestcontainersConfiguration;
-import app.ageguessr.features.auth.AuthTokenService;
 import app.ageguessr.features.auth.User;
 import app.ageguessr.features.auth.UserRepository;
 import app.ageguessr.features.auth.UserRole;
@@ -22,7 +21,9 @@ import app.ageguessr.features.people.PhotoDateSource;
 import app.ageguessr.features.people.PhotoImage;
 import app.ageguessr.features.people.PhotoImageRepository;
 import app.ageguessr.features.people.ReviewStatus;
+import app.ageguessr.functional.auth.AuthFlows;
 import app.ageguessr.functional.auth.AuthFunctionalTestConfig;
+import app.ageguessr.shared.email.RecordingEmailSender;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
@@ -36,6 +37,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import tools.jackson.databind.ObjectMapper;
 
 /** The curation endpoints through the real security chain. app.curation.allow-living-approval is false in tests. */
 @SpringBootTest
@@ -44,6 +46,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 class CurationFunctionalTest {
 
     private static final byte[] JPEG = {(byte) 0xFF, (byte) 0xD8, 9};
+    private static final String PASSWORD = "tortoise-violin-42";
 
     @Autowired
     private MockMvc mockMvc;
@@ -52,7 +55,13 @@ class CurationFunctionalTest {
     private UserRepository users;
 
     @Autowired
-    private AuthTokenService tokens;
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private RecordingEmailSender emailSender;
+
+    /** One admin per test, logged in on first use. */
+    private String adminToken;
 
     @Autowired
     private PersonRepository people;
@@ -220,8 +229,11 @@ class CurationFunctionalTest {
                 .andExpect(status().isNotFound());
     }
 
-    private MockHttpServletRequestBuilder asAdmin(MockHttpServletRequestBuilder request) {
-        return request.header(HttpHeaders.AUTHORIZATION, "Bearer " + token(UserRole.ADMIN));
+    private MockHttpServletRequestBuilder asAdmin(MockHttpServletRequestBuilder request) throws Exception {
+        if (adminToken == null) {
+            adminToken = token(UserRole.ADMIN);
+        }
+        return request.header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken);
     }
 
     private static MockHttpServletRequestBuilder reviewRequest(UUID photoId, String decision) {
@@ -230,18 +242,17 @@ class CurationFunctionalTest {
                 .content("{\"decision\": \"" + decision + "\"}");
     }
 
-    /** A real token, issued by the same service as at login, for a user created directly. */
-    private String token(UserRole role) {
-        String suffix = UUID.randomUUID().toString().substring(0, 8);
-        User user = users.saveAndFlush(User.builder()
-                .email("curation-" + suffix + "@x.com")
-                .username("cur-" + suffix)
-                .passwordHash("hash")
-                .emailVerified(true)
-                .createdAt(Instant.now())
-                .role(role)
-                .build());
-        return tokens.issueAccessToken(user);
+    /**
+     * Through the real pipeline: register, confirm the email, get the role (set in SQL in
+     * production, through the repository here), then log in.
+     */
+    private String token(UserRole role) throws Exception {
+        String email = "curation-" + UUID.randomUUID() + "@x.com";
+        AuthFlows.registerAndVerify(mockMvc, objectMapper, emailSender, email, PASSWORD);
+        User user = users.findByEmailIgnoreCase(email).orElseThrow();
+        user.setRole(role);
+        users.save(user);
+        return AuthFlows.login(mockMvc, objectMapper, email, PASSWORD).accessToken();
     }
 
     private Person deceased(String wikidataId) {

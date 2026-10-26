@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { map } from 'rxjs';
-import { Auth } from '../auth/auth';
+import { Auth } from './auth';
 
 /**
  * Admin-only pages. Cosmetic: it spares a regular user an empty page, but the API is the
