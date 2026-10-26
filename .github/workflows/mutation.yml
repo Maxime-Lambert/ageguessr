@@ -7,6 +7,8 @@ on:
 jobs:
   mutation-test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
 
@@ -16,11 +18,15 @@ jobs:
           java-version: "25"
           cache: "maven"
 
+      # Pas de continue-on-error : sans seuil (mutationThreshold) configure, PIT n'echoue
+      # que s'il ne peut pas tourner, jamais a cause du score. continue-on-error
+      # masquait un PIT qui ne mutait rien (Java 25 non supporte, plugin JUnit 5
+      # absent, classes non compilees) : le step affichait "success" en ~30 s.
       - name: Run PIT
-        continue-on-error: true
         run: ./scripts/run-mutation-tests.sh
 
       - name: Publish report
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: mutation-report
