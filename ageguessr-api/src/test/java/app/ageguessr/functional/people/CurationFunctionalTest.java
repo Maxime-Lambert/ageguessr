@@ -2,6 +2,7 @@ package app.ageguessr.functional.people;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -74,7 +75,9 @@ class CurationFunctionalTest {
         for (MockHttpServletRequestBuilder request : new MockHttpServletRequestBuilder[] {
             get("/api/admin/photos/pending"),
             get("/api/admin/photos/" + photo.getId() + "/image"),
-            reviewRequest(photo.getId(), "APPROVED")
+            reviewRequest(photo.getId(), "APPROVED"),
+            get("/api/admin/people").param("query", "Jane"),
+            post("/api/admin/people/" + photo.getPersonId() + "/exclusion")
         }) {
             mockMvc.perform(request).andExpect(status().isUnauthorized());
             mockMvc.perform(request.header(HttpHeaders.AUTHORIZATION, "Bearer " + userToken))
@@ -168,6 +171,46 @@ class CurationFunctionalTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}")))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void findsThePersonOfARemovalRequestThenExcludesThemAndErasesTheirPhotos() throws Exception {
+        Person person = deceased("Q7");
+        PersonPhoto approved = store(person, "A.jpg", 1976, ReviewStatus.APPROVED);
+        store(person, "B.jpg", 1990, ReviewStatus.PENDING);
+
+        mockMvc.perform(asAdmin(get("/api/admin/people").param("query", "jane doe")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.people[0].wikidataId").value("Q7"))
+                .andExpect(jsonPath("$.people[0].photoCount").value(2))
+                .andExpect(jsonPath("$.people[0].excluded").value(false));
+
+        mockMvc.perform(asAdmin(post("/api/admin/people/" + person.getId() + "/exclusion")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.deletedPhotos").value(2));
+
+        mockMvc.perform(get("/api/images/" + approved.getPublicId())).andExpect(status().isNotFound());
+        org.assertj.core.api.Assertions.assertThat(photos.findByPersonId(person.getId())).isEmpty();
+        org.assertj.core.api.Assertions.assertThat(images.findById(approved.getId())).isEmpty();
+        mockMvc.perform(asAdmin(get("/api/admin/people").param("query", "Q7")))
+                .andExpect(jsonPath("$.people[0].excluded").value(true))
+                .andExpect(jsonPath("$.people[0].photoCount").value(0));
+        // Asking again is harmless.
+        mockMvc.perform(asAdmin(post("/api/admin/people/" + person.getId() + "/exclusion")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.deletedPhotos").value(0));
+    }
+
+    @Test
+    void refusesATooShortSearch() throws Exception {
+        mockMvc.perform(asAdmin(get("/api/admin/people").param("query", "J"))).andExpect(status().isBadRequest());
+        mockMvc.perform(asAdmin(get("/api/admin/people"))).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void excludingAnUnknownPersonIsNotFound() throws Exception {
+        mockMvc.perform(asAdmin(post("/api/admin/people/" + UUID.randomUUID() + "/exclusion")))
+                .andExpect(status().isNotFound());
     }
 
     @Test

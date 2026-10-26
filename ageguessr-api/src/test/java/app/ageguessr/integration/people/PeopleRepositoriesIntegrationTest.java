@@ -364,6 +364,35 @@ class PeopleRepositoriesIntegrationTest {
         assertThat(reloaded.getReviewStatus()).isEqualTo(ReviewStatus.APPROVED);
     }
 
+    @Test
+    void searchesNamesIgnoringCaseAndAccentsInBothLanguages() {
+        personRepository.saveAndFlush(person("Q1").nameEn("Pelé").nameFr(null).sitelinks(100).build());
+        personRepository.saveAndFlush(person("Q2").nameEn("François Hollande").sitelinks(90).build());
+        personRepository.saveAndFlush(person("Q3").nameEn(null).nameFr("Jean Dupont").sitelinks(10).build());
+
+        assertThat(personRepository.searchByName("pele", 20)).extracting(Person::getWikidataId).containsExactly("Q1");
+        assertThat(personRepository.searchByName("FRANCOIS", 20)).extracting(Person::getWikidataId).containsExactly("Q2");
+        assertThat(personRepository.searchByName("dupont", 20)).extracting(Person::getWikidataId).containsExactly("Q3");
+    }
+
+    @Test
+    void searchResultsComeBestKnownFirstAndAreCapped() {
+        personRepository.saveAndFlush(person("Q1").nameEn("Jane A").sitelinks(10).build());
+        personRepository.saveAndFlush(person("Q2").nameEn("Jane B").sitelinks(300).build());
+        personRepository.saveAndFlush(person("Q3").nameEn("Jane C").sitelinks(50).build());
+
+        assertThat(personRepository.searchByName("jane", 20)).extracting(Person::getWikidataId).containsExactly("Q2", "Q3", "Q1");
+        assertThat(personRepository.searchByName("jane", 2)).hasSize(2);
+    }
+
+    @Test
+    void anEscapedWildcardIsMatchedLiterally() {
+        personRepository.saveAndFlush(person("Q1").nameEn("Jane Doe").build());
+        personRepository.saveAndFlush(person("Q2").nameEn("Studio 100%").build());
+
+        assertThat(personRepository.searchByName("\\%", 20)).extracting(Person::getWikidataId).containsExactly("Q2");
+    }
+
     private PersonPhoto pending(Person person, String file, int year) {
         return photoRepository.saveAndFlush(photo(person, file, year).reviewStatus(ReviewStatus.PENDING).build());
     }

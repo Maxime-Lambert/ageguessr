@@ -251,19 +251,38 @@ Vérification manuelle (curl sur données locales) reportée à la Phase 4, avec
 
 
 ## Phase 3 : Recherche et exclusion (backend)
-Status: Not started
+Status: Complete
 
-- [ ] `SearchPeople/` (nom EN/FR ou QID, `unaccent` + `ILIKE` si disponible sinon
+- [x] `SearchPeople/` (nom EN/FR ou QID, `unaccent` + `ILIKE` si disponible sinon
       normalisation Java, limite 20).
-- [ ] `ExcludePerson/` (idempotent, renvoie le nombre de photos supprimées).
-- [ ] Tests unitaires, intégration (le trigger efface bien les photos) et
+- [x] `ExcludePerson/` (idempotent, renvoie le nombre de photos supprimées).
+- [x] Tests unitaires, intégration (le trigger efface bien les photos) et
       fonctionnels.
 
 ### Verification Plan
 - `cd ageguessr-api && ./mvnw test` → vert.
 
 ### Phase Summary
-_(à écrire quand la phase est finie)_
+**Livré** :
+- `V7` : extension `unaccent` (« trusted » depuis PG 13, activable par le propriétaire
+  de la base).
+- `PersonRepository.searchByName` : requête native,
+  `unaccent(lower(...)) LIKE unaccent(lower('%' || :fragment || '%'))` sur `name_en`
+  et `name_fr`, sitelinks décroissants, `LIMIT`. Le handler échappe `\`, `%` et `_`.
+- `SearchPeople/` : `GET /api/admin/people?query=` (2 à 100 caractères). Un QID exact
+  (insensible à la casse) est cherché par identifiant, le reste par nom. Chaque
+  résultat donne le nombre de photos et le statut `excluded`.
+- `ExcludePerson/` : `POST /api/admin/people/{id}/exclusion`, idempotent, renvoie
+  `deletedPhotos`. Le trigger V4 fait la suppression. Log avec le QID seul.
+
+**Tests** :
+- unitaires : 8 ;
+- intégration : +3 (accents et casse dans les deux langues, ordre et plafond, `%`
+  échappé) ;
+- fonctionnels : `CurationFunctionalTest` passe à 12 (matrice d'accès étendue aux
+  5 endpoints, parcours recherche → exclusion → photos et images effacées, endpoint
+  public en 404, seconde exclusion sans effet).
+
 
 ## Phase 4 : Page de curation (frontend)
 Status: Not started
