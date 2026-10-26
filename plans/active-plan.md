@@ -310,9 +310,9 @@ recherche `haswbstatement:P180=<QID> filetype:bitmap` (50 résultats max), plus 
   l'utilisateur.
 
 ## Phase 2 : Schéma de données et entités
-Status: Not started
+Status: In progress (code écrit, test d'intégration non exécuté : Docker indisponible dans WSL le 2026-10-26)
 
-- [ ] `ageguessr-api/src/main/resources/db/migration/V4__create_people_tables.sql` :
+- [x] `ageguessr-api/src/main/resources/db/migration/V4__create_people_tables.sql` :
   - `people` (`id uuid pk`, `wikidata_id varchar unique not null`, `name_en`,
     `name_fr`, `birth_date date not null`, `death_date date null`,
     `sitelinks int not null`, `excluded boolean not null default false`,
@@ -327,10 +327,10 @@ Status: Not started
   - `person_photo_images` (`photo_id uuid pk fk on delete cascade`,
     `content bytea not null`, `content_type varchar not null`, `width int`,
     `height int`).
-- [ ] `features/people/Person.java`, `PersonPhoto.java`, `PhotoImage.java` (entités).
-- [ ] `features/people/PersonRepository.java`, `PersonPhotoRepository.java`,
+- [x] `features/people/Person.java`, `PersonPhoto.java`, `PhotoImage.java` (entités).
+- [x] `features/people/PersonRepository.java`, `PersonPhotoRepository.java`,
       `PhotoImageRepository.java`.
-- [ ] Tests d'intégration
+- [x] Tests d'intégration
       `ageguessr-api/src/test/java/app/ageguessr/integration/people/PeopleRepositoriesIntegrationTest.java` :
       unicités, cascade, `findByPublicId`, chargement séparé de l'image.
 
@@ -341,23 +341,37 @@ Status: Not started
   concordent).
 
 ### Phase Summary
-_(à écrire quand la phase est finie)_
+_(provisoire)_ Écarts par rapport à la liste ci-dessus :
+- `age_at_photo` en `INT` plutôt qu'en `SMALLINT`, parce qu'un `int` Java contre un
+  `smallint` ferait échouer `ddl-auto=validate`.
+- Contraintes ajoutées : `people_has_a_name` (au moins un label EN ou FR) et
+  `people_death_after_birth`.
+- Énumération `PhotoDateSource` (`STRUCTURED_DATA`, `INFORMATION_TEMPLATE`, `BOTH`) à la
+  racine de la feature.
+- La requête du futur endpoint est déjà dans le repository :
+  `PhotoImageRepository.findServableByPublicId` (jointure qui ignore les personnes
+  exclues).
+
+`ArchitectureTests` est vert. **`PeopleRepositoriesIntegrationTest` (17 tests) n'a pas pu
+tourner** : Testcontainers ne trouve pas Docker (`docker` absent de la distro WSL,
+intégration WSL de Docker Desktop désactivée ou Docker arrêté). À relancer avant de
+passer la phase en `Complete`.
 
 ## Phase 3 : Règles métier des dates (cœur pur)
-Status: Not started
+Status: Complete
 
-- [ ] `features/people/IngestPeople/PhotoDate.java` : intervalle `[from, to]` construit
+- [x] `features/people/IngestPeople/PhotoDate.java` : intervalle `[from, to]` construit
       depuis une date et sa précision (année / mois / jour).
-- [ ] `features/people/IngestPeople/AgeAtPhoto.java` : `Optional<Integer> of(LocalDate
+- [x] `features/people/IngestPeople/AgeAtPhoto.java` : `Optional<Integer> of(LocalDate
       birth, PhotoDate photo, LocalDate deathOrNull, LocalDate today)`, avec les bornes
       de cohérence.
-- [ ] `features/people/IngestPeople/PhotoDateParser.java` : parsing strict du champ
+- [x] `features/people/IngestPeople/PhotoDateParser.java` : parsing strict du champ
       `{{Information}}` (HTML retiré, formats acceptés listés plus haut).
-- [ ] `features/people/IngestPeople/PhotoDateResolver.java` : combine les sources selon
+- [x] `features/people/IngestPeople/PhotoDateResolver.java` : combine les sources selon
       l'ordre décidé au spike ; rejette en cas de contradiction.
-- [ ] `features/people/IngestPeople/BirthDateSelector.java` : règles `P569` (précision,
+- [x] `features/people/IngestPeople/BirthDateSelector.java` : règles `P569` (précision,
       ranks, calendrier).
-- [ ] Tests unitaires de chacune de ces classes (tous les edge cases de date listés
+- [x] Tests unitaires de chacune de ces classes (tous les edge cases de date listés
       plus haut).
 
 ### Verification Plan
@@ -367,7 +381,35 @@ Status: Not started
   → noter le score de mutation ici, viser ≥ 90 % sur ces classes.
 
 ### Phase Summary
-_(à écrire quand la phase est finie)_
+Classes livrées (`features/people/IngestPeople/`), avec deux regroupements par rapport à
+la liste :
+- `PhotoDate` : intervalle, `fromWikibase`, `intersection`, `contains`.
+- `PhotoDateParser` : `{{Information}}` strict, plus l'EXIF `DateTimeOriginal`.
+- `BirthStatement` et `BirthDateSelector`.
+- `AgeAtPhoto` et `PhotoDateResolver` sont fusionnés dans **`PhotoEvaluator`**, qui
+  renvoie un `PhotoEvaluation` scellé (`Accepted(date, source, age)` ou
+  `Rejected(PhotoRejection)`). Le motif de rejet servira au bilan d'ingestion par
+  motif, ce qu'un `Optional` aurait perdu.
+
+Résultats :
+- **107 tests unitaires verts.** Tous les cas du spike y sont, dont le piège
+  Kerschbaumer et les dates réelles rejetées.
+- **Mutation : 83/83 mutants tués (100 %)** sur `IngestPeople.*`.
+- Constat : avec `Period.between`, une personne née le 29 février a 1 an le **1er mars**
+  d'une année non bissextile. Ce comportement est figé par un test.
+
+**Problème d'outillage découvert** (hors scope, à traiter dans une branche
+`fix/mutation-testing`) : PIT n'a jamais fonctionné sur ce projet.
+- `pitest-maven` 1.19.1 ne lit pas les classes Java 25 (`Unsupported class file major
+  version 69`).
+- `pitest-junit5-plugin` est absent, donc PIT ne voit pas les tests JUnit 5.
+- `scripts/run-mutation-tests.sh` ne compile pas avant de muter.
+- En CI, `continue-on-error: true` masquait l'échec : le step affiche « success » en
+  ~30 s.
+
+Correctif vérifié en local : `pitest-maven` 1.30.1 avec la dépendance de plugin
+`org.pitest:pitest-junit5-plugin:1.2.3`, plus `test-compile` avant `mutationCoverage`.
+Le `pom.xml` de cette branche est resté inchangé.
 
 ## Phase 4 : Clients Wikidata et Commons
 Status: Not started

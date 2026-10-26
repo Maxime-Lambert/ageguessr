@@ -1,0 +1,56 @@
+-- Personnalites du jeu, ingerees depuis Wikidata (voir plans/active-plan.md). Les
+-- donnees sont publiques mais restent des donnees personnelles : "excluded" sert aux
+-- demandes de retrait, une personne exclue n'est plus jamais reingeree ni servie.
+CREATE TABLE people (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    wikidata_id VARCHAR(16) NOT NULL,
+    name_en VARCHAR(255),
+    name_fr VARCHAR(255),
+    birth_date DATE NOT NULL,
+    death_date DATE,
+    sitelinks INT NOT NULL,
+    excluded BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    CONSTRAINT people_has_a_name CHECK (name_en IS NOT NULL OR name_fr IS NOT NULL),
+    CONSTRAINT people_death_after_birth CHECK (death_date IS NULL OR death_date >= birth_date)
+);
+
+CREATE UNIQUE INDEX people_wikidata_id_unique_idx ON people (wikidata_id);
+
+-- Une photo Commons dont l'age de la personne est connu sans ambiguite : la prise de
+-- vue est quelque part dans [taken_from, taken_to] (intervalle derive de la precision
+-- de la date), et l'age est le meme aux deux bornes.
+-- commons_file, source_url et la date ne doivent jamais etre exposes avant la fin d'un
+-- round : le nom du fichier contient souvent le nom de la personne. Seul public_id sort
+-- de l'API.
+CREATE TABLE person_photos (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    person_id UUID NOT NULL REFERENCES people (id) ON DELETE CASCADE,
+    commons_file VARCHAR(512) NOT NULL,
+    taken_from DATE NOT NULL,
+    taken_to DATE NOT NULL,
+    age_at_photo INT NOT NULL,
+    date_source VARCHAR(32) NOT NULL,
+    license_short_name VARCHAR(64) NOT NULL,
+    license_url VARCHAR(512),
+    author_text VARCHAR(1024),
+    source_url VARCHAR(1024) NOT NULL,
+    public_id UUID NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    CONSTRAINT person_photos_interval_ordered CHECK (taken_from <= taken_to),
+    CONSTRAINT person_photos_age_range CHECK (age_at_photo BETWEEN 0 AND 120)
+);
+
+CREATE UNIQUE INDEX person_photos_person_file_unique_idx ON person_photos (person_id, commons_file);
+CREATE UNIQUE INDEX person_photos_public_id_unique_idx ON person_photos (public_id);
+
+-- Octets de l'image dans une table a part : Hibernate ne sait pas charger une colonne
+-- bytea en lazy sans bytecode enhancement, donc lire une photo chargerait l'image.
+CREATE TABLE person_photo_images (
+    photo_id UUID PRIMARY KEY REFERENCES person_photos (id) ON DELETE CASCADE,
+    content BYTEA NOT NULL,
+    content_type VARCHAR(64) NOT NULL,
+    width INT NOT NULL,
+    height INT NOT NULL
+);
