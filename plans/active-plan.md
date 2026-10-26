@@ -285,14 +285,14 @@ Status: Complete
 
 
 ## Phase 4 : Page de curation (frontend)
-Status: Not started
+Status: Complete
 
-- [ ] `features/curation/curation-api.ts` (HttpClient, image en blob).
-- [ ] `features/curation/curation/curation.{ts,html}` : photo, informations, boutons,
+- [x] `features/curation/curation-api.ts` (HttpClient, image en blob).
+- [x] `features/curation/curation/curation.{ts,html}` : photo, informations, boutons,
       raccourcis, préchargement, annulation, compteur, file vide.
-- [ ] `features/curation/exclusion/` : recherche et exclusion avec confirmation.
-- [ ] Route `/admin/curation` (`authGuard` + `adminGuard`), lien d'en-tête pour admin.
-- [ ] Tests unitaires et 1 spec d'interface Playwright.
+- [x] `features/curation/exclusion/` : recherche et exclusion avec confirmation.
+- [x] Route `/admin/curation` (`authGuard` + `adminGuard`), lien d'en-tête pour admin.
+- [x] Tests unitaires et 1 spec d'interface Playwright.
 
 ### Verification Plan
 - `cd frontend && pnpm test && pnpm lint && npx prettier --check src` → vert.
@@ -300,7 +300,51 @@ Status: Not started
 - Manuel : enchaîner 10 photos au clavier sur les données locales.
 
 ### Phase Summary
-_(à écrire quand la phase est finie)_
+**Livré** (`frontend/src/app/features/curation/`) :
+- `models.ts`, `curation-api.ts` (image en `responseType: 'blob'`).
+- `curation/` :
+  - file locale complétée par lots de 20 dès qu'il reste moins de 5 photos, sans
+    doublon ni photo passée ;
+  - préchargement de la photo courante et de la suivante ;
+  - URL `blob:` libérées quand la photo sort, ou si la réponse arrive après qu'elle est
+    sortie ;
+  - raccourcis A / R / → / U via `host: {'(document:keydown)'}`, ignorés dans un champ
+    ou avec une touche modificatrice (Ctrl+R recharge la page, il ne rejette pas) ;
+  - messages pour `LIVING_PERSON_APPROVAL_DISABLED`, `PHOTO_SLOT_TAKEN` et 404 ;
+    « Approuver » désactivé et expliqué pour une personne vivante.
+- `exclusion/` : recherche puis exclusion en deux clics (pas de `confirm()`
+  navigateur). Le message rappelle de confirmer à la personne qui a fait la demande.
+  L'événement `excluded` recharge la file.
+- Route `/admin/curation` (`adminGuard`) et lien « Curation » dans l'en-tête pour un
+  admin.
+
+**Bug attrapé par les tests** : `(ngSubmit)` sur un `<form>` sans `[formGroup]` ne se
+déclenche jamais avec `ReactiveFormsModule` seul. La recherche n'aurait pas marché.
+Corrigé avec un `FormGroup`.
+
+**Tests** :
+- unitaires front : **165/165** (+24) ;
+- Playwright component : **42/42** (+4 dans `curation.spec.ts` : image blob réellement
+  décodée, A puis U au clavier, A sans effet sur une personne vivante, saisie dans la
+  recherche sans effet, utilisateur simple renvoyé à l'accueil, pas de défilement
+  horizontal à 360 px).
+
+**Smoke test backend sur données réelles (2026-10-26)** :
+- ingestion locale `--limit=5` : V4 à V7 appliquées à la base de dev, `unaccent`
+  compris ;
+- compte admin jetable créé en SQL ; jeton signé avec le secret local ;
+- file : Obama, Trump, Hitler, Poutine, Mandela, avec `approvable` correct (vivants
+  bloqués) ;
+- image admin : 200, `no-store`, 82 Ko ; 401 sans jeton ;
+- vivant : approbation 409, rejet puis annulation OK ; décédé : approbation OK ;
+- recherche « bara » trouve Barack Obama ;
+- compte supprimé ensuite : `reviewed_by` passe à `NULL`, `reviewed_at` est conservé ;
+  les 10 comptes locaux sont intacts.
+
+**Point éditorial soulevé, à trancher par l'utilisateur** : les personnes les plus
+connues incluent des figures comme Adolf Hitler. La curation permet de les rejeter au
+cas par cas ; une politique éditoriale explicite reste à décider.
+
 
 ## Phase 5 : Docs, revues, PR
 Status: Not started
