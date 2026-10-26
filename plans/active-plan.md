@@ -72,6 +72,23 @@ vérité, pas la conversation.
   - en base, par les index uniques `(person_id, age_at_photo)` et
     `(person_id, EXTRACT(YEAR FROM taken_from))`, plus un `CHECK` qui garantit qu'une
     photo tient dans une seule année.
+- **Écart minimal entre deux photos d'une même personne** (décision du 2026-10-26,
+  après la précédente) : `app.people.ingest.min-years-between-photos`, **10 ans** par
+  défaut. Deux photos doivent être distantes d'au moins N ans **en âge et en année
+  civile**. À N = 1, on retrouve exactement la règle « une photo par âge et par
+  année ».
+  - En base, seul ce plancher d'un an est imposé (index uniques) : l'écart est un
+    réglage produit, pas un invariant de données.
+  - Mesuré sur les 58 personnes gardées du spike (cap 5) :
+
+    | Écart minimal | Photos/personne | Personnes avec ≥ 2 photos |
+    |---|---|---|
+    | 1 an | 2,31 | 57 % |
+    | 5 ans | 1,55 | 40 % |
+    | 10 ans | 1,24 | 22 % |
+
+  - L'écart ne change pas le nombre de personnes gardées, seulement le nombre de photos
+    par personne.
 - **Nombre de photos par personne plafonné et configurable** :
   `app.people.ingest.max-photos-per-person`, 5 par défaut. Les photos déjà stockées
   comptent dans le plafond et bloquent leur année et leur âge lors d'une
@@ -96,10 +113,10 @@ vérité, pas la conversation.
   `haswbstatement:P180=Qxxx filetype:bitmap`.
 - **Choix des photos d'une personne** (`PhotoSelector`) : on trie par date la plus
   précise, puis `P18` d'abord, puis nom de fichier (pour que deux exécutions donnent le
-  même résultat). On garde ensuite chaque photo dont l'année et l'âge sont encore
-  libres, jusqu'au plafond. Avec 2,5 âges distincts en moyenne (spike), on stockera
-  environ 2 à 3 photos par personne. Volume estimé : 3 000 × ~3 × ~100 Ko ≈
-  **0,9 Go** dans Postgres. L'espace disque du VPS et la durée
+  même résultat). On garde ensuite chaque photo à au moins N ans (âge et année) de
+  toutes celles déjà gardées, jusqu'au plafond. Avec un écart de 10 ans, on stockera
+  environ 1,24 photo par personne. Volume estimé : 3 000 × ~1,25 × ~100 Ko ≈
+  **0,4 Go** dans Postgres. L'espace disque du VPS et la durée
   des backups sont à vérifier avant l'ingestion en production (Deployment Plan).
 - **Sources de date de prise de vue (tranché par le spike)** :
   1. **date déclarée** : SDC `P571` (structurée, avec précision) et/ou le champ `date` de
@@ -419,14 +436,15 @@ la liste :
   `Rejected(PhotoRejection)`). Le motif de rejet servira au bilan d'ingestion par
   motif, ce qu'un `Optional` aurait perdu.
 
-Ajouté ensuite, à la demande de l'utilisateur : **`PhotoSelector`** (une photo par
-année et par âge, plafond par personne, prise en compte des photos déjà stockées), avec
-10 tests unitaires.
+Ajouté ensuite, à la demande de l'utilisateur : **`PhotoSelector`**. Il impose un
+écart minimal configurable (en âge et en année) entre deux photos d'une même personne,
+applique le plafond par personne et tient compte des photos déjà stockées. 17 tests
+unitaires.
 
 Résultats :
-- **117 tests unitaires verts.** Tous les cas du spike y sont, dont le piège
+- **124 tests unitaires verts.** Tous les cas du spike y sont, dont le piège
   Kerschbaumer et les dates réelles rejetées.
-- **Mutation : 92/92 mutants tués (100 %)** sur `IngestPeople.*`.
+- **Mutation : 100/100 mutants tués (100 %)** sur `IngestPeople.*`.
 - Constat : avec `Period.between`, une personne née le 29 février a 1 an le **1er mars**
   d'une année non bissextile. Ce comportement est figé par un test.
 

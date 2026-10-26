@@ -4,15 +4,15 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
- * Chooses which accepted photos of one person to keep. At most one photo per calendar
- * year and one per age: two shots at the same age add nothing to the game. Both rules
- * are needed, since a year can span two ages (before and after the birthday) and an age
- * two years. The database enforces the same rules (V4__create_people_tables.sql).
+ * Chooses which accepted photos of one person to keep. Any two of them must be at least
+ * {@code minYearsApart} apart both in age and in calendar year: two shots of the same
+ * person a few years apart make nearly the same question. Both measures are needed,
+ * since a year can span two ages (before and after the birthday) and an age two years.
+ * The database only enforces the one-year floor (unique age and unique year per person,
+ * V4__create_people_tables.sql): the gap itself is a product setting.
  */
 final class PhotoSelector {
 
@@ -43,23 +43,24 @@ final class PhotoSelector {
             .thenComparing(Candidate::mainImage, Comparator.reverseOrder())
             .thenComparing(Candidate::fileTitle);
 
-    static List<Candidate> select(Collection<Kept> alreadyKept, Collection<Candidate> candidates, int maxPerPerson) {
-        Set<Integer> years = new HashSet<>();
-        Set<Integer> ages = new HashSet<>();
-        for (Kept kept : alreadyKept) {
-            years.add(kept.year());
-            ages.add(kept.age());
+    static List<Candidate> select(
+            Collection<Kept> alreadyKept, Collection<Candidate> candidates, int maxPerPerson, int minYearsApart) {
+        if (minYearsApart < 1) {
+            throw new IllegalArgumentException("minYearsApart must be at least 1, got " + minYearsApart);
         }
+        List<Kept> taken = new ArrayList<>(alreadyKept);
         int room = maxPerPerson - alreadyKept.size();
         List<Candidate> selected = new ArrayList<>();
         for (Candidate candidate : candidates.stream().sorted(PREFERENCE).toList()) {
             if (selected.size() >= room) {
                 break;
             }
-            if (!years.contains(candidate.year()) && !ages.contains(candidate.age())) {
+            boolean farEnough = taken.stream()
+                    .allMatch(k -> Math.abs(k.year() - candidate.year()) >= minYearsApart
+                            && Math.abs(k.age() - candidate.age()) >= minYearsApart);
+            if (farEnough) {
                 selected.add(candidate);
-                years.add(candidate.year());
-                ages.add(candidate.age());
+                taken.add(new Kept(candidate.year(), candidate.age()));
             }
         }
         return selected;
