@@ -563,7 +563,7 @@ Vérifications :
   de 60 s, même résultat).
 
 ## Phase 5 : Ré-encodage, handler et runner d'ingestion
-Status: In progress (code et tests faits, ingestion réelle en cours)
+Status: Complete
 
 - [x] `features/people/IngestPeople/ImageDownloader.java` : allow-list
       `upload.wikimedia.org`, plafond d'octets.
@@ -586,7 +586,7 @@ Status: In progress (code et tests faits, ingestion réelle en cours)
       Summary)*
 - [x] Ajouté : statut de curation `review_status`, avec un rejet jamais reproposé qui
       libère son année et son âge.
-- [ ] Relancer `--limit=30` après le correctif des labels et noter le bilan final.
+- [x] Relancer `--limit=30` après le correctif des labels et noter le bilan final.
 
 ### Verification Plan
 - `cd ageguessr-api && ./mvnw test` → vert.
@@ -618,6 +618,42 @@ _(provisoire)_
 - Nouveau cas : une date de naissance modifiée sur Wikidata entre deux runs donne
   `BIRTH_DATE_CHANGED` (personne laissée intacte, warning pour vérification
   manuelle).
+
+**Refonte du client QLever (2026-10-26 après-midi)** : la requête unique de la Phase 4
+(classement + naissances + décès + images + labels en jointure) prenait ~28 s le matin,
+juste sous la limite de 30 s de QLever. Elle a ensuite dépassé cette limite sans
+retour en arrière : 429 « Operation timed out… Sort on ?person » pendant plus d'une
+heure, alors que les requêtes simples répondaient en 0,1 s. Les succès du matin
+venaient probablement du cache de QLever.
+
+`WikidataClient` fait maintenant **5 petites requêtes** et assemble le résultat en
+Java (`assemble`). Mesures sur une vraie page de 500 personnes :
+
+| Requête | Durée |
+|---|---|
+| Classement | 3,6 s |
+| Naissances (`VALUES` des QID de la page) | 1,2 s |
+| Décès | 1,2 s |
+| Images | 0,3 s |
+| Labels | 0,8 s |
+| **Total** | **≈ 7 s** |
+
+Effets de bord positifs : plus de produit cartésien de lignes, et une page vide ne
+déclenche aucune requête de détail. Fixtures `qlever-{page,births,deaths,images,labels}.json`
+réenregistrées sur 7 personnes, dont Ronaldo.
+
+**Second run réel `--limit=30` (client refondu, base remise à zéro)** :
+- 141 personnes vues, 30 gardées, 42 photos (toutes `PENDING`), 299 s.
+- **0 personne sans nom anglais** (correctif des labels confirmé).
+- `NO_NAME` vaut 2 : des personnes sans aucun label `en*` ni `fr*`.
+- Plus de personnes vues qu'au premier run : l'ancienne requête unique exigeait un
+  `P569` dans sa jointure et écartait silencieusement les personnes sans date de
+  naissance. Elles sont maintenant vues, puis comptées en `BIRTH_DATE_UNUSABLE` (43).
+- Projection : ~8 h pour 3 000 personnes.
+- 1 échec : **HTTP 414 (URI trop longue)** sur Q3874799, parce que 50 longs titres de
+  fichiers ne tiennent pas dans une URL. **Corrigé** : `fetchFiles` passe en POST
+  (formulaire), ce que l'API MediaWiki accepte pour les lectures. Test
+  `sendsTitlesTooLongForAUrlInTheBody` ajouté.
 
 **Risque relevé** : QLever renvoie un **429 quand une requête dépasse son délai**
 (`"Operation timed out. Last operation: Sort…"`), pas seulement en cas de quota. Le
@@ -659,18 +695,18 @@ de relancer (idempotent).
 - Revue visuelle : ~43 % inutilisables, d'où la curation manuelle (voir les décisions).
 
 ## Phase 6 : Endpoint `GET /api/images/{id}`
-Status: Not started
+Status: Complete
 
-- [ ] `features/people/GetImage/GetImageQuery.java`, `GetImageHandler.java`,
+- [x] `features/people/GetImage/GetImageQuery.java`, `GetImageHandler.java`,
       `GetImageController.java`. Un id inconnu ou une personne exclue renvoie
       `NotFoundException`, avec le même 404 dans les deux cas pour ne rien laisser
       deviner.
-- [ ] `config/SecurityConfig.java` : `GET /api/images/*` en `permitAll`, et mettre à
+- [x] `config/SecurityConfig.java` : `GET /api/images/*` en `permitAll`, et mettre à
       jour le commentaire sur l'allow-list.
-- [ ] Règle ArchUnit dans `architecture/ArchitectureTests.java` : seules les classes de
+- [x] Règle ArchUnit dans `architecture/ArchitectureTests.java` : seules les classes de
       `..people.IngestPeople..` peuvent dépendre de `WikidataClient`, `CommonsClient` et
       `ImageDownloader`.
-- [ ] Test fonctionnel
+- [x] Test fonctionnel
       `ageguessr-api/src/test/java/app/ageguessr/functional/people/GetImageFunctionalTest.java`.
 
 ### Verification Plan
@@ -682,7 +718,23 @@ Status: Not started
   `Authorization`.
 
 ### Phase Summary
-_(à écrire quand la phase est finie)_
+- Slice `features/people/GetImage/` : `GetImageQuery`, `GetImageHandler`,
+  `GetImageController`, `ImageResponse`.
+- **Un seul 404 pour tous les refus** : id mal formé (l'id est reçu en `String`, pas en
+  `UUID`, pour éviter un 400 qui distinguerait les cas), id inconnu, id interne,
+  photo `PENDING` ou `REJECTED`, personne exclue.
+- Réponse : `Content-Type: image/jpeg`, `Cache-Control: max-age=86400, public`. Pas de
+  `Content-Disposition` ni d'ETag. `X-Content-Type-Options: nosniff` est déjà ajouté
+  par Spring Security.
+- `SecurityConfig` : `PUBLIC_GAME_GET_PATHS = {"/api/images/*"}` ouvert en GET
+  seulement. Les sous-chemins, `/api/images` et les autres méthodes restent
+  authentifiés.
+- Règle ArchUnit **`only_the_people_ingestion_makes_outbound_http_calls`** : aucune
+  classe hors de `..IngestPeople..` et `config..` ne dépend de `RestClient`. Elle est
+  plus large que la règle prévue, qui visait les clients eux-mêmes : ceux-ci sont déjà
+  package-private, donc inaccessibles depuis `GetImage` par construction.
+- `GetImageFunctionalTest` : 5 tests verts.
+
 
 ## Phase 7 : Documentation, confidentialité, revues, PR
 Status: Not started

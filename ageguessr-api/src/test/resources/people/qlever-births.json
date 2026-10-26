@@ -1,0 +1,235 @@
+{
+ "head": {
+  "vars": [
+   "person",
+   "birth",
+   "precision",
+   "calendar",
+   "rank"
+  ]
+ },
+ "results": {
+  "bindings": [
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q11571"
+    },
+    "birth": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+     "type": "literal",
+     "value": "1985-02-05T00:00:00Z"
+    },
+    "precision": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "11"
+    },
+    "calendar": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1985727"
+    },
+    "rank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#NormalRank"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q76984"
+    },
+    "birth": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+     "type": "literal",
+     "value": "1885-02-12T00:00:00Z"
+    },
+    "precision": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "11"
+    },
+    "calendar": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1985727"
+    },
+    "rank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#NormalRank"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q76745"
+    },
+    "birth": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+     "type": "literal",
+     "value": "1810-12-07T00:00:00Z"
+    },
+    "precision": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "11"
+    },
+    "calendar": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1985727"
+    },
+    "rank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#NormalRank"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1001"
+    },
+    "birth": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+     "type": "literal",
+     "value": "1869-10-02T00:00:00Z"
+    },
+    "precision": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "11"
+    },
+    "calendar": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1985727"
+    },
+    "rank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#NormalRank"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1002250"
+    },
+    "birth": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+     "type": "literal",
+     "value": "1951-11-14T00:00:00Z"
+    },
+    "precision": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "11"
+    },
+    "calendar": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1985727"
+    },
+    "rank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#DeprecatedRank"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q77017"
+    },
+    "birth": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+     "type": "literal",
+     "value": "1575-01-01T00:00:00Z"
+    },
+    "precision": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "9"
+    },
+    "calendar": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1985727"
+    },
+    "rank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#NormalRank"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q77017"
+    },
+    "birth": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+     "type": "literal",
+     "value": "1575-05-04T00:00:00Z"
+    },
+    "precision": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "11"
+    },
+    "calendar": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1985786"
+    },
+    "rank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#PreferredRank"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q10068"
+    },
+    "birth": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+     "type": "literal",
+     "value": "1984-10-18T00:00:00Z"
+    },
+    "precision": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "11"
+    },
+    "calendar": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1985727"
+    },
+    "rank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#NormalRank"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1002250"
+    },
+    "birth": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+     "type": "literal",
+     "value": "1951-09-14T00:00:00Z"
+    },
+    "precision": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "11"
+    },
+    "calendar": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1985727"
+    },
+    "rank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#NormalRank"
+    }
+   }
+  ]
+ },
+ "meta": {
+  "query-time-ms": 509,
+  "result-size-total": 9
+ }
+}

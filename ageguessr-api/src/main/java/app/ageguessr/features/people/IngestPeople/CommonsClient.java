@@ -1,5 +1,6 @@
 package app.ageguessr.features.people.IngestPeople;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -8,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
 import tools.jackson.databind.JsonNode;
 
@@ -48,21 +51,23 @@ class CommonsClient {
         return titles;
     }
 
-    /** Files keyed by title ("File:..."). Missing or deleted files are left out. */
+    /**
+     * Files keyed by title ("File:..."). Missing or deleted files are left out. POSTed:
+     * fifty long file titles overflow a URL (HTTP 414, seen on a real run), and the
+     * MediaWiki API reads query parameters from a form body just as well.
+     */
     Map<String, CommonsFile> fetchFiles(Collection<String> titles) {
         Map<String, CommonsFile> files = new LinkedHashMap<>();
+        URI endpoint = api().build().encode().toUri();
         for (List<String> batch : batches(List.copyOf(titles))) {
-            JsonNode response = http.get(api()
-                    .queryParam("action", "query")
-                    .queryParam("prop", "imageinfo")
-                    .queryParam("iiprop", "url|mime|extmetadata|metadata")
-                    .queryParam("iiurlwidth", ingest.thumbnailWidth())
-                    .queryParam(
-                            "iiextmetadatafilter", "DateTimeOriginal|LicenseShortName|LicenseUrl|Artist|UsageTerms")
-                    .queryParam("titles", String.join("|", batch))
-                    .build()
-                    .encode()
-                    .toUri());
+            MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+            form.add("action", "query");
+            form.add("prop", "imageinfo");
+            form.add("iiprop", "url|mime|extmetadata|metadata");
+            form.add("iiurlwidth", String.valueOf(ingest.thumbnailWidth()));
+            form.add("iiextmetadatafilter", "DateTimeOriginal|LicenseShortName|LicenseUrl|Artist|UsageTerms");
+            form.add("titles", String.join("|", batch));
+            JsonNode response = http.postForm(endpoint, form);
             for (JsonNode page : response.path("query").path("pages")) {
                 parseFile(page).ifPresent(file -> files.put(file.title(), file));
             }

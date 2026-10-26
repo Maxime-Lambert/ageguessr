@@ -1,6 +1,8 @@
 package app.ageguessr.features.people.IngestPeople;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.springframework.test.web.client.ExpectedCount.never;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
@@ -19,18 +21,37 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestClient;
+import tools.jackson.databind.JsonNode;
 
-/** Uses qlever-selection.json: six chosen people covering the edge cases listed in its README. */
+/**
+ * Uses the qlever-*.json fixtures: seven chosen people covering the edge cases listed in
+ * src/test/resources/people/README.md.
+ */
 class WikidataClientTest {
 
-    private final Map<String, PersonRecord> people = WikidataClient.group(
-                    Fixtures.json("qlever-selection.json").path("results").path("bindings"))
+    private static final URI QLEVER = URI.create("https://qlever.example/api/wikidata");
+
+    private final Map<String, PersonRecord> people = WikidataClient.assemble(
+                    bindings("qlever-page.json"),
+                    bindings("qlever-births.json"),
+                    bindings("qlever-deaths.json"),
+                    bindings("qlever-images.json"),
+                    bindings("qlever-labels.json"))
             .stream()
             .collect(Collectors.toMap(PersonRecord::wikidataId, Function.identity()));
 
     @Test
-    void groupsTheRowsOfEachPerson() {
-        assertThat(people).containsOnlyKeys("Q1001", "Q1002250", "Q10068", "Q76745", "Q76984", "Q77017");
+    void assemblesEveryPersonOfThePage() {
+        assertThat(people)
+                .containsOnlyKeys("Q1001", "Q1002250", "Q10068", "Q76745", "Q76984", "Q77017", "Q11571");
+    }
+
+    @Test
+    void keepsTheRankingOrder() {
+        List<PersonRecord> ordered = WikidataClient.assemble(
+                bindings("qlever-page.json"), empty(), empty(), empty(), empty());
+
+        assertThat(ordered).extracting(PersonRecord::sitelinks).isSortedAccordingTo((a, b) -> b - a);
     }
 
     @Test
@@ -43,6 +64,12 @@ class WikidataClientTest {
     }
 
     @Test
+    void findsTheEnglishLabelAnExactLanguageFilterMissed() {
+        // Cristiano Ronaldo has en, en-gb and en-us labels; FILTER(LANG(?l) = "en") found none.
+        assertThat(people.get("Q11571").nameEn()).isEqualTo("Cristiano Ronaldo");
+    }
+
+    @Test
     void decodesTheFileNamesOfEveryMainImage() {
         assertThat(people.get("Q10068").mainImageFiles())
                 .containsExactlyInAnyOrder(
@@ -52,7 +79,7 @@ class WikidataClientTest {
     }
 
     @Test
-    void keepsEachBirthStatementOnceWithItsRank() {
+    void keepsEachBirthStatementWithItsRank() {
         assertThat(people.get("Q1002250").births())
                 .containsExactlyInAnyOrder(
                         new BirthStatement("1951-11-14T00:00:00Z", 11, BirthDateSelector.GREGORIAN, BirthStatement.Rank.DEPRECATED),
@@ -60,7 +87,7 @@ class WikidataClientTest {
     }
 
     @Test
-    void keepsEachDeathStatementOnceWithItsRank() {
+    void keepsEachDeathStatementWithItsRank() {
         assertThat(people.get("Q76745").deaths())
                 .containsExactlyInAnyOrder(
                         new DeathStatement("1882-01-12T00:00:00Z", 11, BirthStatement.Rank.NORMAL),
@@ -78,62 +105,23 @@ class WikidataClientTest {
     }
 
     @Test
-    void postsThePagedSelectionQueryToQlever() {
-        URI qlever = URI.create("https://qlever.example/api/wikidata");
-        RestClient.Builder builder = RestClient.builder();
-        MockRestServiceServer server = MockRestServiceServer.bindTo(builder).build();
-        WikimediaHttp http = new WikimediaHttp(builder.build(), Fixtures.MAPPER, d -> {}, Duration.ZERO, 1);
-        WikidataClient client = new WikidataClient(http, properties(qlever));
-        server.expect(requestTo(qlever))
-                .andExpect(method(HttpMethod.POST))
-                .andExpect(content().string(Matchers.containsString("LIMIT+500+OFFSET+1000")))
-                .andRespond(withSuccess(Fixtures.text("qlever-selection.json"), MediaType.APPLICATION_JSON));
+    void readsAnUnknownDeathDateAsAStatementWithoutValue() {
+        JsonNode deaths = Fixtures.MAPPER.readTree("""
+                [{"person": {"value": "http://www.wikidata.org/entity/Q1"},
+                  "statement": {"value": "s1"},
+                  "rank": {"value": "http://wikiba.se/ontology#NormalRank"}}]
+                """);
 
-        List<PersonRecord> page = client.fetchPeople(1000, 500);
+        PersonRecord person = WikidataClient.assemble(page("Q1"), empty(), deaths, empty(), empty()).getFirst();
 
-        assertThat(page).hasSize(6);
-        server.verify();
-    }
-
-    @Test
-    void fetchesOnePersonByQid() {
-        URI qlever = URI.create("https://qlever.example/api/wikidata");
-        RestClient.Builder builder = RestClient.builder();
-        MockRestServiceServer server = MockRestServiceServer.bindTo(builder).build();
-        WikidataClient client = new WikidataClient(
-                new WikimediaHttp(builder.build(), Fixtures.MAPPER, d -> {}, Duration.ZERO, 1), properties(qlever));
-        server.expect(requestTo(qlever))
-                .andExpect(content().string(Matchers.containsString("VALUES+%3Fperson+%7B+wd%3AQ1001+%7D")))
-                .andRespond(withSuccess(Fixtures.text("qlever-selection.json"), MediaType.APPLICATION_JSON));
-
-        assertThat(client.fetchPerson("Q1001")).isPresent();
-        server.verify();
-    }
-
-    @Test
-    void refusesSomethingThatIsNotAQidBeforeBuildingTheQuery() {
-        WikidataClient client = new WikidataClient(
-                new WikimediaHttp(RestClient.builder().build(), Fixtures.MAPPER, d -> {}, Duration.ZERO, 1),
-                properties(URI.create("https://qlever.example")));
-
-        for (String bad : new String[] {"Q0", "42", "Q42 } ?x ?y ?z", "q42", "Q1234567890123"}) {
-            org.assertj.core.api.Assertions.assertThatThrownBy(() -> client.fetchPerson(bad))
-                    .as(bad)
-                    .isInstanceOf(IllegalArgumentException.class);
-        }
+        assertThat(person.deaths()).containsExactly(new DeathStatement(null, null, BirthStatement.Rank.NORMAL));
     }
 
     @Test
     void prefersTheExactLanguageOverARegionalVariantWhateverTheRowOrder() {
-        PersonRecord person = WikidataClient.group(Fixtures.MAPPER.readTree("""
-                        [
-                          %s,
-                          %s
-                        ]
-                        """.formatted(
-                                row("Jane (UK)", "en-gb", "Jeanne (Canada)", "fr-ca"),
-                                row("Jane", "en", "Jeanne", "fr"))))
-                .getFirst();
+        JsonNode labels = labels("Jane (UK)", "en-gb", "Jeanne (Canada)", "fr-ca", "Jane", "en", "Jeanne", "fr");
+
+        PersonRecord person = WikidataClient.assemble(page("Q1"), empty(), empty(), empty(), labels).getFirst();
 
         assertThat(person.nameEn()).isEqualTo("Jane");
         assertThat(person.nameFr()).isEqualTo("Jeanne");
@@ -141,35 +129,132 @@ class WikidataClientTest {
 
     @Test
     void fallsBackToARegionalVariantWhenTheExactLanguageIsMissing() {
-        PersonRecord person = WikidataClient.group(Fixtures.MAPPER.readTree(
-                        "[" + row("Jane (US)", "en-us", null, null) + "]"))
-                .getFirst();
+        JsonNode labels = labels("Jane (US)", "en-us");
+
+        PersonRecord person = WikidataClient.assemble(page("Q1"), empty(), empty(), empty(), labels).getFirst();
 
         assertThat(person.nameEn()).isEqualTo("Jane (US)");
         assertThat(person.nameFr()).isNull();
     }
 
-    private static String row(String en, String enLang, String fr, String frLang) {
-        StringBuilder json = new StringBuilder("""
-                {"person": {"value": "http://www.wikidata.org/entity/Q1"}, "sitelinks": {"value": "10"},
-                 "birth": {"value": "1950-03-10T00:00:00Z"}, "birthPrecision": {"value": "11"},
-                 "birthCalendar": {"value": "http://www.wikidata.org/entity/Q1985727"},
-                 "birthRank": {"value": "http://wikiba.se/ontology#NormalRank"}""");
-        if (en != null) {
-            json.append(", \"labelEn\": {\"value\": \"%s\"}, \"labelEnLang\": {\"value\": \"%s\"}".formatted(en, enLang));
-        }
-        if (fr != null) {
-            json.append(", \"labelFr\": {\"value\": \"%s\"}, \"labelFrLang\": {\"value\": \"%s\"}".formatted(fr, frLang));
-        }
-        return json.append("}").toString();
+    @Test
+    void ignoresRowsAboutPeopleOutsideThePage() {
+        JsonNode labels = Fixtures.MAPPER.readTree("""
+                [{"person": {"value": "http://www.wikidata.org/entity/Q999"},
+                  "label": {"value": "Stranger"}, "lang": {"value": "en"}}]
+                """);
+
+        assertThat(WikidataClient.assemble(page("Q1"), empty(), empty(), empty(), labels))
+                .singleElement()
+                .extracting(PersonRecord::nameEn)
+                .isNull();
     }
 
     @Test
-    void anEmptyPageMeansTheEndOfTheList() {
-        assertThat(WikidataClient.group(Fixtures.MAPPER.readTree("[]"))).isEmpty();
+    void fetchesAPageThenItsDetailsRestrictedToThePageQids() {
+        MockRestServiceServer server = expectFivePosts("LIMIT+500+OFFSET+1000");
+
+        List<PersonRecord> page = client(server).fetchPeople(1000, 500);
+
+        assertThat(page).hasSize(7);
+        server.verify();
     }
 
-    static WikimediaProperties properties(URI qlever) {
-        return new WikimediaProperties("test-agent", qlever, URI.create("https://commons.example/w/api.php"), 0, 1, 1, 1);
+    @Test
+    void anEmptyPageMeansTheEndOfTheListWithoutAnyDetailQuery() {
+        RestClient.Builder builder = RestClient.builder();
+        MockRestServiceServer server = MockRestServiceServer.bindTo(builder).build();
+        server.expect(requestTo(QLEVER)).andRespond(withSuccess(emptyResult(), MediaType.APPLICATION_JSON));
+        server.expect(never(), requestTo(QLEVER));
+        WikidataClient client = new WikidataClient(
+                new WikimediaHttp(builder.build(), Fixtures.MAPPER, d -> {}, Duration.ZERO, 1), properties());
+
+        assertThat(client.fetchPeople(0, 500)).isEmpty();
+        server.verify();
+    }
+
+    @Test
+    void fetchesOnePersonByQid() {
+        MockRestServiceServer server = expectFivePosts("VALUES+%3Fperson+%7B+wd%3AQ1001+%7D");
+
+        assertThat(client(server).fetchPerson("Q1001")).isPresent();
+        server.verify();
+    }
+
+    @Test
+    void refusesSomethingThatIsNotAQidBeforeBuildingTheQuery() {
+        WikidataClient client = new WikidataClient(
+                new WikimediaHttp(RestClient.builder().build(), Fixtures.MAPPER, d -> {}, Duration.ZERO, 1), properties());
+
+        for (String bad : new String[] {"Q0", "42", "Q42 } ?x ?y ?z", "q42", "Q1234567890123"}) {
+            assertThatThrownBy(() -> client.fetchPerson(bad)).as(bad).isInstanceOf(IllegalArgumentException.class);
+        }
+    }
+
+    static WikimediaProperties properties() {
+        return new WikimediaProperties("test-agent", QLEVER, URI.create("https://commons.example/w/api.php"), 0, 1, 1, 1);
+    }
+
+    private MockRestServiceServer server;
+
+    private MockRestServiceServer expectFivePosts(String firstQueryMarker) {
+        RestClient.Builder builder = RestClient.builder();
+        server = MockRestServiceServer.bindTo(builder).build();
+        this.builder = builder;
+        server.expect(requestTo(QLEVER))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(content().string(Matchers.containsString(firstQueryMarker)))
+                .andRespond(withSuccess(Fixtures.text("qlever-page.json"), MediaType.APPLICATION_JSON));
+        for (String[] detail : new String[][] {
+            {"p%3AP569", "qlever-births.json"},
+            {"p%3AP570", "qlever-deaths.json"},
+            {"wdt%3AP18", "qlever-images.json"},
+            {"rdfs%3Alabel", "qlever-labels.json"}
+        }) {
+            server.expect(requestTo(QLEVER))
+                    .andExpect(content().string(Matchers.allOf(
+                            Matchers.containsString(detail[0]), Matchers.containsString("wd%3AQ11571"))))
+                    .andRespond(withSuccess(Fixtures.text(detail[1]), MediaType.APPLICATION_JSON));
+        }
+        return server;
+    }
+
+    private RestClient.Builder builder;
+
+    private WikidataClient client(MockRestServiceServer server) {
+        return new WikidataClient(
+                new WikimediaHttp(builder.build(), Fixtures.MAPPER, d -> {}, Duration.ZERO, 1), properties());
+    }
+
+    private static JsonNode bindings(String fixture) {
+        return Fixtures.json(fixture).path("results").path("bindings");
+    }
+
+    private static JsonNode empty() {
+        return Fixtures.MAPPER.readTree("[]");
+    }
+
+    private static String emptyResult() {
+        return "{\"results\": {\"bindings\": []}}";
+    }
+
+    private static JsonNode page(String qid) {
+        return Fixtures.MAPPER.readTree("""
+                [{"person": {"value": "http://www.wikidata.org/entity/%s"}, "sitelinks": {"value": "10"}}]
+                """.formatted(qid));
+    }
+
+    /** Pairs of (label, language) for person Q1. */
+    private static JsonNode labels(String... labelAndLang) {
+        StringBuilder json = new StringBuilder("[");
+        for (int i = 0; i < labelAndLang.length; i += 2) {
+            if (i > 0) {
+                json.append(',');
+            }
+            json.append("""
+                    {"person": {"value": "http://www.wikidata.org/entity/Q1"},
+                     "label": {"value": "%s"}, "lang": {"value": "%s"}}""".formatted(labelAndLang[i], labelAndLang[i + 1]));
+        }
+        return Fixtures.MAPPER.readTree(json.append(']').toString());
     }
 }

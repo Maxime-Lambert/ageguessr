@@ -2,6 +2,8 @@ package app.ageguessr.features.people.IngestPeople;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.client.ExpectedCount.times;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.queryParam;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
@@ -15,6 +17,7 @@ import java.util.stream.IntStream;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestClient;
@@ -54,7 +57,10 @@ class CommonsClientTest {
     @Test
     void readsEveryFieldOfAFile() {
         server.expect(requestTo(Matchers.startsWith(API)))
-                .andExpect(queryParam("iiurlwidth", "800"))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(queryParam("maxlag", "5"))
+                .andExpect(content().formDataContains(Map.of(
+                        "iiurlwidth", "800", "titles", "File:ROMY2011 a21 Mallika Sherawat.jpg")))
                 .andRespond(withSuccess(Fixtures.text("commons-imageinfo-Q262665.json"), MediaType.APPLICATION_JSON));
 
         Map<String, CommonsFile> files = client.fetchFiles(List.of("File:ROMY2011 a21 Mallika Sherawat.jpg"));
@@ -96,6 +102,17 @@ class CommonsClientTest {
         JsonNode missing = Fixtures.MAPPER.readTree("{\"ns\": 6, \"title\": \"File:Gone.jpg\", \"missing\": true}");
 
         assertThat(CommonsClient.parseFile(missing)).isEmpty();
+    }
+
+    @Test
+    void sendsTitlesTooLongForAUrlInTheBody() {
+        String longTitle = "File:" + "Very long file name about a press conference ".repeat(10) + ".jpg";
+        server.expect(requestTo(API + "?format=json&formatversion=2&maxlag=5"))
+                .andRespond(withSuccess("{\"query\": {\"pages\": []}}", MediaType.APPLICATION_JSON));
+
+        client.fetchFiles(IntStream.range(0, 50).mapToObj(i -> longTitle + i).toList());
+
+        server.verify();
     }
 
     @Test
