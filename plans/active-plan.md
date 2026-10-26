@@ -64,6 +64,27 @@ vérité, pas la conversation.
 - **Âge exact conservé** : les dates à l'année seule n'ajoutent que 5 à 9 % de
   personnes (voir le Phase Summary de la Phase 1).
 
+## Décisions validées avec l'utilisateur (2026-10-26, après la Phase 3)
+- **Au plus une photo par année civile et une par âge pour une même personne.** Les
+  deux règles sont nécessaires : une même année peut couvrir deux âges (avant et après
+  l'anniversaire), et un même âge deux années. Elles sont appliquées à deux endroits :
+  - dans `PhotoSelector` à l'ingestion ;
+  - en base, par les index uniques `(person_id, age_at_photo)` et
+    `(person_id, EXTRACT(YEAR FROM taken_from))`, plus un `CHECK` qui garantit qu'une
+    photo tient dans une seule année.
+- **Nombre de photos par personne plafonné et configurable** :
+  `app.people.ingest.max-photos-per-person`, 5 par défaut. Les photos déjà stockées
+  comptent dans le plafond et bloquent leur année et leur âge lors d'une
+  réingestion.
+- **Photos regroupées par personne** (`person_photos.person_id`). **Contrainte
+  transmise à la Semaine 3** (sélection quotidienne) :
+  - jamais deux photos d'une même personne dans la même partie ;
+  - un délai minimal entre deux apparitions d'une même personne, quelle que soit la
+    photo.
+
+  Ces règles se raisonnent par personne, pas par photo. Elles sont reportées dans
+  `docs/roadmap.md`.
+
 ## Hypothèses (non tranchées, à confirmer par le spike de la Phase 1)
 - **Notoriété : pas de seuil, un objectif de taille.** L'ingestion parcourt les
   humains ayant un `P18`, par sitelinks décroissants, jusqu'à avoir retenu
@@ -73,9 +94,12 @@ vérité, pas la conversation.
 - **Candidats photo** : `P18` de l'item, plus les fichiers Commons dont les Structured
   Data indiquent `depicts (P180) = la personne`, récupérés par la recherche Commons
   `haswbstatement:P180=Qxxx filetype:bitmap`.
-- **Plafond : 5 photos par personne**, choisies pour maximiser le nombre d'âges
-  distincts (à égalité, la date la plus précise, puis le `P18`). Volume estimé :
-  3 000 × ~4 × ~100 Ko ≈ **1,2 Go** dans Postgres. L'espace disque du VPS et la durée
+- **Choix des photos d'une personne** (`PhotoSelector`) : on trie par date la plus
+  précise, puis `P18` d'abord, puis nom de fichier (pour que deux exécutions donnent le
+  même résultat). On garde ensuite chaque photo dont l'année et l'âge sont encore
+  libres, jusqu'au plafond. Avec 2,5 âges distincts en moyenne (spike), on stockera
+  environ 2 à 3 photos par personne. Volume estimé : 3 000 × ~3 × ~100 Ko ≈
+  **0,9 Go** dans Postgres. L'espace disque du VPS et la durée
   des backups sont à vérifier avant l'ingestion en production (Deployment Plan).
 - **Sources de date de prise de vue (tranché par le spike)** :
   1. **date déclarée** : SDC `P571` (structurée, avec précision) et/ou le champ `date` de
@@ -348,11 +372,15 @@ _(provisoire)_ Écarts par rapport à la liste ci-dessus :
   `people_death_after_birth`.
 - Énumération `PhotoDateSource` (`STRUCTURED_DATA`, `INFORMATION_TEMPLATE`, `BOTH`) à la
   racine de la feature.
+- Index uniques `(person_id, age_at_photo)` et `(person_id, EXTRACT(YEAR FROM
+  taken_from))`, et `CHECK person_photos_interval_within_a_year` (décision de
+  l'utilisateur, voir plus haut). L'immutabilité de l'expression d'index reste à
+  confirmer par le test d'intégration.
 - La requête du futur endpoint est déjà dans le repository :
   `PhotoImageRepository.findServableByPublicId` (jointure qui ignore les personnes
   exclues).
 
-`ArchitectureTests` est vert. **`PeopleRepositoriesIntegrationTest` (17 tests) n'a pas pu
+`ArchitectureTests` est vert. **`PeopleRepositoriesIntegrationTest` (21 tests) n'a pas pu
 tourner** : Testcontainers ne trouve pas Docker (`docker` absent de la distro WSL,
 intégration WSL de Docker Desktop désactivée ou Docker arrêté). À relancer avant de
 passer la phase en `Complete`.
@@ -391,10 +419,14 @@ la liste :
   `Rejected(PhotoRejection)`). Le motif de rejet servira au bilan d'ingestion par
   motif, ce qu'un `Optional` aurait perdu.
 
+Ajouté ensuite, à la demande de l'utilisateur : **`PhotoSelector`** (une photo par
+année et par âge, plafond par personne, prise en compte des photos déjà stockées), avec
+10 tests unitaires.
+
 Résultats :
-- **107 tests unitaires verts.** Tous les cas du spike y sont, dont le piège
+- **117 tests unitaires verts.** Tous les cas du spike y sont, dont le piège
   Kerschbaumer et les dates réelles rejetées.
-- **Mutation : 83/83 mutants tués (100 %)** sur `IngestPeople.*`.
+- **Mutation : 92/92 mutants tués (100 %)** sur `IngestPeople.*`.
 - Constat : avec `Period.between`, une personne née le 29 février a 1 an le **1er mars**
   d'une année non bissextile. Ce comportement est figé par un test.
 

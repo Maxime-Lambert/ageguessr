@@ -36,7 +36,9 @@ la suivante).
 
 ## Semaine 3 — Moteur de jeu
 - [ ] Algorithme de sélection quotidienne (3 personnes/jour, minuit UTC, pas de
-      répétition trop proche dans le temps)
+      répétition trop proche dans le temps). Les règles portent sur la personne, pas
+      sur la photo : jamais deux photos d'une même personne dans une partie, et un
+      délai minimal entre deux apparitions d'une même personne
 - [ ] Logique de guess en 2 étapes : 1ère tentative → chaud/froid, sélection d'une
       catégorie d'indice, 2e tentative
 - [ ] Système de points (bonus 1er coup, majorité des points sur la précision du 2e coup

@@ -78,16 +78,65 @@ class PeopleRepositoriesIntegrationTest {
     @Test
     void rejectsTheSameCommonsFileTwiceForOnePerson() {
         Person person = savePerson("Q1");
-        savePhoto(person, "Portrait.jpg");
+        savePhoto(person, "Portrait.jpg", 1976);
 
-        assertThatThrownBy(() -> savePhoto(person, "Portrait.jpg")).isInstanceOf(DataIntegrityViolationException.class);
+        assertThatThrownBy(() -> savePhoto(person, "Portrait.jpg", 1980))
+                .isInstanceOf(DataIntegrityViolationException.class);
+    }
+
+    @Test
+    void rejectsTwoPhotosOfOnePersonAtTheSameAge() {
+        Person person = savePerson("Q1");
+        // Born 1950-03-10: 26 in July 1976 and still 26 in February 1977.
+        savePhoto(person, "A.jpg", 1976);
+
+        assertThatThrownBy(() -> photoRepository.saveAndFlush(photo(person, "B.jpg", 1977)
+                        .takenFrom(LocalDate.of(1977, 2, 1))
+                        .takenTo(LocalDate.of(1977, 2, 28))
+                        .ageAtPhoto(26)
+                        .build()))
+                .isInstanceOf(DataIntegrityViolationException.class);
+    }
+
+    @Test
+    void rejectsTwoPhotosOfOnePersonInTheSameYear() {
+        Person person = savePerson("Q1");
+        // Born 1950-03-10: 25 in February 1976, 26 in July 1976.
+        savePhoto(person, "A.jpg", 1976);
+
+        assertThatThrownBy(() -> photoRepository.saveAndFlush(photo(person, "B.jpg", 1976)
+                        .takenFrom(LocalDate.of(1976, 2, 1))
+                        .takenTo(LocalDate.of(1976, 2, 29))
+                        .ageAtPhoto(25)
+                        .build()))
+                .isInstanceOf(DataIntegrityViolationException.class);
+    }
+
+    @Test
+    void acceptsTwoPeopleAtTheSameAgeInTheSameYear() {
+        savePhoto(savePerson("Q1"), "A.jpg", 1976);
+
+        PersonPhoto other = savePhoto(savePerson("Q2"), "B.jpg", 1976);
+
+        assertThat(other.getId()).isNotNull();
+    }
+
+    @Test
+    void rejectsAnIntervalSpanningTwoYears() {
+        Person person = savePerson("Q1");
+
+        assertThatThrownBy(() -> photoRepository.saveAndFlush(photo(person, "A.jpg", 1976)
+                        .takenFrom(LocalDate.of(1976, 12, 31))
+                        .takenTo(LocalDate.of(1977, 1, 1))
+                        .build()))
+                .isInstanceOf(DataIntegrityViolationException.class);
     }
 
     @Test
     void acceptsTheSameCommonsFileForTwoPeople() {
-        savePhoto(savePerson("Q1"), "Portrait.jpg");
+        savePhoto(savePerson("Q1"), "Portrait.jpg", 1976);
 
-        PersonPhoto other = savePhoto(savePerson("Q2"), "Portrait.jpg");
+        PersonPhoto other = savePhoto(savePerson("Q2"), "Portrait.jpg", 1976);
 
         assertThat(other.getId()).isNotNull();
     }
@@ -95,10 +144,10 @@ class PeopleRepositoriesIntegrationTest {
     @Test
     void rejectsADuplicatePublicId() {
         Person person = savePerson("Q1");
-        PersonPhoto first = savePhoto(person, "A.jpg");
+        PersonPhoto first = savePhoto(person, "A.jpg", 1976);
 
         assertThatThrownBy(() -> photoRepository.saveAndFlush(
-                        photo(person, "B.jpg").publicId(first.getPublicId()).build()))
+                        photo(person, "B.jpg", 1980).publicId(first.getPublicId()).build()))
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
 
@@ -106,7 +155,7 @@ class PeopleRepositoriesIntegrationTest {
     void rejectsAnAgeOutsideZeroToOneHundredTwenty() {
         Person person = savePerson("Q1");
 
-        assertThatThrownBy(() -> photoRepository.saveAndFlush(photo(person, "A.jpg").ageAtPhoto(121).build()))
+        assertThatThrownBy(() -> photoRepository.saveAndFlush(photo(person, "A.jpg", 1976).ageAtPhoto(121).build()))
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
 
@@ -114,7 +163,7 @@ class PeopleRepositoriesIntegrationTest {
     void rejectsAnIntervalEndingBeforeItStarts() {
         Person person = savePerson("Q1");
 
-        assertThatThrownBy(() -> photoRepository.saveAndFlush(photo(person, "A.jpg")
+        assertThatThrownBy(() -> photoRepository.saveAndFlush(photo(person, "A.jpg", 1980)
                         .takenFrom(LocalDate.of(1980, 6, 2))
                         .takenTo(LocalDate.of(1980, 6, 1))
                         .build()))
@@ -123,7 +172,7 @@ class PeopleRepositoriesIntegrationTest {
 
     @Test
     void servesTheImageOfAPhotoByItsPublicId() {
-        PersonPhoto photo = savePhoto(savePerson("Q1"), "A.jpg");
+        PersonPhoto photo = savePhoto(savePerson("Q1"), "A.jpg", 1976);
         saveImage(photo);
 
         assertThat(imageRepository.findServableByPublicId(photo.getPublicId()))
@@ -134,7 +183,7 @@ class PeopleRepositoriesIntegrationTest {
 
     @Test
     void doesNotServeAnImageByItsInternalId() {
-        PersonPhoto photo = savePhoto(savePerson("Q1"), "A.jpg");
+        PersonPhoto photo = savePhoto(savePerson("Q1"), "A.jpg", 1976);
         saveImage(photo);
 
         assertThat(imageRepository.findServableByPublicId(photo.getId())).isEmpty();
@@ -143,7 +192,7 @@ class PeopleRepositoriesIntegrationTest {
     @Test
     void doesNotServeTheImageOfAnExcludedPerson() {
         Person person = personRepository.saveAndFlush(person("Q1").excluded(true).build());
-        PersonPhoto photo = savePhoto(person, "A.jpg");
+        PersonPhoto photo = savePhoto(person, "A.jpg", 1976);
         saveImage(photo);
 
         assertThat(imageRepository.findServableByPublicId(photo.getPublicId())).isEmpty();
@@ -157,9 +206,9 @@ class PeopleRepositoriesIntegrationTest {
     @Test
     void deletingAPersonCascadesToItsPhotosAndImages() {
         Person person = savePerson("Q1");
-        PersonPhoto photo = savePhoto(person, "A.jpg");
+        PersonPhoto photo = savePhoto(person, "A.jpg", 1976);
         saveImage(photo);
-        PersonPhoto survivor = savePhoto(savePerson("Q2"), "B.jpg");
+        PersonPhoto survivor = savePhoto(savePerson("Q2"), "B.jpg", 1976);
 
         personRepository.delete(person);
         personRepository.flush();
@@ -175,9 +224,9 @@ class PeopleRepositoriesIntegrationTest {
     @Test
     void listsThePhotosOfOnePerson() {
         Person person = savePerson("Q1");
-        savePhoto(person, "A.jpg");
-        savePhoto(person, "B.jpg");
-        savePhoto(savePerson("Q2"), "C.jpg");
+        savePhoto(person, "A.jpg", 1976);
+        savePhoto(person, "B.jpg", 1980);
+        savePhoto(savePerson("Q2"), "C.jpg", 1976);
 
         assertThat(photoRepository.findByPersonId(person.getId()))
                 .extracting(PersonPhoto::getCommonsFile)
@@ -198,17 +247,18 @@ class PeopleRepositoriesIntegrationTest {
                 .updatedAt(Instant.now());
     }
 
-    private PersonPhoto savePhoto(Person person, String file) {
-        return photoRepository.saveAndFlush(photo(person, file).build());
+    private PersonPhoto savePhoto(Person person, String file, int year) {
+        return photoRepository.saveAndFlush(photo(person, file, year).build());
     }
 
-    private static PersonPhoto.PersonPhotoBuilder photo(Person person, String file) {
+    /** A photo dated July of {@code year}: after the March 10 birthday, so the age is year - 1950. */
+    private static PersonPhoto.PersonPhotoBuilder photo(Person person, String file, int year) {
         return PersonPhoto.builder()
                 .personId(person.getId())
                 .commonsFile(file)
-                .takenFrom(LocalDate.of(1976, 7, 1))
-                .takenTo(LocalDate.of(1976, 7, 31))
-                .ageAtPhoto(26)
+                .takenFrom(LocalDate.of(year, 7, 1))
+                .takenTo(LocalDate.of(year, 7, 31))
+                .ageAtPhoto(year - 1950)
                 .dateSource(PhotoDateSource.BOTH)
                 .licenseShortName("CC BY-SA 4.0")
                 .licenseUrl("https://creativecommons.org/licenses/by-sa/4.0")

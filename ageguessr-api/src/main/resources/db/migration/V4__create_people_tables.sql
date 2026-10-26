@@ -39,10 +39,20 @@ CREATE TABLE person_photos (
     public_id UUID NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     CONSTRAINT person_photos_interval_ordered CHECK (taken_from <= taken_to),
+    -- Une date au jour, au mois ou a l'annee tient toujours dans une seule annee : ca
+    -- donne un sens a "l'annee de la photo" utilisee par l'index unique plus bas.
+    CONSTRAINT person_photos_interval_within_a_year
+        CHECK (EXTRACT(YEAR FROM taken_from) = EXTRACT(YEAR FROM taken_to)),
     CONSTRAINT person_photos_age_range CHECK (age_at_photo BETWEEN 0 AND 120)
 );
 
 CREATE UNIQUE INDEX person_photos_person_file_unique_idx ON person_photos (person_id, commons_file);
+-- Au plus une photo par age et par annee civile pour une meme personne : deux photos au
+-- meme age n'apportent rien au jeu. Les deux sont necessaires, une meme annee pouvant
+-- couvrir deux ages (avant/apres l'anniversaire) et un meme age deux annees.
+CREATE UNIQUE INDEX person_photos_person_age_unique_idx ON person_photos (person_id, age_at_photo);
+CREATE UNIQUE INDEX person_photos_person_year_unique_idx
+    ON person_photos (person_id, (EXTRACT(YEAR FROM taken_from)));
 CREATE UNIQUE INDEX person_photos_public_id_unique_idx ON person_photos (public_id);
 
 -- Octets de l'image dans une table a part : Hibernate ne sait pas charger une colonne
