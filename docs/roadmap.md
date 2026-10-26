@@ -32,9 +32,11 @@ la suivante).
       PR `feature/people-sourcing`
 - [x] Endpoint proxy d'image anti-triche (`/api/images/{id}`, copie ré-encodée sans
       métadonnées, jamais l'URL Commons) — PR `feature/people-sourcing`
-- [ ] Curation manuelle des photos : rôle admin, approuver/rejeter, page enchaînant les
-      photos en attente (~43 % des photos automatiques sont inutilisables : groupes,
-      foules…) — PR `feature/photo-curation`
+- [x] Curation manuelle des photos : rôle admin (SQL), approuver/rejeter/annuler,
+      page `/admin/curation` au clavier, demandes de retrait (recherche + exclusion),
+      approbation des vivants bloquée par réglage — PR `feature/photo-curation`
+- [ ] Ligne éditoriale du pool (dictateurs, criminels…) : rejet au cas par cas en
+      curation, ou exclusion par catégorie
 - [ ] **Avant d'approuver la moindre photo d'une personne vivante** : trancher le droit
       à l'image (avis juridique, ou lancement limité aux personnes décédées) — voir
       `docs/decisions/architecture.md`, « Sourcing des personnes », limites connues

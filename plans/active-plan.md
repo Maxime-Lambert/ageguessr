@@ -347,11 +347,11 @@ cas par cas ; une politique éditoriale explicite reste à décider.
 
 
 ## Phase 5 : Docs, revues, PR
-Status: Not started
+Status: In progress (docs faites, revues en cours ; PR après merge de #17)
 
-- [ ] `docs/decisions/architecture.md` : rôles et curation, procédure de retrait
+- [x] `docs/decisions/architecture.md` : rôles et curation, procédure de retrait
       (y compris pour une personne pas encore ingérée), risque « admin sans TOTP ».
-- [ ] `docs/roadmap.md` : cocher la curation.
+- [x] `docs/roadmap.md` : cocher la curation.
 - [ ] Agents `architecture-reviewer` et `code-reviewer` ; corriger.
 - [ ] Rebaser sur `develop` (après merge de #17), tests complets + mutation, `/pr`.
 
