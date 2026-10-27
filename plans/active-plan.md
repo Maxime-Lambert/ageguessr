@@ -158,21 +158,21 @@ Status: In progress (code fait, mesures en cours)
 _(à écrire)_
 
 ## Phase 3 : Ingestion équilibrée
-Status: Not started
+Status: In progress (mécanisme fait ; quotas et cases épuisées à confirmer avec les mesures)
 
-- [ ] Migration `V9__add_person_gender_and_continent.sql` : colonnes `gender`
+- [x] Migration `V9__add_person_gender_and_continent.sql` : colonnes `gender`
       (`MALE` / `FEMALE` / `OTHER`) et `continent` sur `people`, nullable (personnes
       déjà ingérées : remplies à leur prochain passage).
-- [ ] `Person` : champs `gender`, `continent` (enums `Gender`, `Continent` dans
+- [x] `Person` : champs `gender`, `continent` (enums `Gender`, `Continent` dans
       `features/people`).
-- [ ] `WikidataClient.fetchPeople` : classement par case, avec filtres `P21` et
+- [x] `WikidataClient.fetchPeople` : classement par case, avec filtres `P21` et
       continent dans la requête de classement QLever (mesurer le temps, limite de
       30 s).
-- [ ] `IngestPeopleHandler` : traite les 12 cases (+ cases « autre ») à tour de rôle
+- [x] `IngestPeopleHandler` : traite les 12 cases (+ cases « autre ») à tour de rôle
       jusqu'à leur quota, en comptant les personnes déjà en base de la case, pour que
       la relance reste idempotente.
-- [ ] Rapport : quota, gardées et état « épuisée » par case.
-- [ ] Docs : `architecture.md` (sourcing : équilibre, raison du continent plutôt que de
+- [x] Rapport : quota, gardées et état « épuisée » par case.
+- [x] Docs : `architecture.md` (sourcing : équilibre, raison du continent plutôt que de
       l'ethnie, mineurs), `roadmap.md`, `/privacy` section 8 (genre et continent de
       nationalité stockés, venant de Wikidata).
 

@@ -59,6 +59,19 @@ describe('Privacy', () => {
     );
   });
 
+  it('says that gender and continent serve only to balance the selection, in both languages', async () => {
+    const english = await render('/privacy');
+    expect(english.textContent?.replace(/\s+/g, ' ')).toContain(
+      'gender and continent serve only to balance the selection between women and men and between continents',
+    );
+
+    TestBed.resetTestingModule();
+    const french = await render('/privacy?lang=fr');
+    expect(french.textContent?.replace(/\s+/g, ' ')).toContain(
+      'le genre et le continent servent uniquement à équilibrer la sélection',
+    );
+  });
+
   it('falls back to English for an unknown language', async () => {
     const page = await render('/privacy?lang=xx');
 
