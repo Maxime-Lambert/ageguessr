@@ -262,6 +262,36 @@ class WikidataClientTest {
     }
 
     @Test
+    void ranksOneCellByItsContinentsAndGenderValues() {
+        // Asia folds in Eurasia and the Indian subcontinent; women include trans women.
+        MockRestServiceServer server = expectSixPosts(
+                "VALUES+%3Fcontinent+%7B+wd%3AQ48+wd%3AQ5401+wd%3AQ60140+%7D");
+
+        client(server).fetchCell(new Cell(Continent.ASIA, Gender.FEMALE), 500, 500, 1930);
+
+        server.verify();
+    }
+
+    @Test
+    void ranksTheWomenOfACellWithEveryValueMeaningWoman() {
+        MockRestServiceServer server =
+                expectSixPosts("VALUES+%3Fgender+%7B+wd%3AQ1052281+wd%3AQ15145779+wd%3AQ6581072+%7D");
+
+        client(server).fetchCell(new Cell(Continent.EUROPE, Gender.FEMALE), 0, 500, 1930);
+
+        server.verify();
+    }
+
+    @Test
+    void ranksTheOtherCellAsAnyGenderButMaleOrFemale() {
+        MockRestServiceServer server = expectSixPosts("FILTER%28%3Fgender+NOT+IN+%28wd%3AQ1052281%2C+wd%3AQ15145778");
+
+        client(server).fetchCell(new Cell(Continent.OCEANIA, Gender.OTHER), 0, 500, 1930);
+
+        server.verify();
+    }
+
+    @Test
     void anEmptyPageMeansTheEndOfTheListWithoutAnyDetailQuery() {
         RestClient.Builder builder = RestClient.builder();
         MockRestServiceServer server = MockRestServiceServer.bindTo(builder).build();

@@ -34,6 +34,9 @@ import org.mockito.ArgumentCaptor;
 class IngestPeopleHandlerTest {
 
     private static final LocalDate BIRTH = LocalDate.of(1950, 3, 10);
+
+    /** A sample larger than any test list: walks the plain ranking, stopping only at the target. */
+    private static final int WHOLE_LIST = Integer.MAX_VALUE;
     private static final ImageReencoder.Reencoded IMAGE = new ImageReencoder.Reencoded(new byte[] {1}, 800, 1000);
 
     private final WikidataClient wikidata = mock(WikidataClient.class);
@@ -60,7 +63,7 @@ class IngestPeopleHandlerTest {
         when(wikidata.fetchPeople(0, 3, 1930)).thenReturn(List.of(jane));
         photos("Q1", photo("File:Jane 1976.jpg", 1976), photo("File:Jane 1990.jpg", 1990));
 
-        IngestReport report = handler.handle(new IngestPeopleCommand(1, null, 0, 0, false));
+        IngestReport report = handler.handle(new IngestPeopleCommand(1, null, 0, WHOLE_LIST, false));
 
         ArgumentCaptor<List<NewPhoto>> saved = photosCaptor();
         verify(store).save(eq(jane), eq(BIRTH), eq(null), saved.capture());
@@ -81,7 +84,7 @@ class IngestPeopleHandlerTest {
         when(commons.searchDepicting("Q1")).thenReturn(List.of("File:Other.jpg"));
         when(commons.fetchFiles(anyCollection())).thenReturn(Map.of());
 
-        handler.handle(new IngestPeopleCommand(1, null, 0, 0, false));
+        handler.handle(new IngestPeopleCommand(1, null, 0, WHOLE_LIST, false));
 
         verify(commons).fetchFiles(Set.of("File:Other.jpg", "File:Jane main.jpg"));
     }
@@ -92,7 +95,7 @@ class IngestPeopleHandlerTest {
         photos("Q1", photo("File:A 1976.jpg", 1976));
         photos("Q2", photo("File:B 1976.jpg", 1976));
 
-        IngestReport report = handler.handle(new IngestPeopleCommand(2, null, 0, 0, false));
+        IngestReport report = handler.handle(new IngestPeopleCommand(2, null, 0, WHOLE_LIST, false));
 
         assertThat(report.peopleKept()).isEqualTo(2);
         assertThat(report.peopleSeen()).isEqualTo(2);
@@ -109,7 +112,7 @@ class IngestPeopleHandlerTest {
         noPhotos("Q3");
         photos("Q4", photo("File:D 1976.jpg", 1976));
 
-        IngestReport report = handler.handle(new IngestPeopleCommand(2, null, 0, 0, false));
+        IngestReport report = handler.handle(new IngestPeopleCommand(2, null, 0, WHOLE_LIST, false));
 
         assertThat(report.peopleKept()).isEqualTo(2);
         assertThat(report.peopleSkipped()).containsEntry("NO_VALID_PHOTO", 2);
@@ -121,7 +124,7 @@ class IngestPeopleHandlerTest {
         when(wikidata.fetchPeople(3, 3, 1930)).thenReturn(List.of());
         photos("Q1", photo("File:A 1976.jpg", 1976));
 
-        IngestReport report = handler.handle(new IngestPeopleCommand(10, null, 0, 0, false));
+        IngestReport report = handler.handle(new IngestPeopleCommand(10, null, 0, WHOLE_LIST, false));
 
         assertThat(report.peopleKept()).isEqualTo(1);
     }
@@ -131,7 +134,7 @@ class IngestPeopleHandlerTest {
         when(wikidata.fetchPeople(0, 3, 1930)).thenReturn(List.of(person("Q1")), List.of());
         when(store.find("Q1")).thenReturn(Optional.of(stored("Q1", BIRTH, true)));
 
-        IngestReport report = handler.handle(new IngestPeopleCommand(1, null, 0, 0, false));
+        IngestReport report = handler.handle(new IngestPeopleCommand(1, null, 0, WHOLE_LIST, false));
 
         assertThat(report.peopleSkipped()).containsEntry("EXCLUDED", 1);
         verifyNoInteractions(commons);
@@ -148,7 +151,7 @@ class IngestPeopleHandlerTest {
                 null);
         when(wikidata.fetchPeople(0, 3, 1930)).thenReturn(List.of(yearOnly), List.of());
 
-        IngestReport report = handler.handle(new IngestPeopleCommand(1, null, 0, 0, false));
+        IngestReport report = handler.handle(new IngestPeopleCommand(1, null, 0, WHOLE_LIST, false));
 
         assertThat(report.peopleSkipped()).containsEntry("BIRTH_DATE_UNUSABLE", 1);
         verifyNoInteractions(commons);
@@ -163,7 +166,7 @@ class IngestPeopleHandlerTest {
                 null);
         when(wikidata.fetchPeople(0, 3, 1930)).thenReturn(List.of(unknownDeath), List.of());
 
-        IngestReport report = handler.handle(new IngestPeopleCommand(1, null, 0, 0, false));
+        IngestReport report = handler.handle(new IngestPeopleCommand(1, null, 0, WHOLE_LIST, false));
 
         assertThat(report.peopleSkipped()).containsEntry("DEATH_DATE_UNUSABLE", 1);
     }
@@ -178,7 +181,7 @@ class IngestPeopleHandlerTest {
         when(wikidata.fetchPeople(0, 3, 1930)).thenReturn(List.of(died));
         photos("Q1", photo("File:Alive 1976.jpg", 1976), photo("File:Grave 1990.jpg", 1990));
 
-        IngestReport report = handler.handle(new IngestPeopleCommand(1, null, 0, 0, false));
+        IngestReport report = handler.handle(new IngestPeopleCommand(1, null, 0, WHOLE_LIST, false));
 
         ArgumentCaptor<List<NewPhoto>> saved = photosCaptor();
         verify(store).save(eq(died), eq(BIRTH), eq(LocalDate.of(1985, 1, 1)), saved.capture());
@@ -192,7 +195,7 @@ class IngestPeopleHandlerTest {
                 "Q1", 50, null, null, Set.of("X.jpg"), List.of(birth()), List.of(), null, null);
         when(wikidata.fetchPeople(0, 3, 1930)).thenReturn(List.of(nameless), List.of());
 
-        IngestReport report = handler.handle(new IngestPeopleCommand(1, null, 0, 0, false));
+        IngestReport report = handler.handle(new IngestPeopleCommand(1, null, 0, WHOLE_LIST, false));
 
         assertThat(report.peopleSkipped()).containsEntry("NO_NAME", 1);
     }
@@ -202,7 +205,7 @@ class IngestPeopleHandlerTest {
         when(wikidata.fetchPeople(0, 3, 1930)).thenReturn(List.of(person("Q1")), List.of());
         when(store.find("Q1")).thenReturn(Optional.of(stored("Q1", LocalDate.of(1951, 1, 1), false)));
 
-        IngestReport report = handler.handle(new IngestPeopleCommand(1, null, 0, 0, false));
+        IngestReport report = handler.handle(new IngestPeopleCommand(1, null, 0, WHOLE_LIST, false));
 
         assertThat(report.peopleSkipped()).containsEntry("BIRTH_DATE_CHANGED", 1);
         verifyNoInteractions(commons);
@@ -214,7 +217,7 @@ class IngestPeopleHandlerTest {
         when(wikidata.fetchPeople(0, 3, 1930)).thenReturn(List.of(person("Q1")), List.of());
         photos("Q1", new CommonsFileAndInfo(file("File:Undated.jpg", null, null), MediaInfo.NONE));
 
-        IngestReport report = handler.handle(new IngestPeopleCommand(1, null, 0, 0, false));
+        IngestReport report = handler.handle(new IngestPeopleCommand(1, null, 0, WHOLE_LIST, false));
 
         assertThat(report.peopleSkipped()).containsEntry("NO_VALID_PHOTO", 1);
         assertThat(report.photosRejected()).containsEntry("NOT_DATED", 1);
@@ -226,7 +229,7 @@ class IngestPeopleHandlerTest {
         when(wikidata.fetchPeople(0, 3, 1930)).thenReturn(List.of(person("Q1")));
         photos("Q1", photo("File:A 1976.jpg", 1976), photo("File:B 1980.jpg", 1980));
 
-        IngestReport report = handler.handle(new IngestPeopleCommand(1, null, 0, 0, false));
+        IngestReport report = handler.handle(new IngestPeopleCommand(1, null, 0, WHOLE_LIST, false));
 
         assertThat(report.photosAdded()).isEqualTo(1);
         assertThat(report.photosRejected()).containsEntry("NOT_SELECTED", 1);
@@ -241,7 +244,7 @@ class IngestPeopleHandlerTest {
         when(wikidata.fetchPeople(0, 3, 1930)).thenReturn(List.of(person("Q1")));
         photos("Q1", photo("File:A 1976.jpg", 1976), photo("File:B 1990.jpg", 1990));
 
-        IngestReport report = handler.handle(new IngestPeopleCommand(1, null, 0, 0, false));
+        IngestReport report = handler.handle(new IngestPeopleCommand(1, null, 0, WHOLE_LIST, false));
 
         ArgumentCaptor<List<NewPhoto>> saved = photosCaptor();
         verify(store).save(any(), any(), any(), saved.capture());
@@ -262,7 +265,7 @@ class IngestPeopleHandlerTest {
                         Set.of()));
         when(wikidata.fetchPeople(0, 3, 1930)).thenReturn(List.of(person("Q1")));
 
-        IngestReport report = handler.handle(new IngestPeopleCommand(1, null, 0, 0, false));
+        IngestReport report = handler.handle(new IngestPeopleCommand(1, null, 0, WHOLE_LIST, false));
 
         verifyNoInteractions(commons);
         verify(store).save(any(), eq(BIRTH), any(), eq(List.of()));
@@ -280,7 +283,7 @@ class IngestPeopleHandlerTest {
         when(wikidata.fetchPeople(0, 3, 1930)).thenReturn(List.of(person("Q1")));
         photos("Q1", photo("File:A 1976.jpg", 1976), photo("File:B 1977.jpg", 1977));
 
-        handler.handle(new IngestPeopleCommand(1, null, 0, 0, false));
+        handler.handle(new IngestPeopleCommand(1, null, 0, WHOLE_LIST, false));
 
         ArgumentCaptor<List<NewPhoto>> saved = photosCaptor();
         verify(store).save(any(), any(), any(), saved.capture());
@@ -294,7 +297,7 @@ class IngestPeopleHandlerTest {
         when(commons.searchDepicting("Q1")).thenThrow(new WikimediaUnavailableException("commons down"));
         photos("Q2", photo("File:B 1976.jpg", 1976));
 
-        IngestReport report = handler.handle(new IngestPeopleCommand(1, null, 0, 0, false));
+        IngestReport report = handler.handle(new IngestPeopleCommand(1, null, 0, WHOLE_LIST, false));
 
         assertThat(report.peopleSkipped()).containsEntry("FAILED", 1);
         assertThat(report.peopleKept()).isEqualTo(1);
@@ -307,7 +310,7 @@ class IngestPeopleHandlerTest {
         when(downloader.download("https://upload.wikimedia.org/File:A 1976.jpg"))
                 .thenThrow(new ImageRejectedException(ImageRejectedException.Reason.TOO_LARGE, "too big"));
 
-        IngestReport report = handler.handle(new IngestPeopleCommand(1, null, 0, 0, false));
+        IngestReport report = handler.handle(new IngestPeopleCommand(1, null, 0, WHOLE_LIST, false));
 
         ArgumentCaptor<List<NewPhoto>> saved = photosCaptor();
         verify(store).save(any(), any(), any(), saved.capture());
@@ -320,7 +323,7 @@ class IngestPeopleHandlerTest {
         when(wikidata.fetchPeople(0, 3, 1930)).thenReturn(List.of(person("Q1")));
         photos("Q1", photo("File:A 1976.jpg", 1976));
 
-        handler.handle(new IngestPeopleCommand(1, null, 0, 0, false));
+        handler.handle(new IngestPeopleCommand(1, null, 0, WHOLE_LIST, false));
 
         ArgumentCaptor<List<NewPhoto>> saved = photosCaptor();
         verify(store).save(any(), any(), any(), saved.capture());
@@ -359,7 +362,7 @@ class IngestPeopleHandlerTest {
         noPhotos("Q1");
         photos("Q2", photo("File:B 1976.jpg", 1976));
 
-        IngestReport report = handler.handle(new IngestPeopleCommand(1, null, 10000, 0, false));
+        IngestReport report = handler.handle(new IngestPeopleCommand(1, null, 10000, WHOLE_LIST, false));
 
         assertThat(report.peopleKept()).isEqualTo(1);
         verify(wikidata, never()).fetchPeople(eq(0), anyInt(), anyInt());
@@ -394,7 +397,7 @@ class IngestPeopleHandlerTest {
         when(wikidata.fetchPeople(0, 3, 1930)).thenReturn(List.of(person("Q1")));
         photos("Q1", photo("File:A 1976.jpg", 1976), photo("File:Teen 1966.jpg", 1966));
 
-        IngestReport report = handler.handle(new IngestPeopleCommand(1, null, 0, 0, true));
+        IngestReport report = handler.handle(new IngestPeopleCommand(1, null, 0, WHOLE_LIST, true));
 
         verifyNoInteractions(store);
         verify(reencoder).reencode(any());
@@ -410,7 +413,7 @@ class IngestPeopleHandlerTest {
         when(wikidata.fetchPeople(0, 3, 1930)).thenReturn(List.of(person("Q1")));
         photos("Q1", photo("File:A 1976.jpg", 1976));
 
-        IngestReport report = handler.handle(new IngestPeopleCommand(1, null, 0, 0, true));
+        IngestReport report = handler.handle(new IngestPeopleCommand(1, null, 0, WHOLE_LIST, true));
 
         assertThat(report.peopleKept()).isEqualTo(1);
     }
@@ -423,13 +426,130 @@ class IngestPeopleHandlerTest {
         photos("Q1", photo("File:A 1976.jpg", 1976), photo("File:B 1990.jpg", 1990));
         noPhotos("Q2");
 
-        IngestReport report = handler.handle(new IngestPeopleCommand(5, null, 0, 0, false));
+        IngestReport report = handler.handle(new IngestPeopleCommand(5, null, 0, WHOLE_LIST, false));
 
         assertThat(report.seenByCell()).isEqualTo(Map.of("EUROPE/FEMALE", 1, "NONE/UNKNOWN", 1));
         assertThat(report.keptByCell()).isEqualTo(Map.of("EUROPE/FEMALE", 1));
         assertThat(report.imageBytes()).isEqualTo(2L * IMAGE.content().length);
         assertThat(report.toString())
                 .contains("photos per kept person=2.00", "KB per image=0", "kept by cell={EUROPE/FEMALE=1}");
+    }
+
+    // Balanced ingestion. A target of 12 gives a quota of 1 per cell; cells not stubbed
+    // have an empty ranking (the mock's default) and end up exhausted.
+
+    private static final Cell EUROPE_WOMEN = new Cell(Continent.EUROPE, Gender.FEMALE);
+    private static final Cell AFRICA_MEN = new Cell(Continent.AFRICA, Gender.MALE);
+    private static final Cell ASIA_MEN = new Cell(Continent.ASIA, Gender.MALE);
+    private static final Cell EUROPE_MEN = new Cell(Continent.EUROPE, Gender.MALE);
+
+    @Test
+    void theCellsTakeTurnsAndEachStopsAtItsQuota() {
+        when(wikidata.fetchCell(EUROPE_WOMEN, 0, 3, 1930))
+                .thenReturn(List.of(person("Q1", EUROPE_WOMEN), person("Q2", EUROPE_WOMEN)));
+        when(wikidata.fetchCell(AFRICA_MEN, 0, 3, 1930)).thenReturn(List.of(person("Q3", AFRICA_MEN)));
+        photos("Q1", photo("File:A 1976.jpg", 1976));
+        photos("Q3", photo("File:C 1976.jpg", 1976));
+
+        IngestReport report = handler.handle(new IngestPeopleCommand(12, null, 0, 0, false));
+
+        assertThat(report.peopleKept()).isEqualTo(2);
+        verify(commons, never()).searchDepicting("Q2");
+        assertThat(report.balance())
+                .containsEntry("EUROPE/FEMALE", "1/1")
+                .containsEntry("AFRICA/MALE", "1/1")
+                .containsEntry("OCEANIA/FEMALE", "0/1 exhausted")
+                .hasSize(Cell.ALL.size());
+        verify(wikidata, never()).fetchPeople(anyInt(), anyInt(), anyInt());
+    }
+
+    @Test
+    void sharesTheTargetBetweenTheTwelveMaleAndFemaleCells() {
+        when(wikidata.fetchCell(EUROPE_WOMEN, 0, 3, 1930))
+                .thenReturn(List.of(person("Q1", EUROPE_WOMEN), person("Q2", EUROPE_WOMEN)));
+        photos("Q1", photo("File:A 1976.jpg", 1976));
+        photos("Q2", photo("File:B 1976.jpg", 1976));
+
+        // 13 / 12 rounds up to 2.
+        IngestReport report = handler.handle(new IngestPeopleCommand(13, null, 0, 0, false));
+
+        assertThat(report.balance()).containsEntry("EUROPE/FEMALE", "2/2");
+    }
+
+    @Test
+    void keepsSomeoneOnlyInTheCellTheirNationalitiesGiveThem() {
+        // Ranked among European men for one nationality, but counted in Asia.
+        PersonRecord twoNationalities = person("Q1", ASIA_MEN);
+        when(wikidata.fetchCell(EUROPE_MEN, 0, 3, 1930)).thenReturn(List.of(twoNationalities));
+        when(wikidata.fetchCell(ASIA_MEN, 0, 3, 1930)).thenReturn(List.of(twoNationalities));
+        photos("Q1", photo("File:A 1976.jpg", 1976));
+
+        IngestReport report = handler.handle(new IngestPeopleCommand(12, null, 0, 0, false));
+
+        assertThat(report.peopleSeen()).isEqualTo(1);
+        assertThat(report.balance())
+                .containsEntry("ASIA/MALE", "1/1")
+                .containsEntry("EUROPE/MALE", "0/1 exhausted");
+    }
+
+    @Test
+    void goesToTheNextPageOfACellUntilItsQuotaIsReached() {
+        when(wikidata.fetchCell(EUROPE_WOMEN, 0, 3, 1930))
+                .thenReturn(List.of(person("Q1", EUROPE_WOMEN), person("Q2", EUROPE_WOMEN), person("Q3", EUROPE_WOMEN)));
+        when(wikidata.fetchCell(EUROPE_WOMEN, 3, 3, 1930)).thenReturn(List.of(person("Q4", EUROPE_WOMEN)));
+        noPhotos("Q1");
+        noPhotos("Q2");
+        noPhotos("Q3");
+        photos("Q4", photo("File:D 1976.jpg", 1976));
+
+        IngestReport report = handler.handle(new IngestPeopleCommand(12, null, 0, 0, false));
+
+        assertThat(report.balance()).containsEntry("EUROPE/FEMALE", "1/1");
+    }
+
+    @Test
+    void aRerunCountsThePeopleAlreadyStoredInEachCell() {
+        when(store.balancedPeople()).thenReturn(Map.of(EUROPE_WOMEN, Set.of("Q9")));
+
+        IngestReport report = handler.handle(new IngestPeopleCommand(12, null, 0, 0, false));
+
+        verify(wikidata, never()).fetchCell(eq(EUROPE_WOMEN), anyInt(), anyInt(), anyInt());
+        assertThat(report.balance()).containsEntry("EUROPE/FEMALE", "1/1");
+    }
+
+    @Test
+    void aStoredPersonMetAgainIsRefreshedWithoutCountingTwice() {
+        when(store.balancedPeople()).thenReturn(Map.of(EUROPE_WOMEN, Set.of("Q1")));
+        when(wikidata.fetchCell(EUROPE_WOMEN, 0, 3, 1930))
+                .thenReturn(List.of(person("Q1", EUROPE_WOMEN), person("Q2", EUROPE_WOMEN)));
+        photos("Q1", photo("File:A 1976.jpg", 1976));
+        photos("Q2", photo("File:B 1976.jpg", 1976));
+
+        IngestReport report = handler.handle(new IngestPeopleCommand(24, null, 0, 0, false));
+
+        assertThat(report.balance()).containsEntry("EUROPE/FEMALE", "2/2");
+        assertThat(report.peopleKept()).isEqualTo(2);
+    }
+
+    @Test
+    void aPersonThatFailsDoesNotCountInTheirCell() {
+        when(wikidata.fetchCell(EUROPE_WOMEN, 0, 3, 1930)).thenReturn(List.of(person("Q1", EUROPE_WOMEN)));
+        when(commons.searchDepicting("Q1")).thenThrow(new WikimediaUnavailableException("down"));
+
+        IngestReport report = handler.handle(new IngestPeopleCommand(12, null, 0, 0, false));
+
+        assertThat(report.balance()).containsEntry("EUROPE/FEMALE", "0/1 exhausted");
+    }
+
+    @Test
+    void aBalancedDryRunNeverTouchesTheStore() {
+        when(wikidata.fetchCell(EUROPE_WOMEN, 0, 3, 1930)).thenReturn(List.of(person("Q1", EUROPE_WOMEN)));
+        photos("Q1", photo("File:A 1976.jpg", 1976));
+
+        IngestReport report = handler.handle(new IngestPeopleCommand(12, null, 0, 0, true));
+
+        verifyNoInteractions(store);
+        assertThat(report.balance()).containsEntry("EUROPE/FEMALE", "1/1");
     }
 
     private record CommonsFileAndInfo(CommonsFile file, MediaInfo info) {}
@@ -442,6 +562,12 @@ class IngestPeopleHandlerTest {
         return new PersonRecord(
                 qid, 50, "Jane", "Jeanne", Set.of("Jane main.jpg"), List.of(birth()), List.of(), Gender.FEMALE,
                 Continent.EUROPE);
+    }
+
+    private static PersonRecord person(String qid, Cell cell) {
+        return new PersonRecord(
+                qid, 50, "Jane", "Jeanne", Set.of(qid + " main.jpg"), List.of(birth()), List.of(), cell.gender(),
+                cell.continent());
     }
 
     private static Person stored(String qid, LocalDate birth, boolean excluded) {

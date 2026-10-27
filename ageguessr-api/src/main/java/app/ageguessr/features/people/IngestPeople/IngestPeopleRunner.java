@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
  * report (seen on the first real run).
  *
  * <pre>
- * ./mvnw spring-boot:run -Dspring-boot.run.profiles=ingest -Dspring-boot.run.arguments=--limit=30
+ * ./mvnw spring-boot:run -Dspring-boot.run.profiles=ingest -Dspring-boot.run.arguments=--limit=60
  * ./mvnw spring-boot:run -Dspring-boot.run.profiles=ingest -Dspring-boot.run.arguments=--qid=Q42
  * ./mvnw spring-boot:run -Dspring-boot.run.profiles=ingest -Dspring-boot.run.arguments="--offset=10000 --sample=200 --dry-run"
  * </pre>
@@ -73,6 +73,9 @@ class IngestPeopleRunner implements ApplicationRunner {
         }
         if (qid != null && (offsetOption != null || sampleOption != null)) {
             throw new IllegalArgumentException("--offset and --sample walk the list, meaningless with --qid");
+        }
+        if (offsetOption != null && sampleOption == null) {
+            throw new IllegalArgumentException("--offset needs --sample: the balanced ingestion has no single list");
         }
         return new IngestPeopleCommand(target, qid, offset, sample, args.containsOption("dry-run"));
     }

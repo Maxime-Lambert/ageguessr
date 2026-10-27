@@ -14,6 +14,7 @@ import app.ageguessr.features.people.PhotoImageRepository;
 import app.ageguessr.features.people.ReviewStatus;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -113,6 +114,32 @@ class PeopleStoreIntegrationTest {
     }
 
     @Test
+    void countsInTheirCellOnlyThePeopleWithAPhotoStillInPlay() {
+        store.save(person("Q1", Gender.FEMALE, Continent.AFRICA), BIRTH, null, List.of(photo("A.jpg", 1976)));
+        store.save(person("Q2", Gender.FEMALE, Continent.AFRICA), BIRTH, null, List.of(photo("B.jpg", 1976)));
+        store.save(person("Q3", Gender.MALE, Continent.ASIA), BIRTH, null, List.of(photo("C.jpg", 1976)));
+        // Not counted: no photo, only a rejected photo, excluded, cell unknown.
+        store.save(person("Q4", Gender.FEMALE, Continent.AFRICA), BIRTH, null, List.of());
+        store.save(person("Q5", Gender.FEMALE, Continent.AFRICA), BIRTH, null, List.of(photo("E.jpg", 1976)));
+        photos.findAll().stream()
+                .filter(p -> p.getCommonsFile().equals("E.jpg"))
+                .forEach(p -> {
+                    p.setReviewStatus(ReviewStatus.REJECTED);
+                    photos.save(p);
+                });
+        store.save(person("Q6", Gender.FEMALE, Continent.AFRICA), BIRTH, null, List.of(photo("F.jpg", 1976)));
+        Person excluded = people.findByWikidataId("Q6").orElseThrow();
+        excluded.setExcluded(true);
+        people.save(excluded);
+        store.save(record("Q7", "Unknown", 50), BIRTH, null, List.of(photo("G.jpg", 1976)));
+
+        assertThat(store.balancedPeople())
+                .isEqualTo(Map.of(
+                        new Cell(Continent.AFRICA, Gender.FEMALE), Set.of("Q1", "Q2"),
+                        new Cell(Continent.ASIA, Gender.MALE), Set.of("Q3")));
+    }
+
+    @Test
     void readsTheYearAndAgeOfStoredPhotos() {
         store.save(record("Q1", "Jane", 50), BIRTH, null, List.of(photo("A.jpg", 1976), photo("B.jpg", 1990)));
         Person person = people.findByWikidataId("Q1").orElseThrow();
@@ -143,6 +170,10 @@ class PeopleStoreIntegrationTest {
         store.save(record("Q1", "Jane", 50), BIRTH, null, List.of());
 
         assertThat(people.findByWikidataId("Q1")).isPresent();
+    }
+
+    private static PersonRecord person(String qid, Gender gender, Continent continent) {
+        return new PersonRecord(qid, 50, qid, null, Set.of(), List.of(), List.of(), gender, continent);
     }
 
     private static PersonRecord record(String qid, String name, int sitelinks) {

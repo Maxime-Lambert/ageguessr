@@ -3,7 +3,10 @@ package app.ageguessr.features.people.IngestPeople;
 import app.ageguessr.features.people.Person;
 import java.time.Clock;
 import java.time.LocalDate;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +21,11 @@ import org.springframework.stereotype.Service;
  * stored. Safe to run again: existing photos are kept and count toward the per-person
  * limit and minimum gap, so a rerun only adds what is missing. A dry run never touches
  * the store: every person is processed as if new, and nothing is saved.
+ *
+ * <p>By default the pool is balanced: each {@link Cell} (continent of nationality ×
+ * gender) gets the same quota, the cells taking turns one person at a time, each walking
+ * its own ranking. A cell whose ranking runs out stays below its quota, and the report
+ * says so. {@code --sample} walks the plain ranking instead, to measure the yield.
  */
 @Slf4j
 @Service
@@ -60,6 +68,15 @@ class IngestPeopleHandler {
                             () -> log.warn("{} is not a human with a P18 image on Wikidata", command.wikidataId()));
             return report;
         }
+        if (command.sample() > 0) {
+            walkRanking(command, today, report);
+        } else {
+            balance(command, today, report);
+        }
+        return report;
+    }
+
+    private void walkRanking(IngestPeopleCommand command, LocalDate today, IngestReport report) {
         int offset = command.offset();
         while (!done(command, report)) {
             List<PersonRecord> page = wikidata.fetchPeople(offset, properties.pageSize(), properties.minBirthYear());
@@ -75,7 +92,65 @@ class IngestPeopleHandler {
             }
             offset += properties.pageSize();
         }
-        return report;
+    }
+
+    private void balance(IngestPeopleCommand command, LocalDate today, IngestReport report) {
+        int quota = Math.ceilDiv(command.targetPeople(), Cell.SHARING_THE_TARGET);
+        Map<Cell, Set<String>> counted = command.dryRun() ? Map.of() : store.balancedPeople();
+        List<CellCursor> cursors = Cell.ALL.stream()
+                .map(cell -> new CellCursor(cell, counted.getOrDefault(cell, Set.of())))
+                .toList();
+        List<CellCursor> open = new ArrayList<>(cursors.stream().filter(c -> !c.full(quota)).toList());
+        while (!open.isEmpty()) {
+            for (CellCursor cursor : List.copyOf(open)) {
+                Optional<PersonRecord> next = cursor.next();
+                if (next.isEmpty()) {
+                    cursor.exhausted = true;
+                    open.remove(cursor);
+                    log.warn("Cell {} exhausted at {}/{} people", cursor.cell, cursor.people.size(), quota);
+                    continue;
+                }
+                PersonRecord person = next.get();
+                // Ranked here for a nationality on this continent, but counted elsewhere.
+                if (!Cell.of(person).map(cursor.cell::equals).orElse(false)) {
+                    continue;
+                }
+                if (process(person, today, command.dryRun(), report)) {
+                    cursor.people.add(person.wikidataId());
+                    if (cursor.full(quota)) {
+                        open.remove(cursor);
+                    }
+                }
+            }
+        }
+        cursors.forEach(c -> report.cellStatus(c.cell, c.people.size(), quota, c.exhausted));
+    }
+
+    /** Where one cell is in its own ranking, and who already counts in it. */
+    private final class CellCursor {
+        private final Cell cell;
+        private final Set<String> people;
+        private final Deque<PersonRecord> buffer = new ArrayDeque<>();
+        private int offset;
+        private boolean exhausted;
+
+        private CellCursor(Cell cell, Set<String> alreadyCounted) {
+            this.cell = cell;
+            this.people = new HashSet<>(alreadyCounted);
+        }
+
+        private boolean full(int quota) {
+            return people.size() >= quota;
+        }
+
+        /** The next person of the cell's ranking, fetching a page when needed; empty at the end. */
+        private Optional<PersonRecord> next() {
+            if (buffer.isEmpty() && !exhausted) {
+                buffer.addAll(wikidata.fetchCell(cell, offset, properties.pageSize(), properties.minBirthYear()));
+                offset += properties.pageSize();
+            }
+            return Optional.ofNullable(buffer.pollFirst());
+        }
     }
 
     private static boolean done(IngestPeopleCommand command, IngestReport report) {
@@ -83,7 +158,8 @@ class IngestPeopleHandler {
                 || (command.sample() > 0 && report.peopleSeen() >= command.sample());
     }
 
-    private void process(PersonRecord record, LocalDate today, boolean dryRun, IngestReport report) {
+    /** True if the person is kept, with at least one photo. */
+    private boolean process(PersonRecord record, LocalDate today, boolean dryRun, IngestReport report) {
         report.personSeen(record);
         try {
             Optional<PersonSkip> skip = ingest(record, today, dryRun, report);
@@ -91,9 +167,11 @@ class IngestPeopleHandler {
                 report.personSkipped(reason);
                 log.debug("{} skipped: {}", record.wikidataId(), reason);
             });
+            return skip.isEmpty();
         } catch (WikimediaUnavailableException e) {
             report.personSkipped(PersonSkip.FAILED);
             log.warn("{} failed, will be retried on the next run: {}", record.wikidataId(), e.getMessage());
+            return false;
         }
     }
 

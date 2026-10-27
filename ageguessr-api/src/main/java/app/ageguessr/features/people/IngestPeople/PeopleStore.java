@@ -11,6 +11,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -41,6 +42,18 @@ class PeopleStore {
     @Transactional(readOnly = true)
     Optional<Person> find(String wikidataId) {
         return people.findByWikidataId(wikidataId);
+    }
+
+    /**
+     * QIDs of the people already counting toward each cell (see
+     * PersonRepository.findBalanced): a rerun goes on from there instead of starting over.
+     */
+    @Transactional(readOnly = true)
+    Map<Cell, Set<String>> balancedPeople() {
+        return people.findBalanced().stream()
+                .collect(Collectors.groupingBy(
+                        p -> new Cell(p.continent(), p.gender()),
+                        Collectors.mapping(PersonRepository.BalancedPerson::wikidataId, Collectors.toSet())));
     }
 
     /** What a person already has, as far as the next ingestion is concerned. */

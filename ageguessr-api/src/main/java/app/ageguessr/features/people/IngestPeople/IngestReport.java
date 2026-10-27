@@ -23,6 +23,7 @@ class IngestReport {
     private final Map<String, Integer> photosRejected = new TreeMap<>();
     private final Map<String, Integer> seenByCell = new TreeMap<>();
     private final Map<String, Integer> keptByCell = new TreeMap<>();
+    private final Map<String, String> balance = new TreeMap<>();
 
     void personSeen(PersonRecord person) {
         peopleSeen++;
@@ -82,6 +83,14 @@ class IngestReport {
         return Map.copyOf(keptByCell);
     }
 
+    void cellStatus(Cell cell, int people, int quota, boolean exhausted) {
+        balance.put(cell.toString(), people + "/" + quota + (exhausted ? " exhausted" : ""));
+    }
+
+    Map<String, String> balance() {
+        return Map.copyOf(balance);
+    }
+
     private static String cell(PersonRecord person) {
         return (person.continent() == null ? NONE : person.continent().name()) + "/"
                 + (person.gender() == null ? UNKNOWN : person.gender().name());
@@ -94,6 +103,7 @@ class IngestReport {
         return "people seen=" + peopleSeen + ", kept=" + peopleKept + ", photos added=" + photosAdded
                 + ", photos per kept person=" + photosPerPerson + ", KB per image=" + kbPerImage
                 + ", people skipped=" + peopleSkipped + ", photos rejected=" + photosRejected
-                + ", seen by cell=" + seenByCell + ", kept by cell=" + keptByCell;
+                + ", seen by cell=" + seenByCell + ", kept by cell=" + keptByCell
+                + (balance.isEmpty() ? "" : ", balance (people/quota)=" + balance);
     }
 }

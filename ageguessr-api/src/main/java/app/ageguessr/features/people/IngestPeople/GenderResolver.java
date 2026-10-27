@@ -23,6 +23,19 @@ final class GenderResolver {
 
     private GenderResolver() {}
 
+    /** The P21 values that mean {@code gender}; empty for OTHER, which is "anything else". */
+    static Set<String> qidsOf(Gender gender) {
+        return KNOWN.entrySet().stream()
+                .filter(e -> e.getValue() == gender)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toUnmodifiableSet());
+    }
+
+    /** Every P21 value meaning male or female. */
+    static Set<String> knownQids() {
+        return KNOWN.keySet();
+    }
+
     /** Empty if Wikidata states no gender. Several values that disagree give OTHER. */
     static Optional<Gender> resolve(Set<String> genderQids) {
         Set<Gender> genders = genderQids.stream()

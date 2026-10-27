@@ -1,5 +1,6 @@
 package app.ageguessr.features.people.IngestPeople;
 
+import app.ageguessr.features.people.Gender;
 import app.ageguessr.features.people.WikidataId;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -48,6 +49,23 @@ class WikidataClient {
             SELECT DISTINCT ?person ?sitelinks WHERE {
               ?person wdt:P31 wd:Q5 ; wdt:P18 ?image ; wikibase:sitelinks ?sitelinks ;
                       wdt:P569 ?birth .
+              FILTER(YEAR(?birth) >= %d)
+            }
+            ORDER BY DESC(?sitelinks) ?person
+            LIMIT %d OFFSET %d
+            """;
+
+    // The ranking of one balance cell: people with a P21 and a nationality on the cell's
+    // continent. Someone with several nationalities comes up in several cells; the
+    // handler keeps them only in the cell ContinentResolver gives them. ~1 to 3.5 s on
+    // QLever, deep offsets included.
+    private static final String CELL_PAGE = """
+            SELECT DISTINCT ?person ?sitelinks WHERE {
+              VALUES ?continent { %s }
+              ?person wdt:P31 wd:Q5 ; wdt:P18 ?image ; wikibase:sitelinks ?sitelinks ;
+                      wdt:P569 ?birth ; wdt:P21 ?gender ; wdt:P27 ?country .
+              ?country wdt:P30 ?continent .
+              %s
               FILTER(YEAR(?birth) >= %d)
             }
             ORDER BY DESC(?sitelinks) ?person
@@ -133,6 +151,28 @@ class WikidataClient {
      */
     List<PersonRecord> fetchPeople(int offset, int limit, int minBirthYear) {
         return details(query(PAGE.formatted(minBirthYear, limit, offset)));
+    }
+
+    /**
+     * The people of one balance cell, ranked {@code offset} to {@code offset + limit - 1}
+     * by notoriety. Includes people who belong to another cell (see CELL_PAGE): the
+     * caller filters with {@link Cell#of}.
+     */
+    List<PersonRecord> fetchCell(Cell cell, int offset, int limit, int minBirthYear) {
+        String continents = entities(ContinentResolver.qidsOf(cell.continent()));
+        String gender = cell.gender() == Gender.OTHER
+                ? "FILTER(?gender NOT IN (" + String.join(", ", prefixed(GenderResolver.knownQids())) + "))"
+                : "VALUES ?gender { " + entities(GenderResolver.qidsOf(cell.gender())) + " }";
+        return details(query(CELL_PAGE.formatted(continents, gender, minBirthYear, limit, offset)));
+    }
+
+    /** Sorted, so that a query is always the same text. QIDs from our own constants only. */
+    private static List<String> prefixed(Set<String> qids) {
+        return qids.stream().sorted().map(q -> "wd:" + q).toList();
+    }
+
+    private static String entities(Set<String> qids) {
+        return String.join(" ", prefixed(qids));
     }
 
     /**

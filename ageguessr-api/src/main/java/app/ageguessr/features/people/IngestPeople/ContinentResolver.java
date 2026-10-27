@@ -45,6 +45,14 @@ final class ContinentResolver {
 
     private ContinentResolver() {}
 
+    /** The P30 values that fold into {@code continent}. */
+    static Set<String> qidsOf(Continent continent) {
+        return KNOWN.entrySet().stream()
+                .filter(e -> e.getValue() == continent)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toUnmodifiableSet());
+    }
+
     /** Empty if no nationality leads to a known continent. */
     static Optional<Continent> resolve(Set<String> continentQids) {
         Set<Continent> continents = continentQids.stream()
