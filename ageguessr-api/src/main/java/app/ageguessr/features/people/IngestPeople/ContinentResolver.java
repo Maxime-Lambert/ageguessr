@@ -31,9 +31,9 @@ final class ContinentResolver {
             Map.entry("Q3960", Continent.OCEANIA)); // Australian continent
 
     /**
-     * Least represented first among people with a P18 image born since 1930 (plans/active-plan.md):
-     * someone with nationalities on several continents counts where they help the balance
-     * most, and always the same way.
+     * Least represented first among people with a P18 image born since 1930
+     * (plans/done/people-pool-balance.md): someone with nationalities on several
+     * continents counts where they help the balance most, and always the same way.
      */
     private static final List<Continent> PRIORITY = List.of(
             Continent.OCEANIA,

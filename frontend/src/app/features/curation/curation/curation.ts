@@ -21,7 +21,7 @@ const GENERIC_ERROR = 'Something went wrong. Please try again.';
 
 /**
  * Photo curation, one photo at a time. A photo enters the game only if exactly one person
- * is visible, framed at least from the face to the full body (plans/active-plan.md).
+ * is visible, framed at least from the face to the full body (plans/done/photo-curation.md).
  */
 @Component({
   imports: [Exclusion],
