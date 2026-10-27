@@ -1,9 +1,11 @@
 package app.ageguessr.features.auth;
 
+import app.ageguessr.shared.security.JwtClaims;
 import app.ageguessr.shared.security.OpaqueTokenGenerator;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
@@ -53,6 +55,13 @@ public class AuthTokenService {
                 .expiresAt(now.plus(Duration.ofMinutes(accessTokenTtlMinutes)))
                 .subject(user.getId().toString())
                 .claim("email", user.getEmail())
+                .claims(c -> {
+                    // Read from the database at every issuance, refresh included: a
+                    // demotion done in SQL takes effect within one access-token lifetime.
+                    if (user.getRole() == UserRole.ADMIN) {
+                        c.put(JwtClaims.ROLES, List.of(UserRole.ADMIN.name()));
+                    }
+                })
                 .build();
         return jwtEncoder
                 .encode(JwtEncoderParameters.from(JwsHeader.with(MacAlgorithm.HS256).build(), claims))

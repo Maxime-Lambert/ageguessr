@@ -41,6 +41,18 @@ class ArchitectureTests {
             .dependOnClassesThat()
             .haveFullyQualifiedName("org.springframework.web.client.RestClient");
 
+    /**
+     * config/ wires the application; features plug into it, never the reverse. Shared
+     * constants (e.g. JWT claim names) belong in shared/.
+     */
+    @ArchTest
+    static final ArchRule config_does_not_depend_on_features = noClasses()
+            .that()
+            .resideInAPackage("app.ageguessr.config..")
+            .should()
+            .dependOnClassesThat()
+            .resideInAPackage("app.ageguessr.features..");
+
     @ArchTest
     static final ArchRule handlers_do_not_depend_on_controllers = noClasses()
             .that()

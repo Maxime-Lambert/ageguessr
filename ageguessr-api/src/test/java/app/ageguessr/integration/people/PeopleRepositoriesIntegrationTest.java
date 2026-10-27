@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import app.ageguessr.TestcontainersConfiguration;
+import app.ageguessr.features.auth.User;
+import app.ageguessr.features.auth.UserRepository;
 import app.ageguessr.features.people.Person;
 import app.ageguessr.features.people.PersonPhoto;
 import app.ageguessr.features.people.PersonPhotoRepository;
@@ -15,12 +17,14 @@ import app.ageguessr.features.people.ReviewStatus;
 import jakarta.persistence.EntityManager;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 /** Verifies the constraints and cascades of V4__create_people_tables.sql against a real Postgres. */
@@ -40,6 +44,9 @@ class PeopleRepositoriesIntegrationTest {
 
     @Autowired
     private EntityManager entityManager;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Test
     void findsAPersonByWikidataId() {
@@ -302,6 +309,92 @@ class PeopleRepositoriesIntegrationTest {
         entityManager.clear();
 
         assertThat(photoRepository.findByPersonId(person.getId())).hasSize(1);
+    }
+
+    @Test
+    void listsPendingPhotosBestKnownPeopleFirstThenOldestShotFirst() {
+        Person famous = personRepository.saveAndFlush(person("Q1").sitelinks(200).build());
+        Person lessKnown = personRepository.saveAndFlush(person("Q2").sitelinks(50).build());
+        PersonPhoto lessKnownPhoto = pending(lessKnown, "C.jpg", 1976);
+        PersonPhoto famousLater = pending(famous, "B.jpg", 1990);
+        PersonPhoto famousEarlier = pending(famous, "A.jpg", 1976);
+        photoRepository.saveAndFlush(photo(famous, "Approved.jpg", 2000).reviewStatus(ReviewStatus.APPROVED).build());
+        photoRepository.saveAndFlush(photo(famous, "Rejected.jpg", 2010).reviewStatus(ReviewStatus.REJECTED).build());
+
+        assertThat(photoRepository.findPending(PageRequest.ofSize(10)))
+                .extracting(p -> p.photo().getId())
+                .containsExactly(famousEarlier.getId(), famousLater.getId(), lessKnownPhoto.getId());
+        assertThat(photoRepository.findPending(PageRequest.ofSize(2))).hasSize(2);
+        assertThat(photoRepository.countPending()).isEqualTo(3);
+    }
+
+    @Test
+    void readsThePhotosOfSeveralPeopleAtOnce() {
+        Person first = savePerson("Q1");
+        Person second = savePerson("Q2");
+        savePhoto(first, "A.jpg", 1976);
+        savePhoto(second, "B.jpg", 1976);
+        savePhoto(savePerson("Q3"), "C.jpg", 1976);
+
+        assertThat(photoRepository.findByPersonIdIn(List.of(first.getId(), second.getId())))
+                .extracting(PersonPhoto::getCommonsFile)
+                .containsExactlyInAnyOrder("A.jpg", "B.jpg");
+    }
+
+    @Test
+    void deletingTheReviewingAdminKeepsTheDecisionButForgetsWhoTookIt() {
+        User admin = userRepository.saveAndFlush(User.builder()
+                .email("curator@x.com")
+                .username("curator")
+                .passwordHash("hash")
+                .createdAt(Instant.now())
+                .build());
+        PersonPhoto photo = photoRepository.saveAndFlush(photo(savePerson("Q1"), "A.jpg", 1976)
+                .reviewedBy(admin.getId())
+                .reviewedAt(Instant.now())
+                .build());
+
+        userRepository.delete(admin);
+        userRepository.flush();
+        entityManager.clear();
+
+        PersonPhoto reloaded = photoRepository.findById(photo.getId()).orElseThrow();
+        assertThat(reloaded.getReviewedBy()).isNull();
+        assertThat(reloaded.getReviewedAt()).isNotNull();
+        assertThat(reloaded.getReviewStatus()).isEqualTo(ReviewStatus.APPROVED);
+    }
+
+    @Test
+    void searchesNamesIgnoringCaseAndAccentsInBothLanguages() {
+        personRepository.saveAndFlush(person("Q1").nameEn("Pelé").nameFr(null).sitelinks(100).build());
+        personRepository.saveAndFlush(person("Q2").nameEn("François Hollande").sitelinks(90).build());
+        personRepository.saveAndFlush(person("Q3").nameEn(null).nameFr("Jean Dupont").sitelinks(10).build());
+
+        assertThat(personRepository.searchByName("pele", 20)).extracting(Person::getWikidataId).containsExactly("Q1");
+        assertThat(personRepository.searchByName("FRANCOIS", 20)).extracting(Person::getWikidataId).containsExactly("Q2");
+        assertThat(personRepository.searchByName("dupont", 20)).extracting(Person::getWikidataId).containsExactly("Q3");
+    }
+
+    @Test
+    void searchResultsComeBestKnownFirstAndAreCapped() {
+        personRepository.saveAndFlush(person("Q1").nameEn("Jane A").sitelinks(10).build());
+        personRepository.saveAndFlush(person("Q2").nameEn("Jane B").sitelinks(300).build());
+        personRepository.saveAndFlush(person("Q3").nameEn("Jane C").sitelinks(50).build());
+
+        assertThat(personRepository.searchByName("jane", 20)).extracting(Person::getWikidataId).containsExactly("Q2", "Q3", "Q1");
+        assertThat(personRepository.searchByName("jane", 2)).hasSize(2);
+    }
+
+    @Test
+    void anEscapedWildcardIsMatchedLiterally() {
+        personRepository.saveAndFlush(person("Q1").nameEn("Jane Doe").build());
+        personRepository.saveAndFlush(person("Q2").nameEn("Studio 100%").build());
+
+        assertThat(personRepository.searchByName("\\%", 20)).extracting(Person::getWikidataId).containsExactly("Q2");
+    }
+
+    private PersonPhoto pending(Person person, String file, int year) {
+        return photoRepository.saveAndFlush(photo(person, file, year).reviewStatus(ReviewStatus.PENDING).build());
     }
 
     @Test

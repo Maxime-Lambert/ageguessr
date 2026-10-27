@@ -16,4 +16,7 @@ public record IngestProperties(
         // CirrusSearch caps srlimit at 500, and 50 already covers nearly everyone (spike).
         @Positive @Max(500) int depictsSearchLimit,
         @Positive int thumbnailWidth,
-        @Positive long maxImageBytes) {}
+        @Positive long maxImageBytes,
+        // Older people almost never have a photo with a corroborated date, and the game
+        // wants recent, good quality photos: the list starts at this birth year.
+        @Positive int minBirthYear) {}

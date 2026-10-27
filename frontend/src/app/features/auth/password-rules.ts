@@ -1,6 +1,6 @@
+import { ApiErrorResponse } from '../../shared/api-error';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AbstractControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { ApiErrorResponse } from './models';
 
 /**
  * Mirrors the backend's @Password: at least 12 characters, no composition rule. The

@@ -12,12 +12,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import tools.jackson.databind.ObjectMapper;
 
-/** Shared register -> confirm -> login flow reused across functional test classes. */
-final class AuthFlows {
+/** Shared register -> confirm -> login flow reused across functional test classes, of every feature. */
+public final class AuthFlows {
 
     private AuthFlows() {}
 
-    record LoggedInSession(String accessToken, String cookieHeader) {
+    public record LoggedInSession(String accessToken, String cookieHeader) {
         /**
          * MockMvc's mock servlet request does not parse a raw "Cookie" header string
          * back into request.getCookies() the way a real servlet container would - it
@@ -25,7 +25,7 @@ final class AuthFlows {
          * what @CookieValue actually reads from. Parsed once here so every test uses
          * the correct mechanism instead of a raw header.
          */
-        Cookie asRequestCookie() {
+        public Cookie asRequestCookie() {
             String pair = cookieHeader.split(";", 2)[0];
             String[] nameAndValue = pair.split("=", 2);
             return new Cookie(nameAndValue[0], nameAndValue[1]);
@@ -33,25 +33,25 @@ final class AuthFlows {
     }
 
     /** Unique per call: functional tests share one database, and usernames are unique. */
-    static String randomUsername() {
+    public static String randomUsername() {
         return "u-" + UUID.randomUUID().toString().replace("-", "").substring(0, 12);
     }
 
-    static String registerBody(ObjectMapper objectMapper, String email, String username, String password) {
+    public static String registerBody(ObjectMapper objectMapper, String email, String username, String password) {
         return objectMapper.writeValueAsString(new RegisterPayload(email, username, password));
     }
 
-    static String registerBody(ObjectMapper objectMapper, String email, String password) {
+    public static String registerBody(ObjectMapper objectMapper, String email, String password) {
         return registerBody(objectMapper, email, randomUsername(), password);
     }
 
-    static void registerAndVerify(
+    public static void registerAndVerify(
             MockMvc mockMvc, ObjectMapper objectMapper, RecordingEmailSender emailSender, String email, String password)
             throws Exception {
         registerAndVerify(mockMvc, objectMapper, emailSender, email, randomUsername(), password);
     }
 
-    static void registerAndVerify(
+    public static void registerAndVerify(
             MockMvc mockMvc,
             ObjectMapper objectMapper,
             RecordingEmailSender emailSender,
@@ -70,7 +70,7 @@ final class AuthFlows {
                 .andExpect(status().isNoContent());
     }
 
-    static LoggedInSession login(MockMvc mockMvc, ObjectMapper objectMapper, String email, String password)
+    public static LoggedInSession login(MockMvc mockMvc, ObjectMapper objectMapper, String email, String password)
             throws Exception {
         MvcResult result = mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)

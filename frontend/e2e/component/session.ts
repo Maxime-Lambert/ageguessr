@@ -1,6 +1,12 @@
 import { Page } from '@playwright/test';
 
-export const USER = { id: '1', email: 'me@x.com', username: 'Player', emailVerified: true };
+export const USER = {
+  id: '1',
+  email: 'me@x.com',
+  username: 'Player',
+  emailVerified: true,
+  role: 'USER' as const,
+};
 
 /** The app tries to restore a session on load: answer it deterministically. */
 export async function asGuest(page: Page): Promise<void> {

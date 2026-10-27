@@ -67,5 +67,10 @@ public class PersonPhoto {
     @Enumerated(EnumType.STRING)
     private ReviewStatus reviewStatus;
 
+    /** Last curation decision: when, and by which admin (null once that account is deleted). */
+    private Instant reviewedAt;
+
+    private UUID reviewedBy;
+
     private Instant createdAt;
 }

@@ -1,9 +1,10 @@
+import { ApiErrorResponse } from '../../../shared/api-error';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Auth } from '../auth';
-import { ApiErrorResponse, USERNAME_PATTERN } from '../models';
+import { USERNAME_PATTERN } from '../models';
 import {
   NEW_PASSWORD_VALIDATORS,
   PASSWORD_HINT,

@@ -42,6 +42,7 @@ test.describe('header', () => {
       email: 'me@x.com',
       username: 'A_very-long_name_20',
       emailVerified: true,
+      role: 'USER',
     });
     await page.goto('/');
     await expect(page.getByRole('button', { name: 'Log out' })).toBeVisible();

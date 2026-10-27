@@ -1,0 +1,179 @@
+<div class="mx-auto max-w-5xl space-y-6 px-4 py-8 sm:px-6">
+  <div class="flex flex-wrap items-baseline justify-between gap-2">
+    <h1 class="font-display text-3xl">Photo curation</h1>
+    @if (status() === 'ready') {
+      <p class="text-muted text-sm" role="status">{{ totalPending() }} left to review</p>
+    }
+  </div>
+
+  <p class="text-muted text-sm">
+    Approve only if <strong class="text-foreground">exactly one person</strong> is visible, framed
+    at least from the face to the full body. Shortcuts: <kbd>A</kbd> approve, <kbd>R</kbd> reject,
+    <kbd>→</kbd> skip, <kbd>U</kbd> undo.
+  </p>
+  <p class="text-muted text-sm">
+    Editorial line: nothing that could reopen a trauma.
+    <strong class="text-foreground">Exclude</strong> the perpetrators of mass violence (dictators,
+    war criminals, terrorists) and the leaders of a country currently at war, with the form at the
+    bottom of the page.
+  </p>
+
+  @if (message()) {
+    <p class="text-danger text-sm" role="alert">{{ message() }}</p>
+  }
+
+  @if (status() === 'loading') {
+    <p class="text-muted">Loading…</p>
+  } @else if (status() === 'error') {
+    <p class="text-danger" role="alert">The queue could not be loaded.</p>
+    <button
+      type="button"
+      (click)="reload()"
+      class="bg-accent text-accent-foreground rounded-md px-4 py-2 text-sm font-medium"
+    >
+      Retry
+    </button>
+  } @else if (current(); as item) {
+    <section
+      class="bg-surface border-border grid gap-6 rounded-lg border p-4 sm:p-6 md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]"
+      aria-labelledby="photo-title"
+    >
+      <div class="flex min-h-64 items-center justify-center">
+        @if (images()[item.photoId]; as url) {
+          @if (url === 'error') {
+            <p class="text-danger text-sm">
+              The image could not be loaded. You can still reject it.
+            </p>
+          } @else {
+            <img
+              [src]="url"
+              [alt]="'Photo of ' + displayName(item.person) + ' under review'"
+              class="max-h-[70vh] w-auto rounded-md object-contain"
+            />
+          }
+        } @else {
+          <p class="text-muted text-sm">Loading the image…</p>
+        }
+      </div>
+
+      <div class="space-y-4 text-sm">
+        <div>
+          <h2 id="photo-title" class="font-display text-2xl">{{ displayName(item.person) }}</h2>
+          @if (item.person.nameFr && item.person.nameFr !== item.person.nameEn) {
+            <p class="text-muted">FR: {{ item.person.nameFr }}</p>
+          }
+          <a
+            class="text-accent underline"
+            [href]="'https://www.wikidata.org/wiki/' + item.person.wikidataId"
+            target="_blank"
+            rel="noopener noreferrer"
+            >{{ item.person.wikidataId }}</a
+          >
+        </div>
+
+        <dl class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1">
+          <dt class="text-muted">Age on the photo</dt>
+          <dd class="font-medium">{{ item.ageAtPhoto }}</dd>
+          <dt class="text-muted">Taken</dt>
+          <dd>{{ photoDate(item) }}</dd>
+          <dt class="text-muted">Born</dt>
+          <dd>{{ fullDate(item.person.birthDate) }}</dd>
+          <dt class="text-muted">Died</dt>
+          <dd>{{ item.person.deathDate ? fullDate(item.person.deathDate) : 'Alive' }}</dd>
+          <dt class="text-muted">Date from</dt>
+          <dd>{{ dateSourceLabel(item.dateSource) }}, confirmed by the camera</dd>
+          <dt class="text-muted">Source</dt>
+          <dd class="min-w-0 break-words">
+            <a
+              class="text-accent underline"
+              [href]="item.sourceUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              >{{ item.commonsFile }}</a
+            >
+          </dd>
+          <dt class="text-muted">Licence</dt>
+          <dd>
+            @if (item.licenseUrl) {
+              <a
+                class="text-accent underline"
+                [href]="item.licenseUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                >{{ item.licenseShortName }}</a
+              >
+            } @else {
+              {{ item.licenseShortName }}
+            }
+            @if (item.authorText) {
+              · {{ item.authorText }}
+            }
+          </dd>
+        </dl>
+
+        @if (item.otherPhotos.length > 0) {
+          <div>
+            <h3 class="text-muted">Other photos of this person</h3>
+            <ul class="mt-1 space-y-0.5">
+              @for (other of item.otherPhotos; track other.photoId) {
+                <li>
+                  {{ other.takenFrom.slice(0, 4) }} · age {{ other.ageAtPhoto }} ·
+                  {{ other.reviewStatus.toLowerCase() }}
+                </li>
+              }
+            </ul>
+          </div>
+        }
+
+        <div class="flex flex-wrap gap-2 pt-2">
+          <button
+            type="button"
+            (click)="decide('APPROVED')"
+            [disabled]="busy()"
+            class="bg-accent text-accent-foreground rounded-md px-4 py-2 font-medium disabled:opacity-50"
+          >
+            Approve (A)
+          </button>
+          <button
+            type="button"
+            (click)="decide('REJECTED')"
+            [disabled]="busy()"
+            class="bg-danger text-danger-foreground rounded-md px-4 py-2 font-medium disabled:opacity-50"
+          >
+            Reject (R)
+          </button>
+          <button
+            type="button"
+            (click)="skip()"
+            [disabled]="busy()"
+            class="border-border rounded-md border px-4 py-2 disabled:opacity-50"
+          >
+            Skip (→)
+          </button>
+          <button
+            type="button"
+            (click)="undo()"
+            [disabled]="busy() || !lastAction()"
+            class="border-border rounded-md border px-4 py-2 disabled:opacity-50"
+          >
+            Undo (U)
+          </button>
+        </div>
+      </div>
+    </section>
+  } @else {
+    <p class="text-muted" role="status">Nothing left to review.</p>
+    @if (lastAction()) {
+      <button
+        type="button"
+        (click)="undo()"
+        [disabled]="busy()"
+        class="border-border rounded-md border px-4 py-2 text-sm disabled:opacity-50"
+      >
+        Undo (U)
+      </button>
+    }
+  }
+
+  <app-exclusion (excluded)="onExcluded()" />
+</div>

@@ -1,5 +1,6 @@
 package app.ageguessr.features.people.IngestPeople;
 
+import app.ageguessr.features.people.WikidataId;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -9,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -32,7 +32,6 @@ class WikidataClient {
     private static final String ENTITY_PREFIX = "http://www.wikidata.org/entity/";
     private static final String FILE_PATH_MARKER = "Special:FilePath/";
     private static final String RANK_PREFIX = "http://wikiba.se/ontology#";
-    private static final Pattern QID = Pattern.compile("^Q[1-9][0-9]{0,11}$");
 
     private static final String PREFIXES = """
             PREFIX wd: <http://www.wikidata.org/entity/>
@@ -43,10 +42,13 @@ class WikidataClient {
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
             """;
 
-    // The QID breaks sitelinks ties, so that pages never overlap.
+    // The QID breaks sitelinks ties, so that pages never overlap. DISTINCT: a person with
+    // several birth dates would otherwise come once per date.
     private static final String PAGE = """
             SELECT DISTINCT ?person ?sitelinks WHERE {
-              ?person wdt:P31 wd:Q5 ; wdt:P18 ?image ; wikibase:sitelinks ?sitelinks .
+              ?person wdt:P31 wd:Q5 ; wdt:P18 ?image ; wikibase:sitelinks ?sitelinks ;
+                      wdt:P569 ?birth .
+              FILTER(YEAR(?birth) >= %d)
             }
             ORDER BY DESC(?sitelinks) ?person
             LIMIT %d OFFSET %d
@@ -111,15 +113,21 @@ class WikidataClient {
         this.properties = properties;
     }
 
-    /** People ranked {@code offset} to {@code offset + limit - 1} by notoriety. Fewer (or none) past the end. */
-    List<PersonRecord> fetchPeople(int offset, int limit) {
-        return details(query(PAGE.formatted(limit, offset)));
+    /**
+     * People born in {@code minBirthYear} or later, ranked {@code offset} to
+     * {@code offset + limit - 1} by notoriety. Fewer (or none) past the end.
+     */
+    List<PersonRecord> fetchPeople(int offset, int limit, int minBirthYear) {
+        return details(query(PAGE.formatted(minBirthYear, limit, offset)));
     }
 
-    /** One person by QID, to (re)ingest them alone. Empty if they are not a human with a P18 image. */
+    /**
+     * One person by QID, to (re)ingest them alone. Empty if they are not a human with a P18
+     * image. No birth year filter: naming someone is a deliberate choice.
+     */
     Optional<PersonRecord> fetchPerson(String wikidataId) {
         // Checked before it reaches the query text: the QID comes from the command line.
-        if (!QID.matcher(wikidataId).matches()) {
+        if (!WikidataId.isValid(wikidataId)) {
             throw new IllegalArgumentException("not a Wikidata QID: " + wikidataId);
         }
         return details(query(ONE_PERSON.formatted(wikidataId))).stream().findFirst();
@@ -210,7 +218,7 @@ class WikidataClient {
             return null;
         }
         String id = uri.substring(ENTITY_PREFIX.length());
-        return QID.matcher(id).matches() ? id : null;
+        return WikidataId.isValid(id) ? id : null;
     }
 
     private static String value(JsonNode row, String variable) {

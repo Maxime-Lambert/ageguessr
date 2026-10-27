@@ -265,6 +265,29 @@ une donnée doit survivre pour d'autres joueurs, anonymisée explicitement), pou
 seul `DELETE` suffise au droit à l'effacement. Vérifié par
 `CascadeDeleteIntegrationTest`, à étendre à chaque nouvelle table de ce type.
 
+### Rôle administrateur
+**Décision** : colonne `users.role` (`USER` / `ADMIN`, défaut `USER`), posée **à la
+main en SQL**. Aucun endpoint ni écran ne la modifie.
+- Le rôle voyage dans le JWT : claim `roles`, émis par `AuthTokenService` depuis la
+  base à chaque émission, refresh compris.
+- `JwtConfig` le convertit en autorité `ROLE_ADMIN`, et `SecurityConfig` exige ce rôle
+  sur `/api/admin/**`.
+- Le front lit le rôle via `/api/auth/me`, uniquement pour afficher le lien et garder
+  la route. Le serveur reste seul juge.
+
+**Raison** :
+- un seul administrateur prévu : un rôle en base suffit, sans système de permissions ;
+- l'absence d'interface pour devenir admin supprime toute possibilité
+  d'auto-promotion ;
+- le contrôle par chemin dans `SecurityConfig` évite que les features (`people`)
+  dépendent de `auth`.
+
+**Limites connues** :
+- **Le compte admin n'est protégé que par son mot de passe** : pas de TOTP avant la
+  Semaine 7 (roadmap). Choisir un mot de passe long et unique.
+- Retirer le rôle en SQL prend effet au plus tard à l'expiration de l'access token
+  (≤ 60 min), le refresh relisant le rôle en base.
+
 ### Pages légales et acceptation des CGU
 **Décision** : trois pages statiques côté Angular (`features/legal/`) : `/legal-notice`,
 `/terms` et `/privacy`. Chacune existe en anglais par défaut et en français avec
@@ -299,9 +322,14 @@ jour de `/privacy` et de sa date.
 **Décision** : le joueur devine **l'âge de la personne sur la photo**. Personnes
 vivantes et décédées sont acceptées. Le pool est construit par une **ingestion
 ponctuelle**, pas pendant les parties :
-- **Liste des personnes** : humains (`P31 = Q5`) avec une image `P18`, par sitelinks
-  décroissants (notoriété), interrogés sur **QLever** (`qlever.dev`). Le SPARQL public
-  de Wikidata dépasse son délai sur ce classement.
+- **Liste des personnes** : humains (`P31 = Q5`) avec une image `P18`, **nés en 1930
+  ou après** (`app.people.ingest.min-birth-year`), par sitelinks décroissants
+  (notoriété), interrogés sur **QLever** (`qlever.dev`). Le SPARQL public de Wikidata
+  dépasse son délai sur ce classement.
+  - Pourquoi 1930 : sans ce filtre, 41 des 300 personnes les plus connues seulement
+    sont vivantes, et les figures historiques n'ont presque jamais de photo à date
+    corroborée par l'EXIF. Le jeu veut des photos récentes et de bonne qualité. Une
+    ingestion par QID (`--qid`) ignore le filtre.
   - Cinq petites requêtes par page de 500 : classement, naissances, décès, images,
     labels. Elles sont assemblées en Java, environ 7 s par page. Une requête unique en
     jointure dépassait la limite de 30 s de QLever.
@@ -326,6 +354,30 @@ ponctuelle**, pas pendant les parties :
 - **Curation manuelle obligatoire** : chaque photo est stockée `PENDING`, et seules les
   photos `APPROVED` sont servies ou jouées. Le statut `REJECTED` n'est jamais
   reproposé et libère son année et son âge.
+  - Outil : page `/admin/curation`, réservée au rôle admin. Une photo à la fois, avec
+    nom, dates, âge calculé, source Commons et autres photos de la personne. Raccourcis
+    A / R / → / U.
+  - Endpoints `/api/admin/photos/**` ; décisions tracées (`reviewed_at`,
+    `reviewed_by`).
+  - Personnes vivantes et décédées s'approuvent de la même façon (voir « Droit à
+    l'image » plus bas).
+- **Ligne éditoriale** (décision du 2026-10-26) : rien qui puisse raviver un
+  traumatisme. Sont exclus, avec le bouton d'exclusion de la page de curation :
+  - les auteurs de violences de masse : dictateurs, criminels de guerre, terroristes ;
+  - les dirigeants d'un pays actuellement en guerre.
+
+  Les condamnations non violentes (fraude, corruption…) ne sont pas un motif
+  d'exclusion. Le rappel est affiché sur la page de curation.
+  - Pas de filtre automatique : la propriété Wikidata « condamné pour » (`P1399`)
+    signale Jésus, Alan Turing, Galilée ou Messi, et pas Staline ni Mao.
+- **Demande de retrait** : depuis la page de curation, recherche par nom (insensible
+  aux accents, extension `unaccent`) ou par QID, puis « Exclure ». Les photos sont
+  effacées par le trigger V4 et l'exclusion est confirmée à la personne sous un mois.
+  - La ligne `people` d'une personne exclue (nom, naissance, QID, `excluded`) est
+    conservée **tant que le jeu existe**, pour empêcher toute ré-ingestion ; elle est
+    supprimée si le jeu s'arrête.
+  - Pour une personne **pas encore ingérée**, noter le QID et l'exclure après
+    l'ingestion. Une liste de blocage préalable sera ajoutée si le cas se présente.
 - **Commande** : profil Spring `ingest` (`IngestPeopleRunner`, `--limit`, `--qid`),
   idempotente : une relance n'ajoute que ce qui manque.
 
@@ -357,15 +409,20 @@ couverture mondiale. Le reste découle de l'exigence d'un âge exact :
 **Limites connues** :
 - QLever, service tiers, répond 429 quand une requête dépasse son délai. Une ingestion
   peut donc s'arrêter ; on la relance (idempotente).
-- **Droit à l'image des personnes vivantes, à trancher avant d'approuver la moindre
-  photo d'une personne vivante.** Les licences libres de Commons couvrent le droit
-  d'auteur, pas le droit à l'image (art. 9 du Code civil ; régimes différents à
-  l'étranger). Un jeu n'est pas l'usage « information » que la jurisprudence tolère
-  pour les personnalités publiques. Options relevées par la revue `code-reviewer` du
-  2026-10-26 :
-  - avis juridique ;
-  - lancement limité aux personnes décédées (la date de décès est déjà connue) ;
-  - écarter les fichiers marqués `{{Personality rights}}` sur Commons.
+- **Droit à l'image des personnes vivantes : risque accepté** (décision du
+  2026-10-26). Les licences libres de Commons couvrent le droit d'auteur, pas le droit
+  à l'image (art. 9 du Code civil ; régimes différents à l'étranger), et un jeu n'est
+  pas l'usage « information » que la jurisprudence tolère pour les personnalités
+  publiques. Les personnes vivantes sont pourtant voulues, et même prioritaires : ce
+  sont elles qui ont des photos récentes et de bonne qualité. Le risque est couvert
+  par le retrait : toute demande mène à l'exclusion, qui efface les photos.
+  - Options écartées, relevées par la revue `code-reviewer` : avis juridique,
+    lancement limité aux personnes décédées. Écarter les fichiers marqués
+    `{{Personality rights}}` sur Commons reste possible si les demandes de retrait
+    se multiplient.
+  - Aux États-Unis, le *right of publicity* (État par État, ex. Californie, New York)
+    peut ouvrir droit à des dommages-intérêts même après retrait. À réexaminer si
+    l'audience américaine devient significative.
 - **Attribution CC BY / BY-SA** : l'auteur et la licence sont stockés, mais leur
   affichage à la révélation du round (Semaine 4) n'existe pas encore. Aucune photo ne
   doit être servie à des joueurs avant cet affichage.

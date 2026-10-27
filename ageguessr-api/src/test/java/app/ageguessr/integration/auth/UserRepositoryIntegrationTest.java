@@ -6,6 +6,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import app.ageguessr.TestcontainersConfiguration;
 import app.ageguessr.features.auth.User;
 import app.ageguessr.features.auth.UserRepository;
+import app.ageguessr.features.auth.UserRole;
+import jakarta.persistence.EntityManager;
 import java.time.Instant;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,40 @@ class UserRepositoryIntegrationTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private EntityManager entityManager;
+
+    @Test
+    void anAccountIsARegularUserByDefault() {
+        User saved = userRepository.saveAndFlush(User.builder()
+                .email("role-default@x.com")
+                .username("role-default")
+                .passwordHash("hash")
+                .createdAt(Instant.now())
+                .build());
+
+        assertThat(userRepository.findById(saved.getId())).get().extracting(User::getRole).isEqualTo(UserRole.USER);
+    }
+
+    @Test
+    void theDatabaseRefusesAnUnknownRole() {
+        User saved = userRepository.saveAndFlush(User.builder()
+                .email("role-check@x.com")
+                .username("role-check")
+                .passwordHash("hash")
+                .createdAt(Instant.now())
+                .build());
+
+        assertThatThrownBy(() -> {
+                    entityManager
+                            .createNativeQuery("UPDATE users SET role = 'ROOT' WHERE id = :id")
+                            .setParameter("id", saved.getId())
+                            .executeUpdate();
+                    entityManager.flush();
+                })
+                .hasStackTraceContaining("users_role");
+    }
 
     @Test
     void rejectsCaseInsensitiveDuplicateEmail() {

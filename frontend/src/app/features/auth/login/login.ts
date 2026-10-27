@@ -1,9 +1,9 @@
+import { ApiErrorResponse } from '../../../shared/api-error';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Auth } from '../auth';
-import { ApiErrorResponse } from '../models';
 
 @Component({
   imports: [ReactiveFormsModule, RouterLink],

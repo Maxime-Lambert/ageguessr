@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './features/auth/auth-guard';
 import { guestGuard } from './features/auth/guest-guard';
+import { adminGuard } from './features/auth/admin-guard';
 
 export const routes: Routes = [
   {
@@ -51,6 +52,13 @@ export const routes: Routes = [
       import('./features/auth/confirm-account-deletion/confirm-account-deletion').then(
         (m) => m.ConfirmAccountDeletion,
       ),
+  },
+  {
+    // adminGuard is only the interface's gate: the API checks the role on every call.
+    path: 'admin/curation',
+    title: 'Photo curation · Ageguessr',
+    canActivate: [adminGuard],
+    loadComponent: () => import('./features/curation/curation/curation').then((m) => m.Curation),
   },
   {
     path: 'legal-notice',
