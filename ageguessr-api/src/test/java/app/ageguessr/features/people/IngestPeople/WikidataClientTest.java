@@ -176,6 +176,29 @@ class WikidataClientTest {
     }
 
     @Test
+    void fallsBackToTheMultipleLanguagesLabelForBothNames() {
+        // Douglas Adams since Wikidata introduced "mul": no "en" label left.
+        JsonNode labels = labels("Douglas Adams", "mul", "Duglassius Adams", "la");
+
+        PersonRecord person = WikidataClient.assemble(page("Q1"), empty(), empty(), empty(), labels, empty())
+                .getFirst();
+
+        assertThat(person.nameEn()).isEqualTo("Douglas Adams");
+        assertThat(person.nameFr()).isEqualTo("Douglas Adams");
+    }
+
+    @Test
+    void prefersARegionalVariantOverTheMultipleLanguagesLabelWhateverTheRowOrder() {
+        JsonNode labels = labels("Jane (US)", "en-us", "Jane", "mul", "Jeanne (Canada)", "fr-ca");
+
+        PersonRecord person = WikidataClient.assemble(page("Q1"), empty(), empty(), empty(), labels, empty())
+                .getFirst();
+
+        assertThat(person.nameEn()).isEqualTo("Jane (US)");
+        assertThat(person.nameFr()).isEqualTo("Jeanne (Canada)");
+    }
+
+    @Test
     void ignoresRowsAboutPeopleOutsideThePage() {
         JsonNode labels = Fixtures.MAPPER.readTree("""
                 [{"person": {"value": "http://www.wikidata.org/entity/Q999"},
@@ -287,7 +310,8 @@ class WikidataClientTest {
             {"p%3AP569", "qlever-births.json"},
             {"p%3AP570", "qlever-deaths.json"},
             {"wdt%3AP18", "qlever-images.json"},
-            {"rdfs%3Alabel", "qlever-labels.json"},
+            // The labels query, which must ask for "mul" labels too.
+            {"%3Flang+%3D+%22mul%22", "qlever-labels.json"},
             {"wdt%3AP21", "qlever-profiles.json"}
         }) {
             server.expect(requestTo(QLEVER))

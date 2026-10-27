@@ -93,15 +93,18 @@ class WikidataClient {
             }
             """;
 
-    // Every "en*" / "fr*" label with its language: the exact language is preferred in
+    // Every "en*" / "fr*" label with its language, plus "mul": the best one is chosen in
     // Java. On QLever, FILTER(LANG(?l) = "en") misses some English labels (Cristiano
-    // Ronaldo, seen on a real run) that STRSTARTS finds.
+    // Ronaldo, seen on a real run) that STRSTARTS finds. "mul" (multiple languages):
+    // since 2024 Wikidata replaces labels identical across languages with one "mul"
+    // label, so Douglas Adams or Shakira have no "en" label any more (14 of the top 200
+    // were skipped for want of a name, seen on 2026-10-27).
     private static final String LABELS = """
             SELECT ?person ?label ?lang WHERE {
               VALUES ?person { %s }
               ?person rdfs:label ?label .
               BIND(LANG(?label) AS ?lang)
-              FILTER(STRSTARTS(?lang, "en") || STRSTARTS(?lang, "fr"))
+              FILTER(STRSTARTS(?lang, "en") || STRSTARTS(?lang, "fr") || ?lang = "mul")
             }
             """;
 
@@ -261,20 +264,29 @@ class WikidataClient {
         };
     }
 
-    /** Keeps the label of the exact language if there is one, else the first regional variant (en-gb...). */
+    /**
+     * Keeps the label of the exact language if there is one, else the first regional
+     * variant (en-gb...), else the "mul" label shared by many languages.
+     */
     private static final class Label {
+        private static final String MULTIPLE_LANGUAGES = "mul";
+        private static final int EXACT = 3;
+        private static final int VARIANT = 2;
+        private static final int MULTIPLE = 1;
+
         private String text;
-        private boolean exact;
+        private int quality;
 
         void offer(String candidate, String lang, String wanted) {
-            if (candidate == null || lang == null || exact || !lang.startsWith(wanted)) {
+            if (candidate == null || lang == null) {
                 return;
             }
-            if (wanted.equals(lang)) {
+            int offered = wanted.equals(lang)
+                    ? EXACT
+                    : lang.startsWith(wanted) ? VARIANT : MULTIPLE_LANGUAGES.equals(lang) ? MULTIPLE : 0;
+            if (offered > quality) {
                 text = candidate;
-                exact = true;
-            } else if (text == null) {
-                text = candidate;
+                quality = offered;
             }
         }
     }
