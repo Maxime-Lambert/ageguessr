@@ -256,8 +256,10 @@ class IngestPeopleHandler {
                     today);
             switch (evaluation) {
                 case PhotoEvaluation.Rejected rejected -> report.photoRejected(rejected.reason().name());
-                case PhotoEvaluation.Accepted accepted ->
+                case PhotoEvaluation.Accepted accepted -> {
+                    report.validPhoto(accepted.age());
                     candidates.add(new PhotoSelector.Candidate(file.title(), mainImages.contains(file.title()), accepted));
+                }
             }
         }
 
@@ -271,6 +273,7 @@ class IngestPeopleHandler {
             CommonsFile file = files.get(candidate.fileTitle());
             try {
                 ImageReencoder.Reencoded image = reencoder.reencode(downloader.download(file.thumbnailUrl()));
+                report.photoKept(candidate.age());
                 newPhotos.add(new NewPhoto(
                         file.title().substring(FILE_PREFIX.length()),
                         candidate.evaluation(),

@@ -24,6 +24,8 @@ class IngestReport {
     private final Map<String, Integer> seenByCell = new TreeMap<>();
     private final Map<String, Integer> keptByCell = new TreeMap<>();
     private final Map<String, String> balance = new TreeMap<>();
+    private final Map<String, Integer> validPhotosByAge = new TreeMap<>();
+    private final Map<String, Integer> keptPhotosByAge = new TreeMap<>();
 
     void personSeen(PersonRecord person) {
         peopleSeen++;
@@ -43,6 +45,23 @@ class IngestReport {
 
     void photoRejected(String reason) {
         photosRejected.merge(reason, 1, Integer::sum);
+    }
+
+    /** A photo whose date gives an exact age, before the per-person selection. */
+    void validPhoto(int age) {
+        validPhotosByAge.merge(AgeBand.of(age), 1, Integer::sum);
+    }
+
+    void photoKept(int age) {
+        keptPhotosByAge.merge(AgeBand.of(age), 1, Integer::sum);
+    }
+
+    Map<String, Integer> validPhotosByAge() {
+        return Map.copyOf(validPhotosByAge);
+    }
+
+    Map<String, Integer> keptPhotosByAge() {
+        return Map.copyOf(keptPhotosByAge);
     }
 
     void photosNotSelected(int count) {
@@ -104,6 +123,7 @@ class IngestReport {
                 + ", photos per kept person=" + photosPerPerson + ", KB per image=" + kbPerImage
                 + ", people skipped=" + peopleSkipped + ", photos rejected=" + photosRejected
                 + ", seen by cell=" + seenByCell + ", kept by cell=" + keptByCell
+                + ", valid photos by age=" + validPhotosByAge + ", kept photos by age=" + keptPhotosByAge
                 + (balance.isEmpty() ? "" : ", balance (people/quota)=" + balance);
     }
 }

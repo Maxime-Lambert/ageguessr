@@ -433,6 +433,9 @@ class IngestPeopleHandlerTest {
         assertThat(report.imageBytes()).isEqualTo(2L * IMAGE.content().length);
         assertThat(report.toString())
                 .contains("photos per kept person=2.00", "KB per image=0", "kept by cell={EUROPE/FEMALE=1}");
+        // Born 1950: 26 in 1976, 40 in 1990.
+        assertThat(report.validPhotosByAge()).isEqualTo(Map.of("26-33", 1, "34-41", 1));
+        assertThat(report.keptPhotosByAge()).isEqualTo(Map.of("26-33", 1, "34-41", 1));
     }
 
     // Balanced ingestion. A target of 12 gives a quota of 1 per cell; cells not stubbed
