@@ -132,6 +132,13 @@
 			<version>1.4.1</version>
 			<scope>test</scope>
 		</dependency>
+		<!-- Commons renvoie l'auteur d'une photo en HTML : jsoup le reduit en texte brut
+		     (entites decodees, balises retirees) avant stockage. -->
+		<dependency>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>1.23.2</version>
+		</dependency>
 		<dependency>
 			<groupId>com.resend</groupId>
 			<artifactId>resend-java</artifactId>
@@ -148,7 +155,18 @@
 			<plugin>
 				<groupId>org.pitest</groupId>
 				<artifactId>pitest-maven</artifactId>
-				<version>1.19.1</version>
+				<!-- 1.19.1 ne lisait pas les classes Java 25 ("Unsupported class file major
+				     version 69"). -->
+				<version>1.30.1</version>
+				<dependencies>
+					<!-- Sans ce plugin, PIT ne voit pas les tests JUnit 5 (le seul framework
+					     de test du projet). -->
+					<dependency>
+						<groupId>org.pitest</groupId>
+						<artifactId>pitest-junit5-plugin</artifactId>
+						<version>1.2.3</version>
+					</dependency>
+				</dependencies>
 				<configuration>
 					<targetClasses>
 						<param>app.ageguessr.*</param>
@@ -159,6 +177,16 @@
 					<excludedClasses>
 						<param>app.ageguessr.AgeguessrApiApplication</param>
 					</excludedClasses>
+					<!-- Tests unitaires uniquement : PIT relance les tests pour chaque mutant, et un
+					     test qui demarre Spring + Postgres/Redis (Testcontainers) par mutant rend
+					     le run interminable (> 18 min sans finir en local). Le score mesure donc
+					     la qualite des tests unitaires, la ou vivent les regles metier. -->
+					<excludedTestClasses>
+						<param>app.ageguessr.integration.*</param>
+						<param>app.ageguessr.functional.*</param>
+						<param>app.ageguessr.architecture.*</param>
+						<param>app.ageguessr.AgeguessrApiApplicationTests</param>
+					</excludedTestClasses>
 					<outputFormats>
 						<param>HTML</param>
 					</outputFormats>

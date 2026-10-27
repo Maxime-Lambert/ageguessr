@@ -35,7 +35,13 @@ describe('guestGuard', () => {
   });
 
   it('sends a logged-in user home', async () => {
-    auth.currentUser.set({ id: '1', email: 'user@x.com', username: 'Player', emailVerified: true });
+    auth.currentUser.set({
+      id: '1',
+      email: 'user@x.com',
+      username: 'Player',
+      emailVerified: true,
+      role: 'USER',
+    });
 
     const result = await firstValueFrom(run());
 

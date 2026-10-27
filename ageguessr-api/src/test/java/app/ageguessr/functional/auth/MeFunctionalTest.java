@@ -42,7 +42,8 @@ class MeFunctionalTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email").value(email))
                 .andExpect(jsonPath("$.username").value(username))
-                .andExpect(jsonPath("$.emailVerified").value(true));
+                .andExpect(jsonPath("$.emailVerified").value(true))
+                .andExpect(jsonPath("$.role").value("USER"));
     }
 
     @Test

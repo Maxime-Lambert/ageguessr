@@ -34,6 +34,10 @@ Teste un handler contre un vrai PostgreSQL (Testcontainers) : vérifie que la re
 Spring Data JPA fait ce qu'on attend, que les contraintes DB sont respectées.
 **Ne couvre pas** : le pipeline HTTP (filtres de sécurité, routing) — c'est le rôle du
 test fonctionnel.
+**Exception d'emplacement** : un composant package-private d'un use case (ex.
+`PeopleStore`) se teste contre la base dans le package de la feature
+(`features/<F>/<UseCase>/*IntegrationTest.java`). On ne le rend pas public juste pour
+qu'il soit accessible depuis `integration/`.
 
 ### Fonctionnel backend
 Teste un endpoint de bout en bout via `@SpringBootTest` (`webEnvironment = RANDOM_PORT`)
@@ -64,8 +68,12 @@ handler-à-handler). Empêche la dérive architecturale silencieuse au fil des f
 
 ### Mutation
 Modifie automatiquement le code de `ageguessr-api` (inverse une condition, change une
-constante, etc.) et vérifie que la suite de tests existante détecte chaque mutation.
-Mesure la qualité réelle des tests, pas seulement leur couverture de lignes. Seuil
+constante, etc.) et vérifie que les **tests unitaires** détectent chaque mutation. Les
+tests d'intégration, fonctionnels et d'architecture sont exclus (`excludedTestClasses`
+dans `pom.xml`) : démarrer Spring et Testcontainers pour chaque mutant rendrait le run
+interminable. Mesure la qualité réelle des tests unitaires, pas seulement leur
+couverture de lignes. Le code qui n'est exercé que par des tests fonctionnels
+(contrôleurs, configuration) ressort donc « non couvert ». Seuil
 informatif au démarrage du projet (le code est trop jeune pour un seuil strict) — à
 durcir manuellement quand la base de code métier grandit.
 
@@ -77,7 +85,9 @@ durcir manuellement quand la base de code métier grandit.
 - **CI GitHub Actions** (`.github/workflows/ci.yml`) : suite complète (incl. lint +
   format frontend) sauf mutation, bloquante sur les PR vers `develop` et `main`.
 - **Mutation testing** (`.github/workflows/mutation.yml`) : sur PR vers `main`
-  uniquement, informatif (n'échoue pas le build).
+  uniquement. Le **score** est informatif : aucun seuil n'est configuré, donc un score
+  bas ne fait pas échouer le job. En revanche, si PIT ne peut pas tourner, le job
+  échoue. Le rapport HTML est publié en artefact dans tous les cas.
 
 Playwright et PIT ne tournent jamais dans le hook local : trop lents pour un push à
 chaque commit.

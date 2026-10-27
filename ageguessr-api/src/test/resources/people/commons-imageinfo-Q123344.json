@@ -1,0 +1,137 @@
+{
+ "batchcomplete": true,
+ "query": {
+  "pages": [
+   {
+    "pageid": 2382931,
+    "ns": 6,
+    "title": "File:Ferdinand Hurter.jpg",
+    "imagerepository": "local",
+    "imageinfo": [
+     {
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/89/Ferdinand_Hurter.jpg/960px-Ferdinand_Hurter.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "thumbwidth": 800,
+      "thumbheight": 983,
+      "responsiveUrls": {
+       "2": "https://upload.wikimedia.org/wikipedia/commons/8/89/Ferdinand_Hurter.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled"
+      },
+      "thumbattribs": {
+       "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/89/Ferdinand_Hurter.jpg/960px-Ferdinand_Hurter.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+       "decoding": "async",
+       "loading": "lazy",
+       "width": 800,
+       "height": 983,
+       "srcset": "https://upload.wikimedia.org/wikipedia/commons/8/89/Ferdinand_Hurter.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled 2x"
+      },
+      "url": "https://upload.wikimedia.org/wikipedia/commons/8/89/Ferdinand_Hurter.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "descriptionurl": "https://commons.wikimedia.org/wiki/File:Ferdinand_Hurter.jpg",
+      "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=2382931",
+      "metadata": [
+       {
+        "name": "Orientation",
+        "value": 1
+       },
+       {
+        "name": "XResolution",
+        "value": "360/1"
+       },
+       {
+        "name": "YResolution",
+        "value": "360/1"
+       },
+       {
+        "name": "ResolutionUnit",
+        "value": 2
+       },
+       {
+        "name": "Software",
+        "value": "Adobe Photoshop Elements 2.0"
+       },
+       {
+        "name": "DateTime",
+        "value": "2007:07:10 18:05:34"
+       },
+       {
+        "name": "ColorSpace",
+        "value": 65535
+       },
+       {
+        "name": "MEDIAWIKI_EXIF_VERSION",
+        "value": 1
+       }
+      ],
+      "extmetadata": {
+       "Artist": {
+        "value": "<bdi><a href=\"https://en.wikipedia.org/wiki/en:Vero_Charles_Driffield\" class=\"extiw\" title=\"w:en:Vero Charles Driffield\"><span title=\"British chemical engineer (1848-1915)\">Vero Charles Driffield</span></a></bdi>",
+        "source": "commons-desc-page"
+       },
+       "DateTimeOriginal": {
+        "value": "1880",
+        "source": "commons-desc-page"
+       },
+       "LicenseShortName": {
+        "value": "Public domain",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "UsageTerms": {
+        "value": "Public domain",
+        "source": "commons-desc-page"
+       }
+      },
+      "mime": "image/jpeg"
+     }
+    ]
+   },
+   {
+    "pageid": 83232603,
+    "ns": 6,
+    "title": "File:Vero Charles Driffield - Ferdinand Hurter (ca.1880).jpg",
+    "imagerepository": "local",
+    "imageinfo": [
+     {
+      "thumburl": "https://upload.wikimedia.org/wikipedia/commons/7/74/Vero_Charles_Driffield_-_Ferdinand_Hurter_%28ca.1880%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "thumbwidth": 800,
+      "thumbheight": 1106,
+      "thumbattribs": {
+       "src": "https://upload.wikimedia.org/wikipedia/commons/7/74/Vero_Charles_Driffield_-_Ferdinand_Hurter_%28ca.1880%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+       "decoding": "async",
+       "loading": "lazy",
+       "width": 800,
+       "height": 1106
+      },
+      "url": "https://upload.wikimedia.org/wikipedia/commons/7/74/Vero_Charles_Driffield_-_Ferdinand_Hurter_%28ca.1880%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "descriptionurl": "https://commons.wikimedia.org/wiki/File:Vero_Charles_Driffield_-_Ferdinand_Hurter_(ca.1880).jpg",
+      "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=83232603",
+      "metadata": [
+       {
+        "name": "MEDIAWIKI_EXIF_VERSION",
+        "value": 1
+       }
+      ],
+      "extmetadata": {
+       "Artist": {
+        "value": "<bdi><a href=\"https://en.wikipedia.org/wiki/en:Vero_Charles_Driffield\" class=\"extiw\" title=\"w:en:Vero Charles Driffield\"><span title=\"British chemical engineer (1848-1915)\">Vero Charles Driffield</span></a></bdi>",
+        "source": "commons-desc-page"
+       },
+       "DateTimeOriginal": {
+        "value": "1880",
+        "source": "commons-desc-page"
+       },
+       "LicenseShortName": {
+        "value": "Public domain",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "UsageTerms": {
+        "value": "Public domain",
+        "source": "commons-desc-page"
+       }
+      },
+      "mime": "image/jpeg"
+     }
+    ]
+   }
+  ]
+ }
+}

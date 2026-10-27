@@ -1,0 +1,296 @@
+{
+ "entities": {
+  "M2382931": {
+   "pageid": 2382931,
+   "ns": 6,
+   "title": "File:Ferdinand Hurter.jpg",
+   "lastrevid": 1251212753,
+   "modified": "2026-07-24T05:29:23Z",
+   "type": "mediainfo",
+   "id": "M2382931",
+   "labels": {},
+   "descriptions": {},
+   "statements": {
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "b3f9bfb6271bf3600da3c1f0d010740eb392e1b7",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 71711487,
+         "id": "Q71711487"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M2382931$1edda4b5-41f9-1c8d-02e1-c06635477169",
+      "rank": "normal"
+     }
+    ],
+    "P6243": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6243",
+       "hash": "a4bb7053e5fc97fcd0ff652d8b62e5fa49844435",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 71711487,
+         "id": "Q71711487"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M2382931$45D9A156-A44F-4158-98B0-E259C8AE7128",
+      "rank": "normal"
+     }
+    ],
+    "P921": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P921",
+       "hash": "778134ac5d8348d992724ec1a691df508d4c563d",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 71711487,
+         "id": "Q71711487"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M2382931$149C2FAE-DF60-4769-964B-D90CDB7F3B82",
+      "rank": "normal"
+     }
+    ],
+    "P3575": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P3575",
+       "hash": "e527adba18f0f0de69a6b7d29919aae7e9cd728a",
+       "datavalue": {
+        "value": {
+         "amount": "+1093631",
+         "unit": "http://www.wikidata.org/entity/Q8799"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M2382931$EF5FEF68-8048-475B-AD10-62FA027AAC2C",
+      "rank": "normal"
+     }
+    ],
+    "P2048": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2048",
+       "hash": "fc9d0fd566e3b0cf5f5c2e2421ef3bca524f5fd6",
+       "datavalue": {
+        "value": {
+         "amount": "+1889",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M2382931$65CC19B0-7D17-4845-9497-F6C231E44F02",
+      "rank": "normal"
+     }
+    ],
+    "P2049": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2049",
+       "hash": "40f4920a08ee50b9fa76aa618b48c1ac9ebdf0bd",
+       "datavalue": {
+        "value": {
+         "amount": "+1538",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M2382931$920DAEAD-2D99-45D5-9987-41446273E83B",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M2382931$CFDD1FCA-D3FD-4A94-AE5B-2053EBA6BD2C",
+      "rank": "normal"
+     }
+    ],
+    "P4092": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P4092",
+       "hash": "e074e52342fba3a73fda2b3a7b35a1a10336f51b",
+       "datavalue": {
+        "value": "c057671e8793e4ca6892f9c5622cdb0c9d5674fb",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P459": [
+        {
+         "snaktype": "value",
+         "property": "P459",
+         "hash": "75dff03c151b13fbab93742164121c16a6aa0de1",
+         "datavalue": {
+          "value": {
+           "entity-type": "item",
+           "numeric-id": 13414952,
+           "id": "Q13414952"
+          },
+          "type": "wikibase-entityid"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P459"
+      ],
+      "id": "M2382931$35C03B6F-9A77-4E87-9201-39CD47B4C807",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "f69dc45ce9c48664155022498b34100d801bd549",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 19652,
+         "id": "Q19652"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M2382931$A99DA3E0-ACE7-47CF-98F8-28795C041FA1",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M83232603": {
+   "pageid": 83232603,
+   "ns": 6,
+   "title": "File:Vero Charles Driffield - Ferdinand Hurter (ca.1880).jpg",
+   "lastrevid": 846954380,
+   "modified": "2024-01-29T23:47:51Z",
+   "type": "mediainfo",
+   "id": "M83232603",
+   "labels": {},
+   "descriptions": {},
+   "statements": {
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "e1c911e4ab11abc863bd9cd04fa5e2f094774dea",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 123344,
+         "id": "Q123344"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M83232603$65793ef1-45bf-8e24-aa14-368bed210f52",
+      "rank": "normal"
+     }
+    ],
+    "P6243": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6243",
+       "hash": "a4bb7053e5fc97fcd0ff652d8b62e5fa49844435",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 71711487,
+         "id": "Q71711487"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M83232603$44AE9BF7-4456-4245-8E84-08D82FFB145E",
+      "rank": "normal"
+     }
+    ],
+    "P921": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P921",
+       "hash": "778134ac5d8348d992724ec1a691df508d4c563d",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 71711487,
+         "id": "Q71711487"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M83232603$31577AF5-2B51-4EBD-A74B-E6485D1340DA",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M83232603$031E409A-6497-4E2A-975A-A3EB1FAD301D",
+      "rank": "normal"
+     }
+    ]
+   }
+  }
+ },
+ "success": 1
+}

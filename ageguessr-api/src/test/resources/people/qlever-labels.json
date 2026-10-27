@@ -1,0 +1,542 @@
+{
+ "head": {
+  "vars": [
+   "person",
+   "label",
+   "lang"
+  ]
+ },
+ "results": {
+  "bindings": [
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1001"
+    },
+    "label": {
+     "type": "literal",
+     "value": "Mahatma Gandhi",
+     "xml:lang": "en"
+    },
+    "lang": {
+     "type": "literal",
+     "value": "en"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1001"
+    },
+    "label": {
+     "type": "literal",
+     "value": "Mahatma Gandhi",
+     "xml:lang": "en-us"
+    },
+    "lang": {
+     "type": "literal",
+     "value": "en-us"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1001"
+    },
+    "label": {
+     "type": "literal",
+     "value": "Mahatma Gandhi",
+     "xml:lang": "frr"
+    },
+    "lang": {
+     "type": "literal",
+     "value": "frr"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1001"
+    },
+    "label": {
+     "type": "literal",
+     "value": "Mohandas Karamchand Gandhi",
+     "xml:lang": "en-ca"
+    },
+    "lang": {
+     "type": "literal",
+     "value": "en-ca"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1001"
+    },
+    "label": {
+     "type": "literal",
+     "value": "Mohandas Karamchand Gandhi",
+     "xml:lang": "en-gb"
+    },
+    "lang": {
+     "type": "literal",
+     "value": "en-gb"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1001"
+    },
+    "label": {
+     "type": "literal",
+     "value": "Mohandas Karamchand Gandhi",
+     "xml:lang": "fr"
+    },
+    "lang": {
+     "type": "literal",
+     "value": "fr"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1001"
+    },
+    "label": {
+     "type": "literal",
+     "value": "Mohandas Karamchand Gandhi",
+     "xml:lang": "frp"
+    },
+    "lang": {
+     "type": "literal",
+     "value": "frp"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1002250"
+    },
+    "label": {
+     "type": "literal",
+     "value": "Duncan Haldane",
+     "xml:lang": "en"
+    },
+    "lang": {
+     "type": "literal",
+     "value": "en"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1002250"
+    },
+    "label": {
+     "type": "literal",
+     "value": "Duncan Haldane",
+     "xml:lang": "en-ca"
+    },
+    "lang": {
+     "type": "literal",
+     "value": "en-ca"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1002250"
+    },
+    "label": {
+     "type": "literal",
+     "value": "Duncan Haldane",
+     "xml:lang": "en-gb"
+    },
+    "lang": {
+     "type": "literal",
+     "value": "en-gb"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1002250"
+    },
+    "label": {
+     "type": "literal",
+     "value": "Duncan Haldane",
+     "xml:lang": "fr"
+    },
+    "lang": {
+     "type": "literal",
+     "value": "fr"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q10068"
+    },
+    "label": {
+     "type": "literal",
+     "value": "Lindsey Vonn",
+     "xml:lang": "en"
+    },
+    "lang": {
+     "type": "literal",
+     "value": "en"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q10068"
+    },
+    "label": {
+     "type": "literal",
+     "value": "Lindsey Vonn",
+     "xml:lang": "en-ca"
+    },
+    "lang": {
+     "type": "literal",
+     "value": "en-ca"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q10068"
+    },
+    "label": {
+     "type": "literal",
+     "value": "Lindsey Vonn",
+     "xml:lang": "en-gb"
+    },
+    "lang": {
+     "type": "literal",
+     "value": "en-gb"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q10068"
+    },
+    "label": {
+     "type": "literal",
+     "value": "Lindsey Vonn",
+     "xml:lang": "en-us"
+    },
+    "lang": {
+     "type": "literal",
+     "value": "en-us"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q10068"
+    },
+    "label": {
+     "type": "literal",
+     "value": "Lindsey Vonn",
+     "xml:lang": "fr"
+    },
+    "lang": {
+     "type": "literal",
+     "value": "fr"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q10068"
+    },
+    "label": {
+     "type": "literal",
+     "value": "Lindsey Vonn",
+     "xml:lang": "frp"
+    },
+    "lang": {
+     "type": "literal",
+     "value": "frp"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q10068"
+    },
+    "label": {
+     "type": "literal",
+     "value": "Lindsey Vonn",
+     "xml:lang": "frr"
+    },
+    "lang": {
+     "type": "literal",
+     "value": "frr"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q11571"
+    },
+    "label": {
+     "type": "literal",
+     "value": "Cristiano Ronaldo",
+     "xml:lang": "en"
+    },
+    "lang": {
+     "type": "literal",
+     "value": "en"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q11571"
+    },
+    "label": {
+     "type": "literal",
+     "value": "Cristiano Ronaldo",
+     "xml:lang": "en-gb"
+    },
+    "lang": {
+     "type": "literal",
+     "value": "en-gb"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q11571"
+    },
+    "label": {
+     "type": "literal",
+     "value": "Cristiano Ronaldo",
+     "xml:lang": "en-us"
+    },
+    "lang": {
+     "type": "literal",
+     "value": "en-us"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q11571"
+    },
+    "label": {
+     "type": "literal",
+     "value": "Cristiano Ronaldo",
+     "xml:lang": "fr"
+    },
+    "lang": {
+     "type": "literal",
+     "value": "fr"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q76745"
+    },
+    "label": {
+     "type": "literal",
+     "value": "Theodor Schwann",
+     "xml:lang": "en"
+    },
+    "lang": {
+     "type": "literal",
+     "value": "en"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q76745"
+    },
+    "label": {
+     "type": "literal",
+     "value": "Theodor Schwann",
+     "xml:lang": "en-ca"
+    },
+    "lang": {
+     "type": "literal",
+     "value": "en-ca"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q76745"
+    },
+    "label": {
+     "type": "literal",
+     "value": "Theodor Schwann",
+     "xml:lang": "en-gb"
+    },
+    "lang": {
+     "type": "literal",
+     "value": "en-gb"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q76745"
+    },
+    "label": {
+     "type": "literal",
+     "value": "Theodor Schwann",
+     "xml:lang": "fr"
+    },
+    "lang": {
+     "type": "literal",
+     "value": "fr"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q76745"
+    },
+    "label": {
+     "type": "literal",
+     "value": "Theodor Schwann",
+     "xml:lang": "frc"
+    },
+    "lang": {
+     "type": "literal",
+     "value": "frc"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q76745"
+    },
+    "label": {
+     "type": "literal",
+     "value": "Theodor Schwann",
+     "xml:lang": "frp"
+    },
+    "lang": {
+     "type": "literal",
+     "value": "frp"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q76984"
+    },
+    "label": {
+     "type": "literal",
+     "value": "Julius Streicher",
+     "xml:lang": "en"
+    },
+    "lang": {
+     "type": "literal",
+     "value": "en"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q76984"
+    },
+    "label": {
+     "type": "literal",
+     "value": "Julius Streicher",
+     "xml:lang": "en-ca"
+    },
+    "lang": {
+     "type": "literal",
+     "value": "en-ca"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q76984"
+    },
+    "label": {
+     "type": "literal",
+     "value": "Julius Streicher",
+     "xml:lang": "en-gb"
+    },
+    "lang": {
+     "type": "literal",
+     "value": "en-gb"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q76984"
+    },
+    "label": {
+     "type": "literal",
+     "value": "Julius Streicher",
+     "xml:lang": "fr"
+    },
+    "lang": {
+     "type": "literal",
+     "value": "fr"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q76984"
+    },
+    "label": {
+     "type": "literal",
+     "value": "Julius Streicher",
+     "xml:lang": "frr"
+    },
+    "lang": {
+     "type": "literal",
+     "value": "frr"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q77017"
+    },
+    "label": {
+     "type": "literal",
+     "value": "Jacob Bœhme",
+     "xml:lang": "fr"
+    },
+    "lang": {
+     "type": "literal",
+     "value": "fr"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q77017"
+    },
+    "label": {
+     "type": "literal",
+     "value": "Jakob Böhme",
+     "xml:lang": "en"
+    },
+    "lang": {
+     "type": "literal",
+     "value": "en"
+    }
+   }
+  ]
+ },
+ "meta": {
+  "query-time-ms": 72,
+  "result-size-total": 35
+ }
+}

@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -41,6 +42,8 @@ public class SecurityConfig {
         "/api/auth/confirm-account-deletion"
     };
 
+    private static final String[] PUBLIC_GAME_GET_PATHS = {"/api/images/*"};
+
     private final RateLimitFilter rateLimitFilter;
 
     @Bean
@@ -51,10 +54,15 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PUBLIC_AUTH_PATHS)
                         .permitAll()
-                        // Auth is the only feature today. The game itself is meant to be
-                        // guest-playable (docs/decisions/architecture.md) - when its
-                        // endpoints are added, they MUST be added to an allow-list here,
-                        // or guest play will silently break behind a 401.
+                        // Game endpoints are guest-playable (docs/decisions/architecture.md):
+                        // each one MUST be added here, or guest play silently breaks
+                        // behind a 401. GET only: nothing else exists on these paths.
+                        .requestMatchers(HttpMethod.GET, PUBLIC_GAME_GET_PATHS)
+                        .permitAll()
+                        // Admin tools (photo curation): checked here, by path, so that the
+                        // features behind them never need to know about roles.
+                        .requestMatchers("/api/admin/**")
+                        .hasRole("ADMIN")
                         .anyRequest()
                         .authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))

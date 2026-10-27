@@ -1,0 +1,46 @@
+{
+ "batchcomplete": true,
+ "query": {
+  "searchinfo": {
+   "totalhits": 4
+  },
+  "search": [
+   {
+    "ns": 6,
+    "title": "File:Glenn Gould playing on CBC-TV concert.jpg",
+    "pageid": 182703089,
+    "size": 431,
+    "wordcount": 14,
+    "snippet": "English Glenn Gould playing on CBC-TV concert determination method or standard: SHA-1",
+    "timestamp": "2026-04-06T12:13:37Z"
+   },
+   {
+    "ns": 6,
+    "title": "File:Glenn Gould 1 crop.jpg",
+    "pageid": 45860507,
+    "size": 412,
+    "wordcount": 7,
+    "snippet": "English determination method or standard: SHA-1",
+    "timestamp": "2026-09-09T05:28:57Z"
+   },
+   {
+    "ns": 6,
+    "title": "File:Concerto no. 4, in G major, for piano and orchestra, op. 58 (Gould and Bernstein).jpg",
+    "pageid": 182704063,
+    "size": 466,
+    "wordcount": 35,
+    "snippet": "English Cover of Concerto no. 4, in G major, for piano and orchestra, op. 58 (Glenn Gould (right) and Leonard Bernstein) described at URL: https://archive",
+    "timestamp": "2026-04-07T21:42:09Z"
+   },
+   {
+    "ns": 6,
+    "title": "File:Glenn Gould 1.jpg",
+    "pageid": 15024091,
+    "size": 422,
+    "wordcount": 15,
+    "snippet": "English Italian Glenn Gould al pianoforte nel 1980 circa determination method or standard: SHA-1",
+    "timestamp": "2026-09-09T05:28:56Z"
+   }
+  ]
+ }
+}

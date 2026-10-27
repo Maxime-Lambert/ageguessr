@@ -24,19 +24,46 @@ la suivante).
       passerelle Caddy partagée du VPS) — PR #2
 
 ## Semaine 2 — Données du jeu
-- [ ] Client Wikidata (recherche par notoriété/sitelinks, extraction date de naissance
-      `P569`, photo `P18`)
-- [ ] Stratégie "photo la plus récente possible" (heuristique Commons à valider sur un
-      échantillon réel avant généralisation — voir `docs/decisions/architecture.md`)
-- [ ] Endpoint proxy d'image anti-triche (`/api/images/{id}`, jamais l'URL Commons brute)
+- [x] Client Wikidata via QLever (classement par sitelinks, `P569`/`P570` avec rangs et
+      précision, `P18`, labels EN/FR) — PR `feature/people-sourcing`
+- [x] Photos datées avec âge exact : date déclarée (SDC/`{{Information}}`) corroborée
+      par l'EXIF, au moins 10 ans d'écart entre deux photos d'une même personne,
+      validées sur échantillon réel (spike de 400 personnes, puis 2 runs de 30) —
+      PR `feature/people-sourcing`
+- [x] Endpoint proxy d'image anti-triche (`/api/images/{id}`, copie ré-encodée sans
+      métadonnées, jamais l'URL Commons) — PR `feature/people-sourcing`
+- [x] Curation manuelle des photos : rôle admin (SQL), approuver/rejeter/annuler,
+      page `/admin/curation` au clavier, demandes de retrait (recherche + exclusion)
+      — PR `feature/photo-curation`
+- [x] Ligne éditoriale du pool : exclusion des auteurs de violences de masse et des
+      dirigeants d'un pays en guerre, rappelée sur la page de curation — PR
+      `feature/photo-curation`
+- [x] Droit à l'image des personnes vivantes : risque accepté, couvert par le retrait
+      sur demande ; ingestion limitée aux personnes nées en 1930 ou après — PR
+      `feature/photo-curation`
+- [x] Pool équilibré et sans mineur : aucune photo de moins de 18 ans, 18 cases
+      continent de nationalité × genre (« autre » à son poids réel), préférence des
+      tranches d'âge rares, cible de 5 000 photos en jeu, mesure du rendement
+      (`--sample`, `--dry-run`) — PR `feature/people-pool-balance`
+- [ ] Ingestion en production (cible 5 000 photos en jeu), puis curation et relances
+      jusqu'à 5 000 photos approuvées. Estimation : ~8 800 photos collectées en tout
+      (~43 % de rejets), ~7 h de collecte, ~1,5 Go (les photos rejetées gardent leur
+      image)
 - [ ] Ingestion + curation des indices événementiels par catégorie et par année
       (pages Wikipedia "YYYY in music/sports/politics...", parsing + vérification sur
       échantillon avant d'industrialiser)
-- [ ] Schéma de données final : personnes, catégories d'indices, événements par année
+- [ ] Schéma de données final : personnes et photos faites (V4, PR
+      `feature/people-sourcing`) ; catégories d'indices et événements par année restent
+      à faire avec le plan des indices
 
 ## Semaine 3 — Moteur de jeu
-- [ ] Algorithme de sélection quotidienne (3 personnes/jour, minuit UTC, pas de
-      répétition trop proche dans le temps)
+- [ ] Algorithme de sélection quotidienne (3 personnes/jour, minuit UTC). Une même
+      photo n'est pas rejouée avant **3 ans** (le pool vise au moins 5 000 photos
+      approuvées, 3 ans en consomment 3 285). Les règles portent sur la personne, pas
+      sur la photo : jamais deux photos d'une même personne dans une partie, et un
+      délai minimal entre deux apparitions d'une même personne. Tirer les tranches d'âge
+      de 8 ans (18-25 … 82+) de façon équilibrée, la collecte n'y penchant que
+      faiblement (voir `docs/decisions/architecture.md`)
 - [ ] Logique de guess en 2 étapes : 1ère tentative → chaud/froid, sélection d'une
       catégorie d'indice, 2e tentative
 - [ ] Système de points (bonus 1er coup, majorité des points sur la précision du 2e coup
@@ -46,7 +73,8 @@ la suivante).
 ## Semaine 4 — Interface de jeu
 - [ ] Écran principal : photo, input d'âge, jauge chaud/froid
 - [ ] Sélection de catégorie d'indice + affichage de l'indice
-- [ ] Écran de résultat (âge réel, identité révélée, points gagnés)
+- [ ] Écran de résultat (âge réel, identité révélée, points gagnés, **crédit de la photo :
+      auteur + licence**, obligatoire avant de servir des photos CC BY / BY-SA aux joueurs)
 - [ ] Enchaînement des 3 personnes du jour + récapitulatif final
 - [ ] Page d'accueil publique
 - [ ] Vocabulaire de jeu centralisé dans un seul fichier (essai du ton « enquête »,

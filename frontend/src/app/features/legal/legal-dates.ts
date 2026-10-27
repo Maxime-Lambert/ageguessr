@@ -5,7 +5,7 @@
  */
 export const TERMS_VERSION = '2026-10-21';
 
-export const PRIVACY_UPDATED = '2026-10-21';
+export const PRIVACY_UPDATED = '2026-10-27';
 export const LEGAL_NOTICE_UPDATED = '2026-10-21';
 
 /** "21 October 2026" / "21 octobre 2026", from an ISO date (read as UTC, never shifted). */
