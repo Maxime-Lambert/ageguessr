@@ -82,12 +82,14 @@ test.describe('photo curation', () => {
 
     // A living person is approved like anyone else.
     await page.keyboard.press('a');
-    await expect.poll(() => reviews.length).toBe(2);
+    // Shortcuts are ignored while a decision is in flight: wait for its outcome on
+    // screen before pressing U, or the undo can be dropped.
+    await expect(page.getByText('Nothing left to review.')).toBeVisible();
     expect(reviews[1]).toEqual({ photoId: 'p2', decision: 'APPROVED' });
 
     await page.keyboard.press('u');
     await expect(page.getByRole('heading', { name: 'Person p2' })).toBeVisible();
-    expect(reviews.at(-1)).toEqual({ photoId: 'p2', decision: 'PENDING' });
+    await expect.poll(() => reviews.at(-1)).toEqual({ photoId: 'p2', decision: 'PENDING' });
   });
 
   test('typing in the exclusion search never reviews a photo', async ({ page }) => {
