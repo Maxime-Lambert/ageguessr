@@ -5,10 +5,8 @@ personnes très connues, puis ingérer un pool **équilibré entre hommes et fem
 entre continents**, **sans aucune photo d'une personne de moins de 18 ans**. Wikidata
 reste la seule source tant qu'elle donne assez de photos.
 
-> Branche `feature/people-pool-balance`, empilée sur `feature/photo-curation` (elle-même
-> sur `feature/people-sourcing`, PR #17). À rebaser sur `develop` une fois ces deux PR
-> fusionnées. Ce fichier devient `plans/active-plan.md` quand le plan de curation est
-> archivé.
+> Branche `feature/people-pool-balance`, empilée sur `feature/photo-curation` (PR #18,
+> ouverte ; #17 est mergée). À rebaser sur `develop` une fois #18 fusionnée.
 
 ## For Future Agents
 Au fil du travail : cocher les cases `- [x]`. Quand une phase est finie, passer son
