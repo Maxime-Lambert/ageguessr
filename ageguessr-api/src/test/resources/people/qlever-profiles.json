@@ -1,0 +1,163 @@
+{
+  "head": {
+    "vars": [
+      "person",
+      "gender",
+      "continent"
+    ]
+  },
+  "results": {
+    "bindings": [
+      {
+        "person": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q1001"
+        },
+        "gender": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q6581097"
+        }
+      },
+      {
+        "person": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q1002250"
+        },
+        "gender": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q6581097"
+        }
+      },
+      {
+        "person": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q10068"
+        },
+        "gender": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q6581072"
+        }
+      },
+      {
+        "person": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q11571"
+        },
+        "gender": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q6581097"
+        }
+      },
+      {
+        "person": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q76745"
+        },
+        "gender": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q6581097"
+        }
+      },
+      {
+        "person": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q76984"
+        },
+        "gender": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q6581097"
+        }
+      },
+      {
+        "person": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q77017"
+        },
+        "gender": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q6581097"
+        }
+      },
+      {
+        "person": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q1001"
+        },
+        "continent": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q48"
+        }
+      },
+      {
+        "person": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q1002250"
+        },
+        "continent": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q46"
+        }
+      },
+      {
+        "person": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q1002250"
+        },
+        "continent": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q46"
+        }
+      },
+      {
+        "person": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q10068"
+        },
+        "continent": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q49"
+        }
+      },
+      {
+        "person": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q11571"
+        },
+        "continent": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q46"
+        }
+      },
+      {
+        "person": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q76745"
+        },
+        "continent": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q46"
+        }
+      },
+      {
+        "person": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q76984"
+        },
+        "continent": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q46"
+        }
+      },
+      {
+        "person": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q77017"
+        },
+        "continent": {
+          "type": "uri",
+          "value": "http://www.wikidata.org/entity/Q46"
+        }
+      }
+    ]
+  }
+}

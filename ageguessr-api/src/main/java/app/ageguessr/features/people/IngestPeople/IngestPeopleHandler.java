@@ -16,7 +16,8 @@ import org.springframework.stereotype.Service;
  * Builds the pool of people: Wikidata gives the people, Commons their photos, the date
  * rules decide which photos give an exact age, and the kept ones are re-encoded and
  * stored. Safe to run again: existing photos are kept and count toward the per-person
- * limit and minimum gap, so a rerun only adds what is missing.
+ * limit and minimum gap, so a rerun only adds what is missing. A dry run never touches
+ * the store: every person is processed as if new, and nothing is saved.
  */
 @Slf4j
 @Service
@@ -55,32 +56,37 @@ class IngestPeopleHandler {
         if (command.wikidataId() != null) {
             wikidata.fetchPerson(command.wikidataId())
                     .ifPresentOrElse(
-                            person -> process(person, today, report),
+                            person -> process(person, today, command.dryRun(), report),
                             () -> log.warn("{} is not a human with a P18 image on Wikidata", command.wikidataId()));
             return report;
         }
-        int offset = 0;
-        while (report.peopleKept() < command.targetPeople()) {
+        int offset = command.offset();
+        while (!done(command, report)) {
             List<PersonRecord> page = wikidata.fetchPeople(offset, properties.pageSize(), properties.minBirthYear());
             if (page.isEmpty()) {
                 log.warn("Wikidata list exhausted before reaching {} people", command.targetPeople());
                 break;
             }
             for (PersonRecord person : page) {
-                if (report.peopleKept() >= command.targetPeople()) {
+                if (done(command, report)) {
                     break;
                 }
-                process(person, today, report);
+                process(person, today, command.dryRun(), report);
             }
             offset += properties.pageSize();
         }
         return report;
     }
 
-    private void process(PersonRecord record, LocalDate today, IngestReport report) {
-        report.personSeen();
+    private static boolean done(IngestPeopleCommand command, IngestReport report) {
+        return report.peopleKept() >= command.targetPeople()
+                || (command.sample() > 0 && report.peopleSeen() >= command.sample());
+    }
+
+    private void process(PersonRecord record, LocalDate today, boolean dryRun, IngestReport report) {
+        report.personSeen(record);
         try {
-            Optional<PersonSkip> skip = ingest(record, today, report);
+            Optional<PersonSkip> skip = ingest(record, today, dryRun, report);
             skip.ifPresent(reason -> {
                 report.personSkipped(reason);
                 log.debug("{} skipped: {}", record.wikidataId(), reason);
@@ -91,8 +97,8 @@ class IngestPeopleHandler {
         }
     }
 
-    private Optional<PersonSkip> ingest(PersonRecord record, LocalDate today, IngestReport report) {
-        Optional<Person> existing = store.find(record.wikidataId());
+    private Optional<PersonSkip> ingest(PersonRecord record, LocalDate today, boolean dryRun, IngestReport report) {
+        Optional<Person> existing = dryRun ? Optional.empty() : store.find(record.wikidataId());
         if (existing.map(Person::isExcluded).orElse(false)) {
             return Optional.of(PersonSkip.EXCLUDED);
         }
@@ -124,11 +130,15 @@ class IngestPeopleHandler {
         if (kept.isEmpty() && newPhotos.isEmpty()) {
             return Optional.of(PersonSkip.NO_VALID_PHOTO);
         }
-        store.save(record, birth.get(), death, newPhotos);
-        report.personKept(newPhotos.size());
+        if (!dryRun) {
+            store.save(record, birth.get(), death, newPhotos);
+        }
+        report.personKept(record, newPhotos);
         // QIDs only in logs, never names or file titles (which usually contain the name):
         // a person removed on request must not linger in log files.
-        log.info("{}: {} photo(s) added, {} already stored", record.wikidataId(), newPhotos.size(), kept.size());
+        log.info(
+                "{}: {} photo(s) {}, {} already stored",
+                record.wikidataId(), newPhotos.size(), dryRun ? "found (dry run)" : "added", kept.size());
         return Optional.empty();
     }
 

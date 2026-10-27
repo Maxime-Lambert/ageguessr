@@ -125,7 +125,7 @@ class PeopleStoreIntegrationTest {
     }
 
     private static PersonRecord record(String qid, String name, int sitelinks) {
-        return new PersonRecord(qid, sitelinks, name, null, Set.of(), List.of(), List.of());
+        return new PersonRecord(qid, sitelinks, name, null, Set.of(), List.of(), List.of(), null, null);
     }
 
     private static NewPhoto photo(String file, int year) {

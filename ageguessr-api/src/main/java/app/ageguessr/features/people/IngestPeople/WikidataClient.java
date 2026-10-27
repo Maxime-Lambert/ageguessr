@@ -23,8 +23,8 @@ import tools.jackson.databind.JsonNode;
  * <p>One small query per kind of data, assembled in Java. A single query joining the
  * ranking, birth and death statements and labels ran close to QLever's 30 s limit, then
  * past it (QLever answers a timeout with HTTP 429). Separately, a page of 500 people
- * takes ~7 s: ranking ~4 s, then four queries restricted to the page's QIDs (VALUES) of
- * about a second each.
+ * takes ~7 s: ranking ~4 s, then five queries restricted to the page's QIDs (VALUES) of
+ * about a second each or less.
  */
 @Component
 class WikidataClient {
@@ -105,6 +105,17 @@ class WikidataClient {
             }
             """;
 
+    // Gender and continents of nationality, for the pool balance. wdt: keeps only the
+    // best-ranked statements. One UNION rather than two queries: ~0.5 s for 500 people.
+    private static final String PROFILES = """
+            SELECT ?person ?gender ?continent WHERE {
+              VALUES ?person { %s }
+              { ?person wdt:P21 ?gender . }
+              UNION
+              { ?person wdt:P27 ?country . ?country wdt:P30 ?continent . }
+            }
+            """;
+
     private final WikimediaHttp http;
     private final WikimediaProperties properties;
 
@@ -150,12 +161,13 @@ class WikidataClient {
                 query(BIRTHS.formatted(values)),
                 query(DEATHS.formatted(values)),
                 query(IMAGES.formatted(values)),
-                query(LABELS.formatted(values)));
+                query(LABELS.formatted(values)),
+                query(PROFILES.formatted(values)));
     }
 
-    /** Builds the people of a page from the five result sets, in ranking order. */
+    /** Builds the people of a page from the six result sets, in ranking order. */
     static List<PersonRecord> assemble(
-            JsonNode ranking, JsonNode births, JsonNode deaths, JsonNode images, JsonNode labels) {
+            JsonNode ranking, JsonNode births, JsonNode deaths, JsonNode images, JsonNode labels, JsonNode profiles) {
         Map<String, Builder> people = new LinkedHashMap<>();
         for (JsonNode row : ranking) {
             String qid = qid(row);
@@ -198,6 +210,13 @@ class WikidataClient {
                 person.nameFr.offer(value(row, "label"), value(row, "lang"), "fr");
             }
         }
+        for (JsonNode row : profiles) {
+            Builder person = people.get(qid(row));
+            if (person != null) {
+                entityId(value(row, "gender")).ifPresent(person.genders::add);
+                entityId(value(row, "continent")).ifPresent(person.continents::add);
+            }
+        }
         return people.values().stream().map(Builder::build).toList();
     }
 
@@ -219,6 +238,13 @@ class WikidataClient {
         }
         String id = uri.substring(ENTITY_PREFIX.length());
         return WikidataId.isValid(id) ? id : null;
+    }
+
+    /** "Q6581072" from "http://www.wikidata.org/entity/Q6581072"; empty for anything else. */
+    private static Optional<String> entityId(String uri) {
+        return uri != null && uri.startsWith(ENTITY_PREFIX)
+                ? Optional.of(uri.substring(ENTITY_PREFIX.length()))
+                : Optional.empty();
     }
 
     private static String value(JsonNode row, String variable) {
@@ -261,6 +287,8 @@ class WikidataClient {
         private final Set<String> images = new LinkedHashSet<>();
         private final Set<BirthStatement> births = new LinkedHashSet<>();
         private final Map<String, DeathStatement> deaths = new LinkedHashMap<>();
+        private final Set<String> genders = new LinkedHashSet<>();
+        private final Set<String> continents = new LinkedHashSet<>();
 
         private Builder(String qid, int sitelinks) {
             this.qid = qid;
@@ -270,7 +298,9 @@ class WikidataClient {
         private PersonRecord build() {
             return new PersonRecord(
                     qid, sitelinks, nameEn.text, nameFr.text, images, new ArrayList<>(births),
-                    new ArrayList<>(deaths.values()));
+                    new ArrayList<>(deaths.values()),
+                    GenderResolver.resolve(genders).orElse(null),
+                    ContinentResolver.resolve(continents).orElse(null));
         }
     }
 }

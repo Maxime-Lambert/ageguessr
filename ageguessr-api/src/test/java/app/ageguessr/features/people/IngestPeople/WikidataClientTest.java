@@ -8,6 +8,8 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
+import app.ageguessr.features.people.Continent;
+import app.ageguessr.features.people.Gender;
 import java.net.URI;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -36,7 +38,8 @@ class WikidataClientTest {
                     bindings("qlever-births.json"),
                     bindings("qlever-deaths.json"),
                     bindings("qlever-images.json"),
-                    bindings("qlever-labels.json"))
+                    bindings("qlever-labels.json"),
+                    bindings("qlever-profiles.json"))
             .stream()
             .collect(Collectors.toMap(PersonRecord::wikidataId, Function.identity()));
 
@@ -49,7 +52,7 @@ class WikidataClientTest {
     @Test
     void keepsTheRankingOrder() {
         List<PersonRecord> ordered = WikidataClient.assemble(
-                bindings("qlever-page.json"), empty(), empty(), empty(), empty());
+                bindings("qlever-page.json"), empty(), empty(), empty(), empty(), empty());
 
         assertThat(ordered).extracting(PersonRecord::sitelinks).isSortedAccordingTo((a, b) -> b - a);
     }
@@ -105,6 +108,41 @@ class WikidataClientTest {
     }
 
     @Test
+    void readsTheGenderAndTheContinentOfNationality() {
+        assertThat(people.get("Q10068"))
+                .extracting(PersonRecord::gender, PersonRecord::continent)
+                .containsExactly(Gender.FEMALE, Continent.NORTH_AMERICA);
+        // Gandhi: British India, then India, both in Asia.
+        assertThat(people.get("Q1001"))
+                .extracting(PersonRecord::gender, PersonRecord::continent)
+                .containsExactly(Gender.MALE, Continent.ASIA);
+    }
+
+    @Test
+    void leavesGenderAndContinentUnknownWithoutAnyProfileRow() {
+        PersonRecord person = WikidataClient.assemble(page("Q1"), empty(), empty(), empty(), empty(), empty())
+                .getFirst();
+
+        assertThat(person.gender()).isNull();
+        assertThat(person.continent()).isNull();
+    }
+
+    @Test
+    void ignoresAProfileValueThatIsNotAWikidataEntity() {
+        JsonNode profiles = Fixtures.MAPPER.readTree("""
+                [{"person": {"value": "http://www.wikidata.org/entity/Q1"}, "gender": {"value": "_:blank"}},
+                 {"person": {"value": "http://www.wikidata.org/entity/Q1"},
+                  "continent": {"value": "http://www.wikidata.org/entity/Q46"}}]
+                """);
+
+        PersonRecord person = WikidataClient.assemble(page("Q1"), empty(), empty(), empty(), empty(), profiles)
+                .getFirst();
+
+        assertThat(person.gender()).isNull();
+        assertThat(person.continent()).isEqualTo(Continent.EUROPE);
+    }
+
+    @Test
     void readsAnUnknownDeathDateAsAStatementWithoutValue() {
         JsonNode deaths = Fixtures.MAPPER.readTree("""
                 [{"person": {"value": "http://www.wikidata.org/entity/Q1"},
@@ -112,7 +150,7 @@ class WikidataClientTest {
                   "rank": {"value": "http://wikiba.se/ontology#NormalRank"}}]
                 """);
 
-        PersonRecord person = WikidataClient.assemble(page("Q1"), empty(), deaths, empty(), empty()).getFirst();
+        PersonRecord person = WikidataClient.assemble(page("Q1"), empty(), deaths, empty(), empty(), empty()).getFirst();
 
         assertThat(person.deaths()).containsExactly(new DeathStatement(null, null, WikidataRank.NORMAL));
     }
@@ -121,7 +159,7 @@ class WikidataClientTest {
     void prefersTheExactLanguageOverARegionalVariantWhateverTheRowOrder() {
         JsonNode labels = labels("Jane (UK)", "en-gb", "Jeanne (Canada)", "fr-ca", "Jane", "en", "Jeanne", "fr");
 
-        PersonRecord person = WikidataClient.assemble(page("Q1"), empty(), empty(), empty(), labels).getFirst();
+        PersonRecord person = WikidataClient.assemble(page("Q1"), empty(), empty(), empty(), labels, empty()).getFirst();
 
         assertThat(person.nameEn()).isEqualTo("Jane");
         assertThat(person.nameFr()).isEqualTo("Jeanne");
@@ -131,7 +169,7 @@ class WikidataClientTest {
     void fallsBackToARegionalVariantWhenTheExactLanguageIsMissing() {
         JsonNode labels = labels("Jane (US)", "en-us");
 
-        PersonRecord person = WikidataClient.assemble(page("Q1"), empty(), empty(), empty(), labels).getFirst();
+        PersonRecord person = WikidataClient.assemble(page("Q1"), empty(), empty(), empty(), labels, empty()).getFirst();
 
         assertThat(person.nameEn()).isEqualTo("Jane (US)");
         assertThat(person.nameFr()).isNull();
@@ -144,7 +182,7 @@ class WikidataClientTest {
                   "label": {"value": "Stranger"}, "lang": {"value": "en"}}]
                 """);
 
-        assertThat(WikidataClient.assemble(page("Q1"), empty(), empty(), empty(), labels))
+        assertThat(WikidataClient.assemble(page("Q1"), empty(), empty(), empty(), labels, empty()))
                 .singleElement()
                 .extracting(PersonRecord::nameEn)
                 .isNull();
@@ -158,7 +196,7 @@ class WikidataClientTest {
                  {"person": {"value": "http://www.wikidata.org/entity/Q3"}, "sitelinks": {"value": "7"}}]
                 """);
 
-        assertThat(WikidataClient.assemble(ranking, empty(), empty(), empty(), empty()))
+        assertThat(WikidataClient.assemble(ranking, empty(), empty(), empty(), empty(), empty()))
                 .extracting(PersonRecord::wikidataId)
                 .containsExactly("Q3");
     }
@@ -183,7 +221,7 @@ class WikidataClientTest {
 
     @Test
     void fetchesAPageThenItsDetailsRestrictedToThePageQids() {
-        MockRestServiceServer server = expectFivePosts("LIMIT+500+OFFSET+1000");
+        MockRestServiceServer server = expectSixPosts("LIMIT+500+OFFSET+1000");
 
         List<PersonRecord> page = client(server).fetchPeople(1000, 500, 1930);
 
@@ -193,7 +231,7 @@ class WikidataClientTest {
 
     @Test
     void ranksOnlyPeopleBornFromTheGivenYear() {
-        MockRestServiceServer server = expectFivePosts("FILTER%28YEAR%28%3Fbirth%29+%3E%3D+1930%29");
+        MockRestServiceServer server = expectSixPosts("FILTER%28YEAR%28%3Fbirth%29+%3E%3D+1930%29");
 
         client(server).fetchPeople(0, 500, 1930);
 
@@ -215,7 +253,7 @@ class WikidataClientTest {
 
     @Test
     void fetchesOnePersonByQid() {
-        MockRestServiceServer server = expectFivePosts("VALUES+%3Fperson+%7B+wd%3AQ1001+%7D");
+        MockRestServiceServer server = expectSixPosts("VALUES+%3Fperson+%7B+wd%3AQ1001+%7D");
 
         assertThat(client(server).fetchPerson("Q1001")).isPresent();
         server.verify();
@@ -237,7 +275,7 @@ class WikidataClientTest {
 
     private MockRestServiceServer server;
 
-    private MockRestServiceServer expectFivePosts(String firstQueryMarker) {
+    private MockRestServiceServer expectSixPosts(String firstQueryMarker) {
         RestClient.Builder builder = RestClient.builder();
         server = MockRestServiceServer.bindTo(builder).build();
         this.builder = builder;
@@ -249,7 +287,8 @@ class WikidataClientTest {
             {"p%3AP569", "qlever-births.json"},
             {"p%3AP570", "qlever-deaths.json"},
             {"wdt%3AP18", "qlever-images.json"},
-            {"rdfs%3Alabel", "qlever-labels.json"}
+            {"rdfs%3Alabel", "qlever-labels.json"},
+            {"wdt%3AP21", "qlever-profiles.json"}
         }) {
             server.expect(requestTo(QLEVER))
                     .andExpect(content().string(Matchers.allOf(
