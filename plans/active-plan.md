@@ -209,7 +209,7 @@ résolution du continent) : la plus petite case femmes / hommes est Océanie / f
   par case.
 
 ## Phase 3 : Ingestion équilibrée
-Status: In progress (mécanisme fait ; quotas et cases épuisées à confirmer avec les mesures)
+Status: Complete
 
 - [x] Migration `V9__add_person_gender_and_continent.sql` : colonnes `gender`
       (`MALE` / `FEMALE` / `OTHER`) et `continent` sur `people`, nullable (personnes
@@ -239,7 +239,7 @@ Status: In progress (mécanisme fait ; quotas et cases épuisées à confirmer a
 - [x] Cible en photos (décision du 2026-10-27) : `target-photos=5000`, quotas des
       cases en photos en jeu (`PersonRepository.countPhotosByCell`), arrêt du parcours
       simple au nombre de photos ; règle des 3 ans notée en Semaine 3 de la roadmap.
-- [ ] Essai réel `--limit=60` (photos) écrit en base locale.
+- [x] Essai réel `--limit=60` (photos) écrit en base locale.
 
 ### Verification Plan
 - `./mvnw test` : unitaires du handler (tour de rôle, quota atteint, case épuisée,
@@ -248,10 +248,26 @@ Status: In progress (mécanisme fait ; quotas et cases épuisées à confirmer a
   `SELECT gender, continent, count(*) FROM people GROUP BY 1, 2` cohérent.
 
 ### Phase Summary
-_(à écrire)_
+**Livré** : V9 (`people.gender`, `people.continent`), `Cell` et ses quotas, requête de
+classement par case (`WikidataClient.fetchCell`, 0,6 à 3,4 s), tour de rôle entre
+cases dans `IngestPeopleHandler`, photos déjà en base comptées par case
+(`PersonRepository.countPhotosByCell`), cible en photos (`target-photos=5000`), cases
+« autre » proportionnelles, préférence de la tranche d'âge la moins remplie
+(`PhotoSelector`, `AgeBand`), rapport par case et par tranche. Docs :
+`architecture.md`, `roadmap.md`, `/privacy` section 8.
+
+**Vérification** : backend **628/628** ; essai réel `--limit=60` sur la base locale en
+377 s : 49 personnes, 70 photos, 18 cases à leur quota (5 ; quelques-unes à 6 quand la
+dernière personne apporte deux photos ; « autre » à 1), âges de 18 à 89 ans, aucun nom
+anglais manquant. Relance immédiate : 0 personne vue, 0 s.
+
+**Limite constatée** : une personne ingérée avant V9 n'a ni genre ni continent tant
+que le classement de sa case ne la recroise pas ; si c'est le cas, sa photo existante
+n'est pas comptée pendant ce run (la case peut dépasser son quota de ses photos). Sans
+effet en prod, où l'ingestion n'a jamais tourné.
 
 ## Phase 4 : Revues et PR
-Status: Not started
+Status: In progress
 
 - [ ] `code-reviewer` (sourcing externe, données personnelles) et
       `architecture-reviewer` ; corriger tous les 🔴 et 🟠.
