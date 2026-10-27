@@ -126,7 +126,7 @@ attend maintenant « Nothing left to review. » avant U, et la requête d'annula
   `CHECK (age_at_photo >= 18 AND age_at_photo <= 120)`.
 
 ## Phase 2 : Mesure du rendement (sans écriture en base)
-Status: In progress (code fait, mesures en cours)
+Status: Complete
 
 - [x] `IngestPeopleRunner` : options `--offset=<rang>` (début de la liste) et
       `--dry-run` (toutes les règles, téléchargement et ré-encodage compris, mais rien
@@ -138,9 +138,9 @@ Status: In progress (code fait, mesures en cours)
 - [x] Récupération du genre (`P21`) et du continent (`P27` → `P30`) : nouvelle
       requête de détail dans `WikidataClient`, restreinte aux QID de la page comme les
       quatre autres ; règles de continent dans une classe pure `ContinentResolver`.
-- [ ] Lancer 4 échantillons de 200 personnes : rangs 0, 10 000, 100 000, 500 000.
+- [x] Lancer 4 échantillons de 200 personnes : rangs 0, 10 000, 100 000, 500 000.
       Noter les rapports dans ce plan.
-- [ ] Analyse : rendement par profondeur, par genre, par continent ; temps par
+- [x] Analyse : rendement par profondeur, par genre, par continent ; temps par
       personne ; taille disque par photo. En déduire si 250 personnes par case sont
       atteignables, et la cible réaliste. **Présenter les chiffres à l'utilisateur avant
       la Phase 3.**
@@ -155,7 +155,43 @@ Status: In progress (code fait, mesures en cours)
   → rapport loggé ; `SELECT count(*) FROM people` inchangé avant / après.
 
 ### Phase Summary
-_(à écrire)_
+**Livré** : `--offset`, `--sample` (ajouté : `--limit` compte les personnes gardées,
+inutilisable pour un échantillon de taille fixe), `--dry-run` ; genre et continent par
+une 6e requête QLever (~0,5 s / 500 personnes) ; rapport par case, photos par personne,
+Ko par image, durée. Correctif trouvé en route : labels `mul` (14 « sans nom » dans le
+top 200).
+
+**Mesures du 2026-10-27** (dry-run, 200 personnes du classement global par rang) :
+
+| Rangs | Gardées | Photos / gardée | Ko / image | Durée | Rejets personne |
+|---|---|---|---|---|---|
+| 0–199 | 163 (82 %)* | 1,52 | 162 | 613 s | 22 sans photo, 14 sans nom*, 1 naissance |
+| 10 000–10 199 | 147 (74 %) | 1,19 | 173 | 434 s | 51 sans photo |
+| 100 000–100 199 | 118 (59 %) | 1,01 | 175 | 341 s | 78 sans photo, 4 naissance |
+| 500 000–500 199 | 90 (45 %) | 1,01 | 166 | 296 s | 78 sans photo, 32 naissance |
+
+\* avant le correctif `mul` : ~88 % une fois les 14 « sans nom » récupérés.
+
+- Le rendement est bien plus haut que les ~30 % du spike (qui comptait sans le filtre
+  1930 : les personnes nées après 1930 ont des photos numériques avec EXIF).
+- Rejets `MINOR` : 54 photos dans le top 200, 47, 16, puis 1.
+- Par genre et continent, le rendement des femmes et des petits continents est du
+  même ordre que celui des hommes et de l'Europe dans chaque échantillon (effectifs
+  faibles par case).
+
+**Taille des cases** (QLever, personnes avec `P18` nées en 1930 ou après, avant
+résolution du continent) : la plus petite case femmes / hommes est Océanie / femmes
+(~5 000), puis Afrique / femmes (~6 250), Amérique du Sud / femmes (~10 700).
+
+**Conclusion** :
+- 250 personnes par case sont atteignables partout, même au rendement le plus bas
+  (45 %) : aucune case femmes / hommes ne s'épuisera. Les cases « autre » restent
+  petites (quelques centaines de personnes avant le filtre photo), comme prévu.
+- Coût estimé pour 3 000 personnes : ~4 300 personnes examinées à ~2 s, soit
+  **~2,5 h**, et ~3 000 × 1,2 photo × 170 Ko ≈ **0,6 Go**.
+- Après curation (~43 % de photos rejetées, et la plupart des personnes n'ont qu'une
+  photo), il resterait de l'ordre de **1 700 à 1 900 personnes jouables**, soit ~150
+  par case.
 
 ## Phase 3 : Ingestion équilibrée
 Status: In progress (mécanisme fait ; quotas et cases épuisées à confirmer avec les mesures)
