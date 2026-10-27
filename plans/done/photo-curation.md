@@ -349,19 +349,25 @@ comme Adolf Hitler. Tranché en Phase 6.
 
 
 ## Phase 5 : Docs, revues, PR
-Status: In progress (docs faites, revues en cours ; PR après merge de #17)
+Status: Complete
 
 - [x] `docs/decisions/architecture.md` : rôles et curation, procédure de retrait
       (y compris pour une personne pas encore ingérée), risque « admin sans TOTP ».
 - [x] `docs/roadmap.md` : cocher la curation.
 - [x] Agents `architecture-reviewer` et `code-reviewer` ; corriger.
-- [ ] Rebaser sur `develop` (après merge de #17), tests complets + mutation, `/pr`.
+- [x] Rebaser sur `develop` (après merge de #17), tests complets + mutation, `/pr`.
 
 ### Verification Plan
 - Backend, frontend, mutation verts ; CI de la PR verte.
 
 ### Phase Summary
-_(provisoire : il reste le rebase sur `develop` après le merge de #17, puis la PR)_
+**Rebase du 2026-10-27** sur `develop` après le merge de #17 (merge commit
+`5d325e5`) : sans conflit. `git range-diff` ne montre aucune différence de patch et
+l'arbre final est identique à celui d'avant le rebase. Les revues du 2026-10-26 portent
+donc sur le même code et n'ont pas été relancées.
+
+Run après rebase : backend **560/560**, front **165/165**, lint, `tsc` et Prettier OK,
+Playwright component **42/42**, mutation : code 0, test strength global **93 %**, **100 %** sur les cinq packages de curation et `shared.web`.
 
 **Revues du 2026-10-26** :
 - `code-reviewer` : aucun 🔴 ni 🟠, 3 🟡.
@@ -445,8 +451,56 @@ publicity* américain, durée de conservation des personnes exclues) ajoutés à
 
 
 ## Final Recap
-_(à écrire quand toutes les phases sont finies)_
+**Livré** (PR `feature/photo-curation` → `develop`) : l'outil qui décide quelles photos
+ingérées entrent dans le jeu.
+- **Rôle admin** : `users.role` (V5), posé à la main en SQL, porté dans le JWT (claim
+  `roles`) et exigé sur `/api/admin/**` par `SecurityConfig`.
+- **API admin** dans `features/people/`, un package par use case : file des photos en
+  attente, image à revoir (`no-store`), revue `APPROVED` / `REJECTED` / `PENDING`
+  (annulation) auditée par `reviewed_at` / `reviewed_by` (V6), recherche par nom ou
+  QID insensible aux accents (V7, `unaccent`), exclusion idempotente qui efface les
+  photos.
+- **Page `/admin/curation`** au clavier (A / R / U / →), photo suivante préchargée,
+  image chargée en `blob:` avec le bearer, rappel de la ligne éditoriale, section
+  « Exclude a person ».
+- **Décisions éditoriales** (Phase 6) : personnes vivantes acceptées et prioritaires,
+  retrait sur demande ; exclusion des auteurs de violences de masse et des dirigeants
+  d'un pays en guerre, par la curation ; ingestion limitée aux personnes nées en 1930
+  ou après.
+
+**Chiffres clés** : backend 560 tests, front 165, Playwright component 42 ; mutation à
+100 % de test strength sur les packages de curation.
+
+**Écarts par rapport au plan initial** :
+- garde-fou des personnes vivantes construit puis retiré (Phase 6, décision de
+  l'utilisateur) ;
+- `P1399` (« condamné pour ») écarté comme filtre automatique, trop bruité ;
+- `adminGuard` dans `features/auth/`, `JwtClaims` dans `shared/security/` et
+  `ApiErrorResponse` dans `shared/` (frontières de features, revue d'architecture).
+
+**Hors scope, à faire ensuite** :
+- `feature/people-pool-balance` : aucune photo de mineur, mesure du rendement, pool
+  équilibré par genre et continent. **À livrer avant l'ingestion en production.**
+- TOTP pour le compte admin (Semaine 7).
+- Blocage d'avance d'une personne pas encore ingérée (`blocked_wikidata_ids`), si une
+  demande de retrait se présente.
+- Compteurs d'équilibre sur la page de curation, si l'écart se voit après curation.
 
 ## Deployment Plan
-_(à écrire quand toutes les phases sont finies : migrations V5/V6, rôle admin à poser en
-SQL en prod)_
+1. **Merge de la PR dans `develop`**, puis release `develop` → `main`, en **merge
+   commit**.
+2. **Au démarrage de l'API en prod**, Flyway applique :
+   - V5 : `users.role`, `USER` pour tous les comptes existants ;
+   - V6 : colonnes d'audit `reviewed_at` / `reviewed_by` ;
+   - V7 : `CREATE EXTENSION unaccent`. L'utilisateur `ageguessr` de l'image Postgres
+     officielle est superutilisateur, donc aucune action manuelle.
+
+   Aucune variable d'environnement nouvelle. Rien ne change pour les joueurs : aucune
+   photo n'est encore `APPROVED`.
+3. **Poser le rôle admin** sur le compte de l'utilisateur, depuis le VPS :
+   `docker compose -f docker-compose.prod.yml exec postgres psql -U ageguessr -d ageguessr -c "UPDATE users SET role = 'ADMIN' WHERE email = '<email>'"`.
+   Puis se déconnecter et se reconnecter, ou attendre le prochain refresh (≤ 60 min).
+4. **Vérifier** : le lien « Curation » apparaît dans l'en-tête, et `/admin/curation`
+   affiche « Nothing left to review » (base de prod encore vide).
+5. **Ne pas lancer l'ingestion en production** avant `feature/people-pool-balance`
+   (refus des photos de mineurs et pool équilibré).
