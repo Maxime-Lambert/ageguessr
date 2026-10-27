@@ -1,0 +1,93 @@
+{
+ "head": {
+  "vars": [
+   "person",
+   "sitelinks"
+  ]
+ },
+ "results": {
+  "bindings": [
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1001"
+    },
+    "sitelinks": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "287"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q11571"
+    },
+    "sitelinks": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "214"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1002250"
+    },
+    "sitelinks": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "67"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q10068"
+    },
+    "sitelinks": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "63"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q76745"
+    },
+    "sitelinks": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "59"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q76984"
+    },
+    "sitelinks": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "59"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q77017"
+    },
+    "sitelinks": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "59"
+    }
+   }
+  ]
+ },
+ "meta": {
+  "query-time-ms": 26,
+  "result-size-total": 7
+ }
+}

@@ -29,6 +29,18 @@ class ArchitectureTests {
             .should()
             .resideInAPackage("app.ageguessr.features.*");
 
+    /**
+     * Outbound HTTP (Wikidata, Commons) belongs to the offline people ingestion only: a
+     * game request must never wait on, or leak anything to, a third-party service.
+     */
+    @ArchTest
+    static final ArchRule only_the_people_ingestion_makes_outbound_http_calls = noClasses()
+            .that()
+            .resideOutsideOfPackage("app.ageguessr.features.people.IngestPeople..")
+            .should()
+            .dependOnClassesThat()
+            .haveFullyQualifiedName("org.springframework.web.client.RestClient");
+
     @ArchTest
     static final ArchRule handlers_do_not_depend_on_controllers = noClasses()
             .that()

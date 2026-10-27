@@ -1,0 +1,106 @@
+{
+ "head": {
+  "vars": [
+   "person",
+   "image"
+  ]
+ },
+ "results": {
+  "bindings": [
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1001"
+    },
+    "image": {
+     "type": "uri",
+     "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Mahatma-Gandhi%2C%20studio%2C%201931.jpg"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1002250"
+    },
+    "image": {
+     "type": "uri",
+     "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Duncan%20Haldane.jpg"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q10068"
+    },
+    "image": {
+     "type": "uri",
+     "value": "http://commons.wikimedia.org/wiki/Special:FilePath/2017%20Audi%20FIS%20Ski%20Weltcup%20Garmisch-Partenkirchen%20Damen%20-%20Lindsey%20Vonn%20-%20by%202eight%20-%208SC8048.jpg"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q10068"
+    },
+    "image": {
+     "type": "uri",
+     "value": "http://commons.wikimedia.org/wiki/Special:FilePath/25th%20Laureus%20World%20Sports%20Awards%20-%20Lindsey%20Vonn%20-%20240421%20160319.jpg"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q11571"
+    },
+    "image": {
+     "type": "uri",
+     "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Cristiano%20Ronaldo%20Croatia%20v%20Portugal%202%20July%202026-075%20%28cropped%29.jpg"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q76745"
+    },
+    "image": {
+     "type": "uri",
+     "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Theodor%20Schwann%20Litho.jpg"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q76984"
+    },
+    "image": {
+     "type": "uri",
+     "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Bundesarchiv%20Bild%20146-1997-011-24%2C%20Julius%20Streicher.jpg"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q76984"
+    },
+    "image": {
+     "type": "uri",
+     "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Julius%20Streicher.gif"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q77017"
+    },
+    "image": {
+     "type": "uri",
+     "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Portret%20van%20Jakob%20B%C3%B6hme%2C%20RP-P-OB-2353.jpg"
+    }
+   }
+  ]
+ },
+ "meta": {
+  "query-time-ms": 21,
+  "result-size-total": 9
+ }
+}

@@ -1,0 +1,248 @@
+{
+ "batchcomplete": true,
+ "query": {
+  "pages": [
+   {
+    "pageid": 15024091,
+    "ns": 6,
+    "title": "File:Glenn Gould 1.jpg",
+    "imagerepository": "local",
+    "imageinfo": [
+     {
+      "thumburl": "https://upload.wikimedia.org/wikipedia/commons/7/78/Glenn_Gould_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "thumbwidth": 800,
+      "thumbheight": 622,
+      "thumbattribs": {
+       "src": "https://upload.wikimedia.org/wikipedia/commons/7/78/Glenn_Gould_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+       "decoding": "async",
+       "loading": "lazy",
+       "width": 800,
+       "height": 622
+      },
+      "url": "https://upload.wikimedia.org/wikipedia/commons/7/78/Glenn_Gould_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "descriptionurl": "https://commons.wikimedia.org/wiki/File:Glenn_Gould_1.jpg",
+      "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=15024091",
+      "metadata": [
+       {
+        "name": "MEDIAWIKI_EXIF_VERSION",
+        "value": 1
+       }
+      ],
+      "extmetadata": {
+       "Artist": {
+        "value": "<bdi><a href=\"https://en.wikipedia.org/wiki/en:Don_Hunstein\" class=\"extiw\" title=\"w:en:Don Hunstein\"><span title=\"American photographer (1928–2017)\">Don Hunstein</span></a></bdi>",
+        "source": "commons-desc-page"
+       },
+       "LicenseShortName": {
+        "value": "Attribution",
+        "source": "commons-desc-page",
+        "hidden": ""
+       }
+      },
+      "mime": "image/jpeg"
+     }
+    ]
+   },
+   {
+    "pageid": 45860507,
+    "ns": 6,
+    "title": "File:Glenn Gould 1 crop.jpg",
+    "imagerepository": "local",
+    "imageinfo": [
+     {
+      "thumburl": "https://upload.wikimedia.org/wikipedia/commons/8/80/Glenn_Gould_1_crop.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "thumbwidth": 800,
+      "thumbheight": 1241,
+      "thumbattribs": {
+       "src": "https://upload.wikimedia.org/wikipedia/commons/8/80/Glenn_Gould_1_crop.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+       "decoding": "async",
+       "loading": "lazy",
+       "width": 800,
+       "height": 1241
+      },
+      "url": "https://upload.wikimedia.org/wikipedia/commons/8/80/Glenn_Gould_1_crop.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "descriptionurl": "https://commons.wikimedia.org/wiki/File:Glenn_Gould_1_crop.jpg",
+      "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=45860507",
+      "metadata": [
+       {
+        "name": "MEDIAWIKI_EXIF_VERSION",
+        "value": 1
+       }
+      ],
+      "extmetadata": {
+       "Artist": {
+        "value": "Don Hunstein / Glenn Gould Foundation",
+        "source": "commons-desc-page"
+       },
+       "LicenseShortName": {
+        "value": "Attribution",
+        "source": "commons-desc-page",
+        "hidden": ""
+       }
+      },
+      "mime": "image/jpeg"
+     }
+    ]
+   },
+   {
+    "pageid": 182703089,
+    "ns": 6,
+    "title": "File:Glenn Gould playing on CBC-TV concert.jpg",
+    "imagerepository": "local",
+    "imageinfo": [
+     {
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/06/Glenn_Gould_playing_on_CBC-TV_concert.jpg/960px-Glenn_Gould_playing_on_CBC-TV_concert.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "thumbwidth": 800,
+      "thumbheight": 740,
+      "responsiveUrls": {
+       "2": "https://upload.wikimedia.org/wikipedia/commons/0/06/Glenn_Gould_playing_on_CBC-TV_concert.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled"
+      },
+      "thumbattribs": {
+       "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/06/Glenn_Gould_playing_on_CBC-TV_concert.jpg/960px-Glenn_Gould_playing_on_CBC-TV_concert.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+       "decoding": "async",
+       "loading": "lazy",
+       "width": 800,
+       "height": 740,
+       "srcset": "https://upload.wikimedia.org/wikipedia/commons/0/06/Glenn_Gould_playing_on_CBC-TV_concert.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled 2x"
+      },
+      "url": "https://upload.wikimedia.org/wikipedia/commons/0/06/Glenn_Gould_playing_on_CBC-TV_concert.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "descriptionurl": "https://commons.wikimedia.org/wiki/File:Glenn_Gould_playing_on_CBC-TV_concert.jpg",
+      "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=182703089",
+      "metadata": [
+       {
+        "name": "MEDIAWIKI_EXIF_VERSION",
+        "value": 1
+       }
+      ],
+      "extmetadata": {
+       "DateTimeOriginal": {
+        "value": "1962-01",
+        "source": "commons-desc-page"
+       },
+       "Artist": {
+        "value": "Canadian Broadcasting Corporation",
+        "source": "commons-desc-page"
+       },
+       "LicenseShortName": {
+        "value": "Public domain",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "UsageTerms": {
+        "value": "Public domain",
+        "source": "commons-desc-page"
+       }
+      },
+      "mime": "image/jpeg"
+     }
+    ]
+   },
+   {
+    "pageid": 182704063,
+    "ns": 6,
+    "title": "File:Concerto no. 4, in G major, for piano and orchestra, op. 58 (Gould and Bernstein).jpg",
+    "imagerepository": "local",
+    "imageinfo": [
+     {
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3e/Concerto_no._4%2C_in_G_major%2C_for_piano_and_orchestra%2C_op._58_%28Gould_and_Bernstein%29.jpg/960px-Concerto_no._4%2C_in_G_major%2C_for_piano_and_orchestra%2C_op._58_%28Gould_and_Bernstein%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "thumbwidth": 800,
+      "thumbheight": 783,
+      "responsiveUrls": {
+       "2": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3e/Concerto_no._4%2C_in_G_major%2C_for_piano_and_orchestra%2C_op._58_%28Gould_and_Bernstein%29.jpg/1920px-Concerto_no._4%2C_in_G_major%2C_for_piano_and_orchestra%2C_op._58_%28Gould_and_Bernstein%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+      },
+      "thumbattribs": {
+       "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3e/Concerto_no._4%2C_in_G_major%2C_for_piano_and_orchestra%2C_op._58_%28Gould_and_Bernstein%29.jpg/960px-Concerto_no._4%2C_in_G_major%2C_for_piano_and_orchestra%2C_op._58_%28Gould_and_Bernstein%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+       "decoding": "async",
+       "loading": "lazy",
+       "width": 800,
+       "height": 783,
+       "srcset": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3e/Concerto_no._4%2C_in_G_major%2C_for_piano_and_orchestra%2C_op._58_%28Gould_and_Bernstein%29.jpg/1920px-Concerto_no._4%2C_in_G_major%2C_for_piano_and_orchestra%2C_op._58_%28Gould_and_Bernstein%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail 2x"
+      },
+      "url": "https://upload.wikimedia.org/wikipedia/commons/3/3e/Concerto_no._4%2C_in_G_major%2C_for_piano_and_orchestra%2C_op._58_%28Gould_and_Bernstein%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "descriptionurl": "https://commons.wikimedia.org/wiki/File:Concerto_no._4,_in_G_major,_for_piano_and_orchestra,_op._58_(Gould_and_Bernstein).jpg",
+      "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=182704063",
+      "metadata": [
+       {
+        "name": "MEDIAWIKI_EXIF_VERSION",
+        "value": 1
+       }
+      ],
+      "extmetadata": {
+       "DateTimeOriginal": {
+        "value": "1961",
+        "source": "commons-desc-page"
+       },
+       "Artist": {
+        "value": "<bdi><a href=\"https://en.wikipedia.org/wiki/en:Richard_Avedon\" class=\"extiw\" title=\"w:en:Richard Avedon\"><span title=\"American photographer (1923–2004)\">Richard Avedon</span></a></bdi>",
+        "source": "commons-desc-page"
+       },
+       "LicenseShortName": {
+        "value": "Public domain",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "UsageTerms": {
+        "value": "Public domain",
+        "source": "commons-desc-page"
+       }
+      },
+      "mime": "image/jpeg"
+     }
+    ]
+   },
+   {
+    "pageid": 182704207,
+    "ns": 6,
+    "title": "File:Glenn Gould 1961 (cropped).jpg",
+    "imagerepository": "local",
+    "imageinfo": [
+     {
+      "thumburl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/ce/Glenn_Gould_1961_%28cropped%29.jpg/960px-Glenn_Gould_1961_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "thumbwidth": 800,
+      "thumbheight": 1078,
+      "responsiveUrls": {
+       "2": "https://upload.wikimedia.org/wikipedia/commons/c/ce/Glenn_Gould_1961_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled"
+      },
+      "thumbattribs": {
+       "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/ce/Glenn_Gould_1961_%28cropped%29.jpg/960px-Glenn_Gould_1961_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+       "decoding": "async",
+       "loading": "lazy",
+       "width": 800,
+       "height": 1078,
+       "srcset": "https://upload.wikimedia.org/wikipedia/commons/c/ce/Glenn_Gould_1961_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled 2x"
+      },
+      "url": "https://upload.wikimedia.org/wikipedia/commons/c/ce/Glenn_Gould_1961_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "descriptionurl": "https://commons.wikimedia.org/wiki/File:Glenn_Gould_1961_(cropped).jpg",
+      "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=182704207",
+      "metadata": [
+       {
+        "name": "MEDIAWIKI_EXIF_VERSION",
+        "value": 1
+       }
+      ],
+      "extmetadata": {
+       "DateTimeOriginal": {
+        "value": "1961",
+        "source": "commons-desc-page"
+       },
+       "Artist": {
+        "value": "<bdi><a href=\"https://en.wikipedia.org/wiki/en:Richard_Avedon\" class=\"extiw\" title=\"w:en:Richard Avedon\"><span title=\"American photographer (1923–2004)\">Richard Avedon</span></a></bdi>",
+        "source": "commons-desc-page"
+       },
+       "LicenseShortName": {
+        "value": "Public domain",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "UsageTerms": {
+        "value": "Public domain",
+        "source": "commons-desc-page"
+       }
+      },
+      "mime": "image/jpeg"
+     }
+    ]
+   }
+  ]
+ }
+}

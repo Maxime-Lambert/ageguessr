@@ -296,27 +296,79 @@ jour de `/privacy` et de sa date.
 ## Domaine du jeu
 
 ### Sourcing des personnes (identité, date de naissance, photo)
-**Décision** : Wikidata comme source structurée principale.
-- Date de naissance : propriété `P569`
-- Photo libre de droits : propriété `P18` (image Commons), ou à défaut interrogation des
-  Structured Data on Commons (`depicts` = la personne) pour trouver une image alternative
-  plus récente que celle de l'infobox Wikipedia
-- Notoriété ("un minimum connu") : nombre de sitelinks Wikidata (nombre de langues avec
-  un article) comme proxy, éventuellement croisé avec l'API Wikimedia Pageviews pour
-  écarter les personnes quasi inconnues malgré un sitelink count correct
+**Décision** : le joueur devine **l'âge de la personne sur la photo**. Personnes
+vivantes et décédées sont acceptées. Le pool est construit par une **ingestion
+ponctuelle**, pas pendant les parties :
+- **Liste des personnes** : humains (`P31 = Q5`) avec une image `P18`, par sitelinks
+  décroissants (notoriété), interrogés sur **QLever** (`qlever.dev`). Le SPARQL public
+  de Wikidata dépasse son délai sur ce classement.
+  - Cinq petites requêtes par page de 500 : classement, naissances, décès, images,
+    labels. Elles sont assemblées en Java, environ 7 s par page. Une requête unique en
+    jointure dépassait la limite de 30 s de QLever.
+- **Date de naissance** : `P569` au jour près, en calendrier grégorien, avec les rangs
+  Wikidata (un `deprecated` est ignoré, un `preferred` l'emporte). Au moindre doute,
+  la personne est écartée.
+- **Photos candidates** : le `P18`, plus les fichiers Commons dont les Structured Data
+  indiquent `depicts (P180) = la personne`. Format JPEG uniquement. Licences en
+  allow-list : CC0, CC BY, CC BY-SA, domaine public.
+- **Âge exact obligatoire** : l'âge doit être le même aux deux bornes de l'intervalle
+  permis par la précision de la date. Une date de prise de vue n'est retenue que si :
+  - elle est **déclarée** (SDC `P571` et/ou champ `date` de `{{Information}}`, parsé
+    strictement, sans « circa », décennie ni intervalle) ;
+  - elle est **corroborée par l'EXIF `DateTimeOriginal`** de l'appareil ;
+  - aucune année du nom de fichier ne la contredit.
 
-**Raison** : Wikidata + Wikipédia forment un écosystème cohérent et gratuit, couverture
-mondiale (pas seulement anglo-saxonne), déjà structuré (propriétés typées, pas de
-parsing HTML fragile). Alternative écartée : une API dédiée aux célébrités (souvent
-payante, couverture inégale hors célébrités anglo-saxonnes, incompatible avec l'objectif
-"personnalités mondialement connues" mais pas uniquement US/UK).
+  Plus de repli sur la date d'upload : un tirage ancien numérisé porte souvent la date
+  du scan.
+- **Une photo par tranche d'au moins 10 ans** (en âge et en année civile) pour une même
+  personne, avec un plafond de 5. Les deux valeurs sont des propriétés
+  (`app.people.ingest.*`).
+- **Curation manuelle obligatoire** : chaque photo est stockée `PENDING`, et seules les
+  photos `APPROVED` sont servies ou jouées. Le statut `REJECTED` n'est jamais
+  reproposé et libère son année et son âge.
+- **Commande** : profil Spring `ingest` (`IngestPeopleRunner`, `--limit`, `--qid`),
+  idempotente : une relance n'ajoute que ce qui manque.
 
-**Limite connue** : "photo la plus récente possible" n'est pas un champ structuré
-Wikidata natif — nécessitera une heuristique (date de la photo dans les métadonnées
-Commons, ou date d'upload en fallback) à valider sur un échantillon réel avant de
-généraliser (vérifier sur un échantillon représentatif avant d'industrialiser
-l'extraction, plutôt que de supposer que l'heuristique fonctionne à grande échelle sans
-preuve).
+**Raison** : Wikidata et Commons forment un écosystème gratuit, structuré et à
+couverture mondiale. Le reste découle de l'exigence d'un âge exact :
+- **Pourquoi ces règles de date** : le spike du 2026-10-26 sur 400 personnes
+  (`plans/done/people-sourcing.md`) a montré qu'une date déclarée seule se trompe sur
+  les photos anciennes numérisées. L'EXIF strict garde tout de même ~30 % des
+  personnes, soit des dizaines de milliers.
+- **Pourquoi la curation** : la revue visuelle de 46 photos retenues automatiquement en
+  a trouvé ~43 % inutilisables (groupes, foules, scènes vues de loin, personne du
+  tout). Les fichiers `depicts` ne listent que le sujet voulu par le contributeur.
+  L'exigence produit est **une seule personne, cadrée au minimum du visage jusqu'au
+  corps entier**. La curation manuelle a été préférée à la détection de visages
+  locale et à la vision par LLM.
+
+**Données personnelles** :
+- Nom, dates de naissance et de décès, et photos de personnalités publiques, collectés
+  indirectement (art. 14 RGPD).
+- Base légale : intérêt légitime. Information donnée dans `/privacy` (section 8).
+- `people.excluded` traite les demandes de retrait. Poser l'exclusion **supprime
+  physiquement** les photos et images de la personne, par un trigger Postgres déclaré
+  dans V4 : ça marche quel que soit le chemin (SQL à la main, page de curation). La
+  ligne `people` reste, pour que l'ingestion ne réajoute jamais la personne.
+- Les logs d'ingestion ne contiennent que des QID, jamais de nom ni de titre de fichier
+  (qui contient souvent le nom). Une personne retirée ne subsiste donc pas dans les
+  logs.
+
+**Limites connues** :
+- QLever, service tiers, répond 429 quand une requête dépasse son délai. Une ingestion
+  peut donc s'arrêter ; on la relance (idempotente).
+- **Droit à l'image des personnes vivantes, à trancher avant d'approuver la moindre
+  photo d'une personne vivante.** Les licences libres de Commons couvrent le droit
+  d'auteur, pas le droit à l'image (art. 9 du Code civil ; régimes différents à
+  l'étranger). Un jeu n'est pas l'usage « information » que la jurisprudence tolère
+  pour les personnalités publiques. Options relevées par la revue `code-reviewer` du
+  2026-10-26 :
+  - avis juridique ;
+  - lancement limité aux personnes décédées (la date de décès est déjà connue) ;
+  - écarter les fichiers marqués `{{Personality rights}}` sur Commons.
+- **Attribution CC BY / BY-SA** : l'auteur et la licence sont stockés, mais leur
+  affichage à la révélation du round (Semaine 4) n'existe pas encore. Aucune photo ne
+  doit être servie à des joueurs avant cet affichage.
 
 ### Sourcing des indices événementiels par catégorie
 **Décision** : pages Wikipédia par année et catégorie (ex. `1976_in_music`,
@@ -333,14 +385,30 @@ une fois (ingestion ponctuelle) plutôt qu'un job récurrent nightly, les évén
 historiques ne changeant pas.
 
 ### Anti-triche sur l'image
-**Décision** : les images ne sont jamais servies depuis l'URL Wikimedia Commons brute —
-un endpoint backend interne (`/api/images/{id}`) sert l'image par identifiant opaque,
-sans exposer le nom de fichier Commons (qui contient souvent le nom de la personne) ni
-le nom de la personne dans aucune requête réseau avant la résolution du round.
+**Décision** : les images ne sont jamais servies depuis l'URL Wikimedia Commons brute.
+L'endpoint public `GET /api/images/{publicId}` sert une **copie ré-encodée** par un
+identifiant opaque (UUID aléatoire, distinct de la clé primaire) :
+- **ré-encodage à l'ingestion** : un JPEG neuf, écrit sans aucune métadonnée (EXIF,
+  XMP, IPTC, commentaires). Les octets changent, donc l'image ne se retrouve pas sur
+  Commons par son empreinte ;
+- **rien ne sort de la source** : la réponse ne contient ni nom de fichier, ni
+  `Content-Disposition`, ni ETag dérivé de Commons, ni URL source. Le nom de fichier,
+  le SHA-1 Commons et l'URL source restent en base pour l'attribution à la révélation
+  du round ;
+- **un seul 404 pour tous les refus** : id mal formé, inconnu, interne, photo non
+  approuvée, personne exclue. L'endpoint ne permet pas de sonder le pool ;
+- **aucun appel sortant pendant une requête de jeu** : règle ArchUnit, `RestClient`
+  n'est utilisable que dans l'ingestion et `config`.
 
-**Raison** : une URL Commons `Claude_Francois_1976.jpg` ou une recherche d'image
-inversée révèlerait l'identité (donc l'âge) en quelques secondes — contournerait
-totalement le jeu. Contrainte posée dès le schéma de données, pas un ajout a posteriori.
+**Raison** : une URL Commons `Claude_Francois_1976.jpg`, une recherche par empreinte
+ou un EXIF « Claude François au Palais des sports » révèleraient l'identité, donc
+l'âge, en quelques secondes. Ce serait contourner totalement le jeu.
+
+**Limites connues** :
+- La recherche d'image inversée (Google Lens…) reste possible sur les pixels eux-mêmes.
+- Le `publicId` est stable : une fois une partie terminée, le couple id → réponse peut
+  circuler. La sélection quotidienne (Semaine 3) devra régénérer le `publicId` d'une
+  photo resélectionnée.
 
 ### Système de points
 **Décision** : bonus plein si trouvé du premier coup ; sinon, l'essentiel des points est

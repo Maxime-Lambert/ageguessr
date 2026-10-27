@@ -1,0 +1,1025 @@
+{
+ "entities": {
+  "M15024091": {
+   "pageid": 15024091,
+   "ns": 6,
+   "title": "File:Glenn Gould 1.jpg",
+   "lastrevid": 1274223555,
+   "modified": "2026-09-09T05:28:56Z",
+   "type": "mediainfo",
+   "id": "M15024091",
+   "labels": {
+    "it": {
+     "language": "it",
+     "value": "Glenn Gould al pianoforte nel 1980 circa"
+    }
+   },
+   "descriptions": {},
+   "statements": {
+    "P6305": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6305",
+       "hash": "0991345d7426eee38fff9dd2c0b2ae47d1a6bb96",
+       "datavalue": {
+        "value": "2009062910052774",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M15024091$95443347-C047-4B62-920B-6AA9F64D32C0",
+      "rank": "normal"
+     }
+    ],
+    "P275": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P275",
+       "hash": "550d3cdad47a71b55071340fc424de090f5e93a4",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 98923445,
+         "id": "Q98923445"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M15024091$3D00929B-5EC6-4C1D-98B3-D3F5B160BF08",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "5570347fdc76d2a80732f51ea10ee4b144a084e0",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 50423863,
+         "id": "Q50423863"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M15024091$C7B6A4D7-77BF-411F-82C7-D43DD387981D",
+      "rank": "normal"
+     }
+    ],
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "d3789546aaae7de293b9389a2577a61c019ca389",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 216924,
+         "id": "Q216924"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M15024091$9EB37E8B-9D0D-49F7-89D4-2317C5D08177",
+      "rank": "preferred"
+     }
+    ],
+    "P3575": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P3575",
+       "hash": "4ca17efe1260e20b05950475db3526bc196a19a6",
+       "datavalue": {
+        "value": {
+         "amount": "+57425",
+         "unit": "http://www.wikidata.org/entity/Q8799"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M15024091$8ABCD98B-BFB9-406C-85DF-FE29BCACA811",
+      "rank": "normal"
+     }
+    ],
+    "P2048": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2048",
+       "hash": "e83dde8168aaf348b007254816aeb6b03ddeb811",
+       "datavalue": {
+        "value": {
+         "amount": "+350",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M15024091$DD49408B-3A72-4BDD-8EE8-96D5F124D310",
+      "rank": "normal"
+     }
+    ],
+    "P2049": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2049",
+       "hash": "81fc058f3426ddc34d8e78b54a99c2fe213e6893",
+       "datavalue": {
+        "value": {
+         "amount": "+450",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M15024091$F5A6DB48-4F6E-4B9E-9667-FB99D27927B2",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M15024091$79DE99CE-C9BA-4F89-A1BA-D2795A9F029C",
+      "rank": "normal"
+     }
+    ],
+    "P4092": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P4092",
+       "hash": "1da26dde17313ab241543db1316b34a4e05086a7",
+       "datavalue": {
+        "value": "a730792438c4b72f4a1ed78ba5058c59047652bd",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P459": [
+        {
+         "snaktype": "value",
+         "property": "P459",
+         "hash": "75dff03c151b13fbab93742164121c16a6aa0de1",
+         "datavalue": {
+          "value": {
+           "entity-type": "item",
+           "numeric-id": 13414952,
+           "id": "Q13414952"
+          },
+          "type": "wikibase-entityid"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P459"
+      ],
+      "id": "M15024091$BDFC712D-A7D0-47CA-89CA-40910285D674",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M45860507": {
+   "pageid": 45860507,
+   "ns": 6,
+   "title": "File:Glenn Gould 1 crop.jpg",
+   "lastrevid": 1274223559,
+   "modified": "2026-09-09T05:28:57Z",
+   "type": "mediainfo",
+   "id": "M45860507",
+   "labels": {},
+   "descriptions": {},
+   "statements": {
+    "P6305": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6305",
+       "hash": "0991345d7426eee38fff9dd2c0b2ae47d1a6bb96",
+       "datavalue": {
+        "value": "2009062910052774",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M45860507$6788620C-B022-4A6B-A74C-77C304BB3E74",
+      "rank": "normal"
+     }
+    ],
+    "P275": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P275",
+       "hash": "550d3cdad47a71b55071340fc424de090f5e93a4",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 98923445,
+         "id": "Q98923445"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M45860507$AF3735F1-6CC6-4488-8479-1E21E41A7AE1",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "5570347fdc76d2a80732f51ea10ee4b144a084e0",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 50423863,
+         "id": "Q50423863"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M45860507$DA861408-D890-42FE-9CD2-5C445655247C",
+      "rank": "normal"
+     }
+    ],
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "d3789546aaae7de293b9389a2577a61c019ca389",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 216924,
+         "id": "Q216924"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M45860507$D766625F-E3D0-4E17-B5B0-5E1E5FCD9403",
+      "rank": "normal"
+     }
+    ],
+    "P3575": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P3575",
+       "hash": "60e0b8854d65be36d433864e0bfec5aa47ca0cda",
+       "datavalue": {
+        "value": {
+         "amount": "+24191",
+         "unit": "http://www.wikidata.org/entity/Q8799"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M45860507$29685493-3248-4D9A-ABEC-20A566D49470",
+      "rank": "normal"
+     }
+    ],
+    "P2048": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2048",
+       "hash": "4c759f05604f8fa3583a329062e35049b07b6afe",
+       "datavalue": {
+        "value": {
+         "amount": "+352",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M45860507$C5BF5261-36DB-4FB8-B838-DE785DD0FFA5",
+      "rank": "normal"
+     }
+    ],
+    "P2049": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2049",
+       "hash": "86d49027310d20ffd9d990476d0433ff6e243e01",
+       "datavalue": {
+        "value": {
+         "amount": "+227",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M45860507$1AFD4629-E31C-4DF3-9C48-78AB2EBEAF19",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M45860507$3050FCA0-1C06-4CA9-BFEF-0AB816754BCA",
+      "rank": "normal"
+     }
+    ],
+    "P4092": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P4092",
+       "hash": "96050076005475f8fe19a1aa05648dd82a20aea3",
+       "datavalue": {
+        "value": "aa401fafe91cac7785df369ddd26d5f976bc65b5",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P459": [
+        {
+         "snaktype": "value",
+         "property": "P459",
+         "hash": "75dff03c151b13fbab93742164121c16a6aa0de1",
+         "datavalue": {
+          "value": {
+           "entity-type": "item",
+           "numeric-id": 13414952,
+           "id": "Q13414952"
+          },
+          "type": "wikibase-entityid"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P459"
+      ],
+      "id": "M45860507$DD7DB155-3188-49F3-A8E2-B373656BA11F",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M182703089": {
+   "pageid": 182703089,
+   "ns": 6,
+   "title": "File:Glenn Gould playing on CBC-TV concert.jpg",
+   "lastrevid": 1192551762,
+   "modified": "2026-04-06T12:13:37Z",
+   "type": "mediainfo",
+   "id": "M182703089",
+   "labels": {
+    "en": {
+     "language": "en",
+     "value": "Glenn Gould playing on CBC-TV concert"
+    }
+   },
+   "descriptions": {},
+   "statements": {
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "d3789546aaae7de293b9389a2577a61c019ca389",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 216924,
+         "id": "Q216924"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M182703089$4D2F1308-91DE-4EFC-BE36-6B640C98FE34",
+      "rank": "normal"
+     }
+    ],
+    "P571": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P571",
+       "hash": "8cb449a01ffd06321741ebc750b0e4be39285448",
+       "datavalue": {
+        "value": {
+         "time": "+1962-01-00T00:00:00Z",
+         "timezone": 0,
+         "before": 0,
+         "after": 0,
+         "precision": 10,
+         "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+        },
+        "type": "time"
+       }
+      },
+      "type": "statement",
+      "id": "M182703089$89734E16-7509-430C-9A84-5CB272F2F76E",
+      "rank": "normal"
+     }
+    ],
+    "P3575": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P3575",
+       "hash": "0b8b929119fca7f9a4b81ad209112763e2ffc627",
+       "datavalue": {
+        "value": {
+         "amount": "+516534",
+         "unit": "http://www.wikidata.org/entity/Q8799"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M182703089$B6225DDA-A929-4B17-8133-C9474BF8C932",
+      "rank": "normal"
+     }
+    ],
+    "P2048": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2048",
+       "hash": "69bf3142b71c878cc3bf64656128bfbb20a71126",
+       "datavalue": {
+        "value": {
+         "amount": "+1090",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M182703089$6612AB7D-90A4-4000-900F-6D62506C9503",
+      "rank": "normal"
+     }
+    ],
+    "P2049": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2049",
+       "hash": "713ee80e9f7733df10b28c558e210db57ff2c743",
+       "datavalue": {
+        "value": {
+         "amount": "+1178",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M182703089$E92BFCAF-EF47-4375-AEED-6098AD047404",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M182703089$23C47102-7B89-488B-9749-3BD1D0545FCD",
+      "rank": "normal"
+     }
+    ],
+    "P4092": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P4092",
+       "hash": "9993878b256560537db1cdfdf7c7d6a3d3005225",
+       "datavalue": {
+        "value": "d420babd7f4032b7c58b43e0726fa03ff912a096",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P459": [
+        {
+         "snaktype": "value",
+         "property": "P459",
+         "hash": "75dff03c151b13fbab93742164121c16a6aa0de1",
+         "datavalue": {
+          "value": {
+           "entity-type": "item",
+           "numeric-id": 13414952,
+           "id": "Q13414952"
+          },
+          "type": "wikibase-entityid"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P459"
+      ],
+      "id": "M182703089$AF4A8CB9-E3FF-4EE6-8B12-2314AA5A4932",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "f69dc45ce9c48664155022498b34100d801bd549",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 19652,
+         "id": "Q19652"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M182703089$A186134E-8BA3-4BE9-AC8E-6A800450068D",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M182704063": {
+   "pageid": 182704063,
+   "ns": 6,
+   "title": "File:Concerto no. 4, in G major, for piano and orchestra, op. 58 (Gould and Bernstein).jpg",
+   "lastrevid": 1193479549,
+   "modified": "2026-04-07T21:42:09Z",
+   "type": "mediainfo",
+   "id": "M182704063",
+   "labels": {
+    "en": {
+     "language": "en",
+     "value": "Cover of Concerto no. 4, in G major, for piano and orchestra, op. 58 (Glenn Gould (right) and Leonard Bernstein)"
+    }
+   },
+   "descriptions": {},
+   "statements": {
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "d3789546aaae7de293b9389a2577a61c019ca389",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 216924,
+         "id": "Q216924"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M182704063$61DD4FFD-7A2B-4D50-8BC1-A3E08ACB4512",
+      "rank": "normal"
+     },
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "6e1f968ed30ac8af71fcc7099d89b77b729ab545",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 152505,
+         "id": "Q152505"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M182704063$6B2496A9-D25C-4C20-87B7-FC6CE7EF295D",
+      "rank": "normal"
+     }
+    ],
+    "P7482": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P7482",
+       "hash": "b82dd47222a210c6dc1f428b693c2fbf7b0e0d6e",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 74228490,
+         "id": "Q74228490"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P973": [
+        {
+         "snaktype": "value",
+         "property": "P973",
+         "hash": "195fca5e5988999fb9aed3b86832205801054fd4",
+         "datavalue": {
+          "value": "https://archive.org/details/concertono4ingma00beet",
+          "type": "string"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P973"
+      ],
+      "id": "M182704063$B58C749F-626E-4734-89C2-2D19EB22E09E",
+      "rank": "normal"
+     }
+    ],
+    "P571": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P571",
+       "hash": "7f1055ea9f665502a21d1e3eeb1e94b0b2e8b472",
+       "datavalue": {
+        "value": {
+         "time": "+1961-00-00T00:00:00Z",
+         "timezone": 0,
+         "before": 0,
+         "after": 0,
+         "precision": 9,
+         "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+        },
+        "type": "time"
+       }
+      },
+      "type": "statement",
+      "id": "M182704063$C1BA3D23-EB5F-4A31-A2D2-21FB44B7D5DA",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M182704063$972CED40-5E8F-4C73-AD13-B9B3B176F5B7",
+      "rank": "normal"
+     }
+    ],
+    "P3575": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P3575",
+       "hash": "3ddbfd1cf12e13ada504dc7808de679c9859e975",
+       "datavalue": {
+        "value": {
+         "amount": "+3179543",
+         "unit": "http://www.wikidata.org/entity/Q8799"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M182704063$21493B8D-A89F-43E8-AF2F-B03F56E0D028",
+      "rank": "normal"
+     }
+    ],
+    "P2048": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2048",
+       "hash": "d48781afb0e3e156b0d5a326406a768ce2326732",
+       "datavalue": {
+        "value": {
+         "amount": "+3643",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M182704063$117D6503-A3D5-4869-A7E5-D4D2BB8A9A04",
+      "rank": "normal"
+     }
+    ],
+    "P2049": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2049",
+       "hash": "6dcf952807178673e603e453ef07fadd2cd0ac41",
+       "datavalue": {
+        "value": {
+         "amount": "+3720",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M182704063$84A4C08B-629F-4C40-AC31-0ABB9524A1DC",
+      "rank": "normal"
+     }
+    ],
+    "P4092": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P4092",
+       "hash": "495bf9f71f29534b8900a7b6de7786b182594e5c",
+       "datavalue": {
+        "value": "dd74deeba013c700721d4ca103e1a64dc131f410",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P459": [
+        {
+         "snaktype": "value",
+         "property": "P459",
+         "hash": "75dff03c151b13fbab93742164121c16a6aa0de1",
+         "datavalue": {
+          "value": {
+           "entity-type": "item",
+           "numeric-id": 13414952,
+           "id": "Q13414952"
+          },
+          "type": "wikibase-entityid"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P459"
+      ],
+      "id": "M182704063$38542467-1098-4B57-AAB7-78508F34B3FE",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "f69dc45ce9c48664155022498b34100d801bd549",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 19652,
+         "id": "Q19652"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M182704063$3AA94F10-B0DD-4D79-BE89-051039655884",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M182704207": {
+   "pageid": 182704207,
+   "ns": 6,
+   "title": "File:Glenn Gould 1961 (cropped).jpg",
+   "lastrevid": 1241408089,
+   "modified": "2026-06-30T08:14:20Z",
+   "type": "mediainfo",
+   "id": "M182704207",
+   "labels": {},
+   "descriptions": {},
+   "statements": {
+    "P571": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P571",
+       "hash": "7f1055ea9f665502a21d1e3eeb1e94b0b2e8b472",
+       "datavalue": {
+        "value": {
+         "time": "+1961-00-00T00:00:00Z",
+         "timezone": 0,
+         "before": 0,
+         "after": 0,
+         "precision": 9,
+         "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+        },
+        "type": "time"
+       }
+      },
+      "type": "statement",
+      "id": "M182704207$86E937C3-1C65-47C5-8B54-AAED0BFFC001",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M182704207$29946079-C0BE-467E-A4AB-9FEA92AEC451",
+      "rank": "normal"
+     }
+    ],
+    "P3575": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P3575",
+       "hash": "fc58b80e7890dd905d5473bf36accc53fffa41de",
+       "datavalue": {
+        "value": {
+         "amount": "+2248854",
+         "unit": "http://www.wikidata.org/entity/Q8799"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M182704207$DA5D4DE2-D0F2-4A42-9A81-18050CC6ADEB",
+      "rank": "normal"
+     }
+    ],
+    "P2048": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2048",
+       "hash": "42cbd143a73bca3763a2584e3e18dacda0f55dff",
+       "datavalue": {
+        "value": {
+         "amount": "+2077",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M182704207$D9888EB6-0B03-4645-83AC-901AE76C01FC",
+      "rank": "normal"
+     }
+    ],
+    "P2049": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2049",
+       "hash": "6d20e9ae40a919d1553ddfc71f428b68e3855a9f",
+       "datavalue": {
+        "value": {
+         "amount": "+1541",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M182704207$AE83D846-DD90-4A5A-BC2C-48D0DDEBE18D",
+      "rank": "normal"
+     }
+    ],
+    "P4092": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P4092",
+       "hash": "084d30eafa38e84f994e963b294f9e0ab2adf13a",
+       "datavalue": {
+        "value": "0a5c3d28c5acb21b23656d4f5c869ade16389e22",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P459": [
+        {
+         "snaktype": "value",
+         "property": "P459",
+         "hash": "75dff03c151b13fbab93742164121c16a6aa0de1",
+         "datavalue": {
+          "value": {
+           "entity-type": "item",
+           "numeric-id": 13414952,
+           "id": "Q13414952"
+          },
+          "type": "wikibase-entityid"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P459"
+      ],
+      "id": "M182704207$49D7668A-CFA5-4FC9-8CEB-6F7B06759488",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "f69dc45ce9c48664155022498b34100d801bd549",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 19652,
+         "id": "Q19652"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M182704207$D481BDE6-779A-4E22-A1ED-F211D8A185EF",
+      "rank": "normal"
+     }
+    ],
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "6e1f968ed30ac8af71fcc7099d89b77b729ab545",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 152505,
+         "id": "Q152505"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M182704207$517F9C2B-40CF-4FE1-8143-046235F762DF",
+      "rank": "normal"
+     }
+    ]
+   }
+  }
+ },
+ "success": 1
+}

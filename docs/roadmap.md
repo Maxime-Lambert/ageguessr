@@ -24,19 +24,34 @@ la suivante).
       passerelle Caddy partagée du VPS) — PR #2
 
 ## Semaine 2 — Données du jeu
-- [ ] Client Wikidata (recherche par notoriété/sitelinks, extraction date de naissance
-      `P569`, photo `P18`)
-- [ ] Stratégie "photo la plus récente possible" (heuristique Commons à valider sur un
-      échantillon réel avant généralisation — voir `docs/decisions/architecture.md`)
-- [ ] Endpoint proxy d'image anti-triche (`/api/images/{id}`, jamais l'URL Commons brute)
+- [x] Client Wikidata via QLever (classement par sitelinks, `P569`/`P570` avec rangs et
+      précision, `P18`, labels EN/FR) — PR `feature/people-sourcing`
+- [x] Photos datées avec âge exact : date déclarée (SDC/`{{Information}}`) corroborée
+      par l'EXIF, au moins 10 ans d'écart entre deux photos d'une même personne,
+      validées sur échantillon réel (spike de 400 personnes, puis 2 runs de 30) —
+      PR `feature/people-sourcing`
+- [x] Endpoint proxy d'image anti-triche (`/api/images/{id}`, copie ré-encodée sans
+      métadonnées, jamais l'URL Commons) — PR `feature/people-sourcing`
+- [ ] Curation manuelle des photos : rôle admin, approuver/rejeter, page enchaînant les
+      photos en attente (~43 % des photos automatiques sont inutilisables : groupes,
+      foules…) — PR `feature/photo-curation`
+- [ ] **Avant d'approuver la moindre photo d'une personne vivante** : trancher le droit
+      à l'image (avis juridique, ou lancement limité aux personnes décédées) — voir
+      `docs/decisions/architecture.md`, « Sourcing des personnes », limites connues
+- [ ] Ingestion en production (~3 000 personnes, ~8 h, ~0,8 Go), puis passe de
+      curation
 - [ ] Ingestion + curation des indices événementiels par catégorie et par année
       (pages Wikipedia "YYYY in music/sports/politics...", parsing + vérification sur
       échantillon avant d'industrialiser)
-- [ ] Schéma de données final : personnes, catégories d'indices, événements par année
+- [ ] Schéma de données final : personnes et photos faites (V4, PR
+      `feature/people-sourcing`) ; catégories d'indices et événements par année restent
+      à faire avec le plan des indices
 
 ## Semaine 3 — Moteur de jeu
 - [ ] Algorithme de sélection quotidienne (3 personnes/jour, minuit UTC, pas de
-      répétition trop proche dans le temps)
+      répétition trop proche dans le temps). Les règles portent sur la personne, pas
+      sur la photo : jamais deux photos d'une même personne dans une partie, et un
+      délai minimal entre deux apparitions d'une même personne
 - [ ] Logique de guess en 2 étapes : 1ère tentative → chaud/froid, sélection d'une
       catégorie d'indice, 2e tentative
 - [ ] Système de points (bonus 1er coup, majorité des points sur la précision du 2e coup
@@ -46,7 +61,8 @@ la suivante).
 ## Semaine 4 — Interface de jeu
 - [ ] Écran principal : photo, input d'âge, jauge chaud/froid
 - [ ] Sélection de catégorie d'indice + affichage de l'indice
-- [ ] Écran de résultat (âge réel, identité révélée, points gagnés)
+- [ ] Écran de résultat (âge réel, identité révélée, points gagnés, **crédit de la photo :
+      auteur + licence**, obligatoire avant de servir des photos CC BY / BY-SA aux joueurs)
 - [ ] Enchaînement des 3 personnes du jour + récapitulatif final
 - [ ] Page d'accueil publique
 - [ ] Vocabulaire de jeu centralisé dans un seul fichier (essai du ton « enquête »,

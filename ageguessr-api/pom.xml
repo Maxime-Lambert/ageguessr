@@ -132,6 +132,13 @@
 			<version>1.4.1</version>
 			<scope>test</scope>
 		</dependency>
+		<!-- Commons renvoie l'auteur d'une photo en HTML : jsoup le reduit en texte brut
+		     (entites decodees, balises retirees) avant stockage. -->
+		<dependency>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>1.23.2</version>
+		</dependency>
 		<dependency>
 			<groupId>com.resend</groupId>
 			<artifactId>resend-java</artifactId>

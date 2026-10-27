@@ -1,0 +1,187 @@
+{
+ "head": {
+  "vars": [
+   "person",
+   "statement",
+   "rank",
+   "death",
+   "precision"
+  ]
+ },
+ "results": {
+  "bindings": [
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q76745"
+    },
+    "statement": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/statement/Q76745-7188EAF7-52C1-4A55-BF73-E891A254780B"
+    },
+    "rank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#NormalRank"
+    },
+    "death": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+     "type": "literal",
+     "value": "1882-01-12T00:00:00Z"
+    },
+    "precision": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "11"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q76984"
+    },
+    "statement": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/statement/q76984-95C26594-1A7F-4B64-A736-1E06F7C26D09"
+    },
+    "rank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#NormalRank"
+    },
+    "death": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+     "type": "literal",
+     "value": "1946-10-16T00:00:00Z"
+    },
+    "precision": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "11"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q77017"
+    },
+    "statement": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/statement/Q77017-4C58DB17-A214-46EE-A74C-4D37A5591EA7"
+    },
+    "rank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#NormalRank"
+    },
+    "death": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+     "type": "literal",
+     "value": "1624-01-01T00:00:00Z"
+    },
+    "precision": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "9"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q77017"
+    },
+    "statement": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/statement/q77017-6212EC14-F9CD-4B13-9840-F3D55C97C475"
+    },
+    "rank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#PreferredRank"
+    },
+    "death": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+     "type": "literal",
+     "value": "1624-11-17T00:00:00Z"
+    },
+    "precision": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "11"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q76745"
+    },
+    "statement": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/statement/q76745-8DD4BCE5-AC0C-4703-831E-9B9685F3D366"
+    },
+    "rank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#PreferredRank"
+    },
+    "death": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+     "type": "literal",
+     "value": "1882-01-11T00:00:00Z"
+    },
+    "precision": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "11"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q77017"
+    },
+    "statement": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/statement/Q77017-5c7d7ce6-4305-0e34-5300-c0517be4f8cc"
+    },
+    "rank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#NormalRank"
+    },
+    "death": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+     "type": "literal",
+     "value": "1624-11-18T00:00:00Z"
+    },
+    "precision": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "11"
+    }
+   },
+   {
+    "person": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/Q1001"
+    },
+    "statement": {
+     "type": "uri",
+     "value": "http://www.wikidata.org/entity/statement/q1001-2C92ECDC-AAF6-42E8-A844-0EE9006484A5"
+    },
+    "rank": {
+     "type": "uri",
+     "value": "http://wikiba.se/ontology#NormalRank"
+    },
+    "death": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#dateTime",
+     "type": "literal",
+     "value": "1948-01-30T00:00:00Z"
+    },
+    "precision": {
+     "datatype": "http://www.w3.org/2001/XMLSchema#int",
+     "type": "literal",
+     "value": "11"
+    }
+   }
+  ]
+ },
+ "meta": {
+  "query-time-ms": 760,
+  "result-size-total": 7
+ }
+}
