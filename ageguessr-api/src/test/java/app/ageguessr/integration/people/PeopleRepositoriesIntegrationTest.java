@@ -160,11 +160,28 @@ class PeopleRepositoriesIntegrationTest {
     }
 
     @Test
-    void rejectsAnAgeOutsideZeroToOneHundredTwenty() {
+    void rejectsAnAgeAboveOneHundredTwenty() {
         Person person = savePerson("Q1");
 
         assertThatThrownBy(() -> photoRepository.saveAndFlush(photo(person, "A.jpg", 1976).ageAtPhoto(121).build()))
                 .isInstanceOf(DataIntegrityViolationException.class);
+    }
+
+    @Test
+    void rejectsAPhotoOfAMinor() {
+        Person person = savePerson("Q1");
+
+        assertThatThrownBy(() -> photoRepository.saveAndFlush(photo(person, "A.jpg", 1967).ageAtPhoto(17).build()))
+                .isInstanceOf(DataIntegrityViolationException.class);
+    }
+
+    @Test
+    void acceptsAPhotoAtEighteen() {
+        Person person = savePerson("Q1");
+
+        photoRepository.saveAndFlush(photo(person, "A.jpg", 1968).ageAtPhoto(18).build());
+
+        assertThat(photoRepository.count()).isEqualTo(1);
     }
 
     @Test

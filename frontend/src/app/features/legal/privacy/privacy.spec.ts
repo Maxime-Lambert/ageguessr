@@ -46,6 +46,19 @@ describe('Privacy', () => {
     ).toBe(true);
   });
 
+  it('promises no photo of a minor, in both languages', async () => {
+    const english = await render('/privacy');
+    expect(english.textContent?.replace(/\s+/g, ' ')).toContain(
+      'We never show a photo taken before the person turned 18, even if they are an adult today.',
+    );
+
+    TestBed.resetTestingModule();
+    const french = await render('/privacy?lang=fr');
+    expect(french.textContent?.replace(/\s+/g, ' ')).toContain(
+      'Nous ne montrons jamais une photo prise avant les 18 ans de la personne',
+    );
+  });
+
   it('falls back to English for an unknown language', async () => {
     const page = await render('/privacy?lang=xx');
 

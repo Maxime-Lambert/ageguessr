@@ -76,17 +76,17 @@ continents.
   est hors périmètre (à proposer si l'écart se voit).
 
 ## Phase 1 : Pas de photo de mineur
-Status: Not started
+Status: Complete
 
-- [ ] `PhotoEvaluator` : `MIN_AGE = 18`, une photo d'âge calculé < 18 est rejetée
+- [x] `PhotoEvaluator` : `MIN_AGE = 18`, une photo d'âge calculé < 18 est rejetée
       avec un nouveau motif `PhotoRejection.MINOR` (compté à part dans le rapport, pour
       la mesure).
-- [ ] Migration `V8__forbid_minor_photos.sql` : supprime les photos existantes d'âge
+- [x] Migration `V8__forbid_minor_photos.sql` : supprime les photos existantes d'âge
       < 18 (aucune en prod, l'ingestion n'y a pas tourné ; quelques-unes en local),
       puis `CHECK (age_at_photo >= 18)` sur `person_photos` comme filet.
-- [ ] Rappel sur la page de curation : rejeter une photo où la personne paraît
+- [x] Rappel sur la page de curation : rejeter une photo où la personne paraît
       mineure (date fausse malgré l'EXIF).
-- [ ] `/privacy` section 8 (EN et FR) : aucune photo d'une personne mineure.
+- [x] `/privacy` section 8 (EN et FR) : aucune photo d'une personne mineure.
 
 ### Verification Plan
 - `./mvnw test` : `PhotoEvaluatorTest` couvre 17 ans 364 jours (rejet), 18 ans pile
@@ -95,7 +95,33 @@ Status: Not started
   locale, `SELECT count(*) FROM person_photos WHERE age_at_photo < 18` → 0.
 
 ### Phase Summary
-_(à écrire)_
+**Livré** :
+- `PhotoEvaluator.MIN_AGE = 18` : une photo d'âge calculé < 18 est rejetée en `MINOR`,
+  après le contrôle `AMBIGUOUS_AGE`. Une date en intervalle à cheval sur le 18e
+  anniversaire reste donc `AMBIGUOUS_AGE` (testé), et une photo du jour de naissance
+  passe la borne « pendant la vie » puis tombe en `MINOR`. Le rapport compte `MINOR`
+  sans changement de code : il compte déjà les rejets par motif.
+- `V8__forbid_minor_photos.sql` : supprime les photos d'âge < 18 (les images suivent
+  par `ON DELETE CASCADE`), puis remplace `person_photos_age_range` par
+  `BETWEEN 18 AND 120`.
+- Page de curation : « Reject a photo where the person looks under 18: its date is
+  wrong, even though the EXIF agreed. »
+- `/privacy` section 8, EN et FR : jamais de photo prise avant les 18 ans de la
+  personne. `PRIVACY_UPDATED` passe au 2026-10-27.
+
+**Correction en passant** : le test Playwright `curation.spec.ts` « reviews photos from
+the keyboard and can undo » était instable (3 échecs sur 8 runs). Il appuyait sur U
+pendant qu'une décision était en cours, et la page ignore alors les raccourcis. Il
+attend maintenant « Nothing left to review. » avant U, et la requête d'annulation par
+`expect.poll`. 60/60 sur 15 répétitions.
+
+**Vérification** :
+- backend **565/565** (+5 : 17 ans et 364 jours rejetée, 18 ans pile gardée,
+  intervalle à cheval sur le 18e anniversaire, contrainte à 17 refusée et à 18 acceptée
+  en base) ;
+- front **167/167**, lint, `tsc` et Prettier OK, Playwright component **42/42** ;
+- base locale : V8 appliquée, 0 photo d'âge < 18, contrainte
+  `CHECK (age_at_photo >= 18 AND age_at_photo <= 120)`.
 
 ## Phase 2 : Mesure du rendement (sans écriture en base)
 Status: Not started
