@@ -268,18 +268,35 @@ n'est pas comptée pendant ce run (la case peut dépasser son quota de ses photo
 effet en prod, où l'ingestion n'a jamais tourné.
 
 ## Phase 4 : Revues et PR
-Status: In progress
+Status: Complete
 
-- [ ] `code-reviewer` (sourcing externe, données personnelles) et
+- [x] `code-reviewer` (sourcing externe, données personnelles) et
       `architecture-reviewer` ; corriger tous les 🔴 et 🟠.
-- [ ] `./mvnw test`, `pnpm test`, lint, Playwright component, PIT sur `IngestPeople`.
-- [ ] Final Recap, Deployment Plan, archivage dans `plans/done/`.
+- [x] `./mvnw test`, `pnpm test`, lint, Playwright component, PIT sur `IngestPeople`.
+- [x] Final Recap, Deployment Plan, archivage dans `plans/done/`.
 
 ### Verification Plan
 - Toutes les suites à 0 échec ; PIT : test strength ≥ celle de `feature/people-sourcing`.
 
 ### Phase Summary
-_(à écrire)_
+**Revues du 2026-10-27** :
+- `code-reviewer` : aucun 🔴 ni 🟠. Injection SPARQL / SQL écartée (QID constants ou
+  validés), logs limités aux QID, genre et continent hors art. 9 (aucune
+  transidentité stockée), `/privacy` exacte dans les deux langues. 🟡 appliqués :
+  `PersonRecord.toString` réduit au QID ; `entityId` valide le QID. 🟡 non appliqués :
+  citer l'art. 14 dans `/privacy` (contenu déjà conforme), lois hors UE (pour mémoire).
+- `architecture-reviewer` : aucun 🔴 ; 🟠 `entityId` (même correctif) et fin de ligne
+  manquante dans `qlever-profiles.json`, corrigés ; 🟡 hypothèse du plan périmée,
+  corrigée. 🟡 non appliqués : taille de `IngestPeopleHandler` (extraire
+  `BalancedIngestion` au prochain ajout), record `Run` qui porte une map modifiable,
+  `IngestReport.toString` dense.
+
+**Vérification finale** : backend **633/633** ; front **168/168**, lint, `tsc`,
+Prettier OK ; Playwright component **42/42** ; PIT : test strength **94 %** au global
+et **95 %** sur `IngestPeople` (465 / 487 ; 94 % sur `feature/people-sourcing`), aucun
+survivant dans `AgeBand`, `Cell`, `ContinentResolver`, `GenderResolver`,
+`PhotoSelector`, `PhotoEvaluator`. Les survivants utiles (moyennes du rapport, résultat
+de `fetchCell`, nom français) ont reçu un test après le run.
 
 ## Tests par catégorie
 | Catégorie | S'applique | Pourquoi |
@@ -305,8 +322,57 @@ _(à écrire)_
   passage, et comptée dans sa case seulement une fois remplie.
 
 ## Final Recap
-_(à écrire quand toutes les phases sont finies)_
+**Livré** (PR `feature/people-pool-balance` → `develop`) : un pool de photos jouable,
+équilibré et sans mineur, dont la taille se règle en photos.
+- **Aucune photo de mineur** : rejet `MINOR` sous 18 ans, contrainte V8 en base,
+  rappel sur la page de curation, mention dans `/privacy`.
+- **Mesure** : `--sample`, `--offset`, `--dry-run`, rapport par case et par tranche
+  d'âge. Rendement de 88 % en haut de la liste à 45 % au rang 500 000, bien au-dessus
+  des ~30 % attendus.
+- **Équilibre** : 18 cases (6 continents de nationalité × femmes, hommes, autre),
+  chacune avec son classement QLever, à tour de rôle. Quotas en photos en jeu ; cases
+  « autre » à leur poids réel (~0,11 %). Genre et continent stockés (V9).
+- **Âges** : préférence de la tranche de 8 ans la moins remplie au choix des photos
+  d'une personne ; 74-81 passe de 6,7 % à 10,2 % des photos, 82+ de 2,2 % à 4,2 %.
+- **Cible** : 5 000 photos en jeu par défaut ; relance après curation pour compléter.
+- **Correctif** : labels `mul` de Wikidata (14 « sans nom » dans le top 200).
+
+**Écarts par rapport au plan initial, tous décidés avec l'utilisateur ou imposés par le
+réel** :
+- cible et quotas en **photos** au lieu de personnes (5 000 photos, pas de répétition
+  avant 3 ans au tirage) ;
+- cases « autre » proportionnelles au lieu de prises en entier ;
+- équilibre des âges, absent du plan initial ;
+- femmes et hommes trans comptés comme femmes et hommes ;
+- `--sample` ajouté (`--limit` ne convenait pas à un échantillon) ;
+- aucune case femmes / hommes ne s'épuise : la question du report de quota ne se pose
+  pas.
+
+**Hors scope, à faire ensuite** :
+- Ingestion en production, curation, relances jusqu'à 5 000 photos approuvées.
+- Tirage quotidien (Semaine 3) : tranches d'âge équilibrées, pas de photo rejouée
+  avant 3 ans.
+- Suppression différée des images des photos rejetées (~0,6 Go), si l'utilisateur la
+  veut.
+- Extraire l'ingestion équilibrée de `IngestPeopleHandler` au prochain ajout.
 
 ## Deployment Plan
-_(à écrire quand toutes les phases sont finies : V8 et V9, aucune variable obligatoire
-nouvelle)_
+1. **Merge de la PR dans `develop`**, puis release `develop` → `main` en **merge
+   commit**. Cette release embarque aussi la curation (#18) : poser le rôle admin en
+   SQL après le déploiement (voir `plans/done/photo-curation.md`).
+2. **Au démarrage de l'API en prod**, Flyway applique V8 (aucune photo en prod, donc
+   rien à supprimer) et V9 (deux colonnes vides). Aucune variable obligatoire
+   nouvelle ; `INGEST_TARGET_PHOTOS` (5 000 par défaut) remplace
+   `INGEST_TARGET_PEOPLE`, qui n'était défini nulle part.
+3. **Avant l'ingestion** : vérifier l'espace disque du VPS. Il faut ~0,9 Go pour une
+   première passe, ~1,5 Go au total après les relances (les photos rejetées gardent
+   leur image), à ajouter au volume des backups.
+4. **Ingestion** (depuis le VPS, avec l'image de l'API et les profils `prod,ingest`),
+   par exemple :
+   `docker compose -f docker-compose.prod.yml run --rm backend --spring.profiles.active=prod,ingest`
+   (cible par défaut de 5 000 photos ; adapter au nom réel du service). Première passe
+   ~4 h. En cas d'arrêt, relancer : elle reprend sans doublon.
+5. **Après chaque passe** : lire le bilan dans les logs (`balance (photos/quota)`,
+   photos par tranche d'âge), puis curation sur `/admin/curation`. Relancer la même
+   commande pour remplacer les photos rejetées, jusqu'à ~5 000 photos approuvées
+   (~8 800 photos collectées en tout, ~7 h de collecte).

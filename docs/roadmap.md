@@ -41,6 +41,10 @@ la suivante).
 - [x] Droit à l'image des personnes vivantes : risque accepté, couvert par le retrait
       sur demande ; ingestion limitée aux personnes nées en 1930 ou après — PR
       `feature/photo-curation`
+- [x] Pool équilibré et sans mineur : aucune photo de moins de 18 ans, 18 cases
+      continent de nationalité × genre (« autre » à son poids réel), préférence des
+      tranches d'âge rares, cible de 5 000 photos en jeu, mesure du rendement
+      (`--sample`, `--dry-run`) — PR `feature/people-pool-balance`
 - [ ] Ingestion en production (cible 5 000 photos en jeu), puis curation et relances
       jusqu'à 5 000 photos approuvées. Estimation : ~8 800 photos collectées en tout
       (~43 % de rejets), ~7 h de collecte, ~1,5 Go (les photos rejetées gardent leur
