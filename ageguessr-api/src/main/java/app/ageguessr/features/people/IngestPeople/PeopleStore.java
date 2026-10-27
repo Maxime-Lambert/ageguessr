@@ -45,15 +45,14 @@ class PeopleStore {
     }
 
     /**
-     * QIDs of the people already counting toward each cell (see
-     * PersonRepository.findBalanced): a rerun goes on from there instead of starting over.
+     * Photos already counting toward each cell (see PersonRepository.countPhotosByCell):
+     * a rerun, after a curation pass for instance, tops each cell back up to its quota.
      */
     @Transactional(readOnly = true)
-    Map<Cell, Set<String>> balancedPeople() {
-        return people.findBalanced().stream()
-                .collect(Collectors.groupingBy(
-                        p -> new Cell(p.continent(), p.gender()),
-                        Collectors.mapping(PersonRepository.BalancedPerson::wikidataId, Collectors.toSet())));
+    Map<Cell, Integer> photosByCell() {
+        return people.countPhotosByCell().stream()
+                .collect(Collectors.toMap(
+                        c -> new Cell(c.continent(), c.gender()), c -> Math.toIntExact(c.photos())));
     }
 
     /** Photos still in play per age band, so that a rerun keeps leaning toward the rare ages. */

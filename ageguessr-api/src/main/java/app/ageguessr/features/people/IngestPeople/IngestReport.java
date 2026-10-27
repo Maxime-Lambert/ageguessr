@@ -102,8 +102,8 @@ class IngestReport {
         return Map.copyOf(keptByCell);
     }
 
-    void cellStatus(Cell cell, int people, int quota, boolean exhausted) {
-        balance.put(cell.toString(), people + "/" + quota + (exhausted ? " exhausted" : ""));
+    void cellStatus(Cell cell, int photos, int quota, boolean exhausted) {
+        balance.put(cell.toString(), photos + "/" + quota + (exhausted ? " exhausted" : ""));
     }
 
     Map<String, String> balance() {
@@ -124,6 +124,6 @@ class IngestReport {
                 + ", people skipped=" + peopleSkipped + ", photos rejected=" + photosRejected
                 + ", seen by cell=" + seenByCell + ", kept by cell=" + keptByCell
                 + ", valid photos by age=" + validPhotosByAge + ", kept photos by age=" + keptPhotosByAge
-                + (balance.isEmpty() ? "" : ", balance (people/quota)=" + balance);
+                + (balance.isEmpty() ? "" : ", balance (photos/quota)=" + balance);
     }
 }

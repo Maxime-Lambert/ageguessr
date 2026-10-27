@@ -114,7 +114,7 @@ class PeopleStoreIntegrationTest {
     }
 
     @Test
-    void countsInTheirCellOnlyThePeopleWithAPhotoStillInPlay() {
+    void countsPerCellOnlyThePhotosStillInPlayOfPeopleNotExcluded() {
         store.save(person("Q1", Gender.FEMALE, Continent.AFRICA), BIRTH, null, List.of(photo("A.jpg", 1976)));
         store.save(person("Q2", Gender.FEMALE, Continent.AFRICA), BIRTH, null, List.of(photo("B.jpg", 1976)));
         store.save(person("Q3", Gender.MALE, Continent.ASIA), BIRTH, null, List.of(photo("C.jpg", 1976)));
@@ -133,10 +133,8 @@ class PeopleStoreIntegrationTest {
         people.save(excluded);
         store.save(record("Q7", "Unknown", 50), BIRTH, null, List.of(photo("G.jpg", 1976)));
 
-        assertThat(store.balancedPeople())
-                .isEqualTo(Map.of(
-                        new Cell(Continent.AFRICA, Gender.FEMALE), Set.of("Q1", "Q2"),
-                        new Cell(Continent.ASIA, Gender.MALE), Set.of("Q3")));
+        assertThat(store.photosByCell())
+                .isEqualTo(Map.of(new Cell(Continent.AFRICA, Gender.FEMALE), 2, new Cell(Continent.ASIA, Gender.MALE), 1));
     }
 
     @Test

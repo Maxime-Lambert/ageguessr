@@ -393,14 +393,21 @@ ponctuelle**, pas pendant les parties :
     supprimée si le jeu s'arrête.
   - Pour une personne **pas encore ingérée**, noter le QID et l'exclure après
     l'ingestion. Une liste de blocage préalable sera ajoutée si le cas se présente.
-- **Pool équilibré** (décision du 2026-10-26) : autant de femmes que d'hommes, et
-  autant de personnes par continent de nationalité.
+- **Cible en photos** (décision du 2026-10-27) : au moins **5 000 photos jouables**,
+  et une même photo pas rejouée avant 3 ans (règle du tirage quotidien, Semaine 3 :
+  à 3 photos par jour, 3 ans en consomment 3 285). La cible de la collecte
+  (`--limit`, `app.people.ingest.target-photos`, 5 000 par défaut) compte les photos
+  **en jeu** (en attente ou approuvées) : après une passe de curation, les rejets font
+  baisser ce total, et une relance complète chaque case. Le cycle collecte → curation
+  → collecte converge vers 5 000 photos approuvées.
+- **Pool équilibré** (décision du 2026-10-26) : autant de photos de femmes que
+  d'hommes, et autant par continent de nationalité.
   - 18 cases : 6 continents (Afrique, Amérique du Nord, Amérique du Sud, Asie, Europe,
-    Océanie) × femmes, hommes, autre. La cible (`--limit`, 3 000 par défaut) est
-    partagée entre les 12 cases femmes et hommes. Les cases « autre » (non binaire,
+    Océanie) × femmes, hommes, autre. La cible en photos est partagée entre les 12
+    cases femmes et hommes (≈ 417 photos chacune pour 5 000). Les cases « autre » (non binaire,
     genderfluid, intersexe, valeurs contradictoires…) reçoivent leur poids réel sur
-    Wikidata, ~0,11 % (décision du 2026-10-27), arrondi au-dessus : 1 personne par
-    continent pour 3 000. Les femmes trans comptent comme femmes, les hommes trans comme
+    Wikidata, ~0,11 % (décision du 2026-10-27), arrondi au-dessus : 1 photo par
+    continent pour 5 000. Les femmes trans comptent comme femmes, les hommes trans comme
     hommes.
   - Chaque case suit son propre classement QLever, filtré par `P21` et par `P27` →
     `P30`, et les cases avancent à tour de rôle, une personne à la fois. Une case dont
@@ -410,11 +417,11 @@ ponctuelle**, pas pendant les parties :
     Amérique du Nord, « Insular Oceania » et continent australien comme Océanie.
     Plusieurs continents : le moins représenté, dans l'ordre fixe Océanie, Afrique,
     Amérique du Sud, Asie, Amérique du Nord, Europe. Un Russe compte donc pour l'Asie.
-  - Les personnes déjà en base (non exclues, avec une photo encore en jeu) comptent
-    dans leur case : une relance reprend là où l'ingestion s'était arrêtée.
+  - Les photos déjà en base (encore en jeu, de personnes non exclues) comptent dans
+    leur case : une relance reprend là où l'ingestion s'était arrêtée.
 - **Commande** : profil Spring `ingest` (`IngestPeopleRunner`), idempotente : une
   relance n'ajoute que ce qui manque.
-  - `--limit=<n>` : cible de l'ingestion équilibrée ;
+  - `--limit=<n>` : cible de l'ingestion équilibrée, en photos en jeu ;
   - `--qid=<QID>` : une seule personne ;
   - `--sample=<n> [--offset=<rang>]` : n personnes du classement global à partir d'un
     rang, pour mesurer le rendement d'une partie de la liste ;

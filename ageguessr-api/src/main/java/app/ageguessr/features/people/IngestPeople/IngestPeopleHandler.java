@@ -7,7 +7,6 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -24,8 +23,8 @@ import org.springframework.stereotype.Service;
  * the store: every person is processed as if new, and nothing is saved.
  *
  * <p>By default the pool is balanced: each {@link Cell} (continent of nationality ×
- * gender) has a quota ({@link Cell#quota}), the cells taking turns one person at a time,
- * each walking its own ranking. A cell whose ranking runs out stays below its quota, and
+ * gender) has a quota of photos in play ({@link Cell#quota}), the cells taking turns one
+ * person at a time, each walking its own ranking. A cell whose ranking runs out stays below its quota, and
  * the report says so. {@code --sample} walks the plain ranking instead, to measure the yield.
  */
 @Slf4j
@@ -94,7 +93,7 @@ class IngestPeopleHandler {
         while (!done(command, report)) {
             List<PersonRecord> page = wikidata.fetchPeople(offset, properties.pageSize(), properties.minBirthYear());
             if (page.isEmpty()) {
-                log.warn("Wikidata list exhausted before reaching {} people", command.targetPeople());
+                log.warn("Wikidata list exhausted after {} people", report.peopleSeen());
                 break;
             }
             for (PersonRecord person : page) {
@@ -109,10 +108,10 @@ class IngestPeopleHandler {
 
     private void balance(IngestPeopleCommand command, Run run) {
         IngestReport report = run.report();
-        Map<Cell, Set<String>> counted = command.dryRun() ? Map.of() : store.balancedPeople();
+        Map<Cell, Integer> stored = command.dryRun() ? Map.of() : store.photosByCell();
         List<CellCursor> cursors = Cell.ALL.stream()
                 .map(cell -> new CellCursor(
-                        cell, cell.quota(command.targetPeople()), counted.getOrDefault(cell, Set.of())))
+                        cell, cell.quota(command.targetPhotos()), stored.getOrDefault(cell, 0)))
                 .toList();
         List<CellCursor> open = new ArrayList<>(cursors.stream().filter(c -> !c.full()).toList());
         while (!open.isEmpty()) {
@@ -121,7 +120,7 @@ class IngestPeopleHandler {
                 if (next.isEmpty()) {
                     cursor.exhausted = true;
                     open.remove(cursor);
-                    log.warn("Cell {} exhausted at {}/{} people", cursor.cell, cursor.people.size(), cursor.quota);
+                    log.warn("Cell {} exhausted at {}/{} photos", cursor.cell, cursor.photos, cursor.quota);
                     continue;
                 }
                 PersonRecord person = next.get();
@@ -129,34 +128,32 @@ class IngestPeopleHandler {
                 if (!Cell.of(person).map(cursor.cell::equals).orElse(false)) {
                     continue;
                 }
-                if (process(person, run)) {
-                    cursor.people.add(person.wikidataId());
-                    if (cursor.full()) {
-                        open.remove(cursor);
-                    }
+                cursor.photos += process(person, run);
+                if (cursor.full()) {
+                    open.remove(cursor);
                 }
             }
         }
-        cursors.forEach(c -> report.cellStatus(c.cell, c.people.size(), c.quota, c.exhausted));
+        cursors.forEach(c -> report.cellStatus(c.cell, c.photos, c.quota, c.exhausted));
     }
 
-    /** Where one cell is in its own ranking, and who already counts in it. */
+    /** Where one cell is in its own ranking, and how many photos it already holds. */
     private final class CellCursor {
         private final Cell cell;
         private final int quota;
-        private final Set<String> people;
         private final Deque<PersonRecord> buffer = new ArrayDeque<>();
+        private int photos;
         private int offset;
         private boolean exhausted;
 
-        private CellCursor(Cell cell, int quota, Set<String> alreadyCounted) {
+        private CellCursor(Cell cell, int quota, int storedPhotos) {
             this.cell = cell;
             this.quota = quota;
-            this.people = new HashSet<>(alreadyCounted);
+            this.photos = storedPhotos;
         }
 
         private boolean full() {
-            return people.size() >= quota;
+            return photos >= quota;
         }
 
         /** The next person of the cell's ranking, fetching a page when needed; empty at the end. */
@@ -170,25 +167,26 @@ class IngestPeopleHandler {
     }
 
     private static boolean done(IngestPeopleCommand command, IngestReport report) {
-        return report.peopleKept() >= command.targetPeople()
+        return report.photosAdded() >= command.targetPhotos()
                 || (command.sample() > 0 && report.peopleSeen() >= command.sample());
     }
 
-    /** True if the person is kept, with at least one photo. */
-    private boolean process(PersonRecord record, Run run) {
+    /** How many photos this person adds (0 if skipped, or if nothing new was found). */
+    private int process(PersonRecord record, Run run) {
         IngestReport report = run.report();
         report.personSeen(record);
         try {
+            int before = report.photosAdded();
             Optional<PersonSkip> skip = ingest(record, run);
             skip.ifPresent(reason -> {
                 report.personSkipped(reason);
                 log.debug("{} skipped: {}", record.wikidataId(), reason);
             });
-            return skip.isEmpty();
+            return report.photosAdded() - before;
         } catch (WikimediaUnavailableException e) {
             report.personSkipped(PersonSkip.FAILED);
             log.warn("{} failed, will be retried on the next run: {}", record.wikidataId(), e.getMessage());
-            return false;
+            return 0;
         }
     }
 

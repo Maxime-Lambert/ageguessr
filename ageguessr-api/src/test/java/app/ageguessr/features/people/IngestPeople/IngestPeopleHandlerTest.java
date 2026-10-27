@@ -528,8 +528,8 @@ class IngestPeopleHandlerTest {
     }
 
     @Test
-    void aRerunCountsThePeopleAlreadyStoredInEachCell() {
-        when(store.balancedPeople()).thenReturn(Map.of(EUROPE_WOMEN, Set.of("Q9")));
+    void aRerunCountsThePhotosAlreadyStoredInEachCell() {
+        when(store.photosByCell()).thenReturn(Map.of(EUROPE_WOMEN, 1));
 
         IngestReport report = handler.handle(new IngestPeopleCommand(12, null, 0, 0, false));
 
@@ -538,8 +538,13 @@ class IngestPeopleHandlerTest {
     }
 
     @Test
-    void aStoredPersonMetAgainIsRefreshedWithoutCountingTwice() {
-        when(store.balancedPeople()).thenReturn(Map.of(EUROPE_WOMEN, Set.of("Q1")));
+    void aStoredPersonMetAgainCountsOnlyTheirNewPhotos() {
+        // Q1's photo is already stored and counted: meeting Q1 again adds nothing.
+        when(store.photosByCell()).thenReturn(Map.of(EUROPE_WOMEN, 1));
+        Person existing = stored("Q1", BIRTH, false);
+        when(store.find("Q1")).thenReturn(Optional.of(existing));
+        when(store.storedPhotos(existing.getId()))
+                .thenReturn(new PeopleStore.StoredPhotos(List.of(new PhotoSelector.Kept(1976, 26)), Set.of("A 1976.jpg")));
         when(wikidata.fetchCell(EUROPE_WOMEN, 0, 3, 1930))
                 .thenReturn(List.of(person("Q1", EUROPE_WOMEN), person("Q2", EUROPE_WOMEN)));
         photos("Q1", photo("File:A 1976.jpg", 1976));
@@ -548,7 +553,30 @@ class IngestPeopleHandlerTest {
         IngestReport report = handler.handle(new IngestPeopleCommand(24, null, 0, 0, false));
 
         assertThat(report.balance()).containsEntry("EUROPE/FEMALE", "2/2");
-        assertThat(report.peopleKept()).isEqualTo(2);
+        assertThat(report.photosAdded()).isEqualTo(1);
+    }
+
+    @Test
+    void countsEveryPhotoOfAPersonTowardTheirCell() {
+        // A quota of 2 photos: Q1 alone fills it with two photos 14 years apart.
+        when(wikidata.fetchCell(EUROPE_WOMEN, 0, 3, 1930))
+                .thenReturn(List.of(person("Q1", EUROPE_WOMEN), person("Q2", EUROPE_WOMEN)));
+        photos("Q1", photo("File:A 1976.jpg", 1976), photo("File:B 1990.jpg", 1990));
+
+        IngestReport report = handler.handle(new IngestPeopleCommand(24, null, 0, 0, false));
+
+        assertThat(report.balance()).containsEntry("EUROPE/FEMALE", "2/2");
+        verify(commons, never()).searchDepicting("Q2");
+    }
+
+    @Test
+    void walkingTheRankingStopsOnceTheTargetInPhotosIsReached() {
+        when(wikidata.fetchPeople(0, 3, 1930)).thenReturn(List.of(person("Q1"), person("Q2")));
+        photos("Q1", photo("File:A 1976.jpg", 1976), photo("File:B 1990.jpg", 1990));
+
+        IngestReport report = handler.handle(new IngestPeopleCommand(2, null, 0, WHOLE_LIST, false));
+
+        assertThat(report.peopleSeen()).isEqualTo(1);
     }
 
     @Test

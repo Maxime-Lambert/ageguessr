@@ -41,7 +41,7 @@ class IngestPeopleRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        IngestPeopleCommand command = command(args, properties.targetPeople());
+        IngestPeopleCommand command = command(args, properties.targetPhotos());
         log.info("People ingestion started: {}", command);
         long start = System.nanoTime();
         IngestReport report = handler.handle(command);

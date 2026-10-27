@@ -67,6 +67,11 @@ continents.
   préférer la photo de la tranche la moins remplie ; le reste au tirage quotidien
   (Semaine 3, ajouté à la roadmap).
 
+- **Cible en photos, pas en personnes** : au moins 5 000 photos jouables, et une photo
+  jamais rejouée avant 3 ans (règle du tirage, Semaine 3). La cible compte les photos
+  en jeu (en attente + approuvées), quotas par case en photos ; on relance la collecte
+  après chaque passe de curation pour compléter.
+
 ## Hypothèses
 - **6 continents** : Afrique, Amérique du Nord, Amérique du Sud, Asie, Europe, Océanie.
   « Eurasie » compte comme Asie, « Insular Oceania » comme Océanie.
@@ -226,8 +231,15 @@ Status: In progress (mécanisme fait ; quotas et cases épuisées à confirmer a
 - [x] Tranches d'âge : `AgeBand`, compteurs du rapport (photos valides et gardées par
       tranche), `PhotoSelector` qui préfère la tranche la moins remplie
       (`PeopleStore.photosByAgeBand` + run en cours).
-- [ ] Mesure de l'effet : collecte équilibrée en dry-run `--limit=240`, avant / après.
-- [ ] Essai réel `--limit=60` écrit en base locale.
+- [x] Mesure de l'effet : collecte équilibrée en dry-run `--limit=240`, avant / après.
+      Part des photos gardées, avant → après : 74-81 de 6,7 % à 10,2 %, 82+ de 2,2 % à
+      4,2 % ; les tranches 18-25 à 66-73 entre 10 et 15 % chacune. 82+ reste rare
+      (64 photos valides seulement sur 275 personnes examinées) : le tirage
+      compensera.
+- [x] Cible en photos (décision du 2026-10-27) : `target-photos=5000`, quotas des
+      cases en photos en jeu (`PersonRepository.countPhotosByCell`), arrêt du parcours
+      simple au nombre de photos ; règle des 3 ans notée en Semaine 3 de la roadmap.
+- [ ] Essai réel `--limit=60` (photos) écrit en base locale.
 
 ### Verification Plan
 - `./mvnw test` : unitaires du handler (tour de rôle, quota atteint, case épuisée,

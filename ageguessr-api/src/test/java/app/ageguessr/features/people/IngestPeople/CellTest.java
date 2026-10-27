@@ -19,12 +19,16 @@ class CellTest {
         assertThat(WOMEN.quota(3000)).isEqualTo(250);
         assertThat(MEN.quota(3000)).isEqualTo(250);
         assertThat(WOMEN.quota(3001)).isEqualTo(251);
+        // The default target: 5 000 photos, 417 per cell.
+        assertThat(WOMEN.quota(5000)).isEqualTo(417);
     }
 
     @Test
     void givesTheOtherCellsTheirRealWeightRoundedUp() {
         // 3 000 × 0.11 % / 6 continents = 0.55 → 1.
         assertThat(OTHER.quota(3000)).isEqualTo(1);
+        // 5 000 × 0.11 % / 6 = 0.92 → 1.
+        assertThat(OTHER.quota(5000)).isEqualTo(1);
         // 60 000 × 0.11 % / 6 = 11.
         assertThat(OTHER.quota(60_000)).isEqualTo(11);
     }
