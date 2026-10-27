@@ -80,12 +80,17 @@ class PeopleStoreIntegrationTest {
         store.save(record("Q1", "Jane", 50), BIRTH, null, List.of(photo("A.jpg", 1976)));
         Person first = people.findByWikidataId("Q1").orElseThrow();
 
-        store.save(record("Q1", "Jane Doe", 60), BIRTH, LocalDate.of(2020, 1, 1), List.of(photo("B.jpg", 1990)));
+        store.save(
+                new PersonRecord("Q1", 60, "Jane Doe", "Jeanne Doe", Set.of(), List.of(), List.of(), null, null),
+                BIRTH,
+                LocalDate.of(2020, 1, 1),
+                List.of(photo("B.jpg", 1990)));
 
         assertThat(people.findAll()).hasSize(1);
         Person refreshed = people.findByWikidataId("Q1").orElseThrow();
         assertThat(refreshed.getId()).isEqualTo(first.getId());
         assertThat(refreshed.getNameEn()).isEqualTo("Jane Doe");
+        assertThat(refreshed.getNameFr()).isEqualTo("Jeanne Doe");
         assertThat(refreshed.getSitelinks()).isEqualTo(60);
         assertThat(refreshed.getDeathDate()).isEqualTo(LocalDate.of(2020, 1, 1));
         assertThat(refreshed.getCreatedAt()).isEqualTo(first.getCreatedAt());

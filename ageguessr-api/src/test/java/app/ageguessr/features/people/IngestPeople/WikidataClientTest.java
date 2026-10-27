@@ -132,6 +132,8 @@ class WikidataClientTest {
         JsonNode profiles = Fixtures.MAPPER.readTree("""
                 [{"person": {"value": "http://www.wikidata.org/entity/Q1"}, "gender": {"value": "_:blank"}},
                  {"person": {"value": "http://www.wikidata.org/entity/Q1"},
+                  "gender": {"value": "http://www.wikidata.org/entity/"}},
+                 {"person": {"value": "http://www.wikidata.org/entity/Q1"},
                   "continent": {"value": "http://www.wikidata.org/entity/Q46"}}]
                 """);
 
@@ -267,8 +269,9 @@ class WikidataClientTest {
         MockRestServiceServer server = expectSixPosts(
                 "VALUES+%3Fcontinent+%7B+wd%3AQ48+wd%3AQ5401+wd%3AQ60140+%7D");
 
-        client(server).fetchCell(new Cell(Continent.ASIA, Gender.FEMALE), 500, 500, 1930);
+        List<PersonRecord> page = client(server).fetchCell(new Cell(Continent.ASIA, Gender.FEMALE), 500, 500, 1930);
 
+        assertThat(page).hasSize(7);
         server.verify();
     }
 

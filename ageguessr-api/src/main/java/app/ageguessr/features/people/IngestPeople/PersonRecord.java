@@ -20,4 +20,11 @@ record PersonRecord(
         List<BirthStatement> births,
         List<DeathStatement> deaths,
         Gender gender,
-        Continent continent) {}
+        Continent continent) {
+
+    /** QID only: names and file titles (which usually contain the name) never reach a log. */
+    @Override
+    public String toString() {
+        return "PersonRecord[" + wikidataId + "]";
+    }
+}

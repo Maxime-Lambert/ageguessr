@@ -88,7 +88,8 @@ continents.
 - **Parts égales** : 6 continents × 2 genres = 12 cases d'une part égale de la cible
   (3 000 → 250 par case). Une case épuisée reste incomplète et le rapport le dit ; on
   ne reporte pas sa part ailleurs sans décision (à revoir après la mesure, Phase 2).
-- L'équilibre porte sur les **personnes ingérées**, pas sur les photos approuvées. Les
+- ~~L'équilibre porte sur les **personnes ingérées**~~ (remplacé en Phase 3 : il porte
+  sur les **photos en jeu**, en attente ou approuvées), pas sur les photos approuvées. Les
   rejets de curation peuvent le décaler ; un compteur par case sur la page de curation
   est hors périmètre (à proposer si l'écart se voit).
 

@@ -285,9 +285,11 @@ class WikidataClient {
 
     /** "Q6581072" from "http://www.wikidata.org/entity/Q6581072"; empty for anything else. */
     private static Optional<String> entityId(String uri) {
-        return uri != null && uri.startsWith(ENTITY_PREFIX)
-                ? Optional.of(uri.substring(ENTITY_PREFIX.length()))
-                : Optional.empty();
+        if (uri == null || !uri.startsWith(ENTITY_PREFIX)) {
+            return Optional.empty();
+        }
+        String id = uri.substring(ENTITY_PREFIX.length());
+        return WikidataId.isValid(id) ? Optional.of(id) : Optional.empty();
     }
 
     private static String value(JsonNode row, String variable) {
