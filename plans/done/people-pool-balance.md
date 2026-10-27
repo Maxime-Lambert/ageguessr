@@ -367,11 +367,12 @@ réel** :
 3. **Avant l'ingestion** : vérifier l'espace disque du VPS. Il faut ~0,9 Go pour une
    première passe, ~1,5 Go au total après les relances (les photos rejetées gardent
    leur image), à ajouter au volume des backups.
-4. **Ingestion** (depuis le VPS, avec l'image de l'API et les profils `prod,ingest`),
-   par exemple :
-   `docker compose -f docker-compose.prod.yml run --rm backend --spring.profiles.active=prod,ingest`
-   (cible par défaut de 5 000 photos ; adapter au nom réel du service). Première passe
-   ~4 h. En cas d'arrêt, relancer : elle reprend sans doublon.
+4. **Ingestion** (depuis le VPS, dans `/opt/ageguessr/` où la CI copie le compose et
+   écrit le `.env`, avec l'image de l'API et les profils `prod,ingest`) :
+   `cd /opt/ageguessr && docker compose -f docker-compose.prod.yml run --rm backend --spring.profiles.active=prod,ingest`
+   (cible par défaut de 5 000 photos). Lancer dans `tmux` ou `screen` pour survivre à
+   une coupure SSH. Première passe ~4 h. En cas d'arrêt, relancer : elle reprend sans
+   doublon.
 5. **Après chaque passe** : lire le bilan dans les logs (`balance (photos/quota)`,
    photos par tranche d'âge), puis curation sur `/admin/curation`. Relancer la même
    commande pour remplacer les photos rejetées, jusqu'à ~5 000 photos approuvées
