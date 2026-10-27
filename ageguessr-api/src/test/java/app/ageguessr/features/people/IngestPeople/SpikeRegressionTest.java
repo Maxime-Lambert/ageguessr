@@ -33,7 +33,7 @@ class SpikeRegressionTest {
 
     @Test
     void keepsTwoOfThemTenYearsApart() {
-        List<PhotoSelector.Candidate> kept = PhotoSelector.select(List.of(), acceptedCandidates(), 5, 10);
+        List<PhotoSelector.Candidate> kept = PhotoSelector.select(List.of(), acceptedCandidates(), 5, 10, Map.of());
 
         assertThat(kept)
                 .extracting(PhotoSelector.Candidate::fileTitle, PhotoSelector.Candidate::age)

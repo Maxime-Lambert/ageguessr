@@ -357,6 +357,12 @@ ponctuelle**, pas pendant les parties :
   `PhotoEvaluator` (motif `MINOR`), et contrainte `CHECK (age_at_photo BETWEEN 18 AND
   120)` en base (V8) comme filet. La curation rejette en plus une photo où la personne
   paraît mineure : la date est alors fausse malgré l'EXIF.
+- **Équilibre des âges** (décision du 2026-10-27), par tranches de 8 ans : 18-25,
+  26-33… 74-81, 82+. Parmi les photos possibles d'une personne, `PhotoSelector`
+  préfère celle dont la tranche compte le moins de photos en jeu (base + run en
+  cours), sans jamais renoncer à une photo que les règles d'écart permettent. Mesure
+  du 2026-10-27 : la répartition est déjà assez plate de 18 à 73 ans, le manque est
+  au-delà de 74 ans. L'équilibre fin se fera au tirage quotidien (Semaine 3).
 - **Une photo par tranche d'au moins 10 ans** (en âge et en année civile) pour une même
   personne, avec un plafond de 5. Les deux valeurs sont des propriétés
   (`app.people.ingest.*`).
@@ -391,9 +397,11 @@ ponctuelle**, pas pendant les parties :
   autant de personnes par continent de nationalité.
   - 18 cases : 6 continents (Afrique, Amérique du Nord, Amérique du Sud, Asie, Europe,
     Océanie) × femmes, hommes, autre. La cible (`--limit`, 3 000 par défaut) est
-    partagée entre les 12 cases femmes et hommes ; les cases « autre » (non binaire,
-    intersexe, valeurs contradictoires) ont le même plafond et sont en pratique prises
-    en entier. Les femmes trans comptent comme femmes, les hommes trans comme hommes.
+    partagée entre les 12 cases femmes et hommes. Les cases « autre » (non binaire,
+    genderfluid, intersexe, valeurs contradictoires…) reçoivent leur poids réel sur
+    Wikidata, ~0,11 % (décision du 2026-10-27), arrondi au-dessus : 1 personne par
+    continent pour 3 000. Les femmes trans comptent comme femmes, les hommes trans comme
+    hommes.
   - Chaque case suit son propre classement QLever, filtré par `P21` et par `P27` →
     `P30`, et les cases avancent à tour de rôle, une personne à la fois. Une case dont
     le classement s'épuise reste sous son quota, et le rapport le dit.

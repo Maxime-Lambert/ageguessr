@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -23,9 +24,9 @@ import org.springframework.stereotype.Service;
  * the store: every person is processed as if new, and nothing is saved.
  *
  * <p>By default the pool is balanced: each {@link Cell} (continent of nationality ×
- * gender) gets the same quota, the cells taking turns one person at a time, each walking
- * its own ranking. A cell whose ranking runs out stays below its quota, and the report
- * says so. {@code --sample} walks the plain ranking instead, to measure the yield.
+ * gender) has a quota ({@link Cell#quota}), the cells taking turns one person at a time,
+ * each walking its own ranking. A cell whose ranking runs out stays below its quota, and
+ * the report says so. {@code --sample} walks the plain ranking instead, to measure the yield.
  */
 @Slf4j
 @Service
@@ -58,25 +59,37 @@ class IngestPeopleHandler {
         this.clock = clock;
     }
 
+    /**
+     * What one run carries from person to person. {@code photosByAgeBand}: photos in play
+     * per age band, in the database (none for a dry run) and added since, which
+     * PhotoSelector leans against.
+     */
+    private record Run(LocalDate today, boolean dryRun, IngestReport report, Map<String, Integer> photosByAgeBand) {}
+
     IngestReport handle(IngestPeopleCommand command) {
         IngestReport report = new IngestReport();
-        LocalDate today = LocalDate.now(clock);
+        Run run = new Run(
+                LocalDate.now(clock),
+                command.dryRun(),
+                report,
+                new HashMap<>(command.dryRun() ? Map.of() : store.photosByAgeBand()));
         if (command.wikidataId() != null) {
             wikidata.fetchPerson(command.wikidataId())
                     .ifPresentOrElse(
-                            person -> process(person, today, command.dryRun(), report),
+                            person -> process(person, run),
                             () -> log.warn("{} is not a human with a P18 image on Wikidata", command.wikidataId()));
             return report;
         }
         if (command.sample() > 0) {
-            walkRanking(command, today, report);
+            walkRanking(command, run);
         } else {
-            balance(command, today, report);
+            balance(command, run);
         }
         return report;
     }
 
-    private void walkRanking(IngestPeopleCommand command, LocalDate today, IngestReport report) {
+    private void walkRanking(IngestPeopleCommand command, Run run) {
+        IngestReport report = run.report();
         int offset = command.offset();
         while (!done(command, report)) {
             List<PersonRecord> page = wikidata.fetchPeople(offset, properties.pageSize(), properties.minBirthYear());
@@ -88,26 +101,27 @@ class IngestPeopleHandler {
                 if (done(command, report)) {
                     break;
                 }
-                process(person, today, command.dryRun(), report);
+                process(person, run);
             }
             offset += properties.pageSize();
         }
     }
 
-    private void balance(IngestPeopleCommand command, LocalDate today, IngestReport report) {
-        int quota = Math.ceilDiv(command.targetPeople(), Cell.SHARING_THE_TARGET);
+    private void balance(IngestPeopleCommand command, Run run) {
+        IngestReport report = run.report();
         Map<Cell, Set<String>> counted = command.dryRun() ? Map.of() : store.balancedPeople();
         List<CellCursor> cursors = Cell.ALL.stream()
-                .map(cell -> new CellCursor(cell, counted.getOrDefault(cell, Set.of())))
+                .map(cell -> new CellCursor(
+                        cell, cell.quota(command.targetPeople()), counted.getOrDefault(cell, Set.of())))
                 .toList();
-        List<CellCursor> open = new ArrayList<>(cursors.stream().filter(c -> !c.full(quota)).toList());
+        List<CellCursor> open = new ArrayList<>(cursors.stream().filter(c -> !c.full()).toList());
         while (!open.isEmpty()) {
             for (CellCursor cursor : List.copyOf(open)) {
                 Optional<PersonRecord> next = cursor.next();
                 if (next.isEmpty()) {
                     cursor.exhausted = true;
                     open.remove(cursor);
-                    log.warn("Cell {} exhausted at {}/{} people", cursor.cell, cursor.people.size(), quota);
+                    log.warn("Cell {} exhausted at {}/{} people", cursor.cell, cursor.people.size(), cursor.quota);
                     continue;
                 }
                 PersonRecord person = next.get();
@@ -115,31 +129,33 @@ class IngestPeopleHandler {
                 if (!Cell.of(person).map(cursor.cell::equals).orElse(false)) {
                     continue;
                 }
-                if (process(person, today, command.dryRun(), report)) {
+                if (process(person, run)) {
                     cursor.people.add(person.wikidataId());
-                    if (cursor.full(quota)) {
+                    if (cursor.full()) {
                         open.remove(cursor);
                     }
                 }
             }
         }
-        cursors.forEach(c -> report.cellStatus(c.cell, c.people.size(), quota, c.exhausted));
+        cursors.forEach(c -> report.cellStatus(c.cell, c.people.size(), c.quota, c.exhausted));
     }
 
     /** Where one cell is in its own ranking, and who already counts in it. */
     private final class CellCursor {
         private final Cell cell;
+        private final int quota;
         private final Set<String> people;
         private final Deque<PersonRecord> buffer = new ArrayDeque<>();
         private int offset;
         private boolean exhausted;
 
-        private CellCursor(Cell cell, Set<String> alreadyCounted) {
+        private CellCursor(Cell cell, int quota, Set<String> alreadyCounted) {
             this.cell = cell;
+            this.quota = quota;
             this.people = new HashSet<>(alreadyCounted);
         }
 
-        private boolean full(int quota) {
+        private boolean full() {
             return people.size() >= quota;
         }
 
@@ -159,10 +175,11 @@ class IngestPeopleHandler {
     }
 
     /** True if the person is kept, with at least one photo. */
-    private boolean process(PersonRecord record, LocalDate today, boolean dryRun, IngestReport report) {
+    private boolean process(PersonRecord record, Run run) {
+        IngestReport report = run.report();
         report.personSeen(record);
         try {
-            Optional<PersonSkip> skip = ingest(record, today, dryRun, report);
+            Optional<PersonSkip> skip = ingest(record, run);
             skip.ifPresent(reason -> {
                 report.personSkipped(reason);
                 log.debug("{} skipped: {}", record.wikidataId(), reason);
@@ -175,7 +192,8 @@ class IngestPeopleHandler {
         }
     }
 
-    private Optional<PersonSkip> ingest(PersonRecord record, LocalDate today, boolean dryRun, IngestReport report) {
+    private Optional<PersonSkip> ingest(PersonRecord record, Run run) {
+        boolean dryRun = run.dryRun();
         Optional<Person> existing = dryRun ? Optional.empty() : store.find(record.wikidataId());
         if (existing.map(Person::isExcluded).orElse(false)) {
             return Optional.of(PersonSkip.EXCLUDED);
@@ -204,14 +222,14 @@ class IngestPeopleHandler {
         List<PhotoSelector.Kept> kept = stored.kept();
         List<NewPhoto> newPhotos = kept.size() >= properties.maxPhotosPerPerson()
                 ? List.of()
-                : newPhotos(record, birth.get(), death, today, stored, report);
+                : newPhotos(record, birth.get(), death, stored, run);
         if (kept.isEmpty() && newPhotos.isEmpty()) {
             return Optional.of(PersonSkip.NO_VALID_PHOTO);
         }
         if (!dryRun) {
             store.save(record, birth.get(), death, newPhotos);
         }
-        report.personKept(record, newPhotos);
+        run.report().personKept(record, newPhotos);
         // QIDs only in logs, never names or file titles (which usually contain the name):
         // a person removed on request must not linger in log files.
         log.info(
@@ -224,9 +242,9 @@ class IngestPeopleHandler {
             PersonRecord record,
             LocalDate birth,
             LocalDate death,
-            LocalDate today,
             PeopleStore.StoredPhotos stored,
-            IngestReport report) {
+            Run run) {
+        IngestReport report = run.report();
         Set<String> mainImages = new LinkedHashSet<>();
         record.mainImageFiles().forEach(file -> mainImages.add(FILE_PREFIX + file));
         Set<String> titles = new LinkedHashSet<>(commons.searchDepicting(record.wikidataId()));
@@ -253,7 +271,7 @@ class IngestPeopleHandler {
                             file.title(), info.inceptions(), file.informationDate(), file.exifDateTimeOriginal()),
                     birth,
                     death,
-                    today);
+                    run.today());
             switch (evaluation) {
                 case PhotoEvaluation.Rejected rejected -> report.photoRejected(rejected.reason().name());
                 case PhotoEvaluation.Accepted accepted -> {
@@ -264,7 +282,11 @@ class IngestPeopleHandler {
         }
 
         List<PhotoSelector.Candidate> selected = PhotoSelector.select(
-                stored.kept(), candidates, properties.maxPhotosPerPerson(), properties.minYearsBetweenPhotos());
+                stored.kept(),
+                candidates,
+                properties.maxPhotosPerPerson(),
+                properties.minYearsBetweenPhotos(),
+                run.photosByAgeBand());
         // Valid, but too close in age to a kept photo, or over the per-person limit.
         report.photosNotSelected(candidates.size() - selected.size());
 
@@ -274,6 +296,7 @@ class IngestPeopleHandler {
             try {
                 ImageReencoder.Reencoded image = reencoder.reencode(downloader.download(file.thumbnailUrl()));
                 report.photoKept(candidate.age());
+                run.photosByAgeBand().merge(AgeBand.of(candidate.age()), 1, Integer::sum);
                 newPhotos.add(new NewPhoto(
                         file.title().substring(FILE_PREFIX.length()),
                         candidate.evaluation(),

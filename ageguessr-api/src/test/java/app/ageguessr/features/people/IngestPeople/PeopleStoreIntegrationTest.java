@@ -140,6 +140,25 @@ class PeopleStoreIntegrationTest {
     }
 
     @Test
+    void countsThePhotosStillInPlayPerAgeBand() {
+        // Born 1950: 26 in 1976, 30 in 1980, 40 in 1990.
+        store.save(record("Q1", "Jane", 50), BIRTH, null, List.of(photo("A.jpg", 1976), photo("B.jpg", 1990)));
+        store.save(record("Q2", "Sam", 50), BIRTH, null, List.of(photo("C.jpg", 1980), photo("D.jpg", 1990)));
+        photos.findAll().stream()
+                .filter(p -> p.getCommonsFile().equals("D.jpg"))
+                .forEach(p -> {
+                    p.setReviewStatus(ReviewStatus.REJECTED);
+                    photos.save(p);
+                });
+        store.save(record("Q3", "Excluded", 50), BIRTH, null, List.of(photo("E.jpg", 1980)));
+        Person excluded = people.findByWikidataId("Q3").orElseThrow();
+        excluded.setExcluded(true);
+        people.save(excluded);
+
+        assertThat(store.photosByAgeBand()).isEqualTo(Map.of("26-33", 2, "34-41", 1));
+    }
+
+    @Test
     void readsTheYearAndAgeOfStoredPhotos() {
         store.save(record("Q1", "Jane", 50), BIRTH, null, List.of(photo("A.jpg", 1976), photo("B.jpg", 1990)));
         Person person = people.findByWikidataId("Q1").orElseThrow();

@@ -56,6 +56,14 @@ class PeopleStore {
                         Collectors.mapping(PersonRepository.BalancedPerson::wikidataId, Collectors.toSet())));
     }
 
+    /** Photos still in play per age band, so that a rerun keeps leaning toward the rare ages. */
+    @Transactional(readOnly = true)
+    Map<String, Integer> photosByAgeBand() {
+        return photos.countByAge().stream()
+                .collect(Collectors.toMap(
+                        c -> AgeBand.of(c.age()), c -> Math.toIntExact(c.photos()), Integer::sum));
+    }
+
     /** What a person already has, as far as the next ingestion is concerned. */
     record StoredPhotos(List<PhotoSelector.Kept> kept, Set<String> knownFiles) {
 

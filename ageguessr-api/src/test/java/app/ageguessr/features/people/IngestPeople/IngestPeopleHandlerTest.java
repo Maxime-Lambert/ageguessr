@@ -407,6 +407,23 @@ class IngestPeopleHandlerTest {
     }
 
     @Test
+    void leansTowardTheAgeBandsThePoolLacksAcrossPeople() {
+        // Stored: plenty of photos at 26-33. Each person has one at 26 and one at 34,
+        // too close to keep both: the 34-41 one wins until that band catches up.
+        when(store.photosByAgeBand()).thenReturn(Map.of("26-33", 2));
+        when(wikidata.fetchPeople(0, 3, 1930)).thenReturn(List.of(person("Q1"), person("Q2"), person("Q3")));
+        photos("Q1", photo("File:A1 1976.jpg", 1976), photo("File:A2 1984.jpg", 1984));
+        photos("Q2", photo("File:B1 1976.jpg", 1976), photo("File:B2 1984.jpg", 1984));
+        photos("Q3", photo("File:C1 1976.jpg", 1976), photo("File:C2 1984.jpg", 1984));
+
+        IngestReport report = handler.handle(new IngestPeopleCommand(3, null, 0, WHOLE_LIST, false));
+
+        // 26-33: 2 stored; 34-41 gets Q1 and Q2 (0 then 1 < 2), then ties at 2 and the
+        // file name (C1 before C2) decides for Q3.
+        assertThat(report.keptPhotosByAge()).isEqualTo(Map.of("34-41", 2, "26-33", 1));
+    }
+
+    @Test
     void aDryRunTreatsAnExcludedPersonAsNew() {
         // The store is not even read: the measure is about Wikidata and Commons alone.
         when(store.find("Q1")).thenReturn(Optional.of(stored("Q1", BIRTH, true)));

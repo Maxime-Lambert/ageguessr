@@ -57,6 +57,16 @@ corroborée par l'EXIF. ~30 % sur les 400 plus connues (spike de
 `plans/done/people-sourcing.md`), inconnue plus bas dans la liste et selon les
 continents.
 
+## Décisions de l'utilisateur (2026-10-27)
+- Femmes trans et hommes trans comptés comme femmes et hommes ; continent le moins
+  représenté pour plusieurs nationalités (un Russe compte pour l'Asie) : validés.
+- **Cases « autre » proportionnelles à Wikidata** (~0,11 %), et non au même plafond
+  que les cases femmes / hommes : avec le même plafond elles auraient fait 10 à 12 %
+  du pool (mesure : 20/20 dans 5 continents sur 6 pour une cible de 240).
+- **Équilibre des âges** par tranches de 8 ans (18-25, 26-33… 82+) : à la collecte,
+  préférer la photo de la tranche la moins remplie ; le reste au tirage quotidien
+  (Semaine 3, ajouté à la roadmap).
+
 ## Hypothèses
 - **6 continents** : Afrique, Amérique du Nord, Amérique du Sud, Asie, Europe, Océanie.
   « Eurasie » compte comme Asie, « Insular Oceania » comme Océanie.
@@ -211,6 +221,13 @@ Status: In progress (mécanisme fait ; quotas et cases épuisées à confirmer a
 - [x] Docs : `architecture.md` (sourcing : équilibre, raison du continent plutôt que de
       l'ethnie, mineurs), `roadmap.md`, `/privacy` section 8 (genre et continent de
       nationalité stockés, venant de Wikidata).
+
+- [x] Cases « autre » proportionnelles (`Cell.quota`, `OTHER_GENDER_SHARE = 0.0011`).
+- [x] Tranches d'âge : `AgeBand`, compteurs du rapport (photos valides et gardées par
+      tranche), `PhotoSelector` qui préfère la tranche la moins remplie
+      (`PeopleStore.photosByAgeBand` + run en cours).
+- [ ] Mesure de l'effet : collecte équilibrée en dry-run `--limit=240`, avant / après.
+- [ ] Essai réel `--limit=60` écrit en base locale.
 
 ### Verification Plan
 - `./mvnw test` : unitaires du handler (tour de rôle, quota atteint, case épuisée,

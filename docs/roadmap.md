@@ -54,7 +54,9 @@ la suivante).
 - [ ] Algorithme de sélection quotidienne (3 personnes/jour, minuit UTC, pas de
       répétition trop proche dans le temps). Les règles portent sur la personne, pas
       sur la photo : jamais deux photos d'une même personne dans une partie, et un
-      délai minimal entre deux apparitions d'une même personne
+      délai minimal entre deux apparitions d'une même personne. Tirer les tranches d'âge
+      de 8 ans (18-25 … 82+) de façon équilibrée, la collecte n'y penchant que
+      faiblement (voir `docs/decisions/architecture.md`)
 - [ ] Logique de guess en 2 étapes : 1ère tentative → chaud/froid, sélection d'une
       catégorie d'indice, 2e tentative
 - [ ] Système de points (bonus 1er coup, majorité des points sur la précision du 2e coup
