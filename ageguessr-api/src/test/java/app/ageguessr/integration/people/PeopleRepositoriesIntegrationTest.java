@@ -6,6 +6,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import app.ageguessr.TestcontainersConfiguration;
 import app.ageguessr.features.auth.User;
 import app.ageguessr.features.auth.UserRepository;
+import app.ageguessr.features.people.Continent;
+import app.ageguessr.features.people.Gender;
 import app.ageguessr.features.people.Person;
 import app.ageguessr.features.people.PersonPhoto;
 import app.ageguessr.features.people.PersonPhotoRepository;
@@ -160,11 +162,63 @@ class PeopleRepositoriesIntegrationTest {
     }
 
     @Test
-    void rejectsAnAgeOutsideZeroToOneHundredTwenty() {
+    void rejectsAnAgeAboveOneHundredTwenty() {
         Person person = savePerson("Q1");
 
         assertThatThrownBy(() -> photoRepository.saveAndFlush(photo(person, "A.jpg", 1976).ageAtPhoto(121).build()))
                 .isInstanceOf(DataIntegrityViolationException.class);
+    }
+
+    @Test
+    void storesTheGenderAndContinentAsTheirNames() {
+        Person person = personRepository.saveAndFlush(
+                person("Q1").gender(Gender.FEMALE).continent(Continent.SOUTH_AMERICA).build());
+
+        Object[] row = (Object[]) entityManager
+                .createNativeQuery("SELECT gender, continent FROM people WHERE id = :id")
+                .setParameter("id", person.getId())
+                .getSingleResult();
+        assertThat(row).containsExactly("FEMALE", "SOUTH_AMERICA");
+    }
+
+    @Test
+    void refusesAnUnknownGenderWrittenInSql() {
+        Person person = savePerson("Q1");
+
+        // The entity only writes enum names; the CHECK guards manual SQL.
+        assertThatThrownBy(() -> entityManager
+                        .createNativeQuery("UPDATE people SET gender = 'UNKNOWN' WHERE id = :id")
+                        .setParameter("id", person.getId())
+                        .executeUpdate())
+                .hasMessageContaining("people_gender");
+    }
+
+    @Test
+    void refusesAnUnknownContinentWrittenInSql() {
+        Person person = savePerson("Q1");
+
+        assertThatThrownBy(() -> entityManager
+                        .createNativeQuery("UPDATE people SET continent = 'ANTARCTICA' WHERE id = :id")
+                        .setParameter("id", person.getId())
+                        .executeUpdate())
+                .hasMessageContaining("people_continent");
+    }
+
+    @Test
+    void rejectsAPhotoOfAMinor() {
+        Person person = savePerson("Q1");
+
+        assertThatThrownBy(() -> photoRepository.saveAndFlush(photo(person, "A.jpg", 1967).ageAtPhoto(17).build()))
+                .isInstanceOf(DataIntegrityViolationException.class);
+    }
+
+    @Test
+    void acceptsAPhotoAtEighteen() {
+        Person person = savePerson("Q1");
+
+        photoRepository.saveAndFlush(photo(person, "A.jpg", 1968).ageAtPhoto(18).build());
+
+        assertThat(photoRepository.count()).isEqualTo(1);
     }
 
     @Test

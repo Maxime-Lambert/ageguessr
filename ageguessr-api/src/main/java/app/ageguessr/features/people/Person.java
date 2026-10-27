@@ -1,6 +1,8 @@
 package app.ageguessr.features.people;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -45,6 +47,14 @@ public class Person {
     private LocalDate deathDate;
 
     private int sitelinks;
+
+    /** Null when Wikidata does not tell. Used only to balance the pool. */
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
+    /** Continent of nationality, null when Wikidata does not tell. Used only to balance the pool. */
+    @Enumerated(EnumType.STRING)
+    private Continent continent;
 
     private boolean excluded;
 

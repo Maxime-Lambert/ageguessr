@@ -21,6 +21,9 @@ final class PhotoEvaluator {
     /** Year of the first practical photographic process (daguerreotype). */
     static final int FIRST_PHOTOGRAPH_YEAR = 1839;
 
+    /** No photo of a minor in the game, even of someone who is an adult today. */
+    static final int MIN_AGE = 18;
+
     static final int MAX_AGE = 120;
 
     private static final Pattern YEAR_IN_NAME = Pattern.compile("(?<!\\d)(1[89]\\d\\d|20\\d\\d)(?!\\d)");
@@ -76,6 +79,9 @@ final class PhotoEvaluator {
         int age = ageOn(birth, date.from());
         if (age != ageOn(birth, date.to())) {
             return new PhotoEvaluation.Rejected(PhotoRejection.AMBIGUOUS_AGE);
+        }
+        if (age < MIN_AGE) {
+            return new PhotoEvaluation.Rejected(PhotoRejection.MINOR);
         }
         if (age > MAX_AGE) {
             return new PhotoEvaluation.Rejected(PhotoRejection.AGE_OUT_OF_RANGE);

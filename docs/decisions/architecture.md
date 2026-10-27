@@ -330,9 +330,13 @@ ponctuelle**, pas pendant les parties :
     sont vivantes, et les figures historiques n'ont presque jamais de photo à date
     corroborée par l'EXIF. Le jeu veut des photos récentes et de bonne qualité. Une
     ingestion par QID (`--qid`) ignore le filtre.
-  - Cinq petites requêtes par page de 500 : classement, naissances, décès, images,
-    labels. Elles sont assemblées en Java, environ 7 s par page. Une requête unique en
-    jointure dépassait la limite de 30 s de QLever.
+  - Six petites requêtes par page de 500 : classement, naissances, décès, images,
+    labels, genre et continents. Elles sont assemblées en Java, environ 7 s par page.
+    Une requête unique en jointure dépassait la limite de 30 s de QLever.
+  - Labels : `en` ou `fr` exact, sinon une variante régionale (`en-gb`…), sinon le
+    label `mul`. Depuis 2024, Wikidata fusionne les labels identiques entre langues en
+    un seul label `mul` et retire le label `en` : sans ce repli, 14 des 200 personnes
+    les plus connues (Douglas Adams, Shakira…) passaient pour sans nom.
 - **Date de naissance** : `P569` au jour près, en calendrier grégorien, avec les rangs
   Wikidata (un `deprecated` est ignoré, un `preferred` l'emporte). Au moindre doute,
   la personne est écartée.
@@ -348,6 +352,17 @@ ponctuelle**, pas pendant les parties :
 
   Plus de repli sur la date d'upload : un tirage ancien numérisé porte souvent la date
   du scan.
+- **Aucune photo d'une personne mineure** (décision du 2026-10-26) : âge calculé sur
+  la photo d'au moins 18 ans, même si la personne est adulte aujourd'hui. Règle dans
+  `PhotoEvaluator` (motif `MINOR`), et contrainte `CHECK (age_at_photo BETWEEN 18 AND
+  120)` en base (V8) comme filet. La curation rejette en plus une photo où la personne
+  paraît mineure : la date est alors fausse malgré l'EXIF.
+- **Équilibre des âges** (décision du 2026-10-27), par tranches de 8 ans : 18-25,
+  26-33… 74-81, 82+. Parmi les photos possibles d'une personne, `PhotoSelector`
+  préfère celle dont la tranche compte le moins de photos en jeu (base + run en
+  cours), sans jamais renoncer à une photo que les règles d'écart permettent. Mesure
+  du 2026-10-27 : la répartition est déjà assez plate de 18 à 73 ans, le manque est
+  au-delà de 74 ans. L'équilibre fin se fera au tirage quotidien (Semaine 3).
 - **Une photo par tranche d'au moins 10 ans** (en âge et en année civile) pour une même
   personne, avec un plafond de 5. Les deux valeurs sont des propriétés
   (`app.people.ingest.*`).
@@ -378,11 +393,49 @@ ponctuelle**, pas pendant les parties :
     supprimée si le jeu s'arrête.
   - Pour une personne **pas encore ingérée**, noter le QID et l'exclure après
     l'ingestion. Une liste de blocage préalable sera ajoutée si le cas se présente.
-- **Commande** : profil Spring `ingest` (`IngestPeopleRunner`, `--limit`, `--qid`),
-  idempotente : une relance n'ajoute que ce qui manque.
+- **Cible en photos** (décision du 2026-10-27) : au moins **5 000 photos jouables**,
+  et une même photo pas rejouée avant 3 ans (règle du tirage quotidien, Semaine 3 :
+  à 3 photos par jour, 3 ans en consomment 3 285). La cible de la collecte
+  (`--limit`, `app.people.ingest.target-photos`, 5 000 par défaut) compte les photos
+  **en jeu** (en attente ou approuvées) : après une passe de curation, les rejets font
+  baisser ce total, et une relance complète chaque case. Le cycle collecte → curation
+  → collecte converge vers 5 000 photos approuvées.
+- **Pool équilibré** (décision du 2026-10-26) : autant de photos de femmes que
+  d'hommes, et autant par continent de nationalité.
+  - 18 cases : 6 continents (Afrique, Amérique du Nord, Amérique du Sud, Asie, Europe,
+    Océanie) × femmes, hommes, autre. La cible en photos est partagée entre les 12
+    cases femmes et hommes (≈ 417 photos chacune pour 5 000). Les cases « autre » (non binaire,
+    genderfluid, intersexe, valeurs contradictoires…) reçoivent leur poids réel sur
+    Wikidata, ~0,11 % (décision du 2026-10-27), arrondi au-dessus : 1 photo par
+    continent pour 5 000. Les femmes trans comptent comme femmes, les hommes trans comme
+    hommes.
+  - Chaque case suit son propre classement QLever, filtré par `P21` et par `P27` →
+    `P30`, et les cases avancent à tour de rôle, une personne à la fois. Une case dont
+    le classement s'épuise reste sous son quota, et le rapport le dit.
+  - **Continent** : celui des pays de nationalité (`P27`, puis `P30` du pays).
+    Eurasie et sous-continent indien comptent comme Asie, Amérique centrale comme
+    Amérique du Nord, « Insular Oceania » et continent australien comme Océanie.
+    Plusieurs continents : le moins représenté, dans l'ordre fixe Océanie, Afrique,
+    Amérique du Sud, Asie, Amérique du Nord, Europe. Un Russe compte donc pour l'Asie.
+  - Les photos déjà en base (encore en jeu, de personnes non exclues) comptent dans
+    leur case : une relance reprend là où l'ingestion s'était arrêtée.
+- **Commande** : profil Spring `ingest` (`IngestPeopleRunner`), idempotente : une
+  relance n'ajoute que ce qui manque.
+  - `--limit=<n>` : cible de l'ingestion équilibrée, en photos en jeu ;
+  - `--qid=<QID>` : une seule personne ;
+  - `--sample=<n> [--offset=<rang>]` : n personnes du classement global à partir d'un
+    rang, pour mesurer le rendement d'une partie de la liste ;
+  - `--dry-run` : toutes les règles, téléchargements compris, sans lire ni écrire la
+    base.
 
 **Raison** : Wikidata et Commons forment un écosystème gratuit, structuré et à
-couverture mondiale. Le reste découle de l'exigence d'un âge exact :
+couverture mondiale. Le reste découle de l'exigence d'un âge exact, et de l'équilibre
+voulu :
+- **Pourquoi équilibrer** : le classement brut par notoriété donne environ 74 %
+  d'hommes, et une majorité d'Européens et de Nord-Américains.
+- **Pourquoi le continent de nationalité et pas l'origine** : l'origine ethnique
+  (`P172`) n'est renseignée que pour ~1 % des personnes, et c'est une donnée sensible
+  (art. 9 RGPD). Limite assumée : la nationalité n'est pas l'origine.
 - **Pourquoi ces règles de date** : le spike du 2026-10-26 sur 400 personnes
   (`plans/done/people-sourcing.md`) a montré qu'une date déclarée seule se trompe sur
   les photos anciennes numérisées. L'EXIF strict garde tout de même ~30 % des
@@ -395,8 +448,10 @@ couverture mondiale. Le reste découle de l'exigence d'un âge exact :
   locale et à la vision par LLM.
 
 **Données personnelles** :
-- Nom, dates de naissance et de décès, et photos de personnalités publiques, collectés
-  indirectement (art. 14 RGPD).
+- Nom, dates de naissance et de décès, photos, genre et continent de nationalité de
+  personnalités publiques, collectés indirectement (art. 14 RGPD). Genre et continent
+  servent uniquement à l'équilibre du pool. Aucune transidentité n'est stockée : une
+  femme trans est enregistrée `FEMALE`, comme les autres femmes.
 - Base légale : intérêt légitime. Information donnée dans `/privacy` (section 8).
 - `people.excluded` traite les demandes de retrait. Poser l'exclusion **supprime
   physiquement** les photos et images de la personne, par un trigger Postgres déclaré

@@ -3,6 +3,8 @@ package app.ageguessr.features.people.IngestPeople;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import app.ageguessr.TestcontainersConfiguration;
+import app.ageguessr.features.people.Continent;
+import app.ageguessr.features.people.Gender;
 import app.ageguessr.features.people.Person;
 import app.ageguessr.features.people.PersonPhoto;
 import app.ageguessr.features.people.PersonPhotoRepository;
@@ -12,6 +14,7 @@ import app.ageguessr.features.people.PhotoImageRepository;
 import app.ageguessr.features.people.ReviewStatus;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -77,18 +80,85 @@ class PeopleStoreIntegrationTest {
         store.save(record("Q1", "Jane", 50), BIRTH, null, List.of(photo("A.jpg", 1976)));
         Person first = people.findByWikidataId("Q1").orElseThrow();
 
-        store.save(record("Q1", "Jane Doe", 60), BIRTH, LocalDate.of(2020, 1, 1), List.of(photo("B.jpg", 1990)));
+        store.save(
+                new PersonRecord("Q1", 60, "Jane Doe", "Jeanne Doe", Set.of(), List.of(), List.of(), null, null),
+                BIRTH,
+                LocalDate.of(2020, 1, 1),
+                List.of(photo("B.jpg", 1990)));
 
         assertThat(people.findAll()).hasSize(1);
         Person refreshed = people.findByWikidataId("Q1").orElseThrow();
         assertThat(refreshed.getId()).isEqualTo(first.getId());
         assertThat(refreshed.getNameEn()).isEqualTo("Jane Doe");
+        assertThat(refreshed.getNameFr()).isEqualTo("Jeanne Doe");
         assertThat(refreshed.getSitelinks()).isEqualTo(60);
         assertThat(refreshed.getDeathDate()).isEqualTo(LocalDate.of(2020, 1, 1));
         assertThat(refreshed.getCreatedAt()).isEqualTo(first.getCreatedAt());
         assertThat(photos.findByPersonId(refreshed.getId()))
                 .extracting(PersonPhoto::getCommonsFile)
                 .containsExactlyInAnyOrder("A.jpg", "B.jpg");
+    }
+
+    @Test
+    void storesTheGenderAndContinentAndRefreshesThemOnTheNextRun() {
+        store.save(record("Q1", "Jane", 50), BIRTH, null, List.of());
+        assertThat(people.findByWikidataId("Q1").orElseThrow())
+                .extracting(Person::getGender, Person::getContinent)
+                .containsExactly(null, null);
+
+        store.save(
+                new PersonRecord(
+                        "Q1", 50, "Jane", null, Set.of(), List.of(), List.of(), Gender.FEMALE, Continent.AFRICA),
+                BIRTH,
+                null,
+                List.of());
+
+        assertThat(people.findByWikidataId("Q1").orElseThrow())
+                .extracting(Person::getGender, Person::getContinent)
+                .containsExactly(Gender.FEMALE, Continent.AFRICA);
+    }
+
+    @Test
+    void countsPerCellOnlyThePhotosStillInPlayOfPeopleNotExcluded() {
+        store.save(person("Q1", Gender.FEMALE, Continent.AFRICA), BIRTH, null, List.of(photo("A.jpg", 1976)));
+        store.save(person("Q2", Gender.FEMALE, Continent.AFRICA), BIRTH, null, List.of(photo("B.jpg", 1976)));
+        store.save(person("Q3", Gender.MALE, Continent.ASIA), BIRTH, null, List.of(photo("C.jpg", 1976)));
+        // Not counted: no photo, only a rejected photo, excluded, cell unknown.
+        store.save(person("Q4", Gender.FEMALE, Continent.AFRICA), BIRTH, null, List.of());
+        store.save(person("Q5", Gender.FEMALE, Continent.AFRICA), BIRTH, null, List.of(photo("E.jpg", 1976)));
+        photos.findAll().stream()
+                .filter(p -> p.getCommonsFile().equals("E.jpg"))
+                .forEach(p -> {
+                    p.setReviewStatus(ReviewStatus.REJECTED);
+                    photos.save(p);
+                });
+        store.save(person("Q6", Gender.FEMALE, Continent.AFRICA), BIRTH, null, List.of(photo("F.jpg", 1976)));
+        Person excluded = people.findByWikidataId("Q6").orElseThrow();
+        excluded.setExcluded(true);
+        people.save(excluded);
+        store.save(record("Q7", "Unknown", 50), BIRTH, null, List.of(photo("G.jpg", 1976)));
+
+        assertThat(store.photosByCell())
+                .isEqualTo(Map.of(new Cell(Continent.AFRICA, Gender.FEMALE), 2, new Cell(Continent.ASIA, Gender.MALE), 1));
+    }
+
+    @Test
+    void countsThePhotosStillInPlayPerAgeBand() {
+        // Born 1950: 26 in 1976, 30 in 1980, 40 in 1990.
+        store.save(record("Q1", "Jane", 50), BIRTH, null, List.of(photo("A.jpg", 1976), photo("B.jpg", 1990)));
+        store.save(record("Q2", "Sam", 50), BIRTH, null, List.of(photo("C.jpg", 1980), photo("D.jpg", 1990)));
+        photos.findAll().stream()
+                .filter(p -> p.getCommonsFile().equals("D.jpg"))
+                .forEach(p -> {
+                    p.setReviewStatus(ReviewStatus.REJECTED);
+                    photos.save(p);
+                });
+        store.save(record("Q3", "Excluded", 50), BIRTH, null, List.of(photo("E.jpg", 1980)));
+        Person excluded = people.findByWikidataId("Q3").orElseThrow();
+        excluded.setExcluded(true);
+        people.save(excluded);
+
+        assertThat(store.photosByAgeBand()).isEqualTo(Map.of("26-33", 2, "34-41", 1));
     }
 
     @Test
@@ -124,8 +194,12 @@ class PeopleStoreIntegrationTest {
         assertThat(people.findByWikidataId("Q1")).isPresent();
     }
 
+    private static PersonRecord person(String qid, Gender gender, Continent continent) {
+        return new PersonRecord(qid, 50, qid, null, Set.of(), List.of(), List.of(), gender, continent);
+    }
+
     private static PersonRecord record(String qid, String name, int sitelinks) {
-        return new PersonRecord(qid, sitelinks, name, null, Set.of(), List.of(), List.of());
+        return new PersonRecord(qid, sitelinks, name, null, Set.of(), List.of(), List.of(), null, null);
     }
 
     private static NewPhoto photo(String file, int year) {

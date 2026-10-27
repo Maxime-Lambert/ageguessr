@@ -41,8 +41,14 @@ la suivante).
 - [x] Droit à l'image des personnes vivantes : risque accepté, couvert par le retrait
       sur demande ; ingestion limitée aux personnes nées en 1930 ou après — PR
       `feature/photo-curation`
-- [ ] Ingestion en production (~3 000 personnes, ~8 h, ~0,8 Go), puis passe de
-      curation
+- [x] Pool équilibré et sans mineur : aucune photo de moins de 18 ans, 18 cases
+      continent de nationalité × genre (« autre » à son poids réel), préférence des
+      tranches d'âge rares, cible de 5 000 photos en jeu, mesure du rendement
+      (`--sample`, `--dry-run`) — PR `feature/people-pool-balance`
+- [ ] Ingestion en production (cible 5 000 photos en jeu), puis curation et relances
+      jusqu'à 5 000 photos approuvées. Estimation : ~8 800 photos collectées en tout
+      (~43 % de rejets), ~7 h de collecte, ~1,5 Go (les photos rejetées gardent leur
+      image)
 - [ ] Ingestion + curation des indices événementiels par catégorie et par année
       (pages Wikipedia "YYYY in music/sports/politics...", parsing + vérification sur
       échantillon avant d'industrialiser)
@@ -51,10 +57,13 @@ la suivante).
       à faire avec le plan des indices
 
 ## Semaine 3 — Moteur de jeu
-- [ ] Algorithme de sélection quotidienne (3 personnes/jour, minuit UTC, pas de
-      répétition trop proche dans le temps). Les règles portent sur la personne, pas
+- [ ] Algorithme de sélection quotidienne (3 personnes/jour, minuit UTC). Une même
+      photo n'est pas rejouée avant **3 ans** (le pool vise au moins 5 000 photos
+      approuvées, 3 ans en consomment 3 285). Les règles portent sur la personne, pas
       sur la photo : jamais deux photos d'une même personne dans une partie, et un
-      délai minimal entre deux apparitions d'une même personne
+      délai minimal entre deux apparitions d'une même personne. Tirer les tranches d'âge
+      de 8 ans (18-25 … 82+) de façon équilibrée, la collecte n'y penchant que
+      faiblement (voir `docs/decisions/architecture.md`)
 - [ ] Logique de guess en 2 étapes : 1ère tentative → chaud/froid, sélection d'une
       catégorie d'indice, 2e tentative
 - [ ] Système de points (bonus 1er coup, majorité des points sur la précision du 2e coup

@@ -83,6 +83,14 @@ describe('Curation', () => {
     );
   });
 
+  it('reminds to reject a photo where the person looks under 18', () => {
+    start([pendingPhoto('p1')]);
+
+    expect(page.textContent?.replace(/\s+/g, ' ')).toContain(
+      'Reject a photo where the person looks under 18',
+    );
+  });
+
   it('approves with A and moves to the next photo', () => {
     start([pendingPhoto('p1'), pendingPhoto('p2')]);
 

@@ -1,5 +1,6 @@
 package app.ageguessr.features.people.IngestPeople;
 
+import app.ageguessr.features.people.Gender;
 import app.ageguessr.features.people.WikidataId;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -23,8 +24,8 @@ import tools.jackson.databind.JsonNode;
  * <p>One small query per kind of data, assembled in Java. A single query joining the
  * ranking, birth and death statements and labels ran close to QLever's 30 s limit, then
  * past it (QLever answers a timeout with HTTP 429). Separately, a page of 500 people
- * takes ~7 s: ranking ~4 s, then four queries restricted to the page's QIDs (VALUES) of
- * about a second each.
+ * takes ~7 s: ranking ~4 s, then five queries restricted to the page's QIDs (VALUES) of
+ * about a second each or less.
  */
 @Component
 class WikidataClient {
@@ -48,6 +49,23 @@ class WikidataClient {
             SELECT DISTINCT ?person ?sitelinks WHERE {
               ?person wdt:P31 wd:Q5 ; wdt:P18 ?image ; wikibase:sitelinks ?sitelinks ;
                       wdt:P569 ?birth .
+              FILTER(YEAR(?birth) >= %d)
+            }
+            ORDER BY DESC(?sitelinks) ?person
+            LIMIT %d OFFSET %d
+            """;
+
+    // The ranking of one balance cell: people with a P21 and a nationality on the cell's
+    // continent. Someone with several nationalities comes up in several cells; the
+    // handler keeps them only in the cell ContinentResolver gives them. ~1 to 3.5 s on
+    // QLever, deep offsets included.
+    private static final String CELL_PAGE = """
+            SELECT DISTINCT ?person ?sitelinks WHERE {
+              VALUES ?continent { %s }
+              ?person wdt:P31 wd:Q5 ; wdt:P18 ?image ; wikibase:sitelinks ?sitelinks ;
+                      wdt:P569 ?birth ; wdt:P21 ?gender ; wdt:P27 ?country .
+              ?country wdt:P30 ?continent .
+              %s
               FILTER(YEAR(?birth) >= %d)
             }
             ORDER BY DESC(?sitelinks) ?person
@@ -93,15 +111,29 @@ class WikidataClient {
             }
             """;
 
-    // Every "en*" / "fr*" label with its language: the exact language is preferred in
+    // Every "en*" / "fr*" label with its language, plus "mul": the best one is chosen in
     // Java. On QLever, FILTER(LANG(?l) = "en") misses some English labels (Cristiano
-    // Ronaldo, seen on a real run) that STRSTARTS finds.
+    // Ronaldo, seen on a real run) that STRSTARTS finds. "mul" (multiple languages):
+    // since 2024 Wikidata replaces labels identical across languages with one "mul"
+    // label, so Douglas Adams or Shakira have no "en" label any more (14 of the top 200
+    // were skipped for want of a name, seen on 2026-10-27).
     private static final String LABELS = """
             SELECT ?person ?label ?lang WHERE {
               VALUES ?person { %s }
               ?person rdfs:label ?label .
               BIND(LANG(?label) AS ?lang)
-              FILTER(STRSTARTS(?lang, "en") || STRSTARTS(?lang, "fr"))
+              FILTER(STRSTARTS(?lang, "en") || STRSTARTS(?lang, "fr") || ?lang = "mul")
+            }
+            """;
+
+    // Gender and continents of nationality, for the pool balance. wdt: keeps only the
+    // best-ranked statements. One UNION rather than two queries: ~0.5 s for 500 people.
+    private static final String PROFILES = """
+            SELECT ?person ?gender ?continent WHERE {
+              VALUES ?person { %s }
+              { ?person wdt:P21 ?gender . }
+              UNION
+              { ?person wdt:P27 ?country . ?country wdt:P30 ?continent . }
             }
             """;
 
@@ -119,6 +151,28 @@ class WikidataClient {
      */
     List<PersonRecord> fetchPeople(int offset, int limit, int minBirthYear) {
         return details(query(PAGE.formatted(minBirthYear, limit, offset)));
+    }
+
+    /**
+     * The people of one balance cell, ranked {@code offset} to {@code offset + limit - 1}
+     * by notoriety. Includes people who belong to another cell (see CELL_PAGE): the
+     * caller filters with {@link Cell#of}.
+     */
+    List<PersonRecord> fetchCell(Cell cell, int offset, int limit, int minBirthYear) {
+        String continents = entities(ContinentResolver.qidsOf(cell.continent()));
+        String gender = cell.gender() == Gender.OTHER
+                ? "FILTER(?gender NOT IN (" + String.join(", ", prefixed(GenderResolver.knownQids())) + "))"
+                : "VALUES ?gender { " + entities(GenderResolver.qidsOf(cell.gender())) + " }";
+        return details(query(CELL_PAGE.formatted(continents, gender, minBirthYear, limit, offset)));
+    }
+
+    /** Sorted, so that a query is always the same text. QIDs from our own constants only. */
+    private static List<String> prefixed(Set<String> qids) {
+        return qids.stream().sorted().map(q -> "wd:" + q).toList();
+    }
+
+    private static String entities(Set<String> qids) {
+        return String.join(" ", prefixed(qids));
     }
 
     /**
@@ -150,12 +204,13 @@ class WikidataClient {
                 query(BIRTHS.formatted(values)),
                 query(DEATHS.formatted(values)),
                 query(IMAGES.formatted(values)),
-                query(LABELS.formatted(values)));
+                query(LABELS.formatted(values)),
+                query(PROFILES.formatted(values)));
     }
 
-    /** Builds the people of a page from the five result sets, in ranking order. */
+    /** Builds the people of a page from the six result sets, in ranking order. */
     static List<PersonRecord> assemble(
-            JsonNode ranking, JsonNode births, JsonNode deaths, JsonNode images, JsonNode labels) {
+            JsonNode ranking, JsonNode births, JsonNode deaths, JsonNode images, JsonNode labels, JsonNode profiles) {
         Map<String, Builder> people = new LinkedHashMap<>();
         for (JsonNode row : ranking) {
             String qid = qid(row);
@@ -198,6 +253,13 @@ class WikidataClient {
                 person.nameFr.offer(value(row, "label"), value(row, "lang"), "fr");
             }
         }
+        for (JsonNode row : profiles) {
+            Builder person = people.get(qid(row));
+            if (person != null) {
+                entityId(value(row, "gender")).ifPresent(person.genders::add);
+                entityId(value(row, "continent")).ifPresent(person.continents::add);
+            }
+        }
         return people.values().stream().map(Builder::build).toList();
     }
 
@@ -221,6 +283,15 @@ class WikidataClient {
         return WikidataId.isValid(id) ? id : null;
     }
 
+    /** "Q6581072" from "http://www.wikidata.org/entity/Q6581072"; empty for anything else. */
+    private static Optional<String> entityId(String uri) {
+        if (uri == null || !uri.startsWith(ENTITY_PREFIX)) {
+            return Optional.empty();
+        }
+        String id = uri.substring(ENTITY_PREFIX.length());
+        return WikidataId.isValid(id) ? Optional.of(id) : Optional.empty();
+    }
+
     private static String value(JsonNode row, String variable) {
         JsonNode node = row.path(variable).path("value");
         return node.isMissingNode() ? null : node.asString();
@@ -235,20 +306,29 @@ class WikidataClient {
         };
     }
 
-    /** Keeps the label of the exact language if there is one, else the first regional variant (en-gb...). */
+    /**
+     * Keeps the label of the exact language if there is one, else the first regional
+     * variant (en-gb...), else the "mul" label shared by many languages.
+     */
     private static final class Label {
+        private static final String MULTIPLE_LANGUAGES = "mul";
+        private static final int EXACT = 3;
+        private static final int VARIANT = 2;
+        private static final int MULTIPLE = 1;
+
         private String text;
-        private boolean exact;
+        private int quality;
 
         void offer(String candidate, String lang, String wanted) {
-            if (candidate == null || lang == null || exact || !lang.startsWith(wanted)) {
+            if (candidate == null || lang == null) {
                 return;
             }
-            if (wanted.equals(lang)) {
+            int offered = wanted.equals(lang)
+                    ? EXACT
+                    : lang.startsWith(wanted) ? VARIANT : MULTIPLE_LANGUAGES.equals(lang) ? MULTIPLE : 0;
+            if (offered > quality) {
                 text = candidate;
-                exact = true;
-            } else if (text == null) {
-                text = candidate;
+                quality = offered;
             }
         }
     }
@@ -261,6 +341,8 @@ class WikidataClient {
         private final Set<String> images = new LinkedHashSet<>();
         private final Set<BirthStatement> births = new LinkedHashSet<>();
         private final Map<String, DeathStatement> deaths = new LinkedHashMap<>();
+        private final Set<String> genders = new LinkedHashSet<>();
+        private final Set<String> continents = new LinkedHashSet<>();
 
         private Builder(String qid, int sitelinks) {
             this.qid = qid;
@@ -270,7 +352,9 @@ class WikidataClient {
         private PersonRecord build() {
             return new PersonRecord(
                     qid, sitelinks, nameEn.text, nameFr.text, images, new ArrayList<>(births),
-                    new ArrayList<>(deaths.values()));
+                    new ArrayList<>(deaths.values()),
+                    GenderResolver.resolve(genders).orElse(null),
+                    ContinentResolver.resolve(continents).orElse(null));
         }
     }
 }

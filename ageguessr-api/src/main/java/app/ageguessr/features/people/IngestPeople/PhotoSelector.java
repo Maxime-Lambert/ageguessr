@@ -4,7 +4,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Chooses which accepted photos of one person to keep. Any two of them must be at least
@@ -43,25 +46,42 @@ final class PhotoSelector {
             .thenComparing(Candidate::mainImage, Comparator.reverseOrder())
             .thenComparing(Candidate::fileTitle);
 
+    /**
+     * Picks one photo at a time: among the candidates far enough from everything already
+     * kept, the one whose age band holds the fewest photos so far ({@code photosByAgeBand},
+     * keyed by {@link AgeBand#of}), then by {@code PREFERENCE}. The pool thus leans toward
+     * the ages it lacks (74 and over, measured on 2026-10-27) without losing any photo
+     * the gap rules would have allowed.
+     */
     static List<Candidate> select(
-            Collection<Kept> alreadyKept, Collection<Candidate> candidates, int maxPerPerson, int minYearsApart) {
+            Collection<Kept> alreadyKept,
+            Collection<Candidate> candidates,
+            int maxPerPerson,
+            int minYearsApart,
+            Map<String, Integer> photosByAgeBand) {
         if (minYearsApart < 1) {
             throw new IllegalArgumentException("minYearsApart must be at least 1, got " + minYearsApart);
         }
         List<Kept> taken = new ArrayList<>(alreadyKept);
+        Map<String, Integer> bands = new HashMap<>(photosByAgeBand);
+        List<Candidate> remaining = new ArrayList<>(candidates);
         int room = maxPerPerson - alreadyKept.size();
         List<Candidate> selected = new ArrayList<>();
-        for (Candidate candidate : candidates.stream().sorted(PREFERENCE).toList()) {
-            if (selected.size() >= room) {
+        while (selected.size() < room) {
+            Optional<Candidate> next = remaining.stream()
+                    .filter(candidate -> taken.stream()
+                            .allMatch(k -> Math.abs(k.year() - candidate.year()) >= minYearsApart
+                                    && Math.abs(k.age() - candidate.age()) >= minYearsApart))
+                    .min(Comparator.comparingInt((Candidate c) -> bands.getOrDefault(AgeBand.of(c.age()), 0))
+                            .thenComparing(PREFERENCE));
+            if (next.isEmpty()) {
                 break;
             }
-            boolean farEnough = taken.stream()
-                    .allMatch(k -> Math.abs(k.year() - candidate.year()) >= minYearsApart
-                            && Math.abs(k.age() - candidate.age()) >= minYearsApart);
-            if (farEnough) {
-                selected.add(candidate);
-                taken.add(new Kept(candidate.year(), candidate.age()));
-            }
+            Candidate candidate = next.get();
+            selected.add(candidate);
+            taken.add(new Kept(candidate.year(), candidate.age()));
+            bands.merge(AgeBand.of(candidate.age()), 1, Integer::sum);
+            remaining.remove(candidate);
         }
         return selected;
     }

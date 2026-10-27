@@ -9,7 +9,7 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 @ConfigurationProperties("app.people.ingest")
 public record IngestProperties(
-        @Positive int targetPeople,
+        @Positive int targetPhotos,
         @Positive int pageSize,
         @Positive int maxPhotosPerPerson,
         @Positive int minYearsBetweenPhotos,

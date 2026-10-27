@@ -80,9 +80,9 @@ class PhotoEvaluatorTest {
     }
 
     @Test
-    void acceptsAPhotoOnTheDayOfBirth() {
-        assertThat(evaluate(evidence("Portrait.jpg", List.of(), "1950-03-10", "1950:03:10 12:00:00")))
-                .isInstanceOf(PhotoEvaluation.Accepted.class);
+    void countsTheDayOfBirthInsideTheLifetimeThenRejectsItAsAMinor() {
+        // The lifetime bound is inclusive: the reason is MINOR, not OUTSIDE_LIFETIME.
+        assertRejected(evidence("Portrait.jpg", List.of(), "1950-03-10", "1950:03:10 12:00:00"), PhotoRejection.MINOR);
     }
 
     @Test
@@ -213,6 +213,26 @@ class PhotoEvaluatorTest {
         assertThat(PhotoEvaluator.evaluate(
                         evidence("Portrait.jpg", List.of(), "2001-06-01", "2001:06:01 12:00:00"), birth, null, TODAY))
                 .isEqualTo(new PhotoEvaluation.Rejected(PhotoRejection.AGE_OUT_OF_RANGE));
+    }
+
+    @Test
+    void rejectsAPhotoTakenTheDayBeforeTheEighteenthBirthday() {
+        // Born 1950-03-10: still 17 on 1968-03-09, and an adult today.
+        assertRejected(evidence("Portrait.jpg", List.of(), "1968-03-09", "1968:03:09 12:00:00"), PhotoRejection.MINOR);
+    }
+
+    @Test
+    void acceptsAPhotoTakenOnTheEighteenthBirthday() {
+        assertThat(evaluate(evidence("Portrait.jpg", List.of(), "1968-03-10", "1968:03:10 12:00:00")))
+                .extracting(r -> ((PhotoEvaluation.Accepted) r).age())
+                .isEqualTo(18);
+    }
+
+    @Test
+    void rejectsAYearDuringWhichThePersonTurnsEighteenAsAmbiguous() {
+        // 17 then 18 during 1968: the age is not exact, whichever way it would round.
+        assertRejected(evidence("Portrait.jpg", List.of(), "1968", "1968:07:14 15:30:00"),
+                PhotoRejection.AMBIGUOUS_AGE);
     }
 
     @Test

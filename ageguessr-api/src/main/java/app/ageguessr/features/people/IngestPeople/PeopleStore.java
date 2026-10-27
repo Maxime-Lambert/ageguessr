@@ -11,6 +11,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -41,6 +42,25 @@ class PeopleStore {
     @Transactional(readOnly = true)
     Optional<Person> find(String wikidataId) {
         return people.findByWikidataId(wikidataId);
+    }
+
+    /**
+     * Photos already counting toward each cell (see PersonRepository.countPhotosByCell):
+     * a rerun, after a curation pass for instance, tops each cell back up to its quota.
+     */
+    @Transactional(readOnly = true)
+    Map<Cell, Integer> photosByCell() {
+        return people.countPhotosByCell().stream()
+                .collect(Collectors.toMap(
+                        c -> new Cell(c.continent(), c.gender()), c -> Math.toIntExact(c.photos())));
+    }
+
+    /** Photos still in play per age band, so that a rerun keeps leaning toward the rare ages. */
+    @Transactional(readOnly = true)
+    Map<String, Integer> photosByAgeBand() {
+        return photos.countByAge().stream()
+                .collect(Collectors.toMap(
+                        c -> AgeBand.of(c.age()), c -> Math.toIntExact(c.photos()), Integer::sum));
     }
 
     /** What a person already has, as far as the next ingestion is concerned. */
@@ -79,6 +99,8 @@ class PeopleStore {
         person.setBirthDate(birth);
         person.setDeathDate(death);
         person.setSitelinks(record.sitelinks());
+        person.setGender(record.gender());
+        person.setContinent(record.continent());
         person.setUpdatedAt(now);
         Person saved = people.save(person);
 
