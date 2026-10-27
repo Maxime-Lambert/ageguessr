@@ -3,6 +3,8 @@ package app.ageguessr.features.people.IngestPeople;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import app.ageguessr.TestcontainersConfiguration;
+import app.ageguessr.features.people.Continent;
+import app.ageguessr.features.people.Gender;
 import app.ageguessr.features.people.Person;
 import app.ageguessr.features.people.PersonPhoto;
 import app.ageguessr.features.people.PersonPhotoRepository;
@@ -89,6 +91,25 @@ class PeopleStoreIntegrationTest {
         assertThat(photos.findByPersonId(refreshed.getId()))
                 .extracting(PersonPhoto::getCommonsFile)
                 .containsExactlyInAnyOrder("A.jpg", "B.jpg");
+    }
+
+    @Test
+    void storesTheGenderAndContinentAndRefreshesThemOnTheNextRun() {
+        store.save(record("Q1", "Jane", 50), BIRTH, null, List.of());
+        assertThat(people.findByWikidataId("Q1").orElseThrow())
+                .extracting(Person::getGender, Person::getContinent)
+                .containsExactly(null, null);
+
+        store.save(
+                new PersonRecord(
+                        "Q1", 50, "Jane", null, Set.of(), List.of(), List.of(), Gender.FEMALE, Continent.AFRICA),
+                BIRTH,
+                null,
+                List.of());
+
+        assertThat(people.findByWikidataId("Q1").orElseThrow())
+                .extracting(Person::getGender, Person::getContinent)
+                .containsExactly(Gender.FEMALE, Continent.AFRICA);
     }
 
     @Test

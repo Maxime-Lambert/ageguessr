@@ -65,8 +65,10 @@ continents.
   Asie, Amérique du Nord, Europe. C'est déterministe et favorise l'équilibre.
 - **Sans nationalité** : hors quotas, donc pas ingérée par la liste équilibrée
   (toujours possible avec `--qid`).
-- **Genres autres qu'homme / femme** : ni exclus ni comptés dans le quota
-  hommes / femmes. Une petite case « autre » par continent, prise en entier (~1 550
+- **Femmes trans et hommes trans** comptés comme femmes et hommes (décidé en
+  Phase 2, 2026-10-27 : la valeur Wikidata dit leur genre).
+- **Genres autres qu'homme / femme** (non binaire, intersexe, valeurs contradictoires) :
+  ni exclus ni comptés dans le quota hommes / femmes. Une petite case « autre » par continent, prise en entier (~1 550
   personnes au total, avant le filtre photo).
 - **Parts égales** : 6 continents × 2 genres = 12 cases d'une part égale de la cible
   (3 000 → 250 par case). Une case épuisée reste incomplète et le rapport le dit ; on
@@ -124,16 +126,16 @@ attend maintenant « Nothing left to review. » avant U, et la requête d'annula
   `CHECK (age_at_photo >= 18 AND age_at_photo <= 120)`.
 
 ## Phase 2 : Mesure du rendement (sans écriture en base)
-Status: Not started
+Status: In progress (code fait, mesures en cours)
 
-- [ ] `IngestPeopleRunner` : options `--offset=<rang>` (début de la liste) et
+- [x] `IngestPeopleRunner` : options `--offset=<rang>` (début de la liste) et
       `--dry-run` (toutes les règles, téléchargement et ré-encodage compris, mais rien
       n'est écrit). Le dry-run est porté par `IngestPeopleCommand` ; `PeopleStore`
       n'est pas appelé.
-- [ ] `IngestReport` : en plus des compteurs actuels, répartition par genre et par
+- [x] `IngestReport` : en plus des compteurs actuels, répartition par genre et par
       continent des personnes vues et gardées, et nombre moyen de photos par personne
       gardée.
-- [ ] Récupération du genre (`P21`) et du continent (`P27` → `P30`) : nouvelle
+- [x] Récupération du genre (`P21`) et du continent (`P27` → `P30`) : nouvelle
       requête de détail dans `WikidataClient`, restreinte aux QID de la page comme les
       quatre autres ; règles de continent dans une classe pure `ContinentResolver`.
 - [ ] Lancer 4 échantillons de 200 personnes : rangs 0, 10 000, 100 000, 500 000.

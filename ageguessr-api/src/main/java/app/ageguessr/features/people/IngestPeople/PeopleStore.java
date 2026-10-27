@@ -79,6 +79,8 @@ class PeopleStore {
         person.setBirthDate(birth);
         person.setDeathDate(death);
         person.setSitelinks(record.sitelinks());
+        person.setGender(record.gender());
+        person.setContinent(record.continent());
         person.setUpdatedAt(now);
         Person saved = people.save(person);
 
