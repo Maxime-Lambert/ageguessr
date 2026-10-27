@@ -5,8 +5,7 @@ personnes très connues, puis ingérer un pool **équilibré entre hommes et fem
 entre continents**, **sans aucune photo d'une personne de moins de 18 ans**. Wikidata
 reste la seule source tant qu'elle donne assez de photos.
 
-> Branche `feature/people-pool-balance`, empilée sur `feature/photo-curation` (PR #18,
-> ouverte ; #17 est mergée). À rebaser sur `develop` une fois #18 fusionnée.
+> Branche `feature/people-pool-balance`, depuis `develop` (curation mergée, PR #18).
 
 ## For Future Agents
 Au fil du travail : cocher les cases `- [x]`. Quand une phase est finie, passer son
