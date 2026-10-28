@@ -50,6 +50,7 @@
               [src]="url"
               [alt]="'Photo of ' + displayName(item.person) + ' under review'"
               class="max-h-[70vh] w-auto rounded-md object-contain"
+              (load)="onImageLoad(item.photoId, $event)"
             />
           }
         } @else {
@@ -92,6 +93,19 @@
               rel="noopener noreferrer"
               >{{ item.commonsFile }}</a
             >
+          </dd>
+          <dt class="text-muted">Size</dt>
+          <dd>
+            @if (sizeOf(item.photoId); as size) {
+              {{ size.width }} × {{ size.height }} px
+              @if (size.height < minImageHeight) {
+                <span class="text-danger"
+                  >· under {{ minImageHeight }} px high, too small to play: reject it</span
+                >
+              }
+            } @else {
+              …
+            }
           </dd>
           <dt class="text-muted">Licence</dt>
           <dd>

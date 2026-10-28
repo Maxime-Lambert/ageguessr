@@ -4,7 +4,10 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-/** Checks that do not depend on dates: the file must be a JPEG photo, under a license we can honor, of one person. */
+/**
+ * Checks that do not depend on dates: the file must be a JPEG photo, under a license we
+ * can honor, of one person, and tall enough to show.
+ */
 final class PhotoCandidateFilter {
 
     static final String JPEG = "image/jpeg";
@@ -17,7 +20,7 @@ final class PhotoCandidateFilter {
 
     private PhotoCandidateFilter() {}
 
-    static Optional<PhotoRejection> check(CommonsFile file, MediaInfo mediaInfo) {
+    static Optional<PhotoRejection> check(CommonsFile file, MediaInfo mediaInfo, int minHeight) {
         // JPEG only: photographs are JPEG; PNG, SVG, GIF and TIFF on Commons are mostly
         // drawings, logos, scans of documents or animations.
         if (!JPEG.equals(file.mime()) || file.thumbnailUrl() == null || file.descriptionUrl() == null) {
@@ -28,6 +31,12 @@ final class PhotoCandidateFilter {
         }
         if (mediaInfo.depictedCount() > 1) {
             return Optional.of(PhotoRejection.GROUP_PHOTO);
+        }
+        // The thumbnail is asked by height and Commons never enlarges: a short one means
+        // a small original. Checked before download and selection, so a small photo
+        // never takes the place of a usable one of the same person.
+        if (file.thumbnailHeight() < minHeight) {
+            return Optional.of(PhotoRejection.TOO_SMALL);
         }
         return Optional.empty();
     }

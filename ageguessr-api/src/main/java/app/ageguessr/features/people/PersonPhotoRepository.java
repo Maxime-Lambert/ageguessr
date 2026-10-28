@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface PersonPhotoRepository extends JpaRepository<PersonPhoto, UUID> {
     List<PersonPhoto> findByPersonId(UUID personId);
@@ -36,6 +37,29 @@ public interface PersonPhotoRepository extends JpaRepository<PersonPhoto, UUID> 
               AND p.excluded = false
             """)
     long countPending();
+
+    /** A photo still counting (pending or approved) whose stored image is shorter than wanted. */
+    record SmallImage(UUID photoId, String commonsFile, ReviewStatus status) {
+
+        /** No file name: it usually contains the person's name, which never reaches a log. */
+        @Override
+        public String toString() {
+            return "SmallImage[" + photoId + ", " + status + "]";
+        }
+    }
+
+    @Query(
+            """
+            SELECT new app.ageguessr.features.people.PersonPhotoRepository$SmallImage(ph.id, ph.commonsFile, ph.reviewStatus)
+            FROM PersonPhoto ph, PhotoImage i, Person p
+            WHERE i.photoId = ph.id
+              AND p.id = ph.personId
+              AND p.excluded = false
+              AND ph.reviewStatus <> app.ageguessr.features.people.ReviewStatus.REJECTED
+              AND i.height < :minHeight
+            ORDER BY ph.commonsFile
+            """)
+    List<SmallImage> findSmallImages(@Param("minHeight") int minHeight);
 
     /** How many photos of people not excluded there are at each age, per review status. */
     record AgeCount(int age, ReviewStatus status, long photos) {}

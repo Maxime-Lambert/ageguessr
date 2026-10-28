@@ -37,7 +37,7 @@ class CommonsClientTest {
         WikimediaHttp http = Fixtures.http(builder.build(), d -> {}, Duration.ZERO, 1);
         WikimediaProperties properties = new WikimediaProperties(
                 "test-agent", URI.create("https://qlever.example"), URI.create(API), 0, 1, 1, 1);
-        client = new CommonsClient(http, properties, new IngestProperties(3000, 500, 5, 10, 50, 800, 5_000_000, 1930, 0.4));
+        client = new CommonsClient(http, properties, new IngestProperties(3000, 500, 5, 10, 50, 1000, 600, 5_000_000, 1930, 0.4));
     }
 
     @Test
@@ -60,7 +60,7 @@ class CommonsClientTest {
                 .andExpect(method(HttpMethod.POST))
                 .andExpect(queryParam("maxlag", "5"))
                 .andExpect(content().formDataContains(Map.of(
-                        "iiurlwidth", "800", "titles", "File:ROMY2011 a21 Mallika Sherawat.jpg")))
+                        "iiurlheight", "1000", "titles", "File:ROMY2011 a21 Mallika Sherawat.jpg")))
                 .andRespond(withSuccess(Fixtures.text("commons-imageinfo-Q262665.json"), MediaType.APPLICATION_JSON));
 
         Map<String, CommonsFile> files = client.fetchFiles(List.of("File:ROMY2011 a21 Mallika Sherawat.jpg"));
@@ -75,6 +75,17 @@ class CommonsClientTest {
         assertThat(romy.licenseShortName()).isEqualTo("CC BY-SA 3.0");
         assertThat(romy.licenseUrl()).isNotBlank();
         assertThat(romy.artistHtml()).isNotBlank();
+        assertThat(romy.thumbnailHeight()).isPositive();
+    }
+
+    @Test
+    void readsNoHeightAsZero() {
+        JsonNode noHeight = Fixtures.MAPPER.readTree("""
+                {"title": "File:A.jpg", "pageid": 1,
+                 "imageinfo": [{"mime": "image/jpeg", "thumburl": "https://upload/A.jpg"}]}
+                """);
+
+        assertThat(CommonsClient.parseFile(noHeight).orElseThrow().thumbnailHeight()).isZero();
     }
 
     @Test

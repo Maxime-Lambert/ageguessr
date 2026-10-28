@@ -363,6 +363,16 @@ ponctuelle**, pas pendant les parties :
   cours), sans jamais renoncer à une photo que les règles d'écart permettent. Mesure
   du 2026-10-27 : la répartition est déjà assez plate de 18 à 73 ans, le manque est
   au-delà de 74 ans. L'équilibre fin se fera au tirage quotidien (Semaine 3).
+- **Hauteur minimale de 600 px** (décision du 2026-10-28, à ajuster) : la hauteur
+  compte plus que la largeur, le jeu affichant un portrait. Les miniatures sont
+  demandées à Commons **en hauteur** (`app.people.ingest.thumbnail-height`, 1 000 px) :
+  en largeur (800 px), une photo paysage d'un grand original revenait à 533 px de haut.
+  Commons n'agrandit jamais, donc une miniature sous 600 px signale un original trop
+  petit : rejet `TOO_SMALL` (`app.people.ingest.min-image-height`) avant tout
+  téléchargement. Les photos stockées avant ce changement se corrigent avec
+  `--fix-small-images` : miniature plus haute si Commons en a une (statut inchangé),
+  rejet automatique sinon (`reviewed_by` vide), même approuvée. La page de curation
+  affiche la taille réelle de l'image et avertit sous 600 px.
 - **Une photo par tranche d'au moins 10 ans** (en âge et en année civile) pour une même
   personne, avec un plafond de 5. Les deux valeurs sont des propriétés
   (`app.people.ingest.*`).

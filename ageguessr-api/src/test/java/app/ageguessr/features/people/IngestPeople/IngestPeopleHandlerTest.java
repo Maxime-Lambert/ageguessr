@@ -17,6 +17,8 @@ import static org.mockito.Mockito.when;
 import app.ageguessr.features.people.Continent;
 import app.ageguessr.features.people.Gender;
 import app.ageguessr.features.people.Person;
+import app.ageguessr.features.people.PersonPhotoRepository;
+import app.ageguessr.features.people.ReviewStatus;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
@@ -47,7 +49,7 @@ class IngestPeopleHandlerTest {
     private final PeopleStore store = mock(PeopleStore.class);
     // An approval rate of 1: a new photo fills its cell's place outright, which keeps the
     // balance tests to whole photos. The rate itself has its own tests.
-    private final IngestProperties properties = new IngestProperties(3000, 3, 5, 10, 50, 800, 5_000_000, 1930, 1.0);
+    private final IngestProperties properties = new IngestProperties(3000, 3, 5, 10, 50, 1000, 600, 5_000_000, 1930, 1.0);
     private final Clock clock = Clock.fixed(java.time.Instant.parse("2026-10-26T10:00:00Z"), ZoneOffset.UTC);
 
     private IngestPeopleHandler handler;
@@ -652,7 +654,7 @@ class IngestPeopleHandlerTest {
         // approved + 1 pending = 1.5 expected; one new photo brings it to 2.
         IngestPeopleHandler halfApproved = new IngestPeopleHandler(
                 wikidata, commons, downloader, reencoder, store,
-                new IngestProperties(3000, 3, 5, 10, 50, 800, 5_000_000, 1930, 0.5), clock);
+                new IngestProperties(3000, 3, 5, 10, 50, 1000, 600, 5_000_000, 1930, 0.5), clock);
         when(store.poolCounts()).thenReturn(pool(EUROPE_WOMEN, new ReviewCounts(1, 1, 0)));
         when(wikidata.fetchCell(EUROPE_WOMEN, 0, 3, RankingFilter.bornSince(1930)))
                 .thenReturn(List.of(person("Q1", EUROPE_WOMEN), person("Q2", EUROPE_WOMEN)));
@@ -677,6 +679,101 @@ class IngestPeopleHandlerTest {
                 .extracting(PoolAnalysis.CellLine::toCollect)
                 .isEqualTo(0);
         verifyNoInteractions(wikidata, commons, downloader);
+    }
+
+    @Test
+    void leavesOutAPhotoTooSmallToShowBeforeChoosingAmongThePersonsPhotos() {
+        CommonsFileAndInfo small = photo("File:Small 1976.jpg", 1976);
+        CommonsFileAndInfo tiny = new CommonsFileAndInfo(withHeight(small.file(), 400), small.info());
+        when(wikidata.fetchPeople(0, 3, RankingFilter.bornSince(1930))).thenReturn(List.of(person("Q1")), List.of());
+        photos("Q1", tiny, photo("File:Big 1978.jpg", 1978));
+
+        IngestReport report = handler.handle(new IngestPeopleCommand(5, null, 0, WHOLE_LIST, false, IngestFocus.NONE));
+
+        assertThat(report.photosRejected()).containsEntry("TOO_SMALL", 1).doesNotContainKey("NOT_SELECTED");
+        assertThat(report.photosAdded()).isEqualTo(1);
+        verify(downloader, never()).download("https://upload.wikimedia.org/File:Small 1976.jpg");
+    }
+
+    @Test
+    void enlargesASmallStoredPhotoWhenCommonsHasATallerCopyAndRejectsTheOthers() {
+        UUID enlargeable = UUID.randomUUID();
+        UUID tooSmall = UUID.randomUUID();
+        UUID gone = UUID.randomUUID();
+        when(store.smallImages(600)).thenReturn(List.of(
+                new PersonPhotoRepository.SmallImage(enlargeable, "Wide.jpg", ReviewStatus.APPROVED),
+                new PersonPhotoRepository.SmallImage(tooSmall, "Tiny.jpg", ReviewStatus.APPROVED),
+                new PersonPhotoRepository.SmallImage(gone, "Gone.jpg", ReviewStatus.PENDING)));
+        CommonsFile wide = withHeight(file("File:Wide.jpg", "2000-07-14", null), 1000);
+        CommonsFile tiny = withHeight(file("File:Tiny.jpg", "2000-07-14", null), 450);
+        when(commons.fetchFiles(List.of("File:Wide.jpg", "File:Tiny.jpg", "File:Gone.jpg")))
+                .thenReturn(Map.of("File:Wide.jpg", wide, "File:Tiny.jpg", tiny));
+        ImageReencoder.Reencoded taller = new ImageReencoder.Reencoded(new byte[] {7}, 1500, 1000);
+        when(reencoder.reencode(any())).thenReturn(taller);
+
+        SmallImagesReport report = handler.fixSmallImages();
+
+        assertThat(report).isEqualTo(new SmallImagesReport(3, 1, 2, 1));
+        verify(store).replaceImage(enlargeable, taller);
+        verify(store).rejectTooSmall(tooSmall);
+        verify(store).rejectTooSmall(gone);
+        verify(downloader, never()).download(tiny.thumbnailUrl());
+    }
+
+    @Test
+    void rejectsAStoredPhotoWhoseTallerCopyComesBackTooSmall() {
+        UUID photo = UUID.randomUUID();
+        when(store.smallImages(600))
+                .thenReturn(List.of(new PersonPhotoRepository.SmallImage(photo, "A.jpg", ReviewStatus.PENDING)));
+        when(commons.fetchFiles(List.of("File:A.jpg")))
+                .thenReturn(Map.of("File:A.jpg", withHeight(file("File:A.jpg", "2000-07-14", null), 1000)));
+        when(reencoder.reencode(any())).thenReturn(new ImageReencoder.Reencoded(new byte[] {7}, 900, 599));
+
+        assertThat(handler.fixSmallImages()).isEqualTo(new SmallImagesReport(1, 0, 1, 0));
+        verify(store, never()).replaceImage(any(), any());
+    }
+
+    @Test
+    void enlargesAStoredPhotoWhoseTallerCopyIsExactlyTheMinimumHeight() {
+        UUID photo = UUID.randomUUID();
+        when(store.smallImages(600))
+                .thenReturn(List.of(new PersonPhotoRepository.SmallImage(photo, "A.jpg", ReviewStatus.APPROVED)));
+        when(commons.fetchFiles(List.of("File:A.jpg")))
+                .thenReturn(Map.of("File:A.jpg", withHeight(file("File:A.jpg", "2000-07-14", null), 600)));
+        ImageReencoder.Reencoded justTallEnough = new ImageReencoder.Reencoded(new byte[] {7}, 450, 600);
+        when(reencoder.reencode(any())).thenReturn(justTallEnough);
+
+        assertThat(handler.fixSmallImages()).isEqualTo(new SmallImagesReport(1, 1, 0, 0));
+        verify(store).replaceImage(photo, justTallEnough);
+    }
+
+    @Test
+    void rejectsAStoredPhotoWhoseTallerCopyCannotBeRead() {
+        UUID photo = UUID.randomUUID();
+        when(store.smallImages(600))
+                .thenReturn(List.of(new PersonPhotoRepository.SmallImage(photo, "Bad.jpg", ReviewStatus.PENDING)));
+        when(commons.fetchFiles(List.of("File:Bad.jpg")))
+                .thenReturn(Map.of("File:Bad.jpg", withHeight(file("File:Bad.jpg", "2000-07-14", null), 1000)));
+        when(reencoder.reencode(any()))
+                .thenThrow(new ImageRejectedException(ImageRejectedException.Reason.UNREADABLE, "truncated"));
+
+        assertThat(handler.fixSmallImages()).isEqualTo(new SmallImagesReport(1, 0, 1, 0));
+        verify(store).rejectTooSmall(photo);
+    }
+
+    @Test
+    void fixesNothingWithoutCallingCommonsWhenNoImageIsSmall() {
+        when(store.smallImages(600)).thenReturn(List.of());
+
+        assertThat(handler.fixSmallImages()).isEqualTo(new SmallImagesReport(0, 0, 0, 0));
+        verifyNoInteractions(commons);
+    }
+
+    private static CommonsFile withHeight(CommonsFile file, int height) {
+        return new CommonsFile(
+                file.title(), file.pageId(), file.mime(), file.thumbnailUrl(), file.descriptionUrl(),
+                file.informationDate(), file.exifDateTimeOriginal(), file.licenseShortName(), file.licenseUrl(),
+                file.artistHtml(), height);
     }
 
     private static PoolCounts pool(Cell cell, ReviewCounts counts) {
@@ -724,7 +821,8 @@ class IngestPeopleHandlerTest {
                 exif,
                 "CC BY-SA 4.0",
                 "https://creativecommons.org/licenses/by-sa/4.0",
-                "<a href=\"https://commons.wikimedia.org/wiki/User:X\">Some Photographer</a>");
+                "<a href=\"https://commons.wikimedia.org/wiki/User:X\">Some Photographer</a>",
+                1000);
     }
 
     private void photos(String qid, CommonsFileAndInfo... photos) {

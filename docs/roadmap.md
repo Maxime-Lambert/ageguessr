@@ -53,6 +53,9 @@ la suivante).
       pour la suite), cases, tranches d'âge ; quotas comptés en photos approuvées
       attendues (en attente × taux d'approbation) ; `--analyze` pour voir le pool et la
       prochaine vague — PR `feature/exclude-footballers`
+- [x] Photos d'au moins 600 px de haut : miniatures demandées en hauteur, rejet des
+      originaux trop petits, correction des photos déjà stockées (`--fix-small-images`),
+      taille affichée en curation — PR `feature/min-image-height`
 - [ ] Ingestion + curation des indices événementiels par catégorie et par année
       (pages Wikipedia "YYYY in music/sports/politics...", parsing + vérification sur
       échantillon avant d'industrialiser)
