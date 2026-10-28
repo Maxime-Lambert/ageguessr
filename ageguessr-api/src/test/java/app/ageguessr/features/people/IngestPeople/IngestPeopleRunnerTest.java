@@ -109,6 +109,19 @@ class IngestPeopleRunnerTest {
     }
 
     @Test
+    void fixesSmallImagesAloneButLetsSpringOptionsThrough() {
+        IngestPeopleRunner.requireAlone(
+                new DefaultApplicationArguments("--fix-small-images", "--spring.profiles.active=prod,ingest"),
+                "fix-small-images");
+        for (String other : List.of("--limit=10", "--analyze", "--dry-run", "--age-bands=82+")) {
+            assertThatThrownBy(() -> IngestPeopleRunner.requireAlone(
+                            new DefaultApplicationArguments("--fix-small-images", other), "fix-small-images"))
+                    .as(other)
+                    .isInstanceOf(IllegalArgumentException.class);
+        }
+    }
+
+    @Test
     void refusesAnyOtherOptionWithAnalyze() {
         assertThatThrownBy(() -> IngestPeopleRunner.analyzeTarget(
                         new DefaultApplicationArguments("--analyze", "--dry-run"), 5000))

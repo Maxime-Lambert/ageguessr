@@ -64,7 +64,7 @@ class CommonsClient {
             form.add("action", "query");
             form.add("prop", "imageinfo");
             form.add("iiprop", "url|mime|extmetadata|metadata");
-            form.add("iiurlwidth", String.valueOf(ingest.thumbnailWidth()));
+            form.add("iiurlheight", String.valueOf(ingest.thumbnailHeight()));
             form.add("iiextmetadatafilter", "DateTimeOriginal|LicenseShortName|LicenseUrl|Artist|UsageTerms");
             form.add("titles", String.join("|", batch));
             JsonNode response = http.postForm(endpoint, form);
@@ -113,7 +113,8 @@ class CommonsClient {
                 exifDateTimeOriginal(info.path("metadata")),
                 text(ext.path("LicenseShortName").path("value")),
                 text(ext.path("LicenseUrl").path("value")),
-                text(ext.path("Artist").path("value"))));
+                text(ext.path("Artist").path("value")),
+                info.path("thumbheight").asInt(0)));
     }
 
     /**

@@ -30,6 +30,7 @@ import org.springframework.stereotype.Component;
  * ./mvnw spring-boot:run -Dspring-boot.run.profiles=ingest -Dspring-boot.run.arguments="--offset=10000 --sample=200 --dry-run"
  * ./mvnw spring-boot:run -Dspring-boot.run.profiles=ingest -Dspring-boot.run.arguments="--exclude-occupations=Q937857 --age-bands=74-81,82+"
  * ./mvnw spring-boot:run -Dspring-boot.run.profiles=ingest -Dspring-boot.run.arguments=--analyze
+ * ./mvnw spring-boot:run -Dspring-boot.run.profiles=ingest -Dspring-boot.run.arguments=--fix-small-images
  * </pre>
  *
  * <p>Focus options, comma-separated, all optional ({@link IngestFocus}):
@@ -59,6 +60,12 @@ class IngestPeopleRunner implements ApplicationRunner {
             System.exit(SpringApplication.exit(context, () -> 0));
             return;
         }
+        if (args.containsOption("fix-small-images")) {
+            requireAlone(args, "fix-small-images");
+            log.info("Small images fixed: {}", handler.fixSmallImages());
+            System.exit(SpringApplication.exit(context, () -> 0));
+            return;
+        }
         IngestPeopleCommand command = command(args, properties.targetPhotos());
         log.info("People ingestion started: {}", command);
         long start = System.nanoTime();
@@ -72,9 +79,19 @@ class IngestPeopleRunner implements ApplicationRunner {
         System.exit(SpringApplication.exit(context, () -> 0));
     }
 
-    /** The options of an ingestion run, meaningless for --analyze. */
+    /** The options of an ingestion run, meaningless for --analyze and --fix-small-images. */
     private static final Set<String> RUN_OPTIONS = Set.of(
             "qid", "offset", "sample", "dry-run", "exclude-occupations", "only-occupations", "cells", "age-bands");
+
+    /** A one-off maintenance mode takes no ingestion option, not even --limit. Spring's own options pass through. */
+    static void requireAlone(ApplicationArguments args, String mode) {
+        Set<String> others = new HashSet<>(args.getOptionNames());
+        others.retainAll(RUN_OPTIONS);
+        others.addAll(args.getOptionNames().stream().filter(Set.of("limit", "analyze")::contains).toList());
+        if (!others.isEmpty()) {
+            throw new IllegalArgumentException("--" + mode + " takes no other option, got " + others);
+        }
+    }
 
     /**
      * --analyze reads the database only: --limit is its one option, the target to measure

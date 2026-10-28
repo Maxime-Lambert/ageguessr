@@ -1,6 +1,8 @@
 package app.ageguessr.features.people.IngestPeople;
 
 import app.ageguessr.features.people.Person;
+import app.ageguessr.features.people.PersonPhotoRepository;
+import app.ageguessr.features.people.ReviewStatus;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.util.ArrayDeque;
@@ -110,6 +112,51 @@ class IngestPeopleHandler {
     PoolAnalysis analyze(int targetPhotos) {
         PoolCounts pool = store.poolCounts();
         return PoolAnalysis.of(pool, approvalRate(pool), targetPhotos);
+    }
+
+    /**
+     * Stored photos under the minimum height, from before thumbnails were asked by height:
+     * each gets a taller copy of the same file when Commons has one (its review status
+     * stays), and is rejected otherwise.
+     */
+    SmallImagesReport fixSmallImages() {
+        int minHeight = properties.minImageHeight();
+        List<PersonPhotoRepository.SmallImage> small = store.smallImages(minHeight);
+        Map<String, CommonsFile> files = small.isEmpty()
+                ? Map.of()
+                : commons.fetchFiles(small.stream().map(s -> FILE_PREFIX + s.commonsFile()).toList());
+        int enlarged = 0;
+        int rejected = 0;
+        int approvedRejected = 0;
+        for (PersonPhotoRepository.SmallImage photo : small) {
+            Optional<ImageReencoder.Reencoded> taller =
+                    tallerCopy(files.get(FILE_PREFIX + photo.commonsFile()), minHeight);
+            if (taller.isPresent()) {
+                store.replaceImage(photo.photoId(), taller.get());
+                enlarged++;
+            } else {
+                store.rejectTooSmall(photo.photoId());
+                rejected++;
+                if (photo.status() == ReviewStatus.APPROVED) {
+                    approvedRejected++;
+                }
+            }
+        }
+        return new SmallImagesReport(small.size(), enlarged, rejected, approvedRejected);
+    }
+
+    /** A copy at least {@code minHeight} high; empty if the file is gone, too small or unreadable. */
+    private Optional<ImageReencoder.Reencoded> tallerCopy(CommonsFile file, int minHeight) {
+        if (file == null || file.thumbnailUrl() == null || file.thumbnailHeight() < minHeight) {
+            return Optional.empty();
+        }
+        try {
+            ImageReencoder.Reencoded image = reencoder.reencode(downloader.download(file.thumbnailUrl()));
+            return image.height() >= minHeight ? Optional.of(image) : Optional.empty();
+        } catch (ImageRejectedException e) {
+            log.warn("{}: no usable taller copy ({})", file.pageId(), e.reason());
+            return Optional.empty();
+        }
     }
 
     private ApprovalRate approvalRate(PoolCounts pool) {
@@ -307,7 +354,7 @@ class IngestPeopleHandler {
                 continue;
             }
             MediaInfo info = mediaInfo.getOrDefault(file.pageId(), MediaInfo.NONE);
-            Optional<PhotoRejection> refused = PhotoCandidateFilter.check(file, info);
+            Optional<PhotoRejection> refused = PhotoCandidateFilter.check(file, info, properties.minImageHeight());
             if (refused.isPresent()) {
                 report.photoRejected(refused.get().name());
                 continue;

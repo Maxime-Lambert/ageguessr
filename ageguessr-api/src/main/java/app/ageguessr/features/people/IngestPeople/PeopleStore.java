@@ -64,6 +64,33 @@ class PeopleStore {
         return new PoolCounts(byCell, byAgeBand);
     }
 
+    /** Photos still counting whose image is shorter than {@code minHeight}, by file name. */
+    @Transactional(readOnly = true)
+    List<PersonPhotoRepository.SmallImage> smallImages(int minHeight) {
+        return photos.findSmallImages(minHeight);
+    }
+
+    /** Swaps a photo's image for a larger copy of the same file; its review status stays. */
+    @Transactional
+    void replaceImage(UUID photoId, ImageReencoder.Reencoded image) {
+        PhotoImage stored = images.findById(photoId).orElseThrow();
+        stored.setContent(image.content());
+        stored.setWidth(image.width());
+        stored.setHeight(image.height());
+    }
+
+    /**
+     * Rejects a photo without a curator ({@code reviewed_by} stays empty): its file has no
+     * copy tall enough. An approved photo is rejected too, it cannot be shown.
+     */
+    @Transactional
+    void rejectTooSmall(UUID photoId) {
+        PersonPhoto photo = photos.findById(photoId).orElseThrow();
+        photo.setReviewStatus(ReviewStatus.REJECTED);
+        photo.setReviewedAt(Instant.now(clock));
+        photo.setReviewedBy(null);
+    }
+
     /** What a person already has, as far as the next ingestion is concerned. */
     record StoredPhotos(List<PhotoSelector.Kept> kept, Set<String> knownFiles) {
 

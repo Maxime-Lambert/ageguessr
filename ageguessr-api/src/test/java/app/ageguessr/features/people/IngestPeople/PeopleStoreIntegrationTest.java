@@ -10,6 +10,7 @@ import app.ageguessr.features.people.PersonPhoto;
 import app.ageguessr.features.people.PersonPhotoRepository;
 import app.ageguessr.features.people.PersonRepository;
 import app.ageguessr.features.people.PhotoDateSource;
+import app.ageguessr.features.people.PhotoImage;
 import app.ageguessr.features.people.PhotoImageRepository;
 import app.ageguessr.features.people.ReviewStatus;
 import java.time.LocalDate;
@@ -213,7 +214,45 @@ class PeopleStoreIntegrationTest {
         return new PersonRecord(qid, sitelinks, name, null, Set.of(), List.of(), List.of(), null, null, Set.of());
     }
 
+    @Test
+    void findsTheSmallImagesStillCountingThenEnlargesOrRejectsThem() {
+        store.save(record("Q1", "Jane", 50), BIRTH, null, List.of(
+                photo("Small.jpg", 1976, 500), photo("Big.jpg", 1990, 1000), photo("Gone.jpg", 2005, 400)));
+        photos.findAll().stream()
+                .filter(p -> p.getCommonsFile().equals("Gone.jpg"))
+                .forEach(p -> {
+                    p.setReviewStatus(ReviewStatus.REJECTED);
+                    photos.save(p);
+                });
+        PersonPhoto small = photos.findAll().stream()
+                .filter(p -> p.getCommonsFile().equals("Small.jpg"))
+                .findFirst()
+                .orElseThrow();
+        small.setReviewStatus(ReviewStatus.APPROVED);
+        photos.save(small);
+
+        assertThat(store.smallImages(600))
+                .containsExactly(new PersonPhotoRepository.SmallImage(small.getId(), "Small.jpg", ReviewStatus.APPROVED));
+
+        store.replaceImage(small.getId(), new ImageReencoder.Reencoded(new byte[] {4, 5}, 900, 1000));
+        assertThat(images.findById(small.getId()).orElseThrow())
+                .extracting(PhotoImage::getWidth, PhotoImage::getHeight)
+                .containsExactly(900, 1000);
+        assertThat(photos.findById(small.getId()).orElseThrow().getReviewStatus()).isEqualTo(ReviewStatus.APPROVED);
+
+        store.rejectTooSmall(small.getId());
+        PersonPhoto rejected = photos.findById(small.getId()).orElseThrow();
+        assertThat(rejected.getReviewStatus()).isEqualTo(ReviewStatus.REJECTED);
+        assertThat(rejected.getReviewedAt()).isNotNull();
+        assertThat(rejected.getReviewedBy()).isNull();
+        assertThat(store.smallImages(600)).isEmpty();
+    }
+
     private static NewPhoto photo(String file, int year) {
+        return photo(file, year, 1000);
+    }
+
+    private static NewPhoto photo(String file, int year, int height) {
         LocalDate day = LocalDate.of(year, 7, 14);
         return new NewPhoto(
                 file,
@@ -222,6 +261,6 @@ class PeopleStoreIntegrationTest {
                 "https://creativecommons.org/licenses/by-sa/4.0",
                 "Someone",
                 "https://commons.wikimedia.org/wiki/File:" + file,
-                new ImageReencoder.Reencoded(new byte[] {1, 2, 3}, 800, 1000));
+                new ImageReencoder.Reencoded(new byte[] {1, 2, 3}, 800, height));
     }
 }
