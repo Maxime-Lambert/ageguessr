@@ -24,7 +24,9 @@ import org.springframework.stereotype.Service;
  * the store: every person is processed as if new, and nothing is saved.
  *
  * <p>By default the pool is balanced: each {@link Cell} (continent of nationality ×
- * gender) has a quota of photos in play ({@link Cell#quota}), the cells taking turns one
+ * gender) has a quota of expected approved photos ({@link Cell#quota}): approved ones,
+ * plus pending and newly added ones at the {@link ApprovalRate}, so that one wave
+ * collects about what the curation will leave. The cells take turns one
  * person at a time, each walking its own ranking. A cell whose ranking runs out stays below its quota, and
  * the report says so. {@code --sample} walks the plain ranking instead, to measure the yield.
  *
@@ -79,11 +81,14 @@ class IngestPeopleHandler {
     IngestReport handle(IngestPeopleCommand command) {
         IngestReport report = new IngestReport();
         LocalDate today = LocalDate.now(clock);
+        PoolCounts pool = command.dryRun() ? PoolCounts.EMPTY : store.poolCounts();
+        Map<String, Integer> inPlayByAgeBand = new HashMap<>();
+        pool.byAgeBand().forEach((band, counts) -> inPlayByAgeBand.put(band, counts.inPlay()));
         Run run = new Run(
                 today,
                 command.dryRun(),
                 report,
-                new HashMap<>(command.dryRun() ? Map.of() : store.photosByAgeBand()),
+                inPlayByAgeBand,
                 command.focus(),
                 ranking(command.focus(), today));
         if (command.wikidataId() != null) {
@@ -96,9 +101,19 @@ class IngestPeopleHandler {
         if (command.sample() > 0) {
             walkRanking(command, run);
         } else {
-            balance(command, run);
+            balance(command, run, pool);
         }
         return report;
+    }
+
+    /** Where the stored pool stands against {@code targetPhotos}, without any network call. */
+    PoolAnalysis analyze(int targetPhotos) {
+        PoolCounts pool = store.poolCounts();
+        return PoolAnalysis.of(pool, approvalRate(pool), targetPhotos);
+    }
+
+    private ApprovalRate approvalRate(PoolCounts pool) {
+        return ApprovalRate.of(pool.total(), properties.expectedApprovalRate());
     }
 
     /**
@@ -134,13 +149,14 @@ class IngestPeopleHandler {
         }
     }
 
-    private void balance(IngestPeopleCommand command, Run run) {
+    private void balance(IngestPeopleCommand command, Run run, PoolCounts pool) {
         IngestReport report = run.report();
-        Map<Cell, Integer> stored = command.dryRun() ? Map.of() : store.photosByCell();
+        ApprovalRate rate = approvalRate(pool);
+        log.info("Approval rate {}", rate);
         List<CellCursor> cursors = Cell.ALL.stream()
                 .filter(command.focus()::includes)
                 .map(cell -> new CellCursor(
-                        cell, cell.quota(command.targetPhotos()), stored.getOrDefault(cell, 0), run.ranking()))
+                        cell, cell.quota(command.targetPhotos()), pool.cell(cell).expected(rate), run.ranking()))
                 .toList();
         List<CellCursor> open = new ArrayList<>(cursors.stream().filter(c -> !c.full()).toList());
         while (!open.isEmpty()) {
@@ -149,7 +165,7 @@ class IngestPeopleHandler {
                 if (next.isEmpty()) {
                     cursor.exhausted = true;
                     open.remove(cursor);
-                    log.warn("Cell {} exhausted at {}/{} photos", cursor.cell, cursor.photos, cursor.quota);
+                    log.warn("Cell {} exhausted at {}/{} photos", cursor.cell, Math.round(cursor.expected), cursor.quota);
                     continue;
                 }
                 PersonRecord person = next.get();
@@ -157,34 +173,35 @@ class IngestPeopleHandler {
                 if (!Cell.of(person).map(cursor.cell::equals).orElse(false)) {
                     continue;
                 }
-                cursor.photos += process(person, run);
+                // A new photo is pending: worth the approval rate of an approved one.
+                cursor.expected += process(person, run) * rate.value();
                 if (cursor.full()) {
                     open.remove(cursor);
                 }
             }
         }
-        cursors.forEach(c -> report.cellStatus(c.cell, c.photos, c.quota, c.exhausted));
+        cursors.forEach(c -> report.cellStatus(c.cell, (int) Math.round(c.expected), c.quota, c.exhausted));
     }
 
-    /** Where one cell is in its own ranking, and how many photos it already holds. */
+    /** Where one cell is in its own ranking, and how many approved photos it can expect. */
     private final class CellCursor {
         private final Cell cell;
         private final int quota;
         private final RankingFilter ranking;
         private final Deque<PersonRecord> buffer = new ArrayDeque<>();
-        private int photos;
+        private double expected;
         private int offset;
         private boolean exhausted;
 
-        private CellCursor(Cell cell, int quota, int storedPhotos, RankingFilter ranking) {
+        private CellCursor(Cell cell, int quota, double expected, RankingFilter ranking) {
             this.cell = cell;
             this.quota = quota;
-            this.photos = storedPhotos;
+            this.expected = expected;
             this.ranking = ranking;
         }
 
         private boolean full() {
-            return photos >= quota;
+            return expected >= quota;
         }
 
         /** The next person of the cell's ranking, fetching a page when needed; empty at the end. */

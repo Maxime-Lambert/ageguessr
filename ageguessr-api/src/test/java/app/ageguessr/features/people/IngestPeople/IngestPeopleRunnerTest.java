@@ -99,6 +99,23 @@ class IngestPeopleRunnerTest {
     }
 
     @Test
+    void analyzesAgainstTheConfiguredTargetOrTheLimit() {
+        assertThat(IngestPeopleRunner.analyzeTarget(new DefaultApplicationArguments("--analyze"), 5000)).isEqualTo(5000);
+        assertThat(IngestPeopleRunner.analyzeTarget(new DefaultApplicationArguments("--analyze", "--limit=6000"), 5000))
+                .isEqualTo(6000);
+    }
+
+    @Test
+    void refusesAnyOtherOptionWithAnalyze() {
+        assertThatThrownBy(() -> IngestPeopleRunner.analyzeTarget(
+                        new DefaultApplicationArguments("--analyze", "--dry-run"), 5000))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> IngestPeopleRunner.analyzeTarget(
+                        new DefaultApplicationArguments("--analyze", "--limit=0"), 5000))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
     void refusesAnOffsetWithoutASample() {
         assertThatThrownBy(() -> IngestPeopleRunner.command(new DefaultApplicationArguments("--offset=10"), 3000))
                 .isInstanceOf(IllegalArgumentException.class);

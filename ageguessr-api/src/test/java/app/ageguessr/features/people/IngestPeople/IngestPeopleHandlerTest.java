@@ -45,7 +45,9 @@ class IngestPeopleHandlerTest {
     private final ImageDownloader downloader = mock(ImageDownloader.class);
     private final ImageReencoder reencoder = mock(ImageReencoder.class);
     private final PeopleStore store = mock(PeopleStore.class);
-    private final IngestProperties properties = new IngestProperties(3000, 3, 5, 10, 50, 800, 5_000_000, 1930);
+    // An approval rate of 1: a new photo fills its cell's place outright, which keeps the
+    // balance tests to whole photos. The rate itself has its own tests.
+    private final IngestProperties properties = new IngestProperties(3000, 3, 5, 10, 50, 800, 5_000_000, 1930, 1.0);
     private final Clock clock = Clock.fixed(java.time.Instant.parse("2026-10-26T10:00:00Z"), ZoneOffset.UTC);
 
     private IngestPeopleHandler handler;
@@ -54,6 +56,7 @@ class IngestPeopleHandlerTest {
     void setUp() {
         handler = new IngestPeopleHandler(wikidata, commons, downloader, reencoder, store, properties, clock);
         when(store.find(anyString())).thenReturn(Optional.empty());
+        when(store.poolCounts()).thenReturn(PoolCounts.EMPTY);
         when(downloader.download(anyString())).thenReturn(new byte[] {9});
         when(reencoder.reencode(any())).thenReturn(IMAGE);
     }
@@ -411,7 +414,7 @@ class IngestPeopleHandlerTest {
     void leansTowardTheAgeBandsThePoolLacksAcrossPeople() {
         // Stored: plenty of photos at 26-33. Each person has one at 26 and one at 34,
         // too close to keep both: the 34-41 one wins until that band catches up.
-        when(store.photosByAgeBand()).thenReturn(Map.of("26-33", 2));
+        when(store.poolCounts()).thenReturn(new PoolCounts(Map.of(), Map.of("26-33", new ReviewCounts(1, 1, 5))));
         when(wikidata.fetchPeople(0, 3, RankingFilter.bornSince(1930))).thenReturn(List.of(person("Q1"), person("Q2"), person("Q3")));
         photos("Q1", photo("File:A1 1976.jpg", 1976), photo("File:A2 1984.jpg", 1984));
         photos("Q2", photo("File:B1 1976.jpg", 1976), photo("File:B2 1984.jpg", 1984));
@@ -572,7 +575,7 @@ class IngestPeopleHandlerTest {
 
     @Test
     void aRerunCountsThePhotosAlreadyStoredInEachCell() {
-        when(store.photosByCell()).thenReturn(Map.of(EUROPE_WOMEN, 1));
+        when(store.poolCounts()).thenReturn(pool(EUROPE_WOMEN, new ReviewCounts(1, 0, 3)));
 
         IngestReport report = handler.handle(new IngestPeopleCommand(12, null, 0, 0, false, IngestFocus.NONE));
 
@@ -583,7 +586,7 @@ class IngestPeopleHandlerTest {
     @Test
     void aStoredPersonMetAgainCountsOnlyTheirNewPhotos() {
         // Q1's photo is already stored and counted: meeting Q1 again adds nothing.
-        when(store.photosByCell()).thenReturn(Map.of(EUROPE_WOMEN, 1));
+        when(store.poolCounts()).thenReturn(pool(EUROPE_WOMEN, new ReviewCounts(0, 1, 0)));
         Person existing = stored("Q1", BIRTH, false);
         when(store.find("Q1")).thenReturn(Optional.of(existing));
         when(store.storedPhotos(existing.getId()))
@@ -641,6 +644,43 @@ class IngestPeopleHandlerTest {
 
         verifyNoInteractions(store);
         assertThat(report.balance()).containsEntry("EUROPE/FEMALE", "1/1");
+    }
+
+    @Test
+    void countsPendingAndNewPhotosAtTheApprovalRate() {
+        // Rate 0.5 (assumed, nothing reviewed). Quota 2 for a target of 24; stored: 1
+        // approved + 1 pending = 1.5 expected; one new photo brings it to 2.
+        IngestPeopleHandler halfApproved = new IngestPeopleHandler(
+                wikidata, commons, downloader, reencoder, store,
+                new IngestProperties(3000, 3, 5, 10, 50, 800, 5_000_000, 1930, 0.5), clock);
+        when(store.poolCounts()).thenReturn(pool(EUROPE_WOMEN, new ReviewCounts(1, 1, 0)));
+        when(wikidata.fetchCell(EUROPE_WOMEN, 0, 3, RankingFilter.bornSince(1930)))
+                .thenReturn(List.of(person("Q1", EUROPE_WOMEN), person("Q2", EUROPE_WOMEN)));
+        photos("Q1", photo("File:A 1976.jpg", 1976));
+        photos("Q2", photo("File:B 1976.jpg", 1976));
+
+        IngestReport report = halfApproved.handle(new IngestPeopleCommand(24, null, 0, 0, false, IngestFocus.NONE));
+
+        assertThat(report.balance()).containsEntry("EUROPE/FEMALE", "2/2");
+        assertThat(report.photosAdded()).isEqualTo(1);
+        verify(commons, never()).searchDepicting("Q2");
+    }
+
+    @Test
+    void analyzesTheStoredPoolWithoutAnyNetworkCall() {
+        when(store.poolCounts()).thenReturn(pool(EUROPE_WOMEN, new ReviewCounts(1, 0, 0)));
+
+        PoolAnalysis analysis = handler.analyze(12);
+
+        assertThat(analysis.cells()).filteredOn(c -> c.cell().equals(EUROPE_WOMEN))
+                .singleElement()
+                .extracting(PoolAnalysis.CellLine::toCollect)
+                .isEqualTo(0);
+        verifyNoInteractions(wikidata, commons, downloader);
+    }
+
+    private static PoolCounts pool(Cell cell, ReviewCounts counts) {
+        return new PoolCounts(Map.of(cell, counts), Map.of("26-33", counts));
     }
 
     private record CommonsFileAndInfo(CommonsFile file, MediaInfo info) {}

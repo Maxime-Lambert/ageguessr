@@ -4,6 +4,7 @@ import app.ageguessr.features.people.Continent;
 import app.ageguessr.features.people.Gender;
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -28,6 +29,7 @@ import org.springframework.stereotype.Component;
  * ./mvnw spring-boot:run -Dspring-boot.run.profiles=ingest -Dspring-boot.run.arguments=--qid=Q42
  * ./mvnw spring-boot:run -Dspring-boot.run.profiles=ingest -Dspring-boot.run.arguments="--offset=10000 --sample=200 --dry-run"
  * ./mvnw spring-boot:run -Dspring-boot.run.profiles=ingest -Dspring-boot.run.arguments="--exclude-occupations=Q937857 --age-bands=74-81,82+"
+ * ./mvnw spring-boot:run -Dspring-boot.run.profiles=ingest -Dspring-boot.run.arguments=--analyze
  * </pre>
  *
  * <p>Focus options, comma-separated, all optional ({@link IngestFocus}):
@@ -52,6 +54,11 @@ class IngestPeopleRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
+        if (args.containsOption("analyze")) {
+            log.info("{}", handler.analyze(analyzeTarget(args, properties.targetPhotos())));
+            System.exit(SpringApplication.exit(context, () -> 0));
+            return;
+        }
         IngestPeopleCommand command = command(args, properties.targetPhotos());
         log.info("People ingestion started: {}", command);
         long start = System.nanoTime();
@@ -65,15 +72,30 @@ class IngestPeopleRunner implements ApplicationRunner {
         System.exit(SpringApplication.exit(context, () -> 0));
     }
 
-    static IngestPeopleCommand command(ApplicationArguments args, int defaultTarget) {
-        String qid = single(args, "qid");
+    /** --analyze reads the database only: --limit is its one option, the target to measure against. */
+    static int analyzeTarget(ApplicationArguments args, int defaultTarget) {
+        Set<String> others = new HashSet<>(args.getOptionNames());
+        others.removeAll(Set.of("analyze", "limit"));
+        if (!others.isEmpty() || !args.getNonOptionArgs().isEmpty()) {
+            throw new IllegalArgumentException("--analyze takes only --limit, got " + others);
+        }
+        return target(args, defaultTarget);
+    }
+
+    private static int target(ApplicationArguments args, int defaultTarget) {
         String limit = single(args, "limit");
-        String offsetOption = single(args, "offset");
-        String sampleOption = single(args, "sample");
         int target = limit == null ? defaultTarget : Integer.parseInt(limit);
         if (target <= 0) {
             throw new IllegalArgumentException("--limit must be positive, got " + target);
         }
+        return target;
+    }
+
+    static IngestPeopleCommand command(ApplicationArguments args, int defaultTarget) {
+        String qid = single(args, "qid");
+        String offsetOption = single(args, "offset");
+        String sampleOption = single(args, "sample");
+        int target = target(args, defaultTarget);
         int offset = offsetOption == null ? 0 : Integer.parseInt(offsetOption);
         if (offset < 0) {
             throw new IllegalArgumentException("--offset must not be negative, got " + offset);
