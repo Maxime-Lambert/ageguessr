@@ -3,7 +3,6 @@ package app.ageguessr.features.people.IngestPeople;
 import app.ageguessr.features.people.Person;
 import java.time.Clock;
 import java.time.LocalDate;
-import java.util.OptionalInt;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -12,6 +11,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -66,8 +66,8 @@ class IngestPeopleHandler {
     }
 
     /**
-     * What one run carries from person to person. {@code photosByAgeBand}: photos in play
-     * per age band, in the database (none for a dry run) and added since, which
+     * What one run carries from person to person. {@code photosByAgeBand}: photos still
+     * counting (pending or approved, not weighted by the approval rate) per age band, in the database (none for a dry run) and added since, which
      * PhotoSelector leans against. {@code ranking}: who the rankings list.
      */
     private record Run(

@@ -67,6 +67,7 @@ final class PoolAnalysis {
 
     /** Raw photos to collect for {@code missing} approved ones; 0 when nothing is missing. */
     private static int toCollect(double missing, ApprovalRate rate) {
+        // Never 0: see ApprovalRate.
         return missing <= 0 ? 0 : (int) Math.ceil(missing / rate.value());
     }
 

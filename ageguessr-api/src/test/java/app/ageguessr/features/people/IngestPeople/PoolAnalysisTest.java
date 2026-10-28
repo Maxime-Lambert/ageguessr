@@ -53,6 +53,13 @@ class PoolAnalysisTest {
 
         // Median 100: 50 is not under 50, 40 and 10 are.
         assertThat(analysis.lackingBands()).containsExactly("74-81", "82+");
+        assertThat(analysis.bands())
+                .filteredOn(PoolAnalysis.BandLine::lacking)
+                .extracting(PoolAnalysis.BandLine::band)
+                .containsExactly("74-81", "82+");
+        assertThat(analysis.toString().lines().filter(line -> line.contains("lacking")))
+                .hasSize(2)
+                .allMatch(line -> line.contains("74-81") || line.contains("82+"));
         assertThat(analysis.approvedMissingInLackingBands()).isEqualTo(150);
         // 5000 + 150, rounded up to a hundred.
         assertThat(analysis.ageWaveTarget()).isEqualTo(5200);
