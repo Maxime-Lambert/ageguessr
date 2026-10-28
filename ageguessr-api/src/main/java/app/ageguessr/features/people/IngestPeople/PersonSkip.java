@@ -4,6 +4,8 @@ package app.ageguessr.features.people.IngestPeople;
 enum PersonSkip {
     /** Removed on request (people.excluded): never re-ingested. */
     EXCLUDED,
+    /** Caught by a criterion of the editorial line (EditorialLine): never ingested. */
+    EDITORIAL_LINE,
     BIRTH_DATE_UNUSABLE,
     DEATH_DATE_UNUSABLE,
     NO_NAME,

@@ -69,8 +69,10 @@ class IngestPeopleHandler {
 
     /**
      * What one run carries from person to person. {@code photosByAgeBand}: photos still
-     * counting (pending or approved, not weighted by the approval rate) per age band, in the database (none for a dry run) and added since, which
-     * PhotoSelector leans against. {@code ranking}: who the rankings list.
+     * counting (pending or approved, not weighted by the approval rate) per age band, in
+     * the database (none for a dry run) and added since, which PhotoSelector leans
+     * against. {@code ranking}: who the rankings list. {@code editorialExclusions}: QIDs
+     * the editorial line keeps out.
      */
     private record Run(
             LocalDate today,
@@ -78,7 +80,8 @@ class IngestPeopleHandler {
             IngestReport report,
             Map<String, Integer> photosByAgeBand,
             IngestFocus focus,
-            RankingFilter ranking) {}
+            RankingFilter ranking,
+            Set<String> editorialExclusions) {}
 
     IngestReport handle(IngestPeopleCommand command) {
         IngestReport report = new IngestReport();
@@ -92,7 +95,9 @@ class IngestPeopleHandler {
                 report,
                 inPlayByAgeBand,
                 command.focus(),
-                ranking(command.focus(), today));
+                ranking(command.focus(), today),
+                wikidata.fetchEditorialExclusions().keySet());
+        log.info("Editorial line: {} people kept out", run.editorialExclusions().size());
         if (command.wikidataId() != null) {
             wikidata.fetchPerson(command.wikidataId())
                     .ifPresentOrElse(
@@ -286,6 +291,10 @@ class IngestPeopleHandler {
     }
 
     private Optional<PersonSkip> ingest(PersonRecord record, Run run) {
+        // First, before the store or Commons: a rule, which --qid does not bypass either.
+        if (run.editorialExclusions().contains(record.wikidataId())) {
+            return Optional.of(PersonSkip.EDITORIAL_LINE);
+        }
         boolean dryRun = run.dryRun();
         Optional<Person> existing = dryRun ? Optional.empty() : store.find(record.wikidataId());
         if (existing.map(Person::isExcluded).orElse(false)) {

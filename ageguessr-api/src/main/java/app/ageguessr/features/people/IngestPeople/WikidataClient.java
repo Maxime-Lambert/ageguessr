@@ -5,6 +5,8 @@ import app.ageguessr.features.people.WikidataId;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -170,6 +172,24 @@ class WikidataClient {
                 : "VALUES ?gender { " + entities(GenderResolver.qidsOf(cell.gender())) + " }";
         return details(query(CELL_PAGE.formatted(
                 continents, gender, filter.minBirthYear(), filter.clauses(), limit, offset)));
+    }
+
+    /**
+     * Every human the editorial line keeps out, with the criteria that catch them: one
+     * query per criterion over all of Wikidata (~45 000 QIDs, under 4 s in all on
+     * 2026-10-28).
+     */
+    Map<String, Set<EditorialLine.Criterion>> fetchEditorialExclusions() {
+        Map<String, Set<EditorialLine.Criterion>> caught = new HashMap<>();
+        for (EditorialLine.Criterion criterion : EditorialLine.Criterion.values()) {
+            for (JsonNode row : query(EditorialLine.query(criterion))) {
+                String qid = qid(row);
+                if (qid != null) {
+                    caught.computeIfAbsent(qid, q -> EnumSet.noneOf(EditorialLine.Criterion.class)).add(criterion);
+                }
+            }
+        }
+        return caught;
     }
 
     /** Sorted, so that a query is always the same text. QIDs from our own constants only. */

@@ -512,6 +512,33 @@ class IngestPeopleHandlerTest {
     }
 
     @Test
+    void keepsOutAPersonTheEditorialLineCatchesBeforeAnyOtherCall() {
+        when(wikidata.fetchEditorialExclusions())
+                .thenReturn(Map.of("Q2", Set.of(EditorialLine.Criterion.AUTHORITARIAN_LEADER)));
+        when(wikidata.fetchPeople(0, 3, RankingFilter.bornSince(1930)))
+                .thenReturn(List.of(person("Q1"), person("Q2")), List.of());
+        photos("Q1", photo("File:A 1976.jpg", 1976));
+
+        IngestReport report = handler.handle(new IngestPeopleCommand(5, null, 0, WHOLE_LIST, false, IngestFocus.NONE));
+
+        assertThat(report.peopleSkipped()).isEqualTo(Map.of("EDITORIAL_LINE", 1));
+        assertThat(report.peopleKept()).isEqualTo(1);
+        verify(store, never()).find("Q2");
+        verify(commons, never()).searchDepicting("Q2");
+    }
+
+    @Test
+    void keepsOutANamedPersonTheEditorialLineCatches() {
+        when(wikidata.fetchEditorialExclusions()).thenReturn(Map.of("Q42", Set.of(EditorialLine.Criterion.DICTATOR)));
+        when(wikidata.fetchPerson("Q42")).thenReturn(Optional.of(person("Q42")));
+
+        IngestReport report = handler.handle(new IngestPeopleCommand(3000, "Q42", 0, 0, false, IngestFocus.NONE));
+
+        assertThat(report.peopleSkipped()).isEqualTo(Map.of("EDITORIAL_LINE", 1));
+        verifyNoInteractions(commons);
+    }
+
+    @Test
     void theCellsTakeTurnsAndEachStopsAtItsQuota() {
         when(wikidata.fetchCell(EUROPE_WOMEN, 0, 3, RankingFilter.bornSince(1930)))
                 .thenReturn(List.of(person("Q1", EUROPE_WOMEN), person("Q2", EUROPE_WOMEN)));

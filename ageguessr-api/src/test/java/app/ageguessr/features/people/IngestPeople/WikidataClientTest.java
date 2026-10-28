@@ -294,6 +294,41 @@ class WikidataClientTest {
     }
 
     @Test
+    void listsWhoTheEditorialLineKeepsOutWithEveryCriterionThatCatchesThem() {
+        RestClient.Builder builder = RestClient.builder();
+        MockRestServiceServer server = MockRestServiceServer.bindTo(builder).build();
+        // One query per criterion, in the enum's order; Q1 is caught twice.
+        for (String[] answer : new String[][] {
+            {"P1595", personRows("Q1", "Q2")},
+            {"wd%3AQ183318", personRows("Q3")},
+            {"P1387", personRows("Q1")},
+            {"P39", "{\"results\": {\"bindings\": [{\"person\": {\"value\": \"not an entity\"}}]}}"}
+        }) {
+            server.expect(requestTo(QLEVER))
+                    .andExpect(content().string(Matchers.containsString(answer[0])))
+                    .andRespond(withSuccess(answer[1], MediaType.APPLICATION_JSON));
+        }
+        WikidataClient client = new WikidataClient(Fixtures.http(builder.build(), d -> {}, Duration.ZERO, 1), properties());
+
+        Map<String, Set<EditorialLine.Criterion>> caught = client.fetchEditorialExclusions();
+
+        assertThat(caught)
+                .containsOnlyKeys("Q1", "Q2", "Q3")
+                .containsEntry("Q1", Set.of(EditorialLine.Criterion.CONVICTED_OR_CHARGED, EditorialLine.Criterion.FAR_RIGHT))
+                .containsEntry("Q3", Set.of(EditorialLine.Criterion.DICTATOR));
+        server.verify();
+    }
+
+    private static String personRows(String... qids) {
+        StringBuilder rows = new StringBuilder();
+        for (String qid : qids) {
+            rows.append(rows.isEmpty() ? "" : ",")
+                    .append("{\"person\": {\"value\": \"http://www.wikidata.org/entity/").append(qid).append("\"}}");
+        }
+        return "{\"results\": {\"bindings\": [" + rows + "]}}";
+    }
+
+    @Test
     void ranksOnlyPeopleBornFromTheGivenYear() {
         MockRestServiceServer server = expectSixPosts("FILTER%28YEAR%28%3Fbirth%29+%3E%3D+1930%29");
 
