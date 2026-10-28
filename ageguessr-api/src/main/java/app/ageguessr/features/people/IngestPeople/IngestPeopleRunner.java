@@ -72,11 +72,18 @@ class IngestPeopleRunner implements ApplicationRunner {
         System.exit(SpringApplication.exit(context, () -> 0));
     }
 
-    /** --analyze reads the database only: --limit is its one option, the target to measure against. */
+    /** The options of an ingestion run, meaningless for --analyze. */
+    private static final Set<String> RUN_OPTIONS = Set.of(
+            "qid", "offset", "sample", "dry-run", "exclude-occupations", "only-occupations", "cells", "age-bands");
+
+    /**
+     * --analyze reads the database only: --limit is its one option, the target to measure
+     * against. Spring's own options (--spring.profiles.active in production) pass through.
+     */
     static int analyzeTarget(ApplicationArguments args, int defaultTarget) {
         Set<String> others = new HashSet<>(args.getOptionNames());
-        others.removeAll(Set.of("analyze", "limit"));
-        if (!others.isEmpty() || !args.getNonOptionArgs().isEmpty()) {
+        others.retainAll(RUN_OPTIONS);
+        if (!others.isEmpty()) {
             throw new IllegalArgumentException("--analyze takes only --limit, got " + others);
         }
         return target(args, defaultTarget);

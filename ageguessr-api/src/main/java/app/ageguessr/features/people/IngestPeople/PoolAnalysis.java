@@ -1,9 +1,8 @@
 package app.ageguessr.features.people.IngestPeople;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 /**
  * Where the pool stands against its target, in approved photos to expect, and what the
@@ -12,7 +11,9 @@ import java.util.stream.Collectors;
  *
  * <p>Cells fill themselves: their quotas already count pending photos at the approval
  * rate. Ages need a focused wave: an age band is lacking when it holds less than half of
- * what the median band holds, and the wave lifts it to the median.
+ * what the median band holds, and the wave lifts it to the median. Only the next wave
+ * is suggested: the cell wave moves the median, so the age wave is measured after it
+ * (pending photos count at the rate, no need to curate in between).
  */
 final class PoolAnalysis {
 
@@ -102,17 +103,18 @@ final class PoolAnalysis {
         return Math.ceilDiv(target + approvedMissingInLackingBands(), ROUNDING) * ROUNDING;
     }
 
-    List<String> suggestedWaves() {
-        List<String> waves = new ArrayList<>();
+    /** The cell wave while cells miss photos, then the age wave; empty when nothing is missing. */
+    Optional<String> nextWave() {
         if (photosToCollectForCells() > 0) {
-            waves.add("--limit=" + target + "   (fills the cells, ~" + photosToCollectForCells() + " photos to collect)");
+            return Optional.of(
+                    "--limit=" + target + "   (fills the cells, ~" + photosToCollectForCells() + " photos to collect)");
         }
         if (!lackingBands().isEmpty()) {
-            waves.add("--limit=" + ageWaveTarget() + " --age-bands=" + String.join(",", lackingBands())
+            return Optional.of("--limit=" + ageWaveTarget() + " --age-bands=" + String.join(",", lackingBands())
                     + "   (lifts the lacking ages toward the median band, ~"
                     + toCollect(approvedMissingInLackingBands(), rate) + " photos to collect)");
         }
-        return waves;
+        return Optional.empty();
     }
 
     @Override
@@ -141,13 +143,12 @@ final class PoolAnalysis {
                     line.band(), line.counts().approved(), line.counts().pending(), line.counts().rejected(),
                     line.expected(), line.lacking() ? "   lacking" : ""));
         }
-        List<String> waves = suggestedWaves();
-        if (waves.isEmpty()) {
-            text.append("Nothing to collect: every cell is at its quota and no age band is lacking.");
-        } else {
-            text.append("Suggested waves, in this order (add the exclusions, e.g. --exclude-occupations=Q937857):\n");
-            text.append(waves.stream().map(w -> "  " + w).collect(Collectors.joining("\n")));
-        }
+        nextWave().ifPresentOrElse(
+                wave -> text.append("Next wave (add the exclusions, e.g. --exclude-occupations=Q937857):\n  ")
+                        .append(wave)
+                        .append("\nThen run --analyze again: pending photos count at the approval rate, no need to "
+                                + "curate in between."),
+                () -> text.append("Nothing to collect: every cell is at its quota and no age band is lacking."));
         return text.toString();
     }
 }

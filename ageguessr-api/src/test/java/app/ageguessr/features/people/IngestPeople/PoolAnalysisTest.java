@@ -59,18 +59,30 @@ class PoolAnalysisTest {
     }
 
     @Test
-    void suggestsTheCellWaveThenTheAgeWave() {
+    void suggestsTheCellWaveFirst() {
         Map<String, ReviewCounts> bands = new HashMap<>(flatBands(100));
         bands.put("82+", new ReviewCounts(10, 0, 0));
 
         PoolAnalysis analysis = PoolAnalysis.of(new PoolCounts(Map.of(), bands), RATE, 120);
 
-        // 12 cells × quota 10 to collect from nothing: 120 / 0.4 = 300; 82+ misses 90.
-        assertThat(analysis.suggestedWaves())
-                .containsExactly(
-                        "--limit=120   (fills the cells, ~" + analysis.photosToCollectForCells() + " photos to collect)",
-                        "--limit=300 --age-bands=82+   (lifts the lacking ages toward the median band, ~225 photos to collect)");
-        assertThat(analysis.toString()).contains("82+", "lacking", "Suggested waves");
+        // 12 cells × quota 10 from nothing: 10 / 0.4 = 25 each, plus 3 for the OTHER cells.
+        assertThat(analysis.photosToCollectForCells()).isEqualTo(12 * 25 + 6 * 3);
+        assertThat(analysis.nextWave()).hasValue("--limit=120   (fills the cells, ~318 photos to collect)");
+        assertThat(analysis.toString()).contains("82+", "lacking", "Next wave", "--analyze again");
+    }
+
+    @Test
+    void suggestsTheAgeWaveOnceTheCellsAreFull() {
+        Map<Cell, ReviewCounts> full = new HashMap<>();
+        Cell.ALL.forEach(cell -> full.put(cell, new ReviewCounts(10, 0, 0)));
+        Map<String, ReviewCounts> bands = new HashMap<>(flatBands(100));
+        bands.put("82+", new ReviewCounts(10, 0, 0));
+
+        PoolAnalysis analysis = PoolAnalysis.of(new PoolCounts(full, bands), RATE, 120);
+
+        // 82+ misses 90 approved photos: 90 / 0.4 = 225 to collect, target 120 + 90 → 300.
+        assertThat(analysis.nextWave())
+                .hasValue("--limit=300 --age-bands=82+   (lifts the lacking ages toward the median band, ~225 photos to collect)");
     }
 
     @Test
@@ -80,7 +92,7 @@ class PoolAnalysisTest {
 
         PoolAnalysis analysis = PoolAnalysis.of(new PoolCounts(full, flatBands(10)), RATE, 120);
 
-        assertThat(analysis.suggestedWaves()).isEmpty();
+        assertThat(analysis.nextWave()).isEmpty();
         assertThat(analysis.toString()).contains("Nothing to collect");
     }
 

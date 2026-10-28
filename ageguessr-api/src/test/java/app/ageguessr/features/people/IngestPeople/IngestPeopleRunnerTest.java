@@ -103,6 +103,9 @@ class IngestPeopleRunnerTest {
         assertThat(IngestPeopleRunner.analyzeTarget(new DefaultApplicationArguments("--analyze"), 5000)).isEqualTo(5000);
         assertThat(IngestPeopleRunner.analyzeTarget(new DefaultApplicationArguments("--analyze", "--limit=6000"), 5000))
                 .isEqualTo(6000);
+        assertThat(IngestPeopleRunner.analyzeTarget(
+                        new DefaultApplicationArguments("--analyze", "--spring.profiles.active=prod,ingest"), 5000))
+                .isEqualTo(5000);
     }
 
     @Test
