@@ -87,13 +87,54 @@ sous 600 px (`MIN_IMAGE_HEIGHT`, miroir de la propriété backend).
 **Vérification** : front 170/170, lint, Prettier, `tsc` OK.
 
 ## Phase 3 : Revues et PR
-Status: Not started
+Status: Complete
 
-- [ ] `code-reviewer` et `architecture-reviewer` ; corriger 🔴 et 🟠.
-- [ ] Final Recap, Deployment Plan, archivage `plans/done/min-image-height.md`, PR.
+- [x] `code-reviewer` et `architecture-reviewer` ; corriger 🔴 et 🟠.
+- [x] Final Recap, Deployment Plan, archivage `plans/done/min-image-height.md`, PR.
+
+### Phase Summary
+**Revues** : aucun 🔴. `architecture-reviewer` : 2 🟠 corrigés (`--analyze
+--fix-small-images` ignorait la correction en silence : contrôle des options factorisé
+dans `rejectOthers`, modes de maintenance exclusifs ; test du ré-encodage qui échoue) ;
+🟡 appliqué : taille effacée au changement de photo. `code-reviewer` : anti-triche
+(même chemin `ImageReencoder`), liste blanche d'hôtes de `ImageDownloader`, aucun nom
+dans les logs, personnes exclues : rien à signaler ; 🟡 appliqué : `SmallImage.toString`
+sans nom de fichier.
+
+**Vérification finale** : backend **687/687**, front **170/170**, lint, Prettier, `tsc`
+OK. PIT sur `IngestPeople` : **97 %** (605 / 633). Les survivants utiles (bornes à
+600 px, contenu remplacé, `reviewed_by` effacé) ont reçu un test.
 
 ## Final Recap
-_(write when all phases complete)_
+**Livré** (PR `feature/min-image-height`, empilée sur #22) : plus de photo de moins de
+600 px de haut dans le pool.
+- Miniatures demandées en hauteur (1 000 px) : une photo paysage d'un grand original
+  n'est plus réduite à 533 px.
+- Rejet `TOO_SMALL` avant téléchargement et avant le choix des photos d'une personne.
+- `--fix-small-images` : agrandit les photos stockées quand Commons a mieux (statut
+  inchangé), les rejette sinon, même approuvées. Base locale : 10 trouvées, 2
+  agrandies, 8 rejetées.
+- Page de curation : taille réelle et avertissement sous 600 px.
+
+**Écarts** : la première idée (rejeter toute photo stockée sous 600 px) aurait perdu
+des paysages issus de grands originaux ; d'où les miniatures en hauteur et
+l'agrandissement avant rejet.
+
+**Hors scope** : ajuster le seuil sur les données de prod (requête de répartition
+dans le Deployment Plan).
 
 ## Deployment Plan
-_(write when all phases complete)_
+1. **Après le merge de #22**, merge de cette PR dans `develop` (GitHub la recible
+   quand la branche de #22 est supprimée), puis release `develop` → `main` en merge
+   commit. Aucune migration. Variables optionnelles : `INGEST_THUMBNAIL_HEIGHT` (1 000)
+   remplace `INGEST_THUMBNAIL_WIDTH` (jamais définie en prod), `INGEST_MIN_IMAGE_HEIGHT`
+   (600).
+2. **Corriger les photos stockées**, avant toute nouvelle vague et avant `--analyze`,
+   depuis le VPS dans `tmux` (une requête Commons par lot de 50 fichiers, plus un
+   téléchargement par photo agrandie) :
+   `cd /opt/ageguessr && docker compose -f docker-compose.prod.yml run --rm backend --spring.profiles.active=prod,ingest --fix-small-images`
+   Lire le bilan : trouvées, agrandies, rejetées (dont approuvées).
+3. **Vérifier** : aucune photo non rejetée sous 600 px :
+   `cd /opt/ageguessr && docker compose -f docker-compose.prod.yml exec postgres psql -U ageguessr -d ageguessr -c "SELECT count(*) FROM person_photo_images i JOIN person_photos p ON p.id = i.photo_id WHERE i.height < 600 AND p.review_status <> 'REJECTED'"`
+   → 0.
+4. **Ensuite**, `--analyze` et la vague suivante (`plans/done/ingest-focus.md`).
