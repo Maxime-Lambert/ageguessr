@@ -1,7 +1,13 @@
 package app.ageguessr.features.people.IngestPeople;
 
+import app.ageguessr.features.people.Continent;
+import app.ageguessr.features.people.Gender;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -21,7 +27,12 @@ import org.springframework.stereotype.Component;
  * ./mvnw spring-boot:run -Dspring-boot.run.profiles=ingest -Dspring-boot.run.arguments=--limit=60
  * ./mvnw spring-boot:run -Dspring-boot.run.profiles=ingest -Dspring-boot.run.arguments=--qid=Q42
  * ./mvnw spring-boot:run -Dspring-boot.run.profiles=ingest -Dspring-boot.run.arguments="--offset=10000 --sample=200 --dry-run"
+ * ./mvnw spring-boot:run -Dspring-boot.run.profiles=ingest -Dspring-boot.run.arguments="--exclude-occupations=Q937857 --age-bands=74-81,82+"
  * </pre>
+ *
+ * <p>Focus options, comma-separated, all optional ({@link IngestFocus}):
+ * {@code --exclude-occupations} and {@code --only-occupations} (P106 QIDs),
+ * {@code --cells} ("AFRICA/FEMALE"), {@code --age-bands} ("74-81", "82+").
  */
 @Slf4j
 @Component
@@ -77,7 +88,49 @@ class IngestPeopleRunner implements ApplicationRunner {
         if (offsetOption != null && sampleOption == null) {
             throw new IllegalArgumentException("--offset needs --sample: the balanced ingestion has no single list");
         }
-        return new IngestPeopleCommand(target, qid, offset, sample, args.containsOption("dry-run"));
+        IngestFocus focus = new IngestFocus(
+                list(args, "exclude-occupations"),
+                list(args, "only-occupations"),
+                list(args, "cells").stream().map(IngestPeopleRunner::cell).collect(Collectors.toSet()),
+                list(args, "age-bands"));
+        if (qid != null && !focus.isNone()) {
+            throw new IllegalArgumentException("focus options are meaningless with --qid: naming someone is deliberate");
+        }
+        if (sampleOption != null && !focus.cells().isEmpty()) {
+            throw new IllegalArgumentException("--cells needs the balanced ingestion, not --sample");
+        }
+        return new IngestPeopleCommand(target, qid, offset, sample, args.containsOption("dry-run"), focus);
+    }
+
+    /** "AFRICA/FEMALE" → that cell. */
+    private static Cell cell(String text) {
+        String[] parts = text.split("/");
+        if (parts.length != 2) {
+            throw new IllegalArgumentException("a cell is CONTINENT/GENDER, got " + text);
+        }
+        try {
+            return new Cell(
+                    Continent.valueOf(parts[0].toUpperCase(Locale.ROOT)), Gender.valueOf(parts[1].toUpperCase(Locale.ROOT)));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("unknown cell " + text + ", continents " + Arrays.toString(Continent.values())
+                    + ", genders " + Arrays.toString(Gender.values()), e);
+        }
+    }
+
+    /** The comma-separated values of an option given at most once; empty when absent. */
+    private static Set<String> list(ApplicationArguments args, String name) {
+        String value = single(args, name);
+        if (value == null) {
+            return Set.of();
+        }
+        Set<String> values = Arrays.stream(value.split(","))
+                .map(String::strip)
+                .filter(v -> !v.isEmpty())
+                .collect(Collectors.toSet());
+        if (values.isEmpty()) {
+            throw new IllegalArgumentException("--" + name + " needs at least one value");
+        }
+        return values;
     }
 
     private static String single(ApplicationArguments args, String name) {

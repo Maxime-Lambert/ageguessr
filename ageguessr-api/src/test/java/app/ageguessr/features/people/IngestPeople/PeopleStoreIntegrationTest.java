@@ -81,7 +81,7 @@ class PeopleStoreIntegrationTest {
         Person first = people.findByWikidataId("Q1").orElseThrow();
 
         store.save(
-                new PersonRecord("Q1", 60, "Jane Doe", "Jeanne Doe", Set.of(), List.of(), List.of(), null, null),
+                new PersonRecord("Q1", 60, "Jane Doe", "Jeanne Doe", Set.of(), List.of(), List.of(), null, null, Set.of()),
                 BIRTH,
                 LocalDate.of(2020, 1, 1),
                 List.of(photo("B.jpg", 1990)));
@@ -108,7 +108,7 @@ class PeopleStoreIntegrationTest {
 
         store.save(
                 new PersonRecord(
-                        "Q1", 50, "Jane", null, Set.of(), List.of(), List.of(), Gender.FEMALE, Continent.AFRICA),
+                        "Q1", 50, "Jane", null, Set.of(), List.of(), List.of(), Gender.FEMALE, Continent.AFRICA, Set.of()),
                 BIRTH,
                 null,
                 List.of());
@@ -195,11 +195,11 @@ class PeopleStoreIntegrationTest {
     }
 
     private static PersonRecord person(String qid, Gender gender, Continent continent) {
-        return new PersonRecord(qid, 50, qid, null, Set.of(), List.of(), List.of(), gender, continent);
+        return new PersonRecord(qid, 50, qid, null, Set.of(), List.of(), List.of(), gender, continent, Set.of());
     }
 
     private static PersonRecord record(String qid, String name, int sitelinks) {
-        return new PersonRecord(qid, sitelinks, name, null, Set.of(), List.of(), List.of(), null, null);
+        return new PersonRecord(qid, sitelinks, name, null, Set.of(), List.of(), List.of(), null, null, Set.of());
     }
 
     private static NewPhoto photo(String file, int year) {

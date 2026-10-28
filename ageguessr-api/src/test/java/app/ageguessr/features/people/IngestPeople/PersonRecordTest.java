@@ -14,7 +14,7 @@ class PersonRecordTest {
     void printsTheQidOnlySoThatNoNameReachesALog() {
         PersonRecord person = new PersonRecord(
                 "Q42", 10, "Douglas Adams", "Douglas Adams", Set.of("Douglas Adams 2000.jpg"), List.of(), List.of(),
-                Gender.MALE, Continent.EUROPE);
+                Gender.MALE, Continent.EUROPE, Set.of());
 
         assertThat(person).hasToString("PersonRecord[Q42]");
     }

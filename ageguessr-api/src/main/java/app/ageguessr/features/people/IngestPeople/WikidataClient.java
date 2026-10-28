@@ -50,6 +50,7 @@ class WikidataClient {
               ?person wdt:P31 wd:Q5 ; wdt:P18 ?image ; wikibase:sitelinks ?sitelinks ;
                       wdt:P569 ?birth .
               FILTER(YEAR(?birth) >= %d)
+              %s
             }
             ORDER BY DESC(?sitelinks) ?person
             LIMIT %d OFFSET %d
@@ -67,6 +68,7 @@ class WikidataClient {
               ?country wdt:P30 ?continent .
               %s
               FILTER(YEAR(?birth) >= %d)
+              %s
             }
             ORDER BY DESC(?sitelinks) ?person
             LIMIT %d OFFSET %d
@@ -126,14 +128,17 @@ class WikidataClient {
             }
             """;
 
-    // Gender and continents of nationality, for the pool balance. wdt: keeps only the
-    // best-ranked statements. One UNION rather than two queries: ~0.5 s for 500 people.
+    // Gender and continents of nationality, for the pool balance, and occupations, for
+    // the report. wdt: keeps only the best-ranked statements. One UNION rather than
+    // separate queries: ~0.5 s for 500 people.
     private static final String PROFILES = """
-            SELECT ?person ?gender ?continent WHERE {
+            SELECT ?person ?gender ?continent ?occupation WHERE {
               VALUES ?person { %s }
               { ?person wdt:P21 ?gender . }
               UNION
               { ?person wdt:P27 ?country . ?country wdt:P30 ?continent . }
+              UNION
+              { ?person wdt:P106 ?occupation . }
             }
             """;
 
@@ -146,11 +151,11 @@ class WikidataClient {
     }
 
     /**
-     * People born in {@code minBirthYear} or later, ranked {@code offset} to
+     * The people {@code filter} lets through, ranked {@code offset} to
      * {@code offset + limit - 1} by notoriety. Fewer (or none) past the end.
      */
-    List<PersonRecord> fetchPeople(int offset, int limit, int minBirthYear) {
-        return details(query(PAGE.formatted(minBirthYear, limit, offset)));
+    List<PersonRecord> fetchPeople(int offset, int limit, RankingFilter filter) {
+        return details(query(PAGE.formatted(filter.minBirthYear(), filter.clauses(), limit, offset)));
     }
 
     /**
@@ -158,12 +163,13 @@ class WikidataClient {
      * by notoriety. Includes people who belong to another cell (see CELL_PAGE): the
      * caller filters with {@link Cell#of}.
      */
-    List<PersonRecord> fetchCell(Cell cell, int offset, int limit, int minBirthYear) {
+    List<PersonRecord> fetchCell(Cell cell, int offset, int limit, RankingFilter filter) {
         String continents = entities(ContinentResolver.qidsOf(cell.continent()));
         String gender = cell.gender() == Gender.OTHER
                 ? "FILTER(?gender NOT IN (" + String.join(", ", prefixed(GenderResolver.knownQids())) + "))"
                 : "VALUES ?gender { " + entities(GenderResolver.qidsOf(cell.gender())) + " }";
-        return details(query(CELL_PAGE.formatted(continents, gender, minBirthYear, limit, offset)));
+        return details(query(CELL_PAGE.formatted(
+                continents, gender, filter.minBirthYear(), filter.clauses(), limit, offset)));
     }
 
     /** Sorted, so that a query is always the same text. QIDs from our own constants only. */
@@ -258,6 +264,7 @@ class WikidataClient {
             if (person != null) {
                 entityId(value(row, "gender")).ifPresent(person.genders::add);
                 entityId(value(row, "continent")).ifPresent(person.continents::add);
+                entityId(value(row, "occupation")).ifPresent(person.occupations::add);
             }
         }
         return people.values().stream().map(Builder::build).toList();
@@ -343,6 +350,7 @@ class WikidataClient {
         private final Map<String, DeathStatement> deaths = new LinkedHashMap<>();
         private final Set<String> genders = new LinkedHashSet<>();
         private final Set<String> continents = new LinkedHashSet<>();
+        private final Set<String> occupations = new LinkedHashSet<>();
 
         private Builder(String qid, int sitelinks) {
             this.qid = qid;
@@ -354,7 +362,8 @@ class WikidataClient {
                     qid, sitelinks, nameEn.text, nameFr.text, images, new ArrayList<>(births),
                     new ArrayList<>(deaths.values()),
                     GenderResolver.resolve(genders).orElse(null),
-                    ContinentResolver.resolve(continents).orElse(null));
+                    ContinentResolver.resolve(continents).orElse(null),
+                    occupations);
         }
     }
 }

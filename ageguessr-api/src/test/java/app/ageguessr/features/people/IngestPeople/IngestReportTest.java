@@ -1,6 +1,7 @@
 package app.ageguessr.features.people.IngestPeople;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.entry;
 
 import app.ageguessr.features.people.Continent;
 import app.ageguessr.features.people.Gender;
@@ -45,8 +46,33 @@ class IngestReportTest {
         assertThat(report.photosRejected()).isEmpty();
     }
 
-    private static PersonRecord person(String qid) {
-        return new PersonRecord(qid, 1, "Jane", null, Set.of(), List.of(), List.of(), Gender.FEMALE, Continent.ASIA);
+    @Test
+    void ranksTheOccupationsOfKeptPeopleMostFrequentFirst() {
+        IngestReport report = new IngestReport();
+        report.personKept(person("Q1", "Q937857"), List.of());
+        report.personKept(person("Q2", "Q937857", "Q82955"), List.of());
+        report.personKept(person("Q3", "Q33999"), List.of());
+
+        // Q33999 and Q82955 tie at 1: the QID breaks the tie.
+        assertThat(report.topOccupations())
+                .containsExactly(entry("Q937857", 2), entry("Q33999", 1), entry("Q82955", 1));
+        assertThat(report.toString()).contains("kept people by occupation (top 15)={Q937857=2, Q33999=1, Q82955=1}");
+    }
+
+    @Test
+    void keepsOnlyTheFifteenMostFrequentOccupations() {
+        IngestReport report = new IngestReport();
+        for (int i = 1; i <= IngestReport.TOP_OCCUPATIONS + 1; i++) {
+            report.personKept(person("Q" + i, "Q" + (100 + i)), List.of());
+        }
+        report.personKept(person("Q99", "Q116"), List.of());
+
+        assertThat(report.topOccupations()).hasSize(IngestReport.TOP_OCCUPATIONS).containsKey("Q116");
+    }
+
+    private static PersonRecord person(String qid, String... occupations) {
+        return new PersonRecord(
+                qid, 1, "Jane", null, Set.of(), List.of(), List.of(), Gender.FEMALE, Continent.ASIA, Set.of(occupations));
     }
 
     private static NewPhoto photo(int bytes) {

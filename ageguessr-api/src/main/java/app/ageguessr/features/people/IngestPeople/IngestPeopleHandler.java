@@ -3,6 +3,7 @@ package app.ageguessr.features.people.IngestPeople;
 import app.ageguessr.features.people.Person;
 import java.time.Clock;
 import java.time.LocalDate;
+import java.util.OptionalInt;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -26,6 +27,10 @@ import org.springframework.stereotype.Service;
  * gender) has a quota of photos in play ({@link Cell#quota}), the cells taking turns one
  * person at a time, each walking its own ranking. A cell whose ranking runs out stays below its quota, and
  * the report says so. {@code --sample} walks the plain ranking instead, to measure the yield.
+ *
+ * <p>{@link IngestFocus} narrows a run: the occupation filters and the age floor go into
+ * the rankings ({@link RankingFilter}), the cells limit the balanced walk, and a valid
+ * photo outside the wanted age bands is left out.
  */
 @Slf4j
 @Service
@@ -61,17 +66,26 @@ class IngestPeopleHandler {
     /**
      * What one run carries from person to person. {@code photosByAgeBand}: photos in play
      * per age band, in the database (none for a dry run) and added since, which
-     * PhotoSelector leans against.
+     * PhotoSelector leans against. {@code ranking}: who the rankings list.
      */
-    private record Run(LocalDate today, boolean dryRun, IngestReport report, Map<String, Integer> photosByAgeBand) {}
+    private record Run(
+            LocalDate today,
+            boolean dryRun,
+            IngestReport report,
+            Map<String, Integer> photosByAgeBand,
+            IngestFocus focus,
+            RankingFilter ranking) {}
 
     IngestReport handle(IngestPeopleCommand command) {
         IngestReport report = new IngestReport();
+        LocalDate today = LocalDate.now(clock);
         Run run = new Run(
-                LocalDate.now(clock),
+                today,
                 command.dryRun(),
                 report,
-                new HashMap<>(command.dryRun() ? Map.of() : store.photosByAgeBand()));
+                new HashMap<>(command.dryRun() ? Map.of() : store.photosByAgeBand()),
+                command.focus(),
+                ranking(command.focus(), today));
         if (command.wikidataId() != null) {
             wikidata.fetchPerson(command.wikidataId())
                     .ifPresentOrElse(
@@ -87,11 +101,25 @@ class IngestPeopleHandler {
         return report;
     }
 
+    /**
+     * Wanting only ages from A means wanting people at least A years old today: anyone
+     * born after {@code today.year - A} cannot have such a photo yet, so the rankings
+     * skip them.
+     */
+    private RankingFilter ranking(IngestFocus focus, LocalDate today) {
+        OptionalInt youngest = focus.youngestAge();
+        return new RankingFilter(
+                properties.minBirthYear(),
+                youngest.isPresent() ? OptionalInt.of(today.getYear() - youngest.getAsInt()) : OptionalInt.empty(),
+                focus.excludedOccupations(),
+                focus.onlyOccupations());
+    }
+
     private void walkRanking(IngestPeopleCommand command, Run run) {
         IngestReport report = run.report();
         int offset = command.offset();
         while (!done(command, report)) {
-            List<PersonRecord> page = wikidata.fetchPeople(offset, properties.pageSize(), properties.minBirthYear());
+            List<PersonRecord> page = wikidata.fetchPeople(offset, properties.pageSize(), run.ranking());
             if (page.isEmpty()) {
                 log.warn("Wikidata list exhausted after {} people", report.peopleSeen());
                 break;
@@ -110,8 +138,9 @@ class IngestPeopleHandler {
         IngestReport report = run.report();
         Map<Cell, Integer> stored = command.dryRun() ? Map.of() : store.photosByCell();
         List<CellCursor> cursors = Cell.ALL.stream()
+                .filter(command.focus()::includes)
                 .map(cell -> new CellCursor(
-                        cell, cell.quota(command.targetPhotos()), stored.getOrDefault(cell, 0)))
+                        cell, cell.quota(command.targetPhotos()), stored.getOrDefault(cell, 0), run.ranking()))
                 .toList();
         List<CellCursor> open = new ArrayList<>(cursors.stream().filter(c -> !c.full()).toList());
         while (!open.isEmpty()) {
@@ -141,15 +170,17 @@ class IngestPeopleHandler {
     private final class CellCursor {
         private final Cell cell;
         private final int quota;
+        private final RankingFilter ranking;
         private final Deque<PersonRecord> buffer = new ArrayDeque<>();
         private int photos;
         private int offset;
         private boolean exhausted;
 
-        private CellCursor(Cell cell, int quota, int storedPhotos) {
+        private CellCursor(Cell cell, int quota, int storedPhotos, RankingFilter ranking) {
             this.cell = cell;
             this.quota = quota;
             this.photos = storedPhotos;
+            this.ranking = ranking;
         }
 
         private boolean full() {
@@ -159,7 +190,7 @@ class IngestPeopleHandler {
         /** The next person of the cell's ranking, fetching a page when needed; empty at the end. */
         private Optional<PersonRecord> next() {
             if (buffer.isEmpty() && !exhausted) {
-                buffer.addAll(wikidata.fetchCell(cell, offset, properties.pageSize(), properties.minBirthYear()));
+                buffer.addAll(wikidata.fetchCell(cell, offset, properties.pageSize(), ranking));
                 offset += properties.pageSize();
             }
             return Optional.ofNullable(buffer.pollFirst());
@@ -274,7 +305,12 @@ class IngestPeopleHandler {
                 case PhotoEvaluation.Rejected rejected -> report.photoRejected(rejected.reason().name());
                 case PhotoEvaluation.Accepted accepted -> {
                     report.validPhoto(accepted.age());
-                    candidates.add(new PhotoSelector.Candidate(file.title(), mainImages.contains(file.title()), accepted));
+                    if (run.focus().wantsAge(accepted.age())) {
+                        candidates.add(
+                                new PhotoSelector.Candidate(file.title(), mainImages.contains(file.title()), accepted));
+                    } else {
+                        report.photoRejected(PhotoRejection.AGE_BAND_NOT_WANTED.name());
+                    }
                 }
             }
         }
