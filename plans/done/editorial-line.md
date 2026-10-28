@@ -118,14 +118,76 @@ Base locale : dry-run puis application : 6 personnes exclues (5 dirigeants
 autoritaires, 1 extrême droite), 8 photos effacées, motif `EDITORIAL_LINE` en base.
 
 ## Phase 3 : Revues et PR
-Status: Not started
+Status: Complete
 
-- [ ] `code-reviewer` (données personnelles, sourcing externe, légal) et
+- [x] `code-reviewer` (données personnelles, sourcing externe, légal) et
       `architecture-reviewer` ; corriger 🔴 et 🟠.
-- [ ] Final Recap, Deployment Plan, archivage `plans/done/editorial-line.md`, PR.
+- [x] Taux d'approbation sur les seules décisions des curateurs (demande de
+      l'utilisateur du 2026-10-28, après sa curation de la première passe).
+- [x] Final Recap, Deployment Plan, archivage `plans/done/editorial-line.md`, PR.
+
+### Phase Summary
+**Revues** : aucun 🔴. `code-reviewer` : 1 🟠 corrigé : la section 8 de `/privacy` (EN et
+FR, date du 2026-10-28) dit désormais que des informations publiques (condamnations,
+partis, postes) servent uniquement à écarter des personnes, sans en garder le motif
+(art. 9 et 10 RGPD, règle « /privacy décrit ce que fait le code ») ; 🟡 appliqués :
+une exclusion `MANUAL` n'est jamais réécrite en `EDITORIAL_LINE` (course avec la page
+de curation), QID listés seulement en `--dry-run`, javadoc orpheline ; 🟡 non appliqué :
+élargir `exclusion_reason` (V10 déjà appliquée sur la base locale, on ne modifie pas une
+migration appliquée ; 16 caractères suffisent). `architecture-reviewer` : 2 🟠 corrigés
+(javadocs de `PersonRepository` et `Person`) ; 🟡 appliqué : plus de setter pour
+`excluded` / `exclusionReason`, seul `exclude(reason)` les pose ; 🟡 non appliqué :
+extraire les modes de maintenance de `IngestPeopleHandler` (au prochain ajout).
+
+**Taux d'approbation** : approuvées / (approuvées + rejetées par un curateur). Les rejets
+automatiques de `--fix-small-images` (`reviewed_by` vide) n'y entrent plus : l'ingestion
+refuse désormais ces photos en amont, elles ne disent rien des vagues suivantes. Les
+photos des personnes exclues sont effacées, donc hors du calcul aussi.
+
+**Vérification finale** : backend **704/704**, front **171/171**, lint, Prettier OK. PIT
+`IngestPeople` : **97 %** (633 / 665).
 
 ## Final Recap
-_(write when all phases complete)_
+**Livré** (PR `feature/editorial-line`, empilée sur #23 et #22) : la ligne éditoriale
+appliquée automatiquement, à la base existante et à chaque vague.
+- Quatre critères Wikidata, jamais de noms dans le code : condamnés ou poursuivis pour
+  crimes graves (dont sexuels et meurtre), dictateurs, membres de partis d'extrême
+  droite, dirigeants d'États autoritaires (EIU 2020). ~44 700 personnes, chargées en
+  8 s à chaque vague.
+- `--apply-editorial-line [--dry-run]` ; motif d'exclusion en base (V10) : `MANUAL` /
+  `EDITORIAL_LINE`.
+- `/privacy` à jour ; rappel de la page de curation : ce qui reste manuel.
+- Taux d'approbation sur les décisions des curateurs.
+
+**Écarts** : le taux d'approbation (prévu en #22 sur toutes les photos revues) est
+restreint aux décisions des curateurs ; la politique de confidentialité, absente du
+plan initial, a été ajoutée sur revue.
+
+**Hors scope** : dirigeants d'un pays en guerre et accusations absentes de Wikidata
+(manuel) ; extraction des modes de maintenance de `IngestPeopleHandler`.
 
 ## Deployment Plan
-_(write when all phases complete)_
+Ordre complet des trois PR (#22, #23, celle-ci) et de la deuxième vague, depuis le VPS
+dans `/opt/ageguessr/`, dans `tmux`. Raccourci : `ING="docker compose -f
+docker-compose.prod.yml run --rm backend --spring.profiles.active=prod,ingest"`.
+
+1. **Merge** #22, puis #23, puis cette PR dans `develop` (chacune reciblée sur
+   `develop` à la suppression de la branche précédente), puis release `develop` →
+   `main` en **merge commit**. Au démarrage, Flyway applique V10 (motif `MANUAL` pour
+   les exclusions existantes).
+2. **Ligne éditoriale** : `$ING --apply-editorial-line --dry-run`, relire les QID et les
+   photos approuvées qui seraient effacées, puis `$ING --apply-editorial-line`.
+3. **Petites photos** : `$ING --fix-small-images`, puis vérifier qu'aucune photo non
+   rejetée ne fait moins de 600 px (requête dans `plans/done/min-image-height.md`).
+4. **Bilan** : `$ING --analyze`. Vérifier la ligne du taux : « observed on N reviewed
+   photos » (décisions des curateurs seulement), et lire la prochaine vague suggérée.
+5. **Deuxième vague** (la commande de `--analyze`, plus les exclusions) :
+   `$ING --limit=5000 --exclude-occupations=Q937857,Q628099,Q10833314,Q33999,Q10800557,Q10798782,Q2405480,Q2526255,Q28389,Q3282637`
+   (football : joueurs, entraîneurs ; tennis ; cinéma : acteurs, de cinéma, de
+   télévision, doubleurs, réalisateurs, scénaristes, producteurs). Vérifier l'espace
+   disque avant. Lire `balance (photos/quota)` et `kept people by occupation`.
+6. **Âges** : `$ING --analyze` à nouveau. Une fois les cases pleines, il propose la vague
+   des tranches rares (`--limit=… --age-bands=…`) : la lancer avec les mêmes
+   `--exclude-occupations`. Pas besoin de curer entre deux vagues.
+7. **Curation** des nouvelles photos, puis `--analyze` pour voir s'il manque encore des
+   photos approuvées.
