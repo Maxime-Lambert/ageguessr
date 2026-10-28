@@ -58,32 +58,37 @@ set its status to `Complete` and write its **Phase Summary**; run the phase's
   listés pour relecture.
 
 ## Phase 1 : Critères et filtre à l'ingestion
-Status: Not started
+Status: Complete
 
-- [ ] `EditorialLine` : QID des crimes, alignements, idéologies, pays, et enum des
+- [x] `EditorialLine` : QID des crimes, alignements, idéologies, pays, et enum des
       critères.
-- [ ] `WikidataClient.fetchEditorialExclusions()` : QID → critères, quatre requêtes.
-- [ ] `IngestPeopleHandler` : liste chargée au début de chaque run, `PersonSkip.EDITORIAL_LINE`.
-- [ ] Tests unitaires (requêtes envoyées, assemblage, personne écartée sans appel Commons).
+- [x] `WikidataClient.fetchEditorialExclusions()` : QID → critères, quatre requêtes.
+- [x] `IngestPeopleHandler` : liste chargée au début de chaque run, `PersonSkip.EDITORIAL_LINE`.
+- [x] Tests unitaires (requêtes envoyées, assemblage, personne écartée sans appel Commons).
 
 ### Verification Plan
 - `./mvnw test` → 0 échec.
 - Appel réel : les quatre requêtes répondent, ~44 700 QID, < 30 s.
 
 ### Phase Summary
-_(write when phase completes)_
+**Livré** : `EditorialLine` (critères, requêtes), `WikidataClient.fetchEditorialExclusions`,
+`PersonSkip.EDITORIAL_LINE` vérifié en premier dans `ingest` (avant la base et Commons,
+`--qid` compris).
+
+**Vérification** : appel réel : 44 746 QID chargés en 8 s ; dry-run sur les 30
+personnes les plus connues : 2 écartées par la ligne éditoriale.
 
 ## Phase 2 : Motif d'exclusion et commande
-Status: Not started
+Status: Complete
 
-- [ ] `V10__add_exclusion_reason.sql` : colonne, `MANUAL` pour les exclusions
+- [x] `V10__add_exclusion_reason.sql` : colonne, `MANUAL` pour les exclusions
       existantes, contrainte (exclu ⇔ motif présent).
-- [ ] `ExclusionReason` (enum), `Person.exclusionReason` ; `ExcludePersonHandler`
+- [x] `ExclusionReason` (enum), `Person.exclusionReason` ; `ExcludePersonHandler`
       pose `MANUAL`.
-- [ ] `PeopleStore` : QID des personnes stockées non exclues, exclusion
+- [x] `PeopleStore` : QID des personnes stockées non exclues, exclusion
       `EDITORIAL_LINE`, comptage des photos effacées.
-- [ ] `--apply-editorial-line [--dry-run]`, `EditorialLineReport`.
-- [ ] Docs : `architecture.md` (ligne éditoriale), rappel de la page de curation si
+- [x] `--apply-editorial-line [--dry-run]`, `EditorialLineReport`.
+- [x] Docs : `architecture.md` (ligne éditoriale), rappel de la page de curation si
       besoin, roadmap.
 
 ### Tests
@@ -101,7 +106,16 @@ Status: Not started
 - Base locale : `--apply-editorial-line --dry-run` puis sans `--dry-run`.
 
 ### Phase Summary
-_(write when phase completes)_
+**Livré** : V10 (`people.exclusion_reason`, contrainte exclu ⇔ motif), `ExclusionReason`,
+`Person.exclude(reason)` (remplace `setExcluded(true)`), `ExcludePersonHandler` pose
+`MANUAL`, `--apply-editorial-line [--dry-run]` (`EditorialLineReport`), rappel de la page
+de curation, `architecture.md`, roadmap.
+
+**Vérification** : backend 700/700, front 170/170. Le test de contrainte a trouvé un bug :
+`NULL IN (...)` vaut `NULL`, qu'un `CHECK` laisse passer, donc une exclusion sans motif
+était acceptée ; `IS NOT NULL` explicite ajouté (V10 n'était appliquée nulle part).
+Base locale : dry-run puis application : 6 personnes exclues (5 dirigeants
+autoritaires, 1 extrême droite), 8 photos effacées, motif `EDITORIAL_LINE` en base.
 
 ## Phase 3 : Revues et PR
 Status: Not started

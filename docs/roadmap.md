@@ -56,6 +56,10 @@ la suivante).
 - [x] Photos d'au moins 600 px de haut : miniatures demandées en hauteur, rejet des
       originaux trop petits, correction des photos déjà stockées (`--fix-small-images`),
       taille affichée en curation — PR `feature/min-image-height`
+- [x] Ligne éditoriale automatique : condamnés ou poursuivis pour crimes graves,
+      dictateurs et dirigeants autoritaires, extrême droite, écartés de chaque vague et
+      exclus de la base (`--apply-editorial-line`), motif d'exclusion en base (V10) — PR
+      `feature/editorial-line`
 - [ ] Ingestion + curation des indices événementiels par catégorie et par année
       (pages Wikipedia "YYYY in music/sports/politics...", parsing + vérification sur
       échantillon avant d'industrialiser)

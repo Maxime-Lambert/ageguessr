@@ -386,15 +386,33 @@ ponctuelle**, pas pendant les parties :
     `reviewed_by`).
   - Personnes vivantes et décédées s'approuvent de la même façon (voir « Droit à
     l'image » plus bas).
-- **Ligne éditoriale** (décision du 2026-10-26) : rien qui puisse raviver un
-  traumatisme. Sont exclus, avec le bouton d'exclusion de la page de curation :
-  - les auteurs de violences de masse : dictateurs, criminels de guerre, terroristes ;
-  - les dirigeants d'un pays actuellement en guerre.
-
-  Les condamnations non violentes (fraude, corruption…) ne sont pas un motif
-  d'exclusion. Le rappel est affiché sur la page de curation.
-  - Pas de filtre automatique : la propriété Wikidata « condamné pour » (`P1399`)
-    signale Jésus, Alan Turing, Galilée ou Messi, et pas Staline ni Mao.
+- **Ligne éditoriale** (décision du 2026-10-26, automatisée et élargie le 2026-10-28) :
+  rien qui puisse raviver un traumatisme. Les condamnations non violentes (fraude,
+  corruption…) ne sont pas un motif d'exclusion.
+  - **Critères automatiques** (`EditorialLine`, détail et mesures dans
+    `plans/done/editorial-line.md`) : condamné ou poursuivi (`P1399`, `P1595`) pour
+    crime de guerre, crime contre l'humanité, génocide, terrorisme, crime sexuel,
+    pédocriminalité, traite ou meurtre ; dictateur (`P106`) ; membre d'un parti
+    d'extrême droite (alignement `P1387` ou idéologie `P1142`) ; chef d'État ou de
+    gouvernement d'un État classé « autoritaire » par l'indice de démocratie EIU 2020,
+    ou d'un État autoritaire disparu (URSS, RDA, Yougoslavie, Zaïre, Irak baasiste).
+    Volontairement larges : une exclusion de trop ne coûte rien au jeu (Gorbatchev ou
+    Aung San Suu Kyi sont exclus aussi).
+  - **Des critères, jamais une liste de noms** : le dépôt est public, et accoler un nom
+    à un crime n'est pas à nous de le publier. Le résultat (des exclusions) vit en base.
+  - Pas « condamné pour » en général : `P1399` signale Alan Turing (indécence) ou une
+    fraude fiscale. Seuls les crimes listés comptent, sous-classes comprises.
+  - Chaque vague charge la liste (~45 000 QID, < 10 s) et écarte ces personnes avant
+    tout appel à Commons (`EDITORIAL_LINE`), même avec `--qid`.
+    `--apply-editorial-line [--dry-run]` exclut celles déjà en base (motif
+    `EDITORIAL_LINE`, leurs photos sont effacées, même approuvées).
+  - **Restent manuels**, avec le bouton d'exclusion de la page de curation (motif
+    `MANUAL`) : les dirigeants d'un pays actuellement en guerre (aucune source stable),
+    et ce que Wikidata ignore (accusations graves, violences de masse sans
+    condamnation). Le rappel est affiché sur la page de curation.
+  - `people.exclusion_reason` (V10) distingue `MANUAL` (dont les demandes de retrait)
+    d'`EDITORIAL_LINE` : les exclusions automatiques peuvent être revues si les
+    critères changent, sans jamais toucher à une demande de retrait.
 - **Demande de retrait** : depuis la page de curation, recherche par nom (insensible
   aux accents, extension `unaccent`) ou par QID, puis « Exclure ». Les photos sont
   effacées par le trigger V4 et l'exclusion est confirmée à la personne sous un mois.
