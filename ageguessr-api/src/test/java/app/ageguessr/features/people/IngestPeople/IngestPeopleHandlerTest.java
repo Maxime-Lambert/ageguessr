@@ -59,6 +59,7 @@ class IngestPeopleHandlerTest {
         handler = new IngestPeopleHandler(wikidata, commons, downloader, reencoder, store, properties, clock);
         when(store.find(anyString())).thenReturn(Optional.empty());
         when(store.poolCounts()).thenReturn(PoolCounts.EMPTY);
+        when(store.curatorDecisions()).thenReturn(ReviewCounts.NONE);
         when(downloader.download(anyString())).thenReturn(new byte[] {9});
         when(reencoder.reencode(any())).thenReturn(IMAGE);
     }
@@ -512,6 +513,73 @@ class IngestPeopleHandlerTest {
     }
 
     @Test
+    void keepsOutAPersonTheEditorialLineCatchesBeforeAnyOtherCall() {
+        when(wikidata.fetchEditorialExclusions())
+                .thenReturn(Map.of("Q2", Set.of(EditorialLine.Criterion.AUTHORITARIAN_LEADER)));
+        when(wikidata.fetchPeople(0, 3, RankingFilter.bornSince(1930)))
+                .thenReturn(List.of(person("Q1"), person("Q2")), List.of());
+        photos("Q1", photo("File:A 1976.jpg", 1976));
+
+        IngestReport report = handler.handle(new IngestPeopleCommand(5, null, 0, WHOLE_LIST, false, IngestFocus.NONE));
+
+        assertThat(report.peopleSkipped()).isEqualTo(Map.of("EDITORIAL_LINE", 1));
+        assertThat(report.peopleKept()).isEqualTo(1);
+        verify(store, never()).find("Q2");
+        verify(commons, never()).searchDepicting("Q2");
+    }
+
+    @Test
+    void keepsOutANamedPersonTheEditorialLineCatches() {
+        when(wikidata.fetchEditorialExclusions()).thenReturn(Map.of("Q42", Set.of(EditorialLine.Criterion.DICTATOR)));
+        when(wikidata.fetchPerson("Q42")).thenReturn(Optional.of(person("Q42")));
+
+        IngestReport report = handler.handle(new IngestPeopleCommand(3000, "Q42", 0, 0, false, IngestFocus.NONE));
+
+        assertThat(report.peopleSkipped()).isEqualTo(Map.of("EDITORIAL_LINE", 1));
+        verifyNoInteractions(commons);
+    }
+
+    @Test
+    void excludesOnlyTheStoredPeopleTheEditorialLineCatches() {
+        when(wikidata.fetchEditorialExclusions()).thenReturn(Map.of(
+                "Q2", Set.of(EditorialLine.Criterion.FAR_RIGHT),
+                "Q3", Set.of(EditorialLine.Criterion.CONVICTED_OR_CHARGED, EditorialLine.Criterion.AUTHORITARIAN_LEADER),
+                "Q9", Set.of(EditorialLine.Criterion.DICTATOR)));
+        when(store.storedWikidataIds()).thenReturn(List.of("Q3", "Q1", "Q2"));
+        when(store.photosOf("Q2")).thenReturn(new ReviewCounts(1, 2, 0));
+        when(store.photosOf("Q3")).thenReturn(new ReviewCounts(0, 1, 1));
+
+        EditorialLineReport report = handler.applyEditorialLine(false);
+
+        assertThat(report).isEqualTo(new EditorialLineReport(
+                false,
+                List.of("Q2", "Q3"),
+                Map.of(
+                        EditorialLine.Criterion.FAR_RIGHT, 1,
+                        EditorialLine.Criterion.CONVICTED_OR_CHARGED, 1,
+                        EditorialLine.Criterion.AUTHORITARIAN_LEADER, 1),
+                5,
+                1));
+        verify(store).excludeForEditorialLine("Q2");
+        verify(store).excludeForEditorialLine("Q3");
+        assertThat(report.toString()).doesNotContain("Q2", "Q3").startsWith("2 people excluded");
+        verify(store, never()).excludeForEditorialLine("Q1");
+    }
+
+    @Test
+    void aDryRunOfTheEditorialLineWritesNothing() {
+        when(wikidata.fetchEditorialExclusions()).thenReturn(Map.of("Q2", Set.of(EditorialLine.Criterion.FAR_RIGHT)));
+        when(store.storedWikidataIds()).thenReturn(List.of("Q2"));
+        when(store.photosOf("Q2")).thenReturn(new ReviewCounts(1, 0, 0));
+
+        EditorialLineReport report = handler.applyEditorialLine(true);
+
+        assertThat(report.wikidataIds()).containsExactly("Q2");
+        assertThat(report.toString()).startsWith("dry run, nothing written: 1 people to exclude").endsWith("QIDs=[Q2]");
+        verify(store, never()).excludeForEditorialLine(any());
+    }
+
+    @Test
     void theCellsTakeTurnsAndEachStopsAtItsQuota() {
         when(wikidata.fetchCell(EUROPE_WOMEN, 0, 3, RankingFilter.bornSince(1930)))
                 .thenReturn(List.of(person("Q1", EUROPE_WOMEN), person("Q2", EUROPE_WOMEN)));
@@ -666,6 +734,15 @@ class IngestPeopleHandlerTest {
         assertThat(report.balance()).containsEntry("EUROPE/FEMALE", "2/2");
         assertThat(report.photosAdded()).isEqualTo(1);
         verify(commons, never()).searchDepicting("Q2");
+    }
+
+    @Test
+    void measuresTheApprovalRateOnTheCuratorsDecisionsOnly() {
+        // 150 approved and 150 rejected by a curator: 0.5, whatever the pool holds.
+        when(store.curatorDecisions()).thenReturn(new ReviewCounts(150, 0, 150));
+        when(store.poolCounts()).thenReturn(pool(EUROPE_WOMEN, new ReviewCounts(150, 0, 400)));
+
+        assertThat(handler.analyze(12).toString()).contains("approval rate 0.50 observed on 300 reviewed photos");
     }
 
     @Test

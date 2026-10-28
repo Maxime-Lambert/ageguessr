@@ -1,5 +1,6 @@
 package app.ageguessr.features.people.IngestPeople;
 
+import app.ageguessr.features.people.ExclusionReason;
 import app.ageguessr.features.people.Person;
 import app.ageguessr.features.people.PersonPhoto;
 import app.ageguessr.features.people.PersonPhotoRepository;
@@ -62,6 +63,44 @@ class PeopleStore {
                         c -> ReviewCounts.of(c.status(), Math.toIntExact(c.photos())),
                         ReviewCounts::plus));
         return new PoolCounts(byCell, byAgeBand);
+    }
+
+    /** Curators' decisions (approved, rejected by someone), for the approval rate. */
+    @Transactional(readOnly = true)
+    ReviewCounts curatorDecisions() {
+        PersonPhotoRepository.CuratorDecisions decisions = photos.countCuratorDecisions();
+        return new ReviewCounts(Math.toIntExact(decisions.approved()), 0, Math.toIntExact(decisions.rejected()));
+    }
+
+    /** QIDs of every person still in the pool. */
+    @Transactional(readOnly = true)
+    List<String> storedWikidataIds() {
+        return people.findWikidataIdsNotExcluded();
+    }
+
+    /** A person's photos per review status. */
+    @Transactional(readOnly = true)
+    ReviewCounts photosOf(String wikidataId) {
+        return people.findByWikidataId(wikidataId)
+                .map(person -> photos.findByPersonId(person.getId()).stream()
+                        .map(photo -> ReviewCounts.of(photo.getReviewStatus(), 1))
+                        .reduce(ReviewCounts.NONE, ReviewCounts::plus))
+                .orElse(ReviewCounts.NONE);
+    }
+
+    /**
+     * Excludes a person under the editorial line: the V4 trigger deletes their photos,
+     * approved ones too. Someone already excluded is left as is: a removal request
+     * (MANUAL) made meanwhile on the curation page must keep its reason.
+     */
+    @Transactional
+    void excludeForEditorialLine(String wikidataId) {
+        Person person = people.findByWikidataId(wikidataId).orElseThrow();
+        if (person.isExcluded()) {
+            return;
+        }
+        person.exclude(ExclusionReason.EDITORIAL_LINE);
+        people.saveAndFlush(person);
     }
 
     /** Photos still counting whose image is shorter than {@code minHeight}, by file name. */

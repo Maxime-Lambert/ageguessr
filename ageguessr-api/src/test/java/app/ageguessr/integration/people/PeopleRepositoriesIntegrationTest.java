@@ -8,6 +8,7 @@ import app.ageguessr.features.auth.User;
 import app.ageguessr.features.auth.UserRepository;
 import app.ageguessr.features.people.Continent;
 import app.ageguessr.features.people.Gender;
+import app.ageguessr.features.people.ExclusionReason;
 import app.ageguessr.features.people.Person;
 import app.ageguessr.features.people.PersonPhoto;
 import app.ageguessr.features.people.PersonPhotoRepository;
@@ -300,11 +301,22 @@ class PeopleRepositoriesIntegrationTest {
 
     @Test
     void doesNotServeTheImageOfAnExcludedPerson() {
-        Person person = personRepository.saveAndFlush(person("Q1").excluded(true).build());
+        Person person = personRepository.saveAndFlush(
+                person("Q1").excluded(true).exclusionReason(ExclusionReason.MANUAL).build());
         PersonPhoto photo = savePhoto(person, "A.jpg", 1976);
         saveImage(photo);
 
         assertThat(imageRepository.findServableByPublicId(photo.getPublicId())).isEmpty();
+    }
+
+    @Test
+    void refusesAnExclusionWithoutAReasonAndAReasonWithoutAnExclusion() {
+        assertThatThrownBy(() -> personRepository.saveAndFlush(person("Q1").excluded(true).build()))
+                .hasStackTraceContaining("people_exclusion_reason_check");
+        entityManager.clear();
+        assertThatThrownBy(() -> personRepository.saveAndFlush(
+                        person("Q2").exclusionReason(ExclusionReason.EDITORIAL_LINE).build()))
+                .hasStackTraceContaining("people_exclusion_reason_check");
     }
 
     @Test
@@ -340,7 +352,7 @@ class PeopleRepositoriesIntegrationTest {
         PersonPhoto survivor = savePhoto(savePerson("Q2"), "C.jpg", 1976);
         saveImage(survivor);
 
-        person.setExcluded(true);
+        person.exclude(ExclusionReason.MANUAL);
         personRepository.saveAndFlush(person);
         // The deletion happens in Postgres (trigger): bypass Hibernate's cache.
         entityManager.clear();

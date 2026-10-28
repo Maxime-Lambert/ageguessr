@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import app.ageguessr.TestcontainersConfiguration;
+import app.ageguessr.features.people.ExclusionReason;
 import app.ageguessr.features.people.Person;
 import app.ageguessr.features.people.PersonPhoto;
 import app.ageguessr.features.people.PersonPhotoRepository;
@@ -115,6 +116,7 @@ class GetImageFunctionalTest {
                 .birthDate(LocalDate.of(1950, 3, 10))
                 .sitelinks(42)
                 .excluded(excluded)
+                .exclusionReason(excluded ? ExclusionReason.MANUAL : null)
                 .createdAt(Instant.now())
                 .updatedAt(Instant.now())
                 .build());

@@ -122,6 +122,22 @@ class IngestPeopleRunnerTest {
     }
 
     @Test
+    void appliesTheEditorialLineWithOnlyADryRunFlag() {
+        IngestPeopleRunner.rejectOthers(
+                new DefaultApplicationArguments("--apply-editorial-line", "--dry-run", "--spring.profiles.active=prod,ingest"),
+                "apply-editorial-line",
+                Set.of("dry-run"));
+        for (String other : List.of("--limit=10", "--analyze", "--fix-small-images", "--qid=Q42")) {
+            assertThatThrownBy(() -> IngestPeopleRunner.rejectOthers(
+                            new DefaultApplicationArguments("--apply-editorial-line", other),
+                            "apply-editorial-line",
+                            Set.of("dry-run")))
+                    .as(other)
+                    .isInstanceOf(IllegalArgumentException.class);
+        }
+    }
+
+    @Test
     void refusesAnyOtherOptionWithAnalyze() {
         assertThatThrownBy(() -> IngestPeopleRunner.analyzeTarget(
                         new DefaultApplicationArguments("--analyze", "--dry-run"), 5000))

@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -69,8 +70,10 @@ class IngestPeopleHandler {
 
     /**
      * What one run carries from person to person. {@code photosByAgeBand}: photos still
-     * counting (pending or approved, not weighted by the approval rate) per age band, in the database (none for a dry run) and added since, which
-     * PhotoSelector leans against. {@code ranking}: who the rankings list.
+     * counting (pending or approved, not weighted by the approval rate) per age band, in
+     * the database (none for a dry run) and added since, which PhotoSelector leans
+     * against. {@code ranking}: who the rankings list. {@code editorialExclusions}: QIDs
+     * the editorial line keeps out.
      */
     private record Run(
             LocalDate today,
@@ -78,7 +81,8 @@ class IngestPeopleHandler {
             IngestReport report,
             Map<String, Integer> photosByAgeBand,
             IngestFocus focus,
-            RankingFilter ranking) {}
+            RankingFilter ranking,
+            Set<String> editorialExclusions) {}
 
     IngestReport handle(IngestPeopleCommand command) {
         IngestReport report = new IngestReport();
@@ -92,7 +96,9 @@ class IngestPeopleHandler {
                 report,
                 inPlayByAgeBand,
                 command.focus(),
-                ranking(command.focus(), today));
+                ranking(command.focus(), today),
+                wikidata.fetchEditorialExclusions().keySet());
+        log.info("Editorial line: {} people kept out", run.editorialExclusions().size());
         if (command.wikidataId() != null) {
             wikidata.fetchPerson(command.wikidataId())
                     .ifPresentOrElse(
@@ -111,7 +117,33 @@ class IngestPeopleHandler {
     /** Where the stored pool stands against {@code targetPhotos}, without any network call. */
     PoolAnalysis analyze(int targetPhotos) {
         PoolCounts pool = store.poolCounts();
-        return PoolAnalysis.of(pool, approvalRate(pool), targetPhotos);
+        return PoolAnalysis.of(pool, approvalRate(false), targetPhotos);
+    }
+
+    /**
+     * Excludes the stored people the editorial line catches (people.exclusion_reason
+     * EDITORIAL_LINE), which deletes their photos, approved ones included. A dry run only
+     * counts. Excluded people never come back: the ingestion skips them anyway.
+     */
+    EditorialLineReport applyEditorialLine(boolean dryRun) {
+        Map<String, Set<EditorialLine.Criterion>> caught = wikidata.fetchEditorialExclusions();
+        List<String> matched = store.storedWikidataIds().stream()
+                .filter(caught::containsKey)
+                .sorted()
+                .toList();
+        Map<EditorialLine.Criterion, Integer> byCriterion = new EnumMap<>(EditorialLine.Criterion.class);
+        int photosDeleted = 0;
+        int approvedPhotosDeleted = 0;
+        for (String wikidataId : matched) {
+            caught.get(wikidataId).forEach(criterion -> byCriterion.merge(criterion, 1, Integer::sum));
+            ReviewCounts photos = store.photosOf(wikidataId);
+            photosDeleted += photos.approved() + photos.pending() + photos.rejected();
+            approvedPhotosDeleted += photos.approved();
+            if (!dryRun) {
+                store.excludeForEditorialLine(wikidataId);
+            }
+        }
+        return new EditorialLineReport(dryRun, matched, byCriterion, photosDeleted, approvedPhotosDeleted);
     }
 
     /**
@@ -159,8 +191,10 @@ class IngestPeopleHandler {
         }
     }
 
-    private ApprovalRate approvalRate(PoolCounts pool) {
-        return ApprovalRate.of(pool.total(), properties.expectedApprovalRate());
+    /** From the curators' decisions only (PeopleStore.curatorDecisions); assumed for a dry run. */
+    private ApprovalRate approvalRate(boolean dryRun) {
+        return ApprovalRate.of(
+                dryRun ? ReviewCounts.NONE : store.curatorDecisions(), properties.expectedApprovalRate());
     }
 
     /**
@@ -198,7 +232,7 @@ class IngestPeopleHandler {
 
     private void balance(IngestPeopleCommand command, Run run, PoolCounts pool) {
         IngestReport report = run.report();
-        ApprovalRate rate = approvalRate(pool);
+        ApprovalRate rate = approvalRate(command.dryRun());
         log.info("Approval rate {}", rate);
         List<CellCursor> cursors = Cell.ALL.stream()
                 .filter(command.focus()::includes)
@@ -286,6 +320,10 @@ class IngestPeopleHandler {
     }
 
     private Optional<PersonSkip> ingest(PersonRecord record, Run run) {
+        // First, before the store or Commons: a rule, which --qid does not bypass either.
+        if (run.editorialExclusions().contains(record.wikidataId())) {
+            return Optional.of(PersonSkip.EDITORIAL_LINE);
+        }
         boolean dryRun = run.dryRun();
         Optional<Person> existing = dryRun ? Optional.empty() : store.find(record.wikidataId());
         if (existing.map(Person::isExcluded).orElse(false)) {
