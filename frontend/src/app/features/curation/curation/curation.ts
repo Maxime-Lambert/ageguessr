@@ -192,6 +192,7 @@ export class Curation implements OnDestroy {
   }
 
   private dropCurrent(): void {
+    this.imageSize.set(null);
     const [dropped, ...rest] = this.queue();
     if (dropped) {
       this.release(dropped.photoId);

@@ -127,6 +127,9 @@ class IngestPeopleRunnerTest {
                         new DefaultApplicationArguments("--analyze", "--dry-run"), 5000))
                 .isInstanceOf(IllegalArgumentException.class);
         assertThatThrownBy(() -> IngestPeopleRunner.analyzeTarget(
+                        new DefaultApplicationArguments("--analyze", "--fix-small-images"), 5000))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> IngestPeopleRunner.analyzeTarget(
                         new DefaultApplicationArguments("--analyze", "--limit=0"), 5000))
                 .isInstanceOf(IllegalArgumentException.class);
     }

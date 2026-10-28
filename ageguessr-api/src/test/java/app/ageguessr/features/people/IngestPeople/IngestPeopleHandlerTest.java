@@ -734,6 +734,34 @@ class IngestPeopleHandlerTest {
     }
 
     @Test
+    void enlargesAStoredPhotoWhoseTallerCopyIsExactlyTheMinimumHeight() {
+        UUID photo = UUID.randomUUID();
+        when(store.smallImages(600))
+                .thenReturn(List.of(new PersonPhotoRepository.SmallImage(photo, "A.jpg", ReviewStatus.APPROVED)));
+        when(commons.fetchFiles(List.of("File:A.jpg")))
+                .thenReturn(Map.of("File:A.jpg", withHeight(file("File:A.jpg", "2000-07-14", null), 600)));
+        ImageReencoder.Reencoded justTallEnough = new ImageReencoder.Reencoded(new byte[] {7}, 450, 600);
+        when(reencoder.reencode(any())).thenReturn(justTallEnough);
+
+        assertThat(handler.fixSmallImages()).isEqualTo(new SmallImagesReport(1, 1, 0, 0));
+        verify(store).replaceImage(photo, justTallEnough);
+    }
+
+    @Test
+    void rejectsAStoredPhotoWhoseTallerCopyCannotBeRead() {
+        UUID photo = UUID.randomUUID();
+        when(store.smallImages(600))
+                .thenReturn(List.of(new PersonPhotoRepository.SmallImage(photo, "Bad.jpg", ReviewStatus.PENDING)));
+        when(commons.fetchFiles(List.of("File:Bad.jpg")))
+                .thenReturn(Map.of("File:Bad.jpg", withHeight(file("File:Bad.jpg", "2000-07-14", null), 1000)));
+        when(reencoder.reencode(any()))
+                .thenThrow(new ImageRejectedException(ImageRejectedException.Reason.UNREADABLE, "truncated"));
+
+        assertThat(handler.fixSmallImages()).isEqualTo(new SmallImagesReport(1, 0, 1, 0));
+        verify(store).rejectTooSmall(photo);
+    }
+
+    @Test
     void fixesNothingWithoutCallingCommonsWhenNoImageIsSmall() {
         when(store.smallImages(600)).thenReturn(List.of());
 

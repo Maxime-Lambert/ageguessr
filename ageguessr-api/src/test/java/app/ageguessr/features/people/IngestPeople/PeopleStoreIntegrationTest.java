@@ -17,9 +17,11 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 
@@ -46,9 +48,15 @@ class PeopleStoreIntegrationTest {
     @Autowired
     private PhotoImageRepository images;
 
+    // Plain SQL for the curator account: features/people must not depend on features/auth
+    // (ArchUnit), tests included.
+    @Autowired
+    private JdbcTemplate jdbc;
+
     @AfterEach
     void cleanUp() {
         people.deleteAll();
+        jdbc.update("DELETE FROM users WHERE email = 'curator@x.com'");
     }
 
     @Test
@@ -229,6 +237,11 @@ class PeopleStoreIntegrationTest {
                 .findFirst()
                 .orElseThrow();
         small.setReviewStatus(ReviewStatus.APPROVED);
+        // A curator approved it: an automatic rejection must not keep their name on it.
+        UUID curator = jdbc.queryForObject(
+                "INSERT INTO users (email, username, password_hash) VALUES ('curator@x.com', 'curator', 'hash') RETURNING id",
+                UUID.class);
+        small.setReviewedBy(curator);
         photos.save(small);
 
         assertThat(store.smallImages(600))
@@ -236,8 +249,8 @@ class PeopleStoreIntegrationTest {
 
         store.replaceImage(small.getId(), new ImageReencoder.Reencoded(new byte[] {4, 5}, 900, 1000));
         assertThat(images.findById(small.getId()).orElseThrow())
-                .extracting(PhotoImage::getWidth, PhotoImage::getHeight)
-                .containsExactly(900, 1000);
+                .extracting(PhotoImage::getContent, PhotoImage::getWidth, PhotoImage::getHeight)
+                .containsExactly(new byte[] {4, 5}, 900, 1000);
         assertThat(photos.findById(small.getId()).orElseThrow().getReviewStatus()).isEqualTo(ReviewStatus.APPROVED);
 
         store.rejectTooSmall(small.getId());

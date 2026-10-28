@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -79,18 +80,16 @@ class IngestPeopleRunner implements ApplicationRunner {
         System.exit(SpringApplication.exit(context, () -> 0));
     }
 
-    /** The options of an ingestion run, meaningless for --analyze and --fix-small-images. */
+    /** The options of an ingestion run, meaningless for a maintenance mode. */
     private static final Set<String> RUN_OPTIONS = Set.of(
             "qid", "offset", "sample", "dry-run", "exclude-occupations", "only-occupations", "cells", "age-bands");
 
-    /** A one-off maintenance mode takes no ingestion option, not even --limit. Spring's own options pass through. */
+    /** Modes that do something else than ingest: one at a time, never with a run option. */
+    private static final Set<String> MAINTENANCE_MODES = Set.of("analyze", "fix-small-images");
+
+    /** A maintenance mode takes no ingestion option, not even --limit. Spring's own options pass through. */
     static void requireAlone(ApplicationArguments args, String mode) {
-        Set<String> others = new HashSet<>(args.getOptionNames());
-        others.retainAll(RUN_OPTIONS);
-        others.addAll(args.getOptionNames().stream().filter(Set.of("limit", "analyze")::contains).toList());
-        if (!others.isEmpty()) {
-            throw new IllegalArgumentException("--" + mode + " takes no other option, got " + others);
-        }
+        rejectOthers(args, mode, Set.of());
     }
 
     /**
@@ -98,12 +97,22 @@ class IngestPeopleRunner implements ApplicationRunner {
      * against. Spring's own options (--spring.profiles.active in production) pass through.
      */
     static int analyzeTarget(ApplicationArguments args, int defaultTarget) {
-        Set<String> others = new HashSet<>(args.getOptionNames());
-        others.retainAll(RUN_OPTIONS);
-        if (!others.isEmpty()) {
-            throw new IllegalArgumentException("--analyze takes only --limit, got " + others);
-        }
+        rejectOthers(args, "analyze", Set.of("limit"));
         return target(args, defaultTarget);
+    }
+
+    /** Refuses any run option, --limit and other maintenance mode next to {@code mode}, except {@code allowed}. */
+    private static void rejectOthers(ApplicationArguments args, String mode, Set<String> allowed) {
+        Set<String> others = new HashSet<>(args.getOptionNames());
+        others.retainAll(Stream.of(RUN_OPTIONS, MAINTENANCE_MODES, Set.of("limit"))
+                .flatMap(Set::stream)
+                .collect(Collectors.toSet()));
+        others.remove(mode);
+        others.removeAll(allowed);
+        if (!others.isEmpty()) {
+            throw new IllegalArgumentException("--" + mode + " takes no other option"
+                    + (allowed.isEmpty() ? "" : " but " + allowed) + ", got " + others);
+        }
     }
 
     private static int target(ApplicationArguments args, int defaultTarget) {

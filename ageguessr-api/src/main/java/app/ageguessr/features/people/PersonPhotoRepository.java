@@ -39,7 +39,14 @@ public interface PersonPhotoRepository extends JpaRepository<PersonPhoto, UUID> 
     long countPending();
 
     /** A photo still counting (pending or approved) whose stored image is shorter than wanted. */
-    record SmallImage(UUID photoId, String commonsFile, ReviewStatus status) {}
+    record SmallImage(UUID photoId, String commonsFile, ReviewStatus status) {
+
+        /** No file name: it usually contains the person's name, which never reaches a log. */
+        @Override
+        public String toString() {
+            return "SmallImage[" + photoId + ", " + status + "]";
+        }
+    }
 
     @Query(
             """
