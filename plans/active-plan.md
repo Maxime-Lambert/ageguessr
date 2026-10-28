@@ -58,7 +58,7 @@ acteur de cinéma, `Q82955` homme / femme politique, `Q177220` chanteur, `Q36180
   dans le quota de leur case.
 
 ## Phase 1 : Options de ciblage
-Status: In progress (code et tests faits, mesure réelle en cours)
+Status: Complete
 
 - [x] `AgeBand.ALL` (libellés des 9 tranches) et `AgeBand.start(label)`.
 - [x] `IngestFocus` (record) : professions exclues, professions seules, cases, tranches ;
@@ -113,7 +113,26 @@ Status: In progress (code et tests faits, mesure réelle en cours)
   des requêtes de classement sous 30 s.
 
 ### Phase Summary
-_(write when phase completes)_
+**Livré** : `IngestFocus`, `RankingFilter`, options `--exclude-occupations`,
+`--only-occupations`, `--cells`, `--age-bands`, motif `AGE_BAND_NOT_WANTED`, `P106` dans
+`PROFILES`, top 15 des professions dans le rapport. Docs : `architecture.md`, roadmap.
+
+**Vérification** : backend 672/672. Mesure réelle 2026-10-28, `--offset=10000
+--sample=150 --dry-run`, sans puis avec `--exclude-occupations=Q937857` :
+
+| | Sans filtre | Avec filtre |
+|---|---|---|
+| Durée | 414 s | 442 s |
+| Personnes gardées / photos | 105 / 126 | 111 / 131 |
+| Footballeurs (`Q937857`) parmi les gardées | 32 (30 %) | 0 |
+| Entraîneurs (`Q628099`) | 12 | absents du top 15 (anciens joueurs) |
+| Acteurs (`Q33999`) | 29 | 52 (47 %) |
+
+Aucune réponse 429 de QLever, durée comparable : la clause `FILTER NOT EXISTS` ne pèse
+pas sur le classement. Sans les footballeurs, le cinéma domine (acteur `Q33999`, acteur
+de cinéma `Q10800557`, acteur de télévision `Q10798782`, scénariste `Q28389`,
+réalisateur `Q2526255`) : à surveiller dans le rapport de la prochaine vague, avant de
+décider d'un plafond ou d'une exclusion.
 
 ## Phase 2 : Quotas au taux d'approbation et `--analyze`
 Status: In progress
