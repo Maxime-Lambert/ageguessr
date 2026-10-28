@@ -413,6 +413,12 @@ ponctuelle**, pas pendant les parties :
   - `people.exclusion_reason` (V10) distingue `MANUAL` (dont les demandes de retrait)
     d'`EDITORIAL_LINE` : les exclusions automatiques peuvent être revues si les
     critères changent, sans jamais toucher à une demande de retrait.
+  - **RGPD** : les critères touchent à des opinions politiques (art. 9) et à des
+    condamnations (art. 10). Les informations sont publiques et ne servent qu'à ne rien
+    montrer de ces personnes ; rien n'en est conservé, seul le motif générique
+    `EDITORIAL_LINE` (sans le critère) l'est. La section 8 de `/privacy` (EN et FR) le
+    dit depuis le 2026-10-28. Les logs d'une vraie exclusion ne listent pas les QID
+    (seulement en `--dry-run`, pour relecture).
 - **Demande de retrait** : depuis la page de curation, recherche par nom (insensible
   aux accents, extension `unaccent`) ou par QID, puis « Exclure ». Les photos sont
   effacées par le trigger V4 et l'exclusion est confirmée à la personne sous un mois.

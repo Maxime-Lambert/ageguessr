@@ -81,10 +81,17 @@ class PeopleStore {
                 .orElse(ReviewCounts.NONE);
     }
 
-    /** Excludes a person under the editorial line: the V4 trigger deletes their photos, approved ones too. */
+    /**
+     * Excludes a person under the editorial line: the V4 trigger deletes their photos,
+     * approved ones too. Someone already excluded is left as is: a removal request
+     * (MANUAL) made meanwhile on the curation page must keep its reason.
+     */
     @Transactional
     void excludeForEditorialLine(String wikidataId) {
         Person person = people.findByWikidataId(wikidataId).orElseThrow();
+        if (person.isExcluded()) {
+            return;
+        }
         person.exclude(ExclusionReason.EDITORIAL_LINE);
         people.saveAndFlush(person);
     }

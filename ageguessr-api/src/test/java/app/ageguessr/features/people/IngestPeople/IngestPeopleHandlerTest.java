@@ -561,6 +561,7 @@ class IngestPeopleHandlerTest {
                 1));
         verify(store).excludeForEditorialLine("Q2");
         verify(store).excludeForEditorialLine("Q3");
+        assertThat(report.toString()).doesNotContain("Q2", "Q3").startsWith("2 people excluded");
         verify(store, never()).excludeForEditorialLine("Q1");
     }
 
@@ -573,7 +574,7 @@ class IngestPeopleHandlerTest {
         EditorialLineReport report = handler.applyEditorialLine(true);
 
         assertThat(report.wikidataIds()).containsExactly("Q2");
-        assertThat(report.toString()).startsWith("dry run, nothing written: 1 people to exclude");
+        assertThat(report.toString()).startsWith("dry run, nothing written: 1 people to exclude").endsWith("QIDs=[Q2]");
         verify(store, never()).excludeForEditorialLine(any());
     }
 

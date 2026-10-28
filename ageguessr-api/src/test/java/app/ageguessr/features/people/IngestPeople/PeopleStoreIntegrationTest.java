@@ -286,6 +286,18 @@ class PeopleStoreIntegrationTest {
         assertThat(store.storedWikidataIds()).containsExactly("Q2");
     }
 
+    @Test
+    void neverOverwritesTheReasonOfSomeoneAlreadyExcluded() {
+        store.save(record("Q1", "Jane", 50), BIRTH, null, List.of(photo("A.jpg", 1976)));
+        Person onRequest = people.findByWikidataId("Q1").orElseThrow();
+        onRequest.exclude(ExclusionReason.MANUAL);
+        people.save(onRequest);
+
+        store.excludeForEditorialLine("Q1");
+
+        assertThat(people.findByWikidataId("Q1").orElseThrow().getExclusionReason()).isEqualTo(ExclusionReason.MANUAL);
+    }
+
     private static NewPhoto photo(String file, int year) {
         return photo(file, year, 1000);
     }
