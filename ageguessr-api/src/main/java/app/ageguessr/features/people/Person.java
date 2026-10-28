@@ -58,6 +58,16 @@ public class Person {
 
     private boolean excluded;
 
+    /** Set exactly when {@code excluded} is (database constraint, V10). */
+    @Enumerated(EnumType.STRING)
+    private ExclusionReason exclusionReason;
+
+    /** Marks the person excluded: the V4 trigger deletes their photos and images. */
+    public void exclude(ExclusionReason reason) {
+        this.excluded = true;
+        this.exclusionReason = reason;
+    }
+
     private Instant createdAt;
 
     private Instant updatedAt;

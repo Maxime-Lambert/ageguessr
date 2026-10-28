@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -117,6 +118,32 @@ class IngestPeopleHandler {
     PoolAnalysis analyze(int targetPhotos) {
         PoolCounts pool = store.poolCounts();
         return PoolAnalysis.of(pool, approvalRate(pool), targetPhotos);
+    }
+
+    /**
+     * Excludes the stored people the editorial line catches (people.exclusion_reason
+     * EDITORIAL_LINE), which deletes their photos, approved ones included. A dry run only
+     * counts. Excluded people never come back: the ingestion skips them anyway.
+     */
+    EditorialLineReport applyEditorialLine(boolean dryRun) {
+        Map<String, Set<EditorialLine.Criterion>> caught = wikidata.fetchEditorialExclusions();
+        List<String> matched = store.storedWikidataIds().stream()
+                .filter(caught::containsKey)
+                .sorted()
+                .toList();
+        Map<EditorialLine.Criterion, Integer> byCriterion = new EnumMap<>(EditorialLine.Criterion.class);
+        int photosDeleted = 0;
+        int approvedPhotosDeleted = 0;
+        for (String wikidataId : matched) {
+            caught.get(wikidataId).forEach(criterion -> byCriterion.merge(criterion, 1, Integer::sum));
+            ReviewCounts photos = store.photosOf(wikidataId);
+            photosDeleted += photos.approved() + photos.pending() + photos.rejected();
+            approvedPhotosDeleted += photos.approved();
+            if (!dryRun) {
+                store.excludeForEditorialLine(wikidataId);
+            }
+        }
+        return new EditorialLineReport(dryRun, matched, byCriterion, photosDeleted, approvedPhotosDeleted);
     }
 
     /**

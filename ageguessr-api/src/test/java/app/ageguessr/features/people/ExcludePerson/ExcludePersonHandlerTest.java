@@ -8,6 +8,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import app.ageguessr.features.people.ExclusionReason;
 import app.ageguessr.features.people.Person;
 import app.ageguessr.features.people.PersonPhoto;
 import app.ageguessr.features.people.PersonPhotoRepository;
@@ -34,6 +35,7 @@ class ExcludePersonHandlerTest {
 
         assertThat(response).isEqualTo(new ExcludePersonResponse(person.getId(), 2));
         assertThat(person.isExcluded()).isTrue();
+        assertThat(person.getExclusionReason()).isEqualTo(ExclusionReason.MANUAL);
         verify(people).saveAndFlush(person);
     }
 

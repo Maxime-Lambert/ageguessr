@@ -539,6 +539,45 @@ class IngestPeopleHandlerTest {
     }
 
     @Test
+    void excludesOnlyTheStoredPeopleTheEditorialLineCatches() {
+        when(wikidata.fetchEditorialExclusions()).thenReturn(Map.of(
+                "Q2", Set.of(EditorialLine.Criterion.FAR_RIGHT),
+                "Q3", Set.of(EditorialLine.Criterion.CONVICTED_OR_CHARGED, EditorialLine.Criterion.AUTHORITARIAN_LEADER),
+                "Q9", Set.of(EditorialLine.Criterion.DICTATOR)));
+        when(store.storedWikidataIds()).thenReturn(List.of("Q3", "Q1", "Q2"));
+        when(store.photosOf("Q2")).thenReturn(new ReviewCounts(1, 2, 0));
+        when(store.photosOf("Q3")).thenReturn(new ReviewCounts(0, 1, 1));
+
+        EditorialLineReport report = handler.applyEditorialLine(false);
+
+        assertThat(report).isEqualTo(new EditorialLineReport(
+                false,
+                List.of("Q2", "Q3"),
+                Map.of(
+                        EditorialLine.Criterion.FAR_RIGHT, 1,
+                        EditorialLine.Criterion.CONVICTED_OR_CHARGED, 1,
+                        EditorialLine.Criterion.AUTHORITARIAN_LEADER, 1),
+                5,
+                1));
+        verify(store).excludeForEditorialLine("Q2");
+        verify(store).excludeForEditorialLine("Q3");
+        verify(store, never()).excludeForEditorialLine("Q1");
+    }
+
+    @Test
+    void aDryRunOfTheEditorialLineWritesNothing() {
+        when(wikidata.fetchEditorialExclusions()).thenReturn(Map.of("Q2", Set.of(EditorialLine.Criterion.FAR_RIGHT)));
+        when(store.storedWikidataIds()).thenReturn(List.of("Q2"));
+        when(store.photosOf("Q2")).thenReturn(new ReviewCounts(1, 0, 0));
+
+        EditorialLineReport report = handler.applyEditorialLine(true);
+
+        assertThat(report.wikidataIds()).containsExactly("Q2");
+        assertThat(report.toString()).startsWith("dry run, nothing written: 1 people to exclude");
+        verify(store, never()).excludeForEditorialLine(any());
+    }
+
+    @Test
     void theCellsTakeTurnsAndEachStopsAtItsQuota() {
         when(wikidata.fetchCell(EUROPE_WOMEN, 0, 3, RankingFilter.bornSince(1930)))
                 .thenReturn(List.of(person("Q1", EUROPE_WOMEN), person("Q2", EUROPE_WOMEN)));

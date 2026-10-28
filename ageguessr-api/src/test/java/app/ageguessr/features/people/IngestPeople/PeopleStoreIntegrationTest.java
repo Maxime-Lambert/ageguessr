@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import app.ageguessr.TestcontainersConfiguration;
 import app.ageguessr.features.people.Continent;
 import app.ageguessr.features.people.Gender;
+import app.ageguessr.features.people.ExclusionReason;
 import app.ageguessr.features.people.Person;
 import app.ageguessr.features.people.PersonPhoto;
 import app.ageguessr.features.people.PersonPhotoRepository;
@@ -143,7 +144,7 @@ class PeopleStoreIntegrationTest {
                 });
         store.save(person("Q6", Gender.FEMALE, Continent.AFRICA), BIRTH, null, List.of(photo("F.jpg", 1976)));
         Person excluded = people.findByWikidataId("Q6").orElseThrow();
-        excluded.setExcluded(true);
+        excluded.exclude(ExclusionReason.MANUAL);
         people.save(excluded);
         store.save(record("Q7", "Unknown", 50), BIRTH, null, List.of(photo("G.jpg", 1976)));
 
@@ -166,7 +167,7 @@ class PeopleStoreIntegrationTest {
                 });
         store.save(record("Q3", "Excluded", 50), BIRTH, null, List.of(photo("E.jpg", 1980)));
         Person excluded = people.findByWikidataId("Q3").orElseThrow();
-        excluded.setExcluded(true);
+        excluded.exclude(ExclusionReason.MANUAL);
         people.save(excluded);
 
         Person approvedOne = people.findByWikidataId("Q1").orElseThrow();
@@ -259,6 +260,30 @@ class PeopleStoreIntegrationTest {
         assertThat(rejected.getReviewedAt()).isNotNull();
         assertThat(rejected.getReviewedBy()).isNull();
         assertThat(store.smallImages(600)).isEmpty();
+    }
+
+    @Test
+    void excludesAPersonUnderTheEditorialLineAndTheTriggerDeletesTheirPhotos() {
+        store.save(record("Q1", "Jane", 50), BIRTH, null, List.of(photo("A.jpg", 1976), photo("B.jpg", 1990)));
+        store.save(record("Q2", "Sam", 50), BIRTH, null, List.of(photo("C.jpg", 1976)));
+        PersonPhoto approved = photos.findAll().stream()
+                .filter(p -> p.getCommonsFile().equals("A.jpg"))
+                .findFirst()
+                .orElseThrow();
+        approved.setReviewStatus(ReviewStatus.APPROVED);
+        photos.save(approved);
+
+        assertThat(store.storedWikidataIds()).containsExactlyInAnyOrder("Q1", "Q2");
+        assertThat(store.photosOf("Q1")).isEqualTo(new ReviewCounts(1, 1, 0));
+        assertThat(store.photosOf("Q404")).isEqualTo(ReviewCounts.NONE);
+
+        store.excludeForEditorialLine("Q1");
+
+        Person excluded = people.findByWikidataId("Q1").orElseThrow();
+        assertThat(excluded.isExcluded()).isTrue();
+        assertThat(excluded.getExclusionReason()).isEqualTo(ExclusionReason.EDITORIAL_LINE);
+        assertThat(photos.findByPersonId(excluded.getId())).isEmpty();
+        assertThat(store.storedWikidataIds()).containsExactly("Q2");
     }
 
     private static NewPhoto photo(String file, int year) {

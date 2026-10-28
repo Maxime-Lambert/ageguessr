@@ -27,6 +27,10 @@ public interface PersonRepository extends JpaRepository<Person, UUID> {
     List<Person> searchByName(@Param("fragment") String fragment, @Param("limit") int limit);
 
     /** Photos in play (pending or approved) of the people of one gender and continent. */
+    /** QIDs of every person still in the pool, for the editorial line to check. */
+    @Query("SELECT p.wikidataId FROM Person p WHERE p.excluded = false")
+    List<String> findWikidataIdsNotExcluded();
+
     record CellCount(Gender gender, Continent continent, ReviewStatus status, long photos) {}
 
     /**

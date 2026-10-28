@@ -32,6 +32,7 @@ import org.springframework.stereotype.Component;
  * ./mvnw spring-boot:run -Dspring-boot.run.profiles=ingest -Dspring-boot.run.arguments="--exclude-occupations=Q937857 --age-bands=74-81,82+"
  * ./mvnw spring-boot:run -Dspring-boot.run.profiles=ingest -Dspring-boot.run.arguments=--analyze
  * ./mvnw spring-boot:run -Dspring-boot.run.profiles=ingest -Dspring-boot.run.arguments=--fix-small-images
+ * ./mvnw spring-boot:run -Dspring-boot.run.profiles=ingest -Dspring-boot.run.arguments="--apply-editorial-line --dry-run"
  * </pre>
  *
  * <p>Focus options, comma-separated, all optional ({@link IngestFocus}):
@@ -61,6 +62,12 @@ class IngestPeopleRunner implements ApplicationRunner {
             System.exit(SpringApplication.exit(context, () -> 0));
             return;
         }
+        if (args.containsOption("apply-editorial-line")) {
+            rejectOthers(args, "apply-editorial-line", Set.of("dry-run"));
+            log.info("Editorial line applied: {}", handler.applyEditorialLine(args.containsOption("dry-run")));
+            System.exit(SpringApplication.exit(context, () -> 0));
+            return;
+        }
         if (args.containsOption("fix-small-images")) {
             requireAlone(args, "fix-small-images");
             log.info("Small images fixed: {}", handler.fixSmallImages());
@@ -85,7 +92,7 @@ class IngestPeopleRunner implements ApplicationRunner {
             "qid", "offset", "sample", "dry-run", "exclude-occupations", "only-occupations", "cells", "age-bands");
 
     /** Modes that do something else than ingest: one at a time, never with a run option. */
-    private static final Set<String> MAINTENANCE_MODES = Set.of("analyze", "fix-small-images");
+    private static final Set<String> MAINTENANCE_MODES = Set.of("analyze", "fix-small-images", "apply-editorial-line");
 
     /** A maintenance mode takes no ingestion option, not even --limit. Spring's own options pass through. */
     static void requireAlone(ApplicationArguments args, String mode) {
@@ -102,7 +109,7 @@ class IngestPeopleRunner implements ApplicationRunner {
     }
 
     /** Refuses any run option, --limit and other maintenance mode next to {@code mode}, except {@code allowed}. */
-    private static void rejectOthers(ApplicationArguments args, String mode, Set<String> allowed) {
+    static void rejectOthers(ApplicationArguments args, String mode, Set<String> allowed) {
         Set<String> others = new HashSet<>(args.getOptionNames());
         others.retainAll(Stream.of(RUN_OPTIONS, MAINTENANCE_MODES, Set.of("limit"))
                 .flatMap(Set::stream)
