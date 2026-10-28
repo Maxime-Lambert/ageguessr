@@ -58,23 +58,23 @@ acteur de cinéma, `Q82955` homme / femme politique, `Q177220` chanteur, `Q36180
   dans le quota de leur case.
 
 ## Phase 1 : Options de ciblage
-Status: Not started
+Status: In progress (code et tests faits, mesure réelle en cours)
 
-- [ ] `AgeBand.ALL` (libellés des 9 tranches) et `AgeBand.start(label)`.
-- [ ] `IngestFocus` (record) : professions exclues, professions seules, cases, tranches ;
+- [x] `AgeBand.ALL` (libellés des 9 tranches) et `AgeBand.start(label)`.
+- [x] `IngestFocus` (record) : professions exclues, professions seules, cases, tranches ;
       validation à la construction (QID valides, tranches connues, une profession pas à
       la fois exclue et seule) ; `NONE`.
-- [ ] `RankingFilter` (record) : années de naissance min / max, professions exclues /
+- [x] `RankingFilter` (record) : années de naissance min / max, professions exclues /
       seules ; produit les clauses SPARQL (aucune si rien à filtrer).
-- [ ] `WikidataClient` : `fetchPeople` et `fetchCell` reçoivent un `RankingFilter` ;
+- [x] `WikidataClient` : `fetchPeople` et `fetchCell` reçoivent un `RankingFilter` ;
       `PROFILES` ramène aussi `P106` ; `PersonRecord.occupations`.
-- [ ] `IngestPeopleCommand.focus` ; `IngestPeopleRunner` lit les quatre options et
+- [x] `IngestPeopleCommand.focus` ; `IngestPeopleRunner` lit les quatre options et
       refuse les combinaisons sans sens.
-- [ ] `IngestPeopleHandler` : cases filtrées, `RankingFilter` construit depuis les
+- [x] `IngestPeopleHandler` : cases filtrées, `RankingFilter` construit depuis les
       propriétés, le focus et la date du jour, photos hors tranches écartées
       (`PhotoRejection.AGE_BAND_NOT_WANTED`).
-- [ ] `IngestReport` : professions des personnes gardées (top 15).
-- [ ] Docs : `docs/decisions/architecture.md` (sourcing), `docs/roadmap.md`.
+- [x] `IngestReport` : professions des personnes gardées (top 15).
+- [x] Docs : `docs/decisions/architecture.md` (sourcing), `docs/roadmap.md`.
 
 ### Tests
 - **Unitaire** :
@@ -115,12 +115,44 @@ Status: Not started
 ### Phase Summary
 _(write when phase completes)_
 
-## Phase 2 : Revues et PR
+## Phase 2 : Quotas au taux d'approbation et `--analyze`
+Status: In progress
+
+Demande de l'utilisateur (2026-10-28) : analyser automatiquement les photos approuvées
+pour régler la prochaine vague, en tenant compte du fait que ~40 % des photos seulement
+passeront la curation. But : des ordres de grandeur semblables, pas la photo près.
+Décision de l'utilisateur : les quotas comptent les photos en attente au taux attendu.
+
+- [x] `PersonRepository.countPhotosByCell` et `PersonPhotoRepository.countByAge` groupés
+      aussi par statut de revue ; `ReviewCounts`, `PoolCounts`,
+      `PeopleStore.poolCounts()`.
+- [x] `ApprovalRate` : observé dès 300 photos revues (approuvées / (approuvées +
+      rejetées)), sinon `app.people.ingest.expected-approval-rate` (0,4).
+- [x] `IngestPeopleHandler.balance` : une case part de approuvées + en attente × taux,
+      chaque photo ajoutée compte pour le taux ; le taux est logué au démarrage.
+- [x] `PoolAnalysis` et `--analyze` (lecture seule, `--limit` comme cible, options Spring
+      acceptées) : tableau par case et par tranche, taux, prochaine vague. Une seule
+      vague suggérée à la fois : la vague des cases déplace la médiane des tranches.
+- [x] Tests : `ApprovalRateTest`, `PoolAnalysisTest`, handler (taux 0,5, analyse sans
+      appel réseau), runner, `PeopleStoreIntegrationTest` (comptes par statut).
+- [x] Essai réel de `--analyze` sur la base locale (75 photos en attente, rien de revu) :
+      taux supposé 0,40, ~12 461 photos à collecter pour les cases, 82+ « lacking ».
+
+### Verification Plan
+- `./mvnw test` → 0 échec.
+- `--analyze` sur la base locale → tableau complet et prochaine vague.
+
+### Phase Summary
+_(write when phase completes)_
+
+## Phase 3 : Revues et PR
 Status: Not started
 
 - [ ] `code-reviewer` (sourcing externe : texte SPARQL construit depuis la ligne de
       commande) et `architecture-reviewer` ; corriger tous les 🔴 et 🟠.
-- [ ] Final Recap, Deployment Plan, archivage dans `plans/done/ingest-focus.md`.
+- [ ] Final Recap, Deployment Plan (dont : relancer `--analyze` en prod après la
+      curation, puis la vague suggérée avec `--exclude-occupations=Q937857`), archivage
+      dans `plans/done/ingest-focus.md`.
 - [ ] PR `feature/exclude-footballers` → `develop`.
 
 ### Verification Plan

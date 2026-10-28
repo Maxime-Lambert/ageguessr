@@ -397,9 +397,11 @@ ponctuelle**, pas pendant les parties :
   et une même photo pas rejouée avant 3 ans (règle du tirage quotidien, Semaine 3 :
   à 3 photos par jour, 3 ans en consomment 3 285). La cible de la collecte
   (`--limit`, `app.people.ingest.target-photos`, 5 000 par défaut) compte les photos
-  **en jeu** (en attente ou approuvées) : après une passe de curation, les rejets font
-  baisser ce total, et une relance complète chaque case. Le cycle collecte → curation
-  → collecte converge vers 5 000 photos approuvées.
+  **approuvées attendues** (décision du 2026-10-28) : approuvées, plus en attente au
+  taux d'approbation. Le taux est observé dès 300 photos revues, supposé avant
+  (`app.people.ingest.expected-approval-rate`, 0,4). Une case à qui il manque 100 photos
+  approuvées en collecte donc ~250 en une vague, au lieu de converger par relances
+  successives. Le but est le bon ordre de grandeur par case, pas la photo près.
 - **Pool équilibré** (décision du 2026-10-26) : autant de photos de femmes que
   d'hommes, et autant par continent de nationalité.
   - 18 cases : 6 continents (Afrique, Amérique du Nord, Amérique du Sud, Asie, Europe,
@@ -417,11 +419,34 @@ ponctuelle**, pas pendant les parties :
     Amérique du Nord, « Insular Oceania » et continent australien comme Océanie.
     Plusieurs continents : le moins représenté, dans l'ordre fixe Océanie, Afrique,
     Amérique du Sud, Asie, Amérique du Nord, Europe. Un Russe compte donc pour l'Asie.
-  - Les photos déjà en base (encore en jeu, de personnes non exclues) comptent dans
-    leur case : une relance reprend là où l'ingestion s'était arrêtée.
+  - Les photos déjà en base (de personnes non exclues) comptent dans leur case, au taux
+    d'approbation si elles sont en attente : une relance reprend là où l'ingestion
+    s'était arrêtée.
+- **Vagues ciblées** (décision du 2026-10-28) : après la première passe en prod, pleine
+  de footballeurs et pauvre en plus de 74 ans, une vague peut viser ce qui manque et
+  écarter ce qui revient trop. Options de ligne de commande, pas de propriétés : le
+  ciblage change d'une vague à l'autre.
+  - `--exclude-occupations` / `--only-occupations` (QID de `P106`) : filtre dans la
+    requête de classement QLever. Une personne écartée n'est jamais examinée. Toute
+    personne ayant eu la profession est écartée, même avec une autre carrière :
+    Wikidata ne dit pas laquelle la photo illustre. Les QID sont validés avant d'entrer
+    dans le texte SPARQL.
+  - `--cells` : ne parcourt que ces cases.
+  - `--age-bands` : ne garde que les photos de ces tranches (`AGE_BAND_NOT_WANTED` sinon),
+    et ne classe que les personnes assez âgées pour en avoir (année de naissance
+    maximale dans la requête).
+  - Le rapport compte les professions des personnes gardées (top 15, en QID) : cinéma
+    et politique ne sont pas écartés, un tapis rouge ou une tribune datant peu une
+    photo, contrairement à un maillot. À revoir sur les chiffres.
+  - `--analyze` lit la base seule : par case et par tranche, approuvées / en attente /
+    rejetées et approuvées attendues, taux d'approbation, et la prochaine vague à
+    lancer (les cases d'abord, puis les tranches sous la moitié de la tranche
+    médiane, à hisser vers la médiane).
 - **Commande** : profil Spring `ingest` (`IngestPeopleRunner`), idempotente : une
   relance n'ajoute que ce qui manque.
-  - `--limit=<n>` : cible de l'ingestion équilibrée, en photos en jeu ;
+  - `--limit=<n>` : cible de l'ingestion équilibrée, en photos approuvées attendues ;
+  - `--analyze` : bilan du pool et prochaine vague, sans appel réseau ;
+  - options de ciblage, voir « Vagues ciblées » ;
   - `--qid=<QID>` : une seule personne ;
   - `--sample=<n> [--offset=<rang>]` : n personnes du classement global à partir d'un
     rang, pour mesurer le rendement d'une partie de la liste ;

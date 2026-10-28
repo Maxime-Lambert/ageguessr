@@ -49,6 +49,10 @@ la suivante).
       jusqu'à 5 000 photos approuvées. Estimation : ~8 800 photos collectées en tout
       (~43 % de rejets), ~7 h de collecte, ~1,5 Go (les photos rejetées gardent leur
       image)
+- [x] Vagues d'ingestion ciblées : professions exclues ou seules (footballeurs écartés
+      pour la suite), cases, tranches d'âge ; quotas comptés en photos approuvées
+      attendues (en attente × taux d'approbation) ; `--analyze` pour voir le pool et la
+      prochaine vague — PR `feature/exclude-footballers`
 - [ ] Ingestion + curation des indices événementiels par catégorie et par année
       (pages Wikipedia "YYYY in music/sports/politics...", parsing + vérification sur
       échantillon avant d'industrialiser)
