@@ -135,7 +135,7 @@ réalisateur `Q2526255`) : à surveiller dans le rapport de la prochaine vague, 
 décider d'un plafond ou d'une exclusion.
 
 ## Phase 2 : Quotas au taux d'approbation et `--analyze`
-Status: In progress
+Status: Complete
 
 Demande de l'utilisateur (2026-10-28) : analyser automatiquement les photos approuvées
 pour régler la prochaine vague, en tenant compte du fait que ~40 % des photos seulement
@@ -162,26 +162,90 @@ Décision de l'utilisateur : les quotas comptent les photos en attente au taux a
 - `--analyze` sur la base locale → tableau complet et prochaine vague.
 
 ### Phase Summary
-_(write when phase completes)_
+**Livré** : comptages par statut de revue (`ReviewCounts`, `PoolCounts`), `ApprovalRate`
+(observé dès 300 photos revues dont au moins une approuvée, sinon 0,4), quotas des
+cases en photos approuvées attendues, `PoolAnalysis` et `--analyze`.
+
+**Vérification** : `--analyze` sur la base locale (75 photos en attente) : taux supposé
+0,40, ~12 461 photos à collecter pour les cases, 82+ signalée « lacking ». Le premier
+essai a révélé que `--spring.profiles.active` (passé aussi en prod) était refusé :
+corrigé, seules les options d'ingestion sont refusées avec `--analyze`. Une seule
+vague suggérée à la fois (la vague des cases déplace la médiane des tranches).
 
 ## Phase 3 : Revues et PR
-Status: Not started
+Status: Complete
 
-- [ ] `code-reviewer` (sourcing externe : texte SPARQL construit depuis la ligne de
+- [x] `code-reviewer` (sourcing externe : texte SPARQL construit depuis la ligne de
       commande) et `architecture-reviewer` ; corriger tous les 🔴 et 🟠.
-- [ ] Final Recap, Deployment Plan (dont : relancer `--analyze` en prod après la
-      curation, puis la vague suggérée avec `--exclude-occupations=Q937857`), archivage
-      dans `plans/done/ingest-focus.md`.
-- [ ] PR `feature/exclude-footballers` → `develop`.
+- [x] Final Recap, Deployment Plan, archivage dans `plans/done/ingest-focus.md`.
+- [x] PR `feature/exclude-footballers` → `develop`.
 
 ### Verification Plan
 - Toutes les suites à 0 échec après les corrections de revue.
 
 ### Phase Summary
-_(write when phase completes)_
+**Revues** : aucun 🔴. `architecture-reviewer` : 4 🟠 corrigés (ordre d'imports,
+javadocs qui parlaient encore de photos « en jeu » dans `IngestPeopleCommand`, `Cell`
+et `Run`) ; 🟡 appliqués : commentaire sur le taux jamais nul, `ReviewCountsTest`
+séparé, test du taux observé à 1,0 ; 🟡 non appliqués : `PoolAnalysis` en classe
+plutôt qu'en record (méthodes dérivées et rendu texte), double validation des QID
+(défense en profondeur voulue). `code-reviewer` : injection SPARQL bloquée par
+`WikidataId` à deux niveaux, aucun nom dans les logs, professions jamais stockées ;
+1 🟡 corrigé : un taux observé de 0 (300 photos revues, aucune approuvée) bloquait le
+remplissage des cases et faisait diviser `--analyze` par zéro, il retombe sur le taux
+supposé.
+
+**Vérification finale** : backend **675/675**, front **168/168**. PIT sur
+`IngestPeople` : test strength **97 %** (571 / 598 ; 95 % sur
+`feature/people-pool-balance`). Survivants du nouveau code : une borne équivalente dans
+`PoolAnalysis.toCollect` (0 manquant donne 0 à collecter des deux côtés) ; le libellé
+« lacking » et `bands()` ont reçu une assertion après le run.
 
 ## Final Recap
-_(write when all phases complete)_
+**Livré** (PR `feature/exclude-footballers` → `develop`) : des vagues d'ingestion qui
+visent ce qui manque au pool et écartent ce qui revient trop.
+- **Ciblage** : `--exclude-occupations`, `--only-occupations` (QID de `P106`, filtrés
+  dans la requête QLever), `--cells`, `--age-bands` (année de naissance maximale dans
+  la requête, photos hors tranches écartées en `AGE_BAND_NOT_WANTED`).
+- **Footballeurs** : 30 % des personnes gardées au rang 10 000, 0 avec le filtre, sans
+  surcoût mesurable.
+- **Professions** : top 15 dans le rapport. Sans les footballeurs, le cinéma domine
+  (47 % d'acteurs dans l'échantillon) : à surveiller avant de décider.
+- **Taux d'approbation** : quotas en photos approuvées attendues (en attente × taux,
+  observé dès 300 photos revues, 0,4 avant), pour converger en une vague.
+- **`--analyze`** : bilan par case et par tranche, sans appel réseau, et la prochaine
+  vague à lancer.
+
+**Écarts par rapport au plan initial, tous décidés avec l'utilisateur** :
+- le filtre « footballeurs » en propriété est devenu des options de ligne de commande
+  génériques (demande de l'utilisateur : se concentrer sur ce qui manque) ;
+- le taux d'approbation et `--analyze` sont ajoutés (demande en cours de route ; choix
+  de l'utilisateur : compter les photos en attente au taux) ;
+- aucune exclusion du cinéma ni de la politique : décision reportée aux chiffres.
+
+**Hors scope, à faire ensuite** :
+- Décider d'un plafond ou d'une exclusion pour le cinéma, sur le rapport de la
+  prochaine vague.
+- Extraire l'ingestion équilibrée de `IngestPeopleHandler` (déjà notée par la PR
+  précédente ; le handler a encore grossi).
 
 ## Deployment Plan
-_(write when all phases complete)_
+1. **Merge de la PR dans `develop`**, puis release `develop` → `main` en **merge
+   commit**. Aucune migration. Variable optionnelle nouvelle :
+   `INGEST_EXPECTED_APPROVAL_RATE` (0,4 par défaut), inutile de la définir.
+2. **Changement de sens de la cible** : `--limit` (5 000) compte désormais les photos
+   approuvées attendues. Les 5 013 photos de la première passe, toutes en attente,
+   valent ~2 005 photos attendues au taux supposé : une vague lancée sans curation
+   collecterait encore ~7 500 photos (~7 h, ~1,3 Go). **Curer d'abord au moins 300
+   photos** pour que le taux observé remplace le taux supposé.
+3. **Bilan** (depuis le VPS, lecture seule, quelques secondes) :
+   `cd /opt/ageguessr && docker compose -f docker-compose.prod.yml run --rm backend --spring.profiles.active=prod,ingest --analyze`
+4. **Vague suivante** : la commande suggérée par `--analyze`, plus l'exclusion des
+   footballeurs, dans `tmux` :
+   `cd /opt/ageguessr && docker compose -f docker-compose.prod.yml run --rm backend --spring.profiles.active=prod,ingest --limit=5000 --exclude-occupations=Q937857`
+   Vérifier l'espace disque du VPS avant (174 Ko par photo collectée). Lire dans le
+   rapport `kept people by occupation` et `balance (photos/quota)`.
+5. **Ensuite** : relancer `--analyze`. Pas besoin de curer entre deux vagues (les photos
+   en attente comptent au taux), mais la curation affine le taux. Quand les cases sont
+   pleines, `--analyze` propose la vague des tranches d'âge rares
+   (`--age-bands=74-81,82+` et une cible relevée).
