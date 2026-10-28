@@ -20,6 +20,12 @@ const DATE_SOURCE_LABELS: Record<PhotoDateSource, string> = {
 const GENERIC_ERROR = 'Something went wrong. Please try again.';
 
 /**
+ * Mirrors app.people.ingest.min-image-height (ageguessr-api): below this a photo is too
+ * small to show. The ingestion refuses them; the warning catches any that slipped in.
+ */
+export const MIN_IMAGE_HEIGHT = 600;
+
+/**
  * Photo curation, one photo at a time. A photo enters the game only if exactly one person
  * is visible, framed at least from the face to the full body (plans/done/photo-curation.md).
  */
@@ -41,8 +47,22 @@ export class Curation implements OnDestroy {
   readonly lastAction = signal<{ item: PendingPhoto; decision: ReviewDecision } | null>(null);
   /** photoId -> blob: URL of the loaded image, or 'error'. */
   readonly images = signal<Record<string, string>>({});
+  /** Real size of the shown image, read by the browser once it has loaded. */
+  readonly imageSize = signal<{ photoId: string; width: number; height: number } | null>(null);
+  protected readonly minImageHeight = MIN_IMAGE_HEIGHT;
 
   protected readonly displayName = displayName;
+
+  onImageLoad(photoId: string, event: Event): void {
+    const image = event.target as HTMLImageElement;
+    this.imageSize.set({ photoId, width: image.naturalWidth, height: image.naturalHeight });
+  }
+
+  /** The size of the current photo's image, once loaded; null before. */
+  sizeOf(photoId: string): { width: number; height: number } | null {
+    const size = this.imageSize();
+    return size?.photoId === photoId ? size : null;
+  }
 
   /** Skipped this session: not shown again until the page is reloaded. */
   private readonly skipped = new Set<string>();

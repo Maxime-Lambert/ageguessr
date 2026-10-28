@@ -33,18 +33,18 @@ set its status to `Complete` and write its **Phase Summary**; run the phase's
   `naturalHeight`, lus par le navigateur), sans changer l'API.
 
 ## Phase 1 : Rejet à l'ingestion et correction des photos stockées
-Status: Not started
+Status: Complete
 
-- [ ] `IngestProperties` : `thumbnailWidth` → `thumbnailHeight` (1 000),
+- [x] `IngestProperties` : `thumbnailWidth` → `thumbnailHeight` (1 000),
       `minImageHeight` (600) ; `application.properties` (+ test).
-- [ ] `CommonsClient.fetchFiles` : `iiurlheight` ; `CommonsFile.thumbnailHeight`
+- [x] `CommonsClient.fetchFiles` : `iiurlheight` ; `CommonsFile.thumbnailHeight`
       (`thumbheight`).
-- [ ] `PhotoCandidateFilter.check` : `TOO_SMALL` sous la hauteur minimale.
-- [ ] `PeopleStore` : photos non rejetées sous la hauteur minimale (id, fichier) ;
+- [x] `PhotoCandidateFilter.check` : `TOO_SMALL` sous la hauteur minimale.
+- [x] `PeopleStore` : photos non rejetées sous la hauteur minimale (id, fichier) ;
       remplacement de l'image ; rejet automatique.
-- [ ] `IngestPeopleHandler.fixSmallImages` + option `--fix-small-images` (seule, comme
+- [x] `IngestPeopleHandler.fixSmallImages` + option `--fix-small-images` (seule, comme
       `--analyze`) ; bilan logué : agrandies, rejetées (dont approuvées).
-- [ ] Docs : `architecture.md` (sourcing), roadmap.
+- [x] Docs : `architecture.md` (sourcing), roadmap.
 
 ### Tests
 - **Unitaire** : `PhotoCandidateFilterTest` (599 rejetée, 600 gardée) ;
@@ -62,20 +62,29 @@ Status: Not started
   WHERE i.height < 600 AND p.review_status <> 'REJECTED'` → 0.
 
 ### Phase Summary
-_(write when phase completes)_
+**Livré** : miniatures en hauteur (1 000 px), `CommonsFile.thumbnailHeight`, rejet
+`TOO_SMALL` dans `PhotoCandidateFilter`, `--fix-small-images` (`SmallImagesReport`,
+`PeopleStore.smallImages` / `replaceImage` / `rejectTooSmall`), docs.
+
+**Vérification** : backend 683/683. Base locale (75 photos des essais) :
+`--fix-small-images` → 10 trouvées sous 600 px, 2 agrandies, 8 rejetées (originaux
+trop petits) ; ensuite, aucune photo non rejetée sous 600 px (minimum 607).
 
 ## Phase 2 : Taille affichée en curation
-Status: Not started
+Status: Complete
 
-- [ ] `curation.ts` / `curation.html` : taille lue au chargement de l'image, affichée
+- [x] `curation.ts` / `curation.html` : taille lue au chargement de l'image, affichée
       sous la photo.
-- [ ] Tests : unitaire Vitest (taille affichée après `load`).
+- [x] Tests : unitaire Vitest (taille affichée après `load`).
 
 ### Verification Plan
 - `cd frontend && pnpm test` et lint → 0 échec.
 
 ### Phase Summary
-_(write when phase completes)_
+**Livré** : taille réelle (`naturalWidth` × `naturalHeight`) sous la photo, avertissement
+sous 600 px (`MIN_IMAGE_HEIGHT`, miroir de la propriété backend).
+
+**Vérification** : front 170/170, lint, Prettier, `tsc` OK.
 
 ## Phase 3 : Revues et PR
 Status: Not started
