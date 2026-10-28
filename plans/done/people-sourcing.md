@@ -878,10 +878,10 @@ fonctionné (PR #16, mergée).
    - la vérification de l'espace disque du VPS. Ordre de grandeur : ~3 000 personnes ×
      ~1,4 photo × ~170 Ko ≈ **0,7 Go** dans Postgres, à ajouter au volume des backups.
 4. **Lancer l'ingestion** (quand les conditions ci-dessus sont réunies) :
-   - en dehors des heures de pointe de QLever, depuis le VPS, avec l'image de l'API et
-     le profil `ingest`. Par exemple :
-     `docker compose -f docker-compose.prod.yml run --rm api --spring.profiles.active=prod,ingest --limit=3000`
-     (adapter au nom réel du service et aux profils de prod) ;
+   - en dehors des heures de pointe de QLever, depuis le VPS, dans `/opt/ageguessr/` (où
+     la CI copie le compose et écrit le `.env`), avec l'image de l'API et le profil
+     `ingest`. Par exemple :
+     `cd /opt/ageguessr && docker compose -f docker-compose.prod.yml run --rm backend --spring.profiles.active=prod,ingest --limit=3000` ;
    - durée attendue : **~8 h**. En cas d'arrêt (QLever en 429 prolongé, coupure), la
      relancer : elle reprend sans doublon ;
    - aucun secret supplémentaire : Wikidata, QLever et Commons sont publics. Le
