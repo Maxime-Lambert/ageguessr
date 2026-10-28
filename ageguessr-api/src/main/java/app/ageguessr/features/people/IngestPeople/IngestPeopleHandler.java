@@ -11,6 +11,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,9 +24,15 @@ import org.springframework.stereotype.Service;
  * the store: every person is processed as if new, and nothing is saved.
  *
  * <p>By default the pool is balanced: each {@link Cell} (continent of nationality ×
- * gender) has a quota of photos in play ({@link Cell#quota}), the cells taking turns one
+ * gender) has a quota of expected approved photos ({@link Cell#quota}): approved ones,
+ * plus pending and newly added ones at the {@link ApprovalRate}, so that one wave
+ * collects about what the curation will leave. The cells take turns one
  * person at a time, each walking its own ranking. A cell whose ranking runs out stays below its quota, and
  * the report says so. {@code --sample} walks the plain ranking instead, to measure the yield.
+ *
+ * <p>{@link IngestFocus} narrows a run: the occupation filters and the age floor go into
+ * the rankings ({@link RankingFilter}), the cells limit the balanced walk, and a valid
+ * photo outside the wanted age bands is left out.
  */
 @Slf4j
 @Service
@@ -59,19 +66,31 @@ class IngestPeopleHandler {
     }
 
     /**
-     * What one run carries from person to person. {@code photosByAgeBand}: photos in play
-     * per age band, in the database (none for a dry run) and added since, which
-     * PhotoSelector leans against.
+     * What one run carries from person to person. {@code photosByAgeBand}: photos still
+     * counting (pending or approved, not weighted by the approval rate) per age band, in the database (none for a dry run) and added since, which
+     * PhotoSelector leans against. {@code ranking}: who the rankings list.
      */
-    private record Run(LocalDate today, boolean dryRun, IngestReport report, Map<String, Integer> photosByAgeBand) {}
+    private record Run(
+            LocalDate today,
+            boolean dryRun,
+            IngestReport report,
+            Map<String, Integer> photosByAgeBand,
+            IngestFocus focus,
+            RankingFilter ranking) {}
 
     IngestReport handle(IngestPeopleCommand command) {
         IngestReport report = new IngestReport();
+        LocalDate today = LocalDate.now(clock);
+        PoolCounts pool = command.dryRun() ? PoolCounts.EMPTY : store.poolCounts();
+        Map<String, Integer> inPlayByAgeBand = new HashMap<>();
+        pool.byAgeBand().forEach((band, counts) -> inPlayByAgeBand.put(band, counts.inPlay()));
         Run run = new Run(
-                LocalDate.now(clock),
+                today,
                 command.dryRun(),
                 report,
-                new HashMap<>(command.dryRun() ? Map.of() : store.photosByAgeBand()));
+                inPlayByAgeBand,
+                command.focus(),
+                ranking(command.focus(), today));
         if (command.wikidataId() != null) {
             wikidata.fetchPerson(command.wikidataId())
                     .ifPresentOrElse(
@@ -82,16 +101,40 @@ class IngestPeopleHandler {
         if (command.sample() > 0) {
             walkRanking(command, run);
         } else {
-            balance(command, run);
+            balance(command, run, pool);
         }
         return report;
+    }
+
+    /** Where the stored pool stands against {@code targetPhotos}, without any network call. */
+    PoolAnalysis analyze(int targetPhotos) {
+        PoolCounts pool = store.poolCounts();
+        return PoolAnalysis.of(pool, approvalRate(pool), targetPhotos);
+    }
+
+    private ApprovalRate approvalRate(PoolCounts pool) {
+        return ApprovalRate.of(pool.total(), properties.expectedApprovalRate());
+    }
+
+    /**
+     * Wanting only ages from A means wanting people at least A years old today: anyone
+     * born after {@code today.year - A} cannot have such a photo yet, so the rankings
+     * skip them.
+     */
+    private RankingFilter ranking(IngestFocus focus, LocalDate today) {
+        OptionalInt youngest = focus.youngestAge();
+        return new RankingFilter(
+                properties.minBirthYear(),
+                youngest.isPresent() ? OptionalInt.of(today.getYear() - youngest.getAsInt()) : OptionalInt.empty(),
+                focus.excludedOccupations(),
+                focus.onlyOccupations());
     }
 
     private void walkRanking(IngestPeopleCommand command, Run run) {
         IngestReport report = run.report();
         int offset = command.offset();
         while (!done(command, report)) {
-            List<PersonRecord> page = wikidata.fetchPeople(offset, properties.pageSize(), properties.minBirthYear());
+            List<PersonRecord> page = wikidata.fetchPeople(offset, properties.pageSize(), run.ranking());
             if (page.isEmpty()) {
                 log.warn("Wikidata list exhausted after {} people", report.peopleSeen());
                 break;
@@ -106,12 +149,14 @@ class IngestPeopleHandler {
         }
     }
 
-    private void balance(IngestPeopleCommand command, Run run) {
+    private void balance(IngestPeopleCommand command, Run run, PoolCounts pool) {
         IngestReport report = run.report();
-        Map<Cell, Integer> stored = command.dryRun() ? Map.of() : store.photosByCell();
+        ApprovalRate rate = approvalRate(pool);
+        log.info("Approval rate {}", rate);
         List<CellCursor> cursors = Cell.ALL.stream()
+                .filter(command.focus()::includes)
                 .map(cell -> new CellCursor(
-                        cell, cell.quota(command.targetPhotos()), stored.getOrDefault(cell, 0)))
+                        cell, cell.quota(command.targetPhotos()), pool.cell(cell).expected(rate), run.ranking()))
                 .toList();
         List<CellCursor> open = new ArrayList<>(cursors.stream().filter(c -> !c.full()).toList());
         while (!open.isEmpty()) {
@@ -120,7 +165,7 @@ class IngestPeopleHandler {
                 if (next.isEmpty()) {
                     cursor.exhausted = true;
                     open.remove(cursor);
-                    log.warn("Cell {} exhausted at {}/{} photos", cursor.cell, cursor.photos, cursor.quota);
+                    log.warn("Cell {} exhausted at {}/{} photos", cursor.cell, Math.round(cursor.expected), cursor.quota);
                     continue;
                 }
                 PersonRecord person = next.get();
@@ -128,38 +173,41 @@ class IngestPeopleHandler {
                 if (!Cell.of(person).map(cursor.cell::equals).orElse(false)) {
                     continue;
                 }
-                cursor.photos += process(person, run);
+                // A new photo is pending: worth the approval rate of an approved one.
+                cursor.expected += process(person, run) * rate.value();
                 if (cursor.full()) {
                     open.remove(cursor);
                 }
             }
         }
-        cursors.forEach(c -> report.cellStatus(c.cell, c.photos, c.quota, c.exhausted));
+        cursors.forEach(c -> report.cellStatus(c.cell, (int) Math.round(c.expected), c.quota, c.exhausted));
     }
 
-    /** Where one cell is in its own ranking, and how many photos it already holds. */
+    /** Where one cell is in its own ranking, and how many approved photos it can expect. */
     private final class CellCursor {
         private final Cell cell;
         private final int quota;
+        private final RankingFilter ranking;
         private final Deque<PersonRecord> buffer = new ArrayDeque<>();
-        private int photos;
+        private double expected;
         private int offset;
         private boolean exhausted;
 
-        private CellCursor(Cell cell, int quota, int storedPhotos) {
+        private CellCursor(Cell cell, int quota, double expected, RankingFilter ranking) {
             this.cell = cell;
             this.quota = quota;
-            this.photos = storedPhotos;
+            this.expected = expected;
+            this.ranking = ranking;
         }
 
         private boolean full() {
-            return photos >= quota;
+            return expected >= quota;
         }
 
         /** The next person of the cell's ranking, fetching a page when needed; empty at the end. */
         private Optional<PersonRecord> next() {
             if (buffer.isEmpty() && !exhausted) {
-                buffer.addAll(wikidata.fetchCell(cell, offset, properties.pageSize(), properties.minBirthYear()));
+                buffer.addAll(wikidata.fetchCell(cell, offset, properties.pageSize(), ranking));
                 offset += properties.pageSize();
             }
             return Optional.ofNullable(buffer.pollFirst());
@@ -274,7 +322,12 @@ class IngestPeopleHandler {
                 case PhotoEvaluation.Rejected rejected -> report.photoRejected(rejected.reason().name());
                 case PhotoEvaluation.Accepted accepted -> {
                     report.validPhoto(accepted.age());
-                    candidates.add(new PhotoSelector.Candidate(file.title(), mainImages.contains(file.title()), accepted));
+                    if (run.focus().wantsAge(accepted.age())) {
+                        candidates.add(
+                                new PhotoSelector.Candidate(file.title(), mainImages.contains(file.title()), accepted));
+                    } else {
+                        report.photoRejected(PhotoRejection.AGE_BAND_NOT_WANTED.name());
+                    }
                 }
             }
         }

@@ -37,17 +37,17 @@ public interface PersonPhotoRepository extends JpaRepository<PersonPhoto, UUID> 
             """)
     long countPending();
 
-    /** How many photos still in play (pending or approved) there are at each age. */
-    record AgeCount(int age, long photos) {}
+    /** How many photos of people not excluded there are at each age, per review status. */
+    record AgeCount(int age, ReviewStatus status, long photos) {}
 
     @Query(
             """
-            SELECT new app.ageguessr.features.people.PersonPhotoRepository$AgeCount(ph.ageAtPhoto, COUNT(ph))
+            SELECT new app.ageguessr.features.people.PersonPhotoRepository$AgeCount(
+                ph.ageAtPhoto, ph.reviewStatus, COUNT(ph))
             FROM PersonPhoto ph, Person p
             WHERE p.id = ph.personId
-              AND ph.reviewStatus <> app.ageguessr.features.people.ReviewStatus.REJECTED
               AND p.excluded = false
-            GROUP BY ph.ageAtPhoto
+            GROUP BY ph.ageAtPhoto, ph.reviewStatus
             """)
     List<AgeCount> countByAge();
 }

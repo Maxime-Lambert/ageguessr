@@ -45,22 +45,23 @@ class PeopleStore {
     }
 
     /**
-     * Photos already counting toward each cell (see PersonRepository.countPhotosByCell):
-     * a rerun, after a curation pass for instance, tops each cell back up to its quota.
+     * The stored photos per cell and per age band, by review status. A rerun, after a
+     * curation pass for instance, tops each cell back up to its quota of expected
+     * approved photos, and keeps leaning toward the rare ages.
      */
     @Transactional(readOnly = true)
-    Map<Cell, Integer> photosByCell() {
-        return people.countPhotosByCell().stream()
+    PoolCounts poolCounts() {
+        Map<Cell, ReviewCounts> byCell = people.countPhotosByCell().stream()
                 .collect(Collectors.toMap(
-                        c -> new Cell(c.continent(), c.gender()), c -> Math.toIntExact(c.photos())));
-    }
-
-    /** Photos still in play per age band, so that a rerun keeps leaning toward the rare ages. */
-    @Transactional(readOnly = true)
-    Map<String, Integer> photosByAgeBand() {
-        return photos.countByAge().stream()
+                        c -> new Cell(c.continent(), c.gender()),
+                        c -> ReviewCounts.of(c.status(), Math.toIntExact(c.photos())),
+                        ReviewCounts::plus));
+        Map<String, ReviewCounts> byAgeBand = photos.countByAge().stream()
                 .collect(Collectors.toMap(
-                        c -> AgeBand.of(c.age()), c -> Math.toIntExact(c.photos()), Integer::sum));
+                        c -> AgeBand.of(c.age()),
+                        c -> ReviewCounts.of(c.status(), Math.toIntExact(c.photos())),
+                        ReviewCounts::plus));
+        return new PoolCounts(byCell, byAgeBand);
     }
 
     /** What a person already has, as far as the next ingestion is concerned. */

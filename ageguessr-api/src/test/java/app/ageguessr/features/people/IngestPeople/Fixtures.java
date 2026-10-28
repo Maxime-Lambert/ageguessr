@@ -50,6 +50,6 @@ final class Fixtures {
     }
 
     static IngestProperties ingestProperties(long maxImageBytes) {
-        return new IngestProperties(3000, 500, 5, 10, 50, 800, maxImageBytes, 1930);
+        return new IngestProperties(3000, 500, 5, 10, 50, 800, maxImageBytes, 1930, 0.4);
     }
 }

@@ -81,7 +81,7 @@ class PeopleStoreIntegrationTest {
         Person first = people.findByWikidataId("Q1").orElseThrow();
 
         store.save(
-                new PersonRecord("Q1", 60, "Jane Doe", "Jeanne Doe", Set.of(), List.of(), List.of(), null, null),
+                new PersonRecord("Q1", 60, "Jane Doe", "Jeanne Doe", Set.of(), List.of(), List.of(), null, null, Set.of()),
                 BIRTH,
                 LocalDate.of(2020, 1, 1),
                 List.of(photo("B.jpg", 1990)));
@@ -108,7 +108,7 @@ class PeopleStoreIntegrationTest {
 
         store.save(
                 new PersonRecord(
-                        "Q1", 50, "Jane", null, Set.of(), List.of(), List.of(), Gender.FEMALE, Continent.AFRICA),
+                        "Q1", 50, "Jane", null, Set.of(), List.of(), List.of(), Gender.FEMALE, Continent.AFRICA, Set.of()),
                 BIRTH,
                 null,
                 List.of());
@@ -119,11 +119,11 @@ class PeopleStoreIntegrationTest {
     }
 
     @Test
-    void countsPerCellOnlyThePhotosStillInPlayOfPeopleNotExcluded() {
+    void countsPerCellAndStatusThePhotosOfPeopleNotExcluded() {
         store.save(person("Q1", Gender.FEMALE, Continent.AFRICA), BIRTH, null, List.of(photo("A.jpg", 1976)));
         store.save(person("Q2", Gender.FEMALE, Continent.AFRICA), BIRTH, null, List.of(photo("B.jpg", 1976)));
         store.save(person("Q3", Gender.MALE, Continent.ASIA), BIRTH, null, List.of(photo("C.jpg", 1976)));
-        // Not counted: no photo, only a rejected photo, excluded, cell unknown.
+        // Q4 has no photo, Q5 only a rejected one. Not counted: excluded, cell unknown.
         store.save(person("Q4", Gender.FEMALE, Continent.AFRICA), BIRTH, null, List.of());
         store.save(person("Q5", Gender.FEMALE, Continent.AFRICA), BIRTH, null, List.of(photo("E.jpg", 1976)));
         photos.findAll().stream()
@@ -138,12 +138,14 @@ class PeopleStoreIntegrationTest {
         people.save(excluded);
         store.save(record("Q7", "Unknown", 50), BIRTH, null, List.of(photo("G.jpg", 1976)));
 
-        assertThat(store.photosByCell())
-                .isEqualTo(Map.of(new Cell(Continent.AFRICA, Gender.FEMALE), 2, new Cell(Continent.ASIA, Gender.MALE), 1));
+        assertThat(store.poolCounts().byCell())
+                .isEqualTo(Map.of(
+                        new Cell(Continent.AFRICA, Gender.FEMALE), new ReviewCounts(0, 2, 1),
+                        new Cell(Continent.ASIA, Gender.MALE), new ReviewCounts(0, 1, 0)));
     }
 
     @Test
-    void countsThePhotosStillInPlayPerAgeBand() {
+    void countsThePhotosPerAgeBandAndStatus() {
         // Born 1950: 26 in 1976, 30 in 1980, 40 in 1990.
         store.save(record("Q1", "Jane", 50), BIRTH, null, List.of(photo("A.jpg", 1976), photo("B.jpg", 1990)));
         store.save(record("Q2", "Sam", 50), BIRTH, null, List.of(photo("C.jpg", 1980), photo("D.jpg", 1990)));
@@ -158,7 +160,16 @@ class PeopleStoreIntegrationTest {
         excluded.setExcluded(true);
         people.save(excluded);
 
-        assertThat(store.photosByAgeBand()).isEqualTo(Map.of("26-33", 2, "34-41", 1));
+        Person approvedOne = people.findByWikidataId("Q1").orElseThrow();
+        photos.findByPersonId(approvedOne.getId()).stream()
+                .filter(p -> p.getCommonsFile().equals("A.jpg"))
+                .forEach(p -> {
+                    p.setReviewStatus(ReviewStatus.APPROVED);
+                    photos.save(p);
+                });
+
+        assertThat(store.poolCounts().byAgeBand())
+                .isEqualTo(Map.of("26-33", new ReviewCounts(1, 1, 0), "34-41", new ReviewCounts(0, 1, 1)));
     }
 
     @Test
@@ -195,11 +206,11 @@ class PeopleStoreIntegrationTest {
     }
 
     private static PersonRecord person(String qid, Gender gender, Continent continent) {
-        return new PersonRecord(qid, 50, qid, null, Set.of(), List.of(), List.of(), gender, continent);
+        return new PersonRecord(qid, 50, qid, null, Set.of(), List.of(), List.of(), gender, continent, Set.of());
     }
 
     private static PersonRecord record(String qid, String name, int sitelinks) {
-        return new PersonRecord(qid, sitelinks, name, null, Set.of(), List.of(), List.of(), null, null);
+        return new PersonRecord(qid, sitelinks, name, null, Set.of(), List.of(), List.of(), null, null, Set.of());
     }
 
     private static NewPhoto photo(String file, int year) {
