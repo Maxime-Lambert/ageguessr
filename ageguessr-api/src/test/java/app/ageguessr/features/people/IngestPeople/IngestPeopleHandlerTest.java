@@ -59,6 +59,7 @@ class IngestPeopleHandlerTest {
         handler = new IngestPeopleHandler(wikidata, commons, downloader, reencoder, store, properties, clock);
         when(store.find(anyString())).thenReturn(Optional.empty());
         when(store.poolCounts()).thenReturn(PoolCounts.EMPTY);
+        when(store.curatorDecisions()).thenReturn(ReviewCounts.NONE);
         when(downloader.download(anyString())).thenReturn(new byte[] {9});
         when(reencoder.reencode(any())).thenReturn(IMAGE);
     }
@@ -733,6 +734,15 @@ class IngestPeopleHandlerTest {
         assertThat(report.balance()).containsEntry("EUROPE/FEMALE", "2/2");
         assertThat(report.photosAdded()).isEqualTo(1);
         verify(commons, never()).searchDepicting("Q2");
+    }
+
+    @Test
+    void measuresTheApprovalRateOnTheCuratorsDecisionsOnly() {
+        // 150 approved and 150 rejected by a curator: 0.5, whatever the pool holds.
+        when(store.curatorDecisions()).thenReturn(new ReviewCounts(150, 0, 150));
+        when(store.poolCounts()).thenReturn(pool(EUROPE_WOMEN, new ReviewCounts(150, 0, 400)));
+
+        assertThat(handler.analyze(12).toString()).contains("approval rate 0.50 observed on 300 reviewed photos");
     }
 
     @Test

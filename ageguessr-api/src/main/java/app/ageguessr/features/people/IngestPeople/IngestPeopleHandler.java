@@ -117,7 +117,7 @@ class IngestPeopleHandler {
     /** Where the stored pool stands against {@code targetPhotos}, without any network call. */
     PoolAnalysis analyze(int targetPhotos) {
         PoolCounts pool = store.poolCounts();
-        return PoolAnalysis.of(pool, approvalRate(pool), targetPhotos);
+        return PoolAnalysis.of(pool, approvalRate(false), targetPhotos);
     }
 
     /**
@@ -191,8 +191,10 @@ class IngestPeopleHandler {
         }
     }
 
-    private ApprovalRate approvalRate(PoolCounts pool) {
-        return ApprovalRate.of(pool.total(), properties.expectedApprovalRate());
+    /** From the curators' decisions only (PeopleStore.curatorDecisions); assumed for a dry run. */
+    private ApprovalRate approvalRate(boolean dryRun) {
+        return ApprovalRate.of(
+                dryRun ? ReviewCounts.NONE : store.curatorDecisions(), properties.expectedApprovalRate());
     }
 
     /**
@@ -230,7 +232,7 @@ class IngestPeopleHandler {
 
     private void balance(IngestPeopleCommand command, Run run, PoolCounts pool) {
         IngestReport report = run.report();
-        ApprovalRate rate = approvalRate(pool);
+        ApprovalRate rate = approvalRate(command.dryRun());
         log.info("Approval rate {}", rate);
         List<CellCursor> cursors = Cell.ALL.stream()
                 .filter(command.focus()::includes)

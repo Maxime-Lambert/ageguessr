@@ -65,6 +65,13 @@ class PeopleStore {
         return new PoolCounts(byCell, byAgeBand);
     }
 
+    /** Curators' decisions (approved, rejected by someone), for the approval rate. */
+    @Transactional(readOnly = true)
+    ReviewCounts curatorDecisions() {
+        PersonPhotoRepository.CuratorDecisions decisions = photos.countCuratorDecisions();
+        return new ReviewCounts(Math.toIntExact(decisions.approved()), 0, Math.toIntExact(decisions.rejected()));
+    }
+
     /** QIDs of every person still in the pool. */
     @Transactional(readOnly = true)
     List<String> storedWikidataIds() {

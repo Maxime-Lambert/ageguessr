@@ -61,6 +61,27 @@ public interface PersonPhotoRepository extends JpaRepository<PersonPhoto, UUID> 
             """)
     List<SmallImage> findSmallImages(@Param("minHeight") int minHeight);
 
+    /**
+     * The decisions of curators on photos of people not excluded: approved, and rejected by
+     * someone ({@code reviewedBy} set). Automatic rejections (--fix-small-images) are left
+     * out: the ingestion now refuses those photos upfront, so they say nothing about the
+     * photos to come.
+     */
+    @Query(
+            """
+            SELECT new app.ageguessr.features.people.PersonPhotoRepository$CuratorDecisions(
+                COALESCE(SUM(CASE WHEN ph.reviewStatus = app.ageguessr.features.people.ReviewStatus.APPROVED
+                    THEN 1 ELSE 0 END), 0),
+                COALESCE(SUM(CASE WHEN ph.reviewStatus = app.ageguessr.features.people.ReviewStatus.REJECTED
+                    AND ph.reviewedBy IS NOT NULL THEN 1 ELSE 0 END), 0))
+            FROM PersonPhoto ph, Person p
+            WHERE p.id = ph.personId
+              AND p.excluded = false
+            """)
+    CuratorDecisions countCuratorDecisions();
+
+    record CuratorDecisions(long approved, long rejected) {}
+
     /** How many photos of people not excluded there are at each age, per review status. */
     record AgeCount(int age, ReviewStatus status, long photos) {}
 

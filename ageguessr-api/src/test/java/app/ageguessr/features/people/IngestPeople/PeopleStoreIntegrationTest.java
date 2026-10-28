@@ -287,6 +287,38 @@ class PeopleStoreIntegrationTest {
     }
 
     @Test
+    void countsOnlyTheDecisionsOfCuratorsForTheApprovalRate() {
+        store.save(record("Q1", "Jane", 50), BIRTH, null, List.of(
+                photo("A.jpg", 1976), photo("B.jpg", 1986), photo("C.jpg", 1996), photo("D.jpg", 2006)));
+        UUID curator = jdbc.queryForObject(
+                "INSERT INTO users (email, username, password_hash) VALUES ('curator@x.com', 'curator', 'hash') RETURNING id",
+                UUID.class);
+        photos.findAll().forEach(p -> {
+            switch (p.getCommonsFile()) {
+                case "A.jpg" -> {
+                    p.setReviewStatus(ReviewStatus.APPROVED);
+                    p.setReviewedBy(curator);
+                }
+                case "B.jpg" -> {
+                    p.setReviewStatus(ReviewStatus.REJECTED);
+                    p.setReviewedBy(curator);
+                }
+                // Rejected automatically (too small): no curator.
+                case "C.jpg" -> p.setReviewStatus(ReviewStatus.REJECTED);
+                default -> {}
+            }
+            photos.save(p);
+        });
+
+        assertThat(store.curatorDecisions()).isEqualTo(new ReviewCounts(1, 0, 1));
+    }
+
+    @Test
+    void countsNoDecisionInAnEmptyPool() {
+        assertThat(store.curatorDecisions()).isEqualTo(ReviewCounts.NONE);
+    }
+
+    @Test
     void neverOverwritesTheReasonOfSomeoneAlreadyExcluded() {
         store.save(record("Q1", "Jane", 50), BIRTH, null, List.of(photo("A.jpg", 1976)));
         Person onRequest = people.findByWikidataId("Q1").orElseThrow();

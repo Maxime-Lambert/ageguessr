@@ -3,8 +3,9 @@ package app.ageguessr.features.people.IngestPeople;
 import java.util.Locale;
 
 /**
- * The share of photos the curation approves, used to count a pending photo as the
- * fraction of an approved one it is worth. Observed once enough photos have been
+ * The share of photos the curators approve, used to count a pending photo as the
+ * fraction of an approved one it is worth. Automatic rejections do not count (see
+ * PersonPhotoRepository.countCuratorDecisions). Observed once enough photos have been
  * reviewed, assumed (app.people.ingest.expected-approval-rate) before that. Never 0: a
  * pending photo worth nothing would keep a cell from ever filling, so an observed 0 (300
  * reviewed photos, none approved) falls back to the assumed rate.
