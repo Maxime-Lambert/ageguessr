@@ -3,7 +3,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PendingPhoto } from '../models';
 import { pendingPhoto } from '../testing';
-import { Curation } from './curation';
+import { Curation, MIN_IMAGE_HEIGHT } from './curation';
 
 describe('Curation', () => {
   let fixture: ComponentFixture<Curation>;
@@ -81,6 +81,32 @@ describe('Curation', () => {
     expect(page.querySelector('a[href*="commons.wikimedia.org"]')?.textContent).toContain(
       'Photo p1.jpg',
     );
+  });
+
+  it('shows the real size of the image once loaded, and warns when it is too small', () => {
+    start([pendingPhoto('p1')]);
+    const image = page.querySelector('img') as HTMLImageElement;
+    Object.defineProperty(image, 'naturalWidth', { value: 400 });
+    Object.defineProperty(image, 'naturalHeight', { value: 599 });
+
+    image.dispatchEvent(new Event('load'));
+    fixture.detectChanges();
+
+    expect(page.textContent).toContain('400 × 599 px');
+    expect(page.textContent).toContain('too small to play');
+  });
+
+  it('shows no warning for an image tall enough', () => {
+    start([pendingPhoto('p1')]);
+    const image = page.querySelector('img') as HTMLImageElement;
+    Object.defineProperty(image, 'naturalWidth', { value: 750 });
+    Object.defineProperty(image, 'naturalHeight', { value: MIN_IMAGE_HEIGHT });
+
+    image.dispatchEvent(new Event('load'));
+    fixture.detectChanges();
+
+    expect(page.textContent).toContain('750 × 600 px');
+    expect(page.textContent).not.toContain('too small to play');
   });
 
   it('reminds to reject a photo where the person looks under 18', () => {

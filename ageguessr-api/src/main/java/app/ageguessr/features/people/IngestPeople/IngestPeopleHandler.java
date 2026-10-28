@@ -1,16 +1,20 @@
 package app.ageguessr.features.people.IngestPeople;
 
 import app.ageguessr.features.people.Person;
+import app.ageguessr.features.people.PersonPhotoRepository;
+import app.ageguessr.features.people.ReviewStatus;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,9 +27,15 @@ import org.springframework.stereotype.Service;
  * the store: every person is processed as if new, and nothing is saved.
  *
  * <p>By default the pool is balanced: each {@link Cell} (continent of nationality ×
- * gender) has a quota of photos in play ({@link Cell#quota}), the cells taking turns one
+ * gender) has a quota of expected approved photos ({@link Cell#quota}): approved ones,
+ * plus pending and newly added ones at the {@link ApprovalRate}, so that one wave
+ * collects about what the curation will leave. The cells take turns one
  * person at a time, each walking its own ranking. A cell whose ranking runs out stays below its quota, and
  * the report says so. {@code --sample} walks the plain ranking instead, to measure the yield.
+ *
+ * <p>{@link IngestFocus} narrows a run: the occupation filters and the age floor go into
+ * the rankings ({@link RankingFilter}), the cells limit the balanced walk, and a valid
+ * photo outside the wanted age bands is left out.
  */
 @Slf4j
 @Service
@@ -59,19 +69,36 @@ class IngestPeopleHandler {
     }
 
     /**
-     * What one run carries from person to person. {@code photosByAgeBand}: photos in play
-     * per age band, in the database (none for a dry run) and added since, which
-     * PhotoSelector leans against.
+     * What one run carries from person to person. {@code photosByAgeBand}: photos still
+     * counting (pending or approved, not weighted by the approval rate) per age band, in
+     * the database (none for a dry run) and added since, which PhotoSelector leans
+     * against. {@code ranking}: who the rankings list. {@code editorialExclusions}: QIDs
+     * the editorial line keeps out.
      */
-    private record Run(LocalDate today, boolean dryRun, IngestReport report, Map<String, Integer> photosByAgeBand) {}
+    private record Run(
+            LocalDate today,
+            boolean dryRun,
+            IngestReport report,
+            Map<String, Integer> photosByAgeBand,
+            IngestFocus focus,
+            RankingFilter ranking,
+            Set<String> editorialExclusions) {}
 
     IngestReport handle(IngestPeopleCommand command) {
         IngestReport report = new IngestReport();
+        LocalDate today = LocalDate.now(clock);
+        PoolCounts pool = command.dryRun() ? PoolCounts.EMPTY : store.poolCounts();
+        Map<String, Integer> inPlayByAgeBand = new HashMap<>();
+        pool.byAgeBand().forEach((band, counts) -> inPlayByAgeBand.put(band, counts.inPlay()));
         Run run = new Run(
-                LocalDate.now(clock),
+                today,
                 command.dryRun(),
                 report,
-                new HashMap<>(command.dryRun() ? Map.of() : store.photosByAgeBand()));
+                inPlayByAgeBand,
+                command.focus(),
+                ranking(command.focus(), today),
+                wikidata.fetchEditorialExclusions().keySet());
+        log.info("Editorial line: {} people kept out", run.editorialExclusions().size());
         if (command.wikidataId() != null) {
             wikidata.fetchPerson(command.wikidataId())
                     .ifPresentOrElse(
@@ -82,16 +109,113 @@ class IngestPeopleHandler {
         if (command.sample() > 0) {
             walkRanking(command, run);
         } else {
-            balance(command, run);
+            balance(command, run, pool);
         }
         return report;
+    }
+
+    /** Where the stored pool stands against {@code targetPhotos}, without any network call. */
+    PoolAnalysis analyze(int targetPhotos) {
+        PoolCounts pool = store.poolCounts();
+        return PoolAnalysis.of(pool, approvalRate(false), targetPhotos);
+    }
+
+    /**
+     * Excludes the stored people the editorial line catches (people.exclusion_reason
+     * EDITORIAL_LINE), which deletes their photos, approved ones included. A dry run only
+     * counts. Excluded people never come back: the ingestion skips them anyway.
+     */
+    EditorialLineReport applyEditorialLine(boolean dryRun) {
+        Map<String, Set<EditorialLine.Criterion>> caught = wikidata.fetchEditorialExclusions();
+        List<String> matched = store.storedWikidataIds().stream()
+                .filter(caught::containsKey)
+                .sorted()
+                .toList();
+        Map<EditorialLine.Criterion, Integer> byCriterion = new EnumMap<>(EditorialLine.Criterion.class);
+        int photosDeleted = 0;
+        int approvedPhotosDeleted = 0;
+        for (String wikidataId : matched) {
+            caught.get(wikidataId).forEach(criterion -> byCriterion.merge(criterion, 1, Integer::sum));
+            ReviewCounts photos = store.photosOf(wikidataId);
+            photosDeleted += photos.approved() + photos.pending() + photos.rejected();
+            approvedPhotosDeleted += photos.approved();
+            if (!dryRun) {
+                store.excludeForEditorialLine(wikidataId);
+            }
+        }
+        return new EditorialLineReport(dryRun, matched, byCriterion, photosDeleted, approvedPhotosDeleted);
+    }
+
+    /**
+     * Stored photos under the minimum height, from before thumbnails were asked by height:
+     * each gets a taller copy of the same file when Commons has one (its review status
+     * stays), and is rejected otherwise.
+     */
+    SmallImagesReport fixSmallImages() {
+        int minHeight = properties.minImageHeight();
+        List<PersonPhotoRepository.SmallImage> small = store.smallImages(minHeight);
+        Map<String, CommonsFile> files = small.isEmpty()
+                ? Map.of()
+                : commons.fetchFiles(small.stream().map(s -> FILE_PREFIX + s.commonsFile()).toList());
+        int enlarged = 0;
+        int rejected = 0;
+        int approvedRejected = 0;
+        for (PersonPhotoRepository.SmallImage photo : small) {
+            Optional<ImageReencoder.Reencoded> taller =
+                    tallerCopy(files.get(FILE_PREFIX + photo.commonsFile()), minHeight);
+            if (taller.isPresent()) {
+                store.replaceImage(photo.photoId(), taller.get());
+                enlarged++;
+            } else {
+                store.rejectTooSmall(photo.photoId());
+                rejected++;
+                if (photo.status() == ReviewStatus.APPROVED) {
+                    approvedRejected++;
+                }
+            }
+        }
+        return new SmallImagesReport(small.size(), enlarged, rejected, approvedRejected);
+    }
+
+    /** A copy at least {@code minHeight} high; empty if the file is gone, too small or unreadable. */
+    private Optional<ImageReencoder.Reencoded> tallerCopy(CommonsFile file, int minHeight) {
+        if (file == null || file.thumbnailUrl() == null || file.thumbnailHeight() < minHeight) {
+            return Optional.empty();
+        }
+        try {
+            ImageReencoder.Reencoded image = reencoder.reencode(downloader.download(file.thumbnailUrl()));
+            return image.height() >= minHeight ? Optional.of(image) : Optional.empty();
+        } catch (ImageRejectedException e) {
+            log.warn("{}: no usable taller copy ({})", file.pageId(), e.reason());
+            return Optional.empty();
+        }
+    }
+
+    /** From the curators' decisions only (PeopleStore.curatorDecisions); assumed for a dry run. */
+    private ApprovalRate approvalRate(boolean dryRun) {
+        return ApprovalRate.of(
+                dryRun ? ReviewCounts.NONE : store.curatorDecisions(), properties.expectedApprovalRate());
+    }
+
+    /**
+     * Wanting only ages from A means wanting people at least A years old today: anyone
+     * born after {@code today.year - A} cannot have such a photo yet, so the rankings
+     * skip them.
+     */
+    private RankingFilter ranking(IngestFocus focus, LocalDate today) {
+        OptionalInt youngest = focus.youngestAge();
+        return new RankingFilter(
+                properties.minBirthYear(),
+                youngest.isPresent() ? OptionalInt.of(today.getYear() - youngest.getAsInt()) : OptionalInt.empty(),
+                focus.excludedOccupations(),
+                focus.onlyOccupations());
     }
 
     private void walkRanking(IngestPeopleCommand command, Run run) {
         IngestReport report = run.report();
         int offset = command.offset();
         while (!done(command, report)) {
-            List<PersonRecord> page = wikidata.fetchPeople(offset, properties.pageSize(), properties.minBirthYear());
+            List<PersonRecord> page = wikidata.fetchPeople(offset, properties.pageSize(), run.ranking());
             if (page.isEmpty()) {
                 log.warn("Wikidata list exhausted after {} people", report.peopleSeen());
                 break;
@@ -106,12 +230,14 @@ class IngestPeopleHandler {
         }
     }
 
-    private void balance(IngestPeopleCommand command, Run run) {
+    private void balance(IngestPeopleCommand command, Run run, PoolCounts pool) {
         IngestReport report = run.report();
-        Map<Cell, Integer> stored = command.dryRun() ? Map.of() : store.photosByCell();
+        ApprovalRate rate = approvalRate(command.dryRun());
+        log.info("Approval rate {}", rate);
         List<CellCursor> cursors = Cell.ALL.stream()
+                .filter(command.focus()::includes)
                 .map(cell -> new CellCursor(
-                        cell, cell.quota(command.targetPhotos()), stored.getOrDefault(cell, 0)))
+                        cell, cell.quota(command.targetPhotos()), pool.cell(cell).expected(rate), run.ranking()))
                 .toList();
         List<CellCursor> open = new ArrayList<>(cursors.stream().filter(c -> !c.full()).toList());
         while (!open.isEmpty()) {
@@ -120,7 +246,7 @@ class IngestPeopleHandler {
                 if (next.isEmpty()) {
                     cursor.exhausted = true;
                     open.remove(cursor);
-                    log.warn("Cell {} exhausted at {}/{} photos", cursor.cell, cursor.photos, cursor.quota);
+                    log.warn("Cell {} exhausted at {}/{} photos", cursor.cell, Math.round(cursor.expected), cursor.quota);
                     continue;
                 }
                 PersonRecord person = next.get();
@@ -128,38 +254,41 @@ class IngestPeopleHandler {
                 if (!Cell.of(person).map(cursor.cell::equals).orElse(false)) {
                     continue;
                 }
-                cursor.photos += process(person, run);
+                // A new photo is pending: worth the approval rate of an approved one.
+                cursor.expected += process(person, run) * rate.value();
                 if (cursor.full()) {
                     open.remove(cursor);
                 }
             }
         }
-        cursors.forEach(c -> report.cellStatus(c.cell, c.photos, c.quota, c.exhausted));
+        cursors.forEach(c -> report.cellStatus(c.cell, (int) Math.round(c.expected), c.quota, c.exhausted));
     }
 
-    /** Where one cell is in its own ranking, and how many photos it already holds. */
+    /** Where one cell is in its own ranking, and how many approved photos it can expect. */
     private final class CellCursor {
         private final Cell cell;
         private final int quota;
+        private final RankingFilter ranking;
         private final Deque<PersonRecord> buffer = new ArrayDeque<>();
-        private int photos;
+        private double expected;
         private int offset;
         private boolean exhausted;
 
-        private CellCursor(Cell cell, int quota, int storedPhotos) {
+        private CellCursor(Cell cell, int quota, double expected, RankingFilter ranking) {
             this.cell = cell;
             this.quota = quota;
-            this.photos = storedPhotos;
+            this.expected = expected;
+            this.ranking = ranking;
         }
 
         private boolean full() {
-            return photos >= quota;
+            return expected >= quota;
         }
 
         /** The next person of the cell's ranking, fetching a page when needed; empty at the end. */
         private Optional<PersonRecord> next() {
             if (buffer.isEmpty() && !exhausted) {
-                buffer.addAll(wikidata.fetchCell(cell, offset, properties.pageSize(), properties.minBirthYear()));
+                buffer.addAll(wikidata.fetchCell(cell, offset, properties.pageSize(), ranking));
                 offset += properties.pageSize();
             }
             return Optional.ofNullable(buffer.pollFirst());
@@ -191,6 +320,10 @@ class IngestPeopleHandler {
     }
 
     private Optional<PersonSkip> ingest(PersonRecord record, Run run) {
+        // First, before the store or Commons: a rule, which --qid does not bypass either.
+        if (run.editorialExclusions().contains(record.wikidataId())) {
+            return Optional.of(PersonSkip.EDITORIAL_LINE);
+        }
         boolean dryRun = run.dryRun();
         Optional<Person> existing = dryRun ? Optional.empty() : store.find(record.wikidataId());
         if (existing.map(Person::isExcluded).orElse(false)) {
@@ -259,7 +392,7 @@ class IngestPeopleHandler {
                 continue;
             }
             MediaInfo info = mediaInfo.getOrDefault(file.pageId(), MediaInfo.NONE);
-            Optional<PhotoRejection> refused = PhotoCandidateFilter.check(file, info);
+            Optional<PhotoRejection> refused = PhotoCandidateFilter.check(file, info, properties.minImageHeight());
             if (refused.isPresent()) {
                 report.photoRejected(refused.get().name());
                 continue;
@@ -274,7 +407,12 @@ class IngestPeopleHandler {
                 case PhotoEvaluation.Rejected rejected -> report.photoRejected(rejected.reason().name());
                 case PhotoEvaluation.Accepted accepted -> {
                     report.validPhoto(accepted.age());
-                    candidates.add(new PhotoSelector.Candidate(file.title(), mainImages.contains(file.title()), accepted));
+                    if (run.focus().wantsAge(accepted.age())) {
+                        candidates.add(
+                                new PhotoSelector.Candidate(file.title(), mainImages.contains(file.title()), accepted));
+                    } else {
+                        report.photoRejected(PhotoRejection.AGE_BAND_NOT_WANTED.name());
+                    }
                 }
             }
         }

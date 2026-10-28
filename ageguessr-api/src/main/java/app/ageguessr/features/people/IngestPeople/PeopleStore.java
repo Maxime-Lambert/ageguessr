@@ -1,5 +1,6 @@
 package app.ageguessr.features.people.IngestPeople;
 
+import app.ageguessr.features.people.ExclusionReason;
 import app.ageguessr.features.people.Person;
 import app.ageguessr.features.people.PersonPhoto;
 import app.ageguessr.features.people.PersonPhotoRepository;
@@ -45,22 +46,88 @@ class PeopleStore {
     }
 
     /**
-     * Photos already counting toward each cell (see PersonRepository.countPhotosByCell):
-     * a rerun, after a curation pass for instance, tops each cell back up to its quota.
+     * The stored photos per cell and per age band, by review status. A rerun, after a
+     * curation pass for instance, tops each cell back up to its quota of expected
+     * approved photos, and keeps leaning toward the rare ages.
      */
     @Transactional(readOnly = true)
-    Map<Cell, Integer> photosByCell() {
-        return people.countPhotosByCell().stream()
+    PoolCounts poolCounts() {
+        Map<Cell, ReviewCounts> byCell = people.countPhotosByCell().stream()
                 .collect(Collectors.toMap(
-                        c -> new Cell(c.continent(), c.gender()), c -> Math.toIntExact(c.photos())));
+                        c -> new Cell(c.continent(), c.gender()),
+                        c -> ReviewCounts.of(c.status(), Math.toIntExact(c.photos())),
+                        ReviewCounts::plus));
+        Map<String, ReviewCounts> byAgeBand = photos.countByAge().stream()
+                .collect(Collectors.toMap(
+                        c -> AgeBand.of(c.age()),
+                        c -> ReviewCounts.of(c.status(), Math.toIntExact(c.photos())),
+                        ReviewCounts::plus));
+        return new PoolCounts(byCell, byAgeBand);
     }
 
-    /** Photos still in play per age band, so that a rerun keeps leaning toward the rare ages. */
+    /** Curators' decisions (approved, rejected by someone), for the approval rate. */
     @Transactional(readOnly = true)
-    Map<String, Integer> photosByAgeBand() {
-        return photos.countByAge().stream()
-                .collect(Collectors.toMap(
-                        c -> AgeBand.of(c.age()), c -> Math.toIntExact(c.photos()), Integer::sum));
+    ReviewCounts curatorDecisions() {
+        PersonPhotoRepository.CuratorDecisions decisions = photos.countCuratorDecisions();
+        return new ReviewCounts(Math.toIntExact(decisions.approved()), 0, Math.toIntExact(decisions.rejected()));
+    }
+
+    /** QIDs of every person still in the pool. */
+    @Transactional(readOnly = true)
+    List<String> storedWikidataIds() {
+        return people.findWikidataIdsNotExcluded();
+    }
+
+    /** A person's photos per review status. */
+    @Transactional(readOnly = true)
+    ReviewCounts photosOf(String wikidataId) {
+        return people.findByWikidataId(wikidataId)
+                .map(person -> photos.findByPersonId(person.getId()).stream()
+                        .map(photo -> ReviewCounts.of(photo.getReviewStatus(), 1))
+                        .reduce(ReviewCounts.NONE, ReviewCounts::plus))
+                .orElse(ReviewCounts.NONE);
+    }
+
+    /**
+     * Excludes a person under the editorial line: the V4 trigger deletes their photos,
+     * approved ones too. Someone already excluded is left as is: a removal request
+     * (MANUAL) made meanwhile on the curation page must keep its reason.
+     */
+    @Transactional
+    void excludeForEditorialLine(String wikidataId) {
+        Person person = people.findByWikidataId(wikidataId).orElseThrow();
+        if (person.isExcluded()) {
+            return;
+        }
+        person.exclude(ExclusionReason.EDITORIAL_LINE);
+        people.saveAndFlush(person);
+    }
+
+    /** Photos still counting whose image is shorter than {@code minHeight}, by file name. */
+    @Transactional(readOnly = true)
+    List<PersonPhotoRepository.SmallImage> smallImages(int minHeight) {
+        return photos.findSmallImages(minHeight);
+    }
+
+    /** Swaps a photo's image for a larger copy of the same file; its review status stays. */
+    @Transactional
+    void replaceImage(UUID photoId, ImageReencoder.Reencoded image) {
+        PhotoImage stored = images.findById(photoId).orElseThrow();
+        stored.setContent(image.content());
+        stored.setWidth(image.width());
+        stored.setHeight(image.height());
+    }
+
+    /**
+     * Rejects a photo without a curator ({@code reviewed_by} stays empty): its file has no
+     * copy tall enough. An approved photo is rejected too, it cannot be shown.
+     */
+    @Transactional
+    void rejectTooSmall(UUID photoId) {
+        PersonPhoto photo = photos.findById(photoId).orElseThrow();
+        photo.setReviewStatus(ReviewStatus.REJECTED);
+        photo.setReviewedAt(Instant.now(clock));
+        photo.setReviewedBy(null);
     }
 
     /** What a person already has, as far as the next ingestion is concerned. */

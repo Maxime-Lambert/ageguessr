@@ -1,5 +1,7 @@
 package app.ageguessr.features.people.IngestPeople;
 
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Positive;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -15,8 +17,15 @@ public record IngestProperties(
         @Positive int minYearsBetweenPhotos,
         // CirrusSearch caps srlimit at 500, and 50 already covers nearly everyone (spike).
         @Positive @Max(500) int depictsSearchLimit,
-        @Positive int thumbnailWidth,
+        // Thumbnails are asked by height: the game shows portraits, and a landscape asked
+        // by width (800) came back 533 px high from a large original.
+        @Positive int thumbnailHeight,
+        // Below this, a photo is too small to show (user decision, 2026-10-28).
+        @Positive int minImageHeight,
         @Positive long maxImageBytes,
         // Older people almost never have a photo with a corroborated date, and the game
         // wants recent, good quality photos: the list starts at this birth year.
-        @Positive int minBirthYear) {}
+        @Positive int minBirthYear,
+        // Share of photos the curation is expected to approve until enough are reviewed
+        // to observe it (ApprovalRate): ~43 % rejected in the spike, 0.4 to be safe.
+        @DecimalMin("0.05") @DecimalMax("1.0") double expectedApprovalRate) {}

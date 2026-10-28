@@ -363,6 +363,16 @@ ponctuelle**, pas pendant les parties :
   cours), sans jamais renoncer à une photo que les règles d'écart permettent. Mesure
   du 2026-10-27 : la répartition est déjà assez plate de 18 à 73 ans, le manque est
   au-delà de 74 ans. L'équilibre fin se fera au tirage quotidien (Semaine 3).
+- **Hauteur minimale de 600 px** (décision du 2026-10-28, à ajuster) : la hauteur
+  compte plus que la largeur, le jeu affichant un portrait. Les miniatures sont
+  demandées à Commons **en hauteur** (`app.people.ingest.thumbnail-height`, 1 000 px) :
+  en largeur (800 px), une photo paysage d'un grand original revenait à 533 px de haut.
+  Commons n'agrandit jamais, donc une miniature sous 600 px signale un original trop
+  petit : rejet `TOO_SMALL` (`app.people.ingest.min-image-height`) avant tout
+  téléchargement. Les photos stockées avant ce changement se corrigent avec
+  `--fix-small-images` : miniature plus haute si Commons en a une (statut inchangé),
+  rejet automatique sinon (`reviewed_by` vide), même approuvée. La page de curation
+  affiche la taille réelle de l'image et avertit sous 600 px.
 - **Une photo par tranche d'au moins 10 ans** (en âge et en année civile) pour une même
   personne, avec un plafond de 5. Les deux valeurs sont des propriétés
   (`app.people.ingest.*`).
@@ -376,15 +386,39 @@ ponctuelle**, pas pendant les parties :
     `reviewed_by`).
   - Personnes vivantes et décédées s'approuvent de la même façon (voir « Droit à
     l'image » plus bas).
-- **Ligne éditoriale** (décision du 2026-10-26) : rien qui puisse raviver un
-  traumatisme. Sont exclus, avec le bouton d'exclusion de la page de curation :
-  - les auteurs de violences de masse : dictateurs, criminels de guerre, terroristes ;
-  - les dirigeants d'un pays actuellement en guerre.
-
-  Les condamnations non violentes (fraude, corruption…) ne sont pas un motif
-  d'exclusion. Le rappel est affiché sur la page de curation.
-  - Pas de filtre automatique : la propriété Wikidata « condamné pour » (`P1399`)
-    signale Jésus, Alan Turing, Galilée ou Messi, et pas Staline ni Mao.
+- **Ligne éditoriale** (décision du 2026-10-26, automatisée et élargie le 2026-10-28) :
+  rien qui puisse raviver un traumatisme. Les condamnations non violentes (fraude,
+  corruption…) ne sont pas un motif d'exclusion.
+  - **Critères automatiques** (`EditorialLine`, détail et mesures dans
+    `plans/done/editorial-line.md`) : condamné ou poursuivi (`P1399`, `P1595`) pour
+    crime de guerre, crime contre l'humanité, génocide, terrorisme, crime sexuel,
+    pédocriminalité, traite ou meurtre ; dictateur (`P106`) ; membre d'un parti
+    d'extrême droite (alignement `P1387` ou idéologie `P1142`) ; chef d'État ou de
+    gouvernement d'un État classé « autoritaire » par l'indice de démocratie EIU 2020,
+    ou d'un État autoritaire disparu (URSS, RDA, Yougoslavie, Zaïre, Irak baasiste).
+    Volontairement larges : une exclusion de trop ne coûte rien au jeu (Gorbatchev ou
+    Aung San Suu Kyi sont exclus aussi).
+  - **Des critères, jamais une liste de noms** : le dépôt est public, et accoler un nom
+    à un crime n'est pas à nous de le publier. Le résultat (des exclusions) vit en base.
+  - Pas « condamné pour » en général : `P1399` signale Alan Turing (indécence) ou une
+    fraude fiscale. Seuls les crimes listés comptent, sous-classes comprises.
+  - Chaque vague charge la liste (~45 000 QID, < 10 s) et écarte ces personnes avant
+    tout appel à Commons (`EDITORIAL_LINE`), même avec `--qid`.
+    `--apply-editorial-line [--dry-run]` exclut celles déjà en base (motif
+    `EDITORIAL_LINE`, leurs photos sont effacées, même approuvées).
+  - **Restent manuels**, avec le bouton d'exclusion de la page de curation (motif
+    `MANUAL`) : les dirigeants d'un pays actuellement en guerre (aucune source stable),
+    et ce que Wikidata ignore (accusations graves, violences de masse sans
+    condamnation). Le rappel est affiché sur la page de curation.
+  - `people.exclusion_reason` (V10) distingue `MANUAL` (dont les demandes de retrait)
+    d'`EDITORIAL_LINE` : les exclusions automatiques peuvent être revues si les
+    critères changent, sans jamais toucher à une demande de retrait.
+  - **RGPD** : les critères touchent à des opinions politiques (art. 9) et à des
+    condamnations (art. 10). Les informations sont publiques et ne servent qu'à ne rien
+    montrer de ces personnes ; rien n'en est conservé, seul le motif générique
+    `EDITORIAL_LINE` (sans le critère) l'est. La section 8 de `/privacy` (EN et FR) le
+    dit depuis le 2026-10-28. Les logs d'une vraie exclusion ne listent pas les QID
+    (seulement en `--dry-run`, pour relecture).
 - **Demande de retrait** : depuis la page de curation, recherche par nom (insensible
   aux accents, extension `unaccent`) ou par QID, puis « Exclure ». Les photos sont
   effacées par le trigger V4 et l'exclusion est confirmée à la personne sous un mois.
@@ -397,9 +431,11 @@ ponctuelle**, pas pendant les parties :
   et une même photo pas rejouée avant 3 ans (règle du tirage quotidien, Semaine 3 :
   à 3 photos par jour, 3 ans en consomment 3 285). La cible de la collecte
   (`--limit`, `app.people.ingest.target-photos`, 5 000 par défaut) compte les photos
-  **en jeu** (en attente ou approuvées) : après une passe de curation, les rejets font
-  baisser ce total, et une relance complète chaque case. Le cycle collecte → curation
-  → collecte converge vers 5 000 photos approuvées.
+  **approuvées attendues** (décision du 2026-10-28) : approuvées, plus en attente au
+  taux d'approbation. Le taux est observé dès 300 photos revues, supposé avant
+  (`app.people.ingest.expected-approval-rate`, 0,4). Une case à qui il manque 100 photos
+  approuvées en collecte donc ~250 en une vague, au lieu de converger par relances
+  successives. Le but est le bon ordre de grandeur par case, pas la photo près.
 - **Pool équilibré** (décision du 2026-10-26) : autant de photos de femmes que
   d'hommes, et autant par continent de nationalité.
   - 18 cases : 6 continents (Afrique, Amérique du Nord, Amérique du Sud, Asie, Europe,
@@ -417,11 +453,34 @@ ponctuelle**, pas pendant les parties :
     Amérique du Nord, « Insular Oceania » et continent australien comme Océanie.
     Plusieurs continents : le moins représenté, dans l'ordre fixe Océanie, Afrique,
     Amérique du Sud, Asie, Amérique du Nord, Europe. Un Russe compte donc pour l'Asie.
-  - Les photos déjà en base (encore en jeu, de personnes non exclues) comptent dans
-    leur case : une relance reprend là où l'ingestion s'était arrêtée.
+  - Les photos déjà en base (de personnes non exclues) comptent dans leur case, au taux
+    d'approbation si elles sont en attente : une relance reprend là où l'ingestion
+    s'était arrêtée.
+- **Vagues ciblées** (décision du 2026-10-28) : après la première passe en prod, pleine
+  de footballeurs et pauvre en plus de 74 ans, une vague peut viser ce qui manque et
+  écarter ce qui revient trop. Options de ligne de commande, pas de propriétés : le
+  ciblage change d'une vague à l'autre.
+  - `--exclude-occupations` / `--only-occupations` (QID de `P106`) : filtre dans la
+    requête de classement QLever. Une personne écartée n'est jamais examinée. Toute
+    personne ayant eu la profession est écartée, même avec une autre carrière :
+    Wikidata ne dit pas laquelle la photo illustre. Les QID sont validés avant d'entrer
+    dans le texte SPARQL.
+  - `--cells` : ne parcourt que ces cases.
+  - `--age-bands` : ne garde que les photos de ces tranches (`AGE_BAND_NOT_WANTED` sinon),
+    et ne classe que les personnes assez âgées pour en avoir (année de naissance
+    maximale dans la requête).
+  - Le rapport compte les professions des personnes gardées (top 15, en QID) : cinéma
+    et politique ne sont pas écartés, un tapis rouge ou une tribune datant peu une
+    photo, contrairement à un maillot. À revoir sur les chiffres.
+  - `--analyze` lit la base seule : par case et par tranche, approuvées / en attente /
+    rejetées et approuvées attendues, taux d'approbation, et la prochaine vague à
+    lancer (les cases d'abord, puis les tranches sous la moitié de la tranche
+    médiane, à hisser vers la médiane).
 - **Commande** : profil Spring `ingest` (`IngestPeopleRunner`), idempotente : une
   relance n'ajoute que ce qui manque.
-  - `--limit=<n>` : cible de l'ingestion équilibrée, en photos en jeu ;
+  - `--limit=<n>` : cible de l'ingestion équilibrée, en photos approuvées attendues ;
+  - `--analyze` : bilan du pool et prochaine vague, sans appel réseau ;
+  - options de ciblage, voir « Vagues ciblées » ;
   - `--qid=<QID>` : une seule personne ;
   - `--sample=<n> [--offset=<rang>]` : n personnes du classement global à partir d'un
     rang, pour mesurer le rendement d'une partie de la liste ;

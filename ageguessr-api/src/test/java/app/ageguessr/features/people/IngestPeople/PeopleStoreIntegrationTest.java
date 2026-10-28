@@ -5,20 +5,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 import app.ageguessr.TestcontainersConfiguration;
 import app.ageguessr.features.people.Continent;
 import app.ageguessr.features.people.Gender;
+import app.ageguessr.features.people.ExclusionReason;
 import app.ageguessr.features.people.Person;
 import app.ageguessr.features.people.PersonPhoto;
 import app.ageguessr.features.people.PersonPhotoRepository;
 import app.ageguessr.features.people.PersonRepository;
 import app.ageguessr.features.people.PhotoDateSource;
+import app.ageguessr.features.people.PhotoImage;
 import app.ageguessr.features.people.PhotoImageRepository;
 import app.ageguessr.features.people.ReviewStatus;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 
@@ -45,9 +49,15 @@ class PeopleStoreIntegrationTest {
     @Autowired
     private PhotoImageRepository images;
 
+    // Plain SQL for the curator account: features/people must not depend on features/auth
+    // (ArchUnit), tests included.
+    @Autowired
+    private JdbcTemplate jdbc;
+
     @AfterEach
     void cleanUp() {
         people.deleteAll();
+        jdbc.update("DELETE FROM users WHERE email = 'curator@x.com'");
     }
 
     @Test
@@ -81,7 +91,7 @@ class PeopleStoreIntegrationTest {
         Person first = people.findByWikidataId("Q1").orElseThrow();
 
         store.save(
-                new PersonRecord("Q1", 60, "Jane Doe", "Jeanne Doe", Set.of(), List.of(), List.of(), null, null),
+                new PersonRecord("Q1", 60, "Jane Doe", "Jeanne Doe", Set.of(), List.of(), List.of(), null, null, Set.of()),
                 BIRTH,
                 LocalDate.of(2020, 1, 1),
                 List.of(photo("B.jpg", 1990)));
@@ -108,7 +118,7 @@ class PeopleStoreIntegrationTest {
 
         store.save(
                 new PersonRecord(
-                        "Q1", 50, "Jane", null, Set.of(), List.of(), List.of(), Gender.FEMALE, Continent.AFRICA),
+                        "Q1", 50, "Jane", null, Set.of(), List.of(), List.of(), Gender.FEMALE, Continent.AFRICA, Set.of()),
                 BIRTH,
                 null,
                 List.of());
@@ -119,11 +129,11 @@ class PeopleStoreIntegrationTest {
     }
 
     @Test
-    void countsPerCellOnlyThePhotosStillInPlayOfPeopleNotExcluded() {
+    void countsPerCellAndStatusThePhotosOfPeopleNotExcluded() {
         store.save(person("Q1", Gender.FEMALE, Continent.AFRICA), BIRTH, null, List.of(photo("A.jpg", 1976)));
         store.save(person("Q2", Gender.FEMALE, Continent.AFRICA), BIRTH, null, List.of(photo("B.jpg", 1976)));
         store.save(person("Q3", Gender.MALE, Continent.ASIA), BIRTH, null, List.of(photo("C.jpg", 1976)));
-        // Not counted: no photo, only a rejected photo, excluded, cell unknown.
+        // Q4 has no photo, Q5 only a rejected one. Not counted: excluded, cell unknown.
         store.save(person("Q4", Gender.FEMALE, Continent.AFRICA), BIRTH, null, List.of());
         store.save(person("Q5", Gender.FEMALE, Continent.AFRICA), BIRTH, null, List.of(photo("E.jpg", 1976)));
         photos.findAll().stream()
@@ -134,16 +144,18 @@ class PeopleStoreIntegrationTest {
                 });
         store.save(person("Q6", Gender.FEMALE, Continent.AFRICA), BIRTH, null, List.of(photo("F.jpg", 1976)));
         Person excluded = people.findByWikidataId("Q6").orElseThrow();
-        excluded.setExcluded(true);
+        excluded.exclude(ExclusionReason.MANUAL);
         people.save(excluded);
         store.save(record("Q7", "Unknown", 50), BIRTH, null, List.of(photo("G.jpg", 1976)));
 
-        assertThat(store.photosByCell())
-                .isEqualTo(Map.of(new Cell(Continent.AFRICA, Gender.FEMALE), 2, new Cell(Continent.ASIA, Gender.MALE), 1));
+        assertThat(store.poolCounts().byCell())
+                .isEqualTo(Map.of(
+                        new Cell(Continent.AFRICA, Gender.FEMALE), new ReviewCounts(0, 2, 1),
+                        new Cell(Continent.ASIA, Gender.MALE), new ReviewCounts(0, 1, 0)));
     }
 
     @Test
-    void countsThePhotosStillInPlayPerAgeBand() {
+    void countsThePhotosPerAgeBandAndStatus() {
         // Born 1950: 26 in 1976, 30 in 1980, 40 in 1990.
         store.save(record("Q1", "Jane", 50), BIRTH, null, List.of(photo("A.jpg", 1976), photo("B.jpg", 1990)));
         store.save(record("Q2", "Sam", 50), BIRTH, null, List.of(photo("C.jpg", 1980), photo("D.jpg", 1990)));
@@ -155,10 +167,19 @@ class PeopleStoreIntegrationTest {
                 });
         store.save(record("Q3", "Excluded", 50), BIRTH, null, List.of(photo("E.jpg", 1980)));
         Person excluded = people.findByWikidataId("Q3").orElseThrow();
-        excluded.setExcluded(true);
+        excluded.exclude(ExclusionReason.MANUAL);
         people.save(excluded);
 
-        assertThat(store.photosByAgeBand()).isEqualTo(Map.of("26-33", 2, "34-41", 1));
+        Person approvedOne = people.findByWikidataId("Q1").orElseThrow();
+        photos.findByPersonId(approvedOne.getId()).stream()
+                .filter(p -> p.getCommonsFile().equals("A.jpg"))
+                .forEach(p -> {
+                    p.setReviewStatus(ReviewStatus.APPROVED);
+                    photos.save(p);
+                });
+
+        assertThat(store.poolCounts().byAgeBand())
+                .isEqualTo(Map.of("26-33", new ReviewCounts(1, 1, 0), "34-41", new ReviewCounts(0, 1, 1)));
     }
 
     @Test
@@ -195,14 +216,125 @@ class PeopleStoreIntegrationTest {
     }
 
     private static PersonRecord person(String qid, Gender gender, Continent continent) {
-        return new PersonRecord(qid, 50, qid, null, Set.of(), List.of(), List.of(), gender, continent);
+        return new PersonRecord(qid, 50, qid, null, Set.of(), List.of(), List.of(), gender, continent, Set.of());
     }
 
     private static PersonRecord record(String qid, String name, int sitelinks) {
-        return new PersonRecord(qid, sitelinks, name, null, Set.of(), List.of(), List.of(), null, null);
+        return new PersonRecord(qid, sitelinks, name, null, Set.of(), List.of(), List.of(), null, null, Set.of());
+    }
+
+    @Test
+    void findsTheSmallImagesStillCountingThenEnlargesOrRejectsThem() {
+        store.save(record("Q1", "Jane", 50), BIRTH, null, List.of(
+                photo("Small.jpg", 1976, 500), photo("Big.jpg", 1990, 1000), photo("Gone.jpg", 2005, 400)));
+        photos.findAll().stream()
+                .filter(p -> p.getCommonsFile().equals("Gone.jpg"))
+                .forEach(p -> {
+                    p.setReviewStatus(ReviewStatus.REJECTED);
+                    photos.save(p);
+                });
+        PersonPhoto small = photos.findAll().stream()
+                .filter(p -> p.getCommonsFile().equals("Small.jpg"))
+                .findFirst()
+                .orElseThrow();
+        small.setReviewStatus(ReviewStatus.APPROVED);
+        // A curator approved it: an automatic rejection must not keep their name on it.
+        UUID curator = jdbc.queryForObject(
+                "INSERT INTO users (email, username, password_hash) VALUES ('curator@x.com', 'curator', 'hash') RETURNING id",
+                UUID.class);
+        small.setReviewedBy(curator);
+        photos.save(small);
+
+        assertThat(store.smallImages(600))
+                .containsExactly(new PersonPhotoRepository.SmallImage(small.getId(), "Small.jpg", ReviewStatus.APPROVED));
+
+        store.replaceImage(small.getId(), new ImageReencoder.Reencoded(new byte[] {4, 5}, 900, 1000));
+        assertThat(images.findById(small.getId()).orElseThrow())
+                .extracting(PhotoImage::getContent, PhotoImage::getWidth, PhotoImage::getHeight)
+                .containsExactly(new byte[] {4, 5}, 900, 1000);
+        assertThat(photos.findById(small.getId()).orElseThrow().getReviewStatus()).isEqualTo(ReviewStatus.APPROVED);
+
+        store.rejectTooSmall(small.getId());
+        PersonPhoto rejected = photos.findById(small.getId()).orElseThrow();
+        assertThat(rejected.getReviewStatus()).isEqualTo(ReviewStatus.REJECTED);
+        assertThat(rejected.getReviewedAt()).isNotNull();
+        assertThat(rejected.getReviewedBy()).isNull();
+        assertThat(store.smallImages(600)).isEmpty();
+    }
+
+    @Test
+    void excludesAPersonUnderTheEditorialLineAndTheTriggerDeletesTheirPhotos() {
+        store.save(record("Q1", "Jane", 50), BIRTH, null, List.of(photo("A.jpg", 1976), photo("B.jpg", 1990)));
+        store.save(record("Q2", "Sam", 50), BIRTH, null, List.of(photo("C.jpg", 1976)));
+        PersonPhoto approved = photos.findAll().stream()
+                .filter(p -> p.getCommonsFile().equals("A.jpg"))
+                .findFirst()
+                .orElseThrow();
+        approved.setReviewStatus(ReviewStatus.APPROVED);
+        photos.save(approved);
+
+        assertThat(store.storedWikidataIds()).containsExactlyInAnyOrder("Q1", "Q2");
+        assertThat(store.photosOf("Q1")).isEqualTo(new ReviewCounts(1, 1, 0));
+        assertThat(store.photosOf("Q404")).isEqualTo(ReviewCounts.NONE);
+
+        store.excludeForEditorialLine("Q1");
+
+        Person excluded = people.findByWikidataId("Q1").orElseThrow();
+        assertThat(excluded.isExcluded()).isTrue();
+        assertThat(excluded.getExclusionReason()).isEqualTo(ExclusionReason.EDITORIAL_LINE);
+        assertThat(photos.findByPersonId(excluded.getId())).isEmpty();
+        assertThat(store.storedWikidataIds()).containsExactly("Q2");
+    }
+
+    @Test
+    void countsOnlyTheDecisionsOfCuratorsForTheApprovalRate() {
+        store.save(record("Q1", "Jane", 50), BIRTH, null, List.of(
+                photo("A.jpg", 1976), photo("B.jpg", 1986), photo("C.jpg", 1996), photo("D.jpg", 2006)));
+        UUID curator = jdbc.queryForObject(
+                "INSERT INTO users (email, username, password_hash) VALUES ('curator@x.com', 'curator', 'hash') RETURNING id",
+                UUID.class);
+        photos.findAll().forEach(p -> {
+            switch (p.getCommonsFile()) {
+                case "A.jpg" -> {
+                    p.setReviewStatus(ReviewStatus.APPROVED);
+                    p.setReviewedBy(curator);
+                }
+                case "B.jpg" -> {
+                    p.setReviewStatus(ReviewStatus.REJECTED);
+                    p.setReviewedBy(curator);
+                }
+                // Rejected automatically (too small): no curator.
+                case "C.jpg" -> p.setReviewStatus(ReviewStatus.REJECTED);
+                default -> {}
+            }
+            photos.save(p);
+        });
+
+        assertThat(store.curatorDecisions()).isEqualTo(new ReviewCounts(1, 0, 1));
+    }
+
+    @Test
+    void countsNoDecisionInAnEmptyPool() {
+        assertThat(store.curatorDecisions()).isEqualTo(ReviewCounts.NONE);
+    }
+
+    @Test
+    void neverOverwritesTheReasonOfSomeoneAlreadyExcluded() {
+        store.save(record("Q1", "Jane", 50), BIRTH, null, List.of(photo("A.jpg", 1976)));
+        Person onRequest = people.findByWikidataId("Q1").orElseThrow();
+        onRequest.exclude(ExclusionReason.MANUAL);
+        people.save(onRequest);
+
+        store.excludeForEditorialLine("Q1");
+
+        assertThat(people.findByWikidataId("Q1").orElseThrow().getExclusionReason()).isEqualTo(ExclusionReason.MANUAL);
     }
 
     private static NewPhoto photo(String file, int year) {
+        return photo(file, year, 1000);
+    }
+
+    private static NewPhoto photo(String file, int year, int height) {
         LocalDate day = LocalDate.of(year, 7, 14);
         return new NewPhoto(
                 file,
@@ -211,6 +343,6 @@ class PeopleStoreIntegrationTest {
                 "https://creativecommons.org/licenses/by-sa/4.0",
                 "Someone",
                 "https://commons.wikimedia.org/wiki/File:" + file,
-                new ImageReencoder.Reencoded(new byte[] {1, 2, 3}, 800, 1000));
+                new ImageReencoder.Reencoded(new byte[] {1, 2, 3}, 800, height));
     }
 }

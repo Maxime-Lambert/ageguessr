@@ -1,5 +1,6 @@
 package app.ageguessr.features.people.ExcludePerson;
 
+import app.ageguessr.features.people.ExclusionReason;
 import app.ageguessr.features.people.Person;
 import app.ageguessr.features.people.PersonPhotoRepository;
 import app.ageguessr.features.people.PersonRepository;
@@ -29,7 +30,7 @@ public class ExcludePersonHandler {
             return new ExcludePersonResponse(person.getId(), 0);
         }
         int photoCount = photos.findByPersonId(person.getId()).size();
-        person.setExcluded(true);
+        person.exclude(ExclusionReason.MANUAL);
         people.saveAndFlush(person);
         // QID only: the point of the request is that the name stops appearing anywhere.
         log.info("{}: excluded on request, {} photo(s) deleted", person.getWikidataId(), photoCount);

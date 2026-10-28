@@ -52,6 +52,6 @@ class CellTest {
     }
 
     private static PersonRecord person(Gender gender, Continent continent) {
-        return new PersonRecord("Q1", 1, "Jane", null, Set.of(), List.of(), List.of(), gender, continent);
+        return new PersonRecord("Q1", 1, "Jane", null, Set.of(), List.of(), List.of(), gender, continent, Set.of());
     }
 }

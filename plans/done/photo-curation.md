@@ -497,8 +497,9 @@ ingérées entrent dans le jeu.
 
    Aucune variable d'environnement nouvelle. Rien ne change pour les joueurs : aucune
    photo n'est encore `APPROVED`.
-3. **Poser le rôle admin** sur le compte de l'utilisateur, depuis le VPS :
-   `docker compose -f docker-compose.prod.yml exec postgres psql -U ageguessr -d ageguessr -c "UPDATE users SET role = 'ADMIN' WHERE email = '<email>'"`.
+3. **Poser le rôle admin** sur le compte de l'utilisateur, depuis le VPS, dans
+   `/opt/ageguessr/` (où la CI copie le compose et écrit le `.env` avec `IMAGE_TAG`) :
+   `cd /opt/ageguessr && docker compose -f docker-compose.prod.yml exec postgres psql -U ageguessr -d ageguessr -c "UPDATE users SET role = 'ADMIN' WHERE email = '<email>'"`.
    Puis se déconnecter et se reconnecter, ou attendre le prochain refresh (≤ 60 min).
 4. **Vérifier** : le lien « Curation » apparaît dans l'en-tête, et `/admin/curation`
    affiche « Nothing left to review » (base de prod encore vide).

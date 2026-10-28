@@ -9,7 +9,7 @@ import java.util.Set;
  * One person as the QLever selection query describes them, its rows grouped. Dates are
  * still raw statements: {@link BirthDateSelector} and {@link DeathDateSelector} decide
  * what can be trusted. {@code gender} and {@code continent} are null when Wikidata does
- * not tell them.
+ * not tell them. {@code occupations}: P106 QIDs, for the report only.
  */
 record PersonRecord(
         String wikidataId,
@@ -20,7 +20,12 @@ record PersonRecord(
         List<BirthStatement> births,
         List<DeathStatement> deaths,
         Gender gender,
-        Continent continent) {
+        Continent continent,
+        Set<String> occupations) {
+
+    PersonRecord {
+        occupations = Set.copyOf(occupations);
+    }
 
     /** QID only: names and file titles (which usually contain the name) never reach a log. */
     @Override

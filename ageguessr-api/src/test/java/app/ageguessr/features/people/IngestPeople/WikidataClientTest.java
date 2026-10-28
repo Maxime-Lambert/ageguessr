@@ -15,6 +15,8 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.OptionalInt;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.hamcrest.Matchers;
@@ -240,7 +242,7 @@ class WikidataClientTest {
         WikidataClient client = new WikidataClient(
                 Fixtures.http(builder.build(), d -> {}, Duration.ZERO, 1), properties());
 
-        assertThat(client.fetchPeople(0, 500, 1930)).isEmpty();
+        assertThat(client.fetchPeople(0, 500, RankingFilter.bornSince(1930))).isEmpty();
         server.verify();
     }
 
@@ -248,17 +250,89 @@ class WikidataClientTest {
     void fetchesAPageThenItsDetailsRestrictedToThePageQids() {
         MockRestServiceServer server = expectSixPosts("LIMIT+500+OFFSET+1000");
 
-        List<PersonRecord> page = client(server).fetchPeople(1000, 500, 1930);
+        List<PersonRecord> page = client(server).fetchPeople(1000, 500, RankingFilter.bornSince(1930));
 
         assertThat(page).hasSize(7);
         server.verify();
     }
 
     @Test
+    void addsTheFocusClausesToACellRanking() {
+        MockRestServiceServer server = expectSixPosts(
+                "FILTER+NOT+EXISTS+%7B+VALUES+%3Fexcluded+%7B+wd%3AQ937857+%7D+%3Fperson+wdt%3AP106+%3Fexcluded");
+        RankingFilter filter = new RankingFilter(1930, OptionalInt.of(1952), Set.of("Q937857"), Set.of());
+
+        client(server).fetchCell(new Cell(Continent.AFRICA, Gender.MALE), 0, 500, filter);
+
+        server.verify();
+    }
+
+    @Test
+    void addsTheFocusClausesToThePlainRanking() {
+        MockRestServiceServer server = expectSixPosts("FILTER%28YEAR%28%3Fbirth%29+%3C%3D+1952%29");
+        RankingFilter filter = new RankingFilter(1930, OptionalInt.of(1952), Set.of(), Set.of("Q36180"));
+
+        client(server).fetchPeople(0, 500, filter);
+
+        server.verify();
+    }
+
+    @Test
+    void readsTheOccupationsOfEachPerson() {
+        JsonNode profiles = Fixtures.MAPPER.readTree("""
+                [{"person": {"value": "http://www.wikidata.org/entity/Q1"},
+                  "occupation": {"value": "http://www.wikidata.org/entity/Q937857"}},
+                 {"person": {"value": "http://www.wikidata.org/entity/Q1"},
+                  "occupation": {"value": "http://www.wikidata.org/entity/Q82955"}},
+                 {"person": {"value": "http://www.wikidata.org/entity/Q1"},
+                  "occupation": {"value": "not an entity"}}]
+                """);
+
+        List<PersonRecord> people = WikidataClient.assemble(page("Q1"), empty(), empty(), empty(), empty(), profiles);
+
+        assertThat(people.getFirst().occupations()).containsExactlyInAnyOrder("Q937857", "Q82955");
+    }
+
+    @Test
+    void listsWhoTheEditorialLineKeepsOutWithEveryCriterionThatCatchesThem() {
+        RestClient.Builder builder = RestClient.builder();
+        MockRestServiceServer server = MockRestServiceServer.bindTo(builder).build();
+        // One query per criterion, in the enum's order; Q1 is caught twice.
+        for (String[] answer : new String[][] {
+            {"P1595", personRows("Q1", "Q2")},
+            {"wd%3AQ183318", personRows("Q3")},
+            {"P1387", personRows("Q1")},
+            {"P39", "{\"results\": {\"bindings\": [{\"person\": {\"value\": \"not an entity\"}}]}}"}
+        }) {
+            server.expect(requestTo(QLEVER))
+                    .andExpect(content().string(Matchers.containsString(answer[0])))
+                    .andRespond(withSuccess(answer[1], MediaType.APPLICATION_JSON));
+        }
+        WikidataClient client = new WikidataClient(Fixtures.http(builder.build(), d -> {}, Duration.ZERO, 1), properties());
+
+        Map<String, Set<EditorialLine.Criterion>> caught = client.fetchEditorialExclusions();
+
+        assertThat(caught)
+                .containsOnlyKeys("Q1", "Q2", "Q3")
+                .containsEntry("Q1", Set.of(EditorialLine.Criterion.CONVICTED_OR_CHARGED, EditorialLine.Criterion.FAR_RIGHT))
+                .containsEntry("Q3", Set.of(EditorialLine.Criterion.DICTATOR));
+        server.verify();
+    }
+
+    private static String personRows(String... qids) {
+        StringBuilder rows = new StringBuilder();
+        for (String qid : qids) {
+            rows.append(rows.isEmpty() ? "" : ",")
+                    .append("{\"person\": {\"value\": \"http://www.wikidata.org/entity/").append(qid).append("\"}}");
+        }
+        return "{\"results\": {\"bindings\": [" + rows + "]}}";
+    }
+
+    @Test
     void ranksOnlyPeopleBornFromTheGivenYear() {
         MockRestServiceServer server = expectSixPosts("FILTER%28YEAR%28%3Fbirth%29+%3E%3D+1930%29");
 
-        client(server).fetchPeople(0, 500, 1930);
+        client(server).fetchPeople(0, 500, RankingFilter.bornSince(1930));
 
         server.verify();
     }
@@ -269,7 +343,7 @@ class WikidataClientTest {
         MockRestServiceServer server = expectSixPosts(
                 "VALUES+%3Fcontinent+%7B+wd%3AQ48+wd%3AQ5401+wd%3AQ60140+%7D");
 
-        List<PersonRecord> page = client(server).fetchCell(new Cell(Continent.ASIA, Gender.FEMALE), 500, 500, 1930);
+        List<PersonRecord> page = client(server).fetchCell(new Cell(Continent.ASIA, Gender.FEMALE), 500, 500, RankingFilter.bornSince(1930));
 
         assertThat(page).hasSize(7);
         server.verify();
@@ -280,7 +354,7 @@ class WikidataClientTest {
         MockRestServiceServer server =
                 expectSixPosts("VALUES+%3Fgender+%7B+wd%3AQ1052281+wd%3AQ15145779+wd%3AQ6581072+%7D");
 
-        client(server).fetchCell(new Cell(Continent.EUROPE, Gender.FEMALE), 0, 500, 1930);
+        client(server).fetchCell(new Cell(Continent.EUROPE, Gender.FEMALE), 0, 500, RankingFilter.bornSince(1930));
 
         server.verify();
     }
@@ -289,7 +363,7 @@ class WikidataClientTest {
     void ranksTheOtherCellAsAnyGenderButMaleOrFemale() {
         MockRestServiceServer server = expectSixPosts("FILTER%28%3Fgender+NOT+IN+%28wd%3AQ1052281%2C+wd%3AQ15145778");
 
-        client(server).fetchCell(new Cell(Continent.OCEANIA, Gender.OTHER), 0, 500, 1930);
+        client(server).fetchCell(new Cell(Continent.OCEANIA, Gender.OTHER), 0, 500, RankingFilter.bornSince(1930));
 
         server.verify();
     }
@@ -303,7 +377,7 @@ class WikidataClientTest {
         WikidataClient client = new WikidataClient(
                 Fixtures.http(builder.build(), d -> {}, Duration.ZERO, 1), properties());
 
-        assertThat(client.fetchPeople(0, 500, 1930)).isEmpty();
+        assertThat(client.fetchPeople(0, 500, RankingFilter.bornSince(1930))).isEmpty();
         server.verify();
     }
 

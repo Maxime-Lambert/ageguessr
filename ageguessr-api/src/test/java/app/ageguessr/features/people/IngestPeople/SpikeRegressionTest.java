@@ -51,7 +51,8 @@ class SpikeRegressionTest {
         for (JsonNode page : Fixtures.json("commons-imageinfo-Q262665.json").path("query").path("pages")) {
             CommonsFile file = CommonsClient.parseFile(page).orElseThrow();
             MediaInfo info = mediaInfo.getOrDefault(file.pageId(), MediaInfo.NONE);
-            if (PhotoCandidateFilter.check(file, info).isPresent()) {
+            // No height floor: the fixture was recorded with 800 px wide thumbnails.
+            if (PhotoCandidateFilter.check(file, info, 0).isPresent()) {
                 continue;
             }
             PhotoEvaluation evaluation = PhotoEvaluator.evaluate(

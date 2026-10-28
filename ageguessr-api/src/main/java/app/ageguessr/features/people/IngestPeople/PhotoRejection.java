@@ -14,5 +14,9 @@ enum PhotoRejection {
     AGE_OUT_OF_RANGE,
     FILE_NAME_YEAR_CONFLICT,
     NO_EXIF_DATE,
-    EXIF_CONFLICT
+    EXIF_CONFLICT,
+    /** The thumbnail is under app.people.ingest.min-image-height: the original is too small. */
+    TOO_SMALL,
+    /** Valid, but outside the age bands the run aims at (--age-bands). */
+    AGE_BAND_NOT_WANTED
 }

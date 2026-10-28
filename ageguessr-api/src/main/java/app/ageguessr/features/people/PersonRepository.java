@@ -26,20 +26,24 @@ public interface PersonRepository extends JpaRepository<Person, UUID> {
             nativeQuery = true)
     List<Person> searchByName(@Param("fragment") String fragment, @Param("limit") int limit);
 
-    /** Photos in play (pending or approved) of the people of one gender and continent. */
-    record CellCount(Gender gender, Continent continent, long photos) {}
+    /** QIDs of every person still in the pool, for the editorial line to check. */
+    @Query("SELECT p.wikidataId FROM Person p WHERE p.excluded = false")
+    List<String> findWikidataIdsNotExcluded();
+
+    /** Photos with one review status of the people of one gender and continent. */
+    record CellCount(Gender gender, Continent continent, ReviewStatus status, long photos) {}
 
     /**
-     * Photos counting toward the pool balance: still in play, of people not excluded whose
-     * gender and continent are known.
+     * Photos of the pool balance per review status: of people not excluded whose gender
+     * and continent are known.
      */
     @Query("""
-            SELECT new app.ageguessr.features.people.PersonRepository$CellCount(p.gender, p.continent, COUNT(ph))
+            SELECT new app.ageguessr.features.people.PersonRepository$CellCount(
+                p.gender, p.continent, ph.reviewStatus, COUNT(ph))
             FROM Person p, PersonPhoto ph
             WHERE ph.personId = p.id
               AND p.excluded = false AND p.gender IS NOT NULL AND p.continent IS NOT NULL
-              AND ph.reviewStatus <> app.ageguessr.features.people.ReviewStatus.REJECTED
-            GROUP BY p.gender, p.continent
+            GROUP BY p.gender, p.continent, ph.reviewStatus
             """)
     List<CellCount> countPhotosByCell();
 }

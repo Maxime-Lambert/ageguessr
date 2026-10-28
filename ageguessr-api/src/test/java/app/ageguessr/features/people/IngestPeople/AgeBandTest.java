@@ -23,6 +23,20 @@ class AgeBandTest {
     }
 
     @Test
+    void listsTheNineBandsYoungestFirst() {
+        assertThat(AgeBand.ALL)
+                .containsExactly("18-25", "26-33", "34-41", "42-49", "50-57", "58-65", "66-73", "74-81", "82+");
+    }
+
+    @Test
+    void startsEachBandAtItsYoungestAge() {
+        assertThat(AgeBand.start("18-25")).isEqualTo(18);
+        assertThat(AgeBand.start("74-81")).isEqualTo(74);
+        assertThat(AgeBand.start("82+")).isEqualTo(82);
+        assertThatThrownBy(() -> AgeBand.start("75-82")).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
     void hasNoBandForAMinor() {
         assertThatThrownBy(() -> AgeBand.of(17)).isInstanceOf(IllegalArgumentException.class);
     }

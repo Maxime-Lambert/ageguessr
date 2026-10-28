@@ -12,40 +12,40 @@ class PhotoCandidateFilterTest {
 
     @Test
     void acceptsAJpegUnderAFreeLicenseOfOnePerson() {
-        assertThat(PhotoCandidateFilter.check(file("image/jpeg", "CC BY-SA 4.0"), new MediaInfo(List.of(), 1))).isEmpty();
+        assertThat(PhotoCandidateFilter.check(file("image/jpeg", "CC BY-SA 4.0"), new MediaInfo(List.of(), 1), 600)).isEmpty();
     }
 
     @Test
     void acceptsAFileWithoutAnyDepiction() {
         // The main Wikidata image often has no Structured Data at all.
-        assertThat(PhotoCandidateFilter.check(file("image/jpeg", "CC BY-SA 4.0"), MediaInfo.NONE)).isEmpty();
+        assertThat(PhotoCandidateFilter.check(file("image/jpeg", "CC BY-SA 4.0"), MediaInfo.NONE, 600)).isEmpty();
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"image/png", "image/gif", "image/tiff", "image/svg+xml", "image/webp"})
     void rejectsAnythingButJpeg(String mime) {
-        assertThat(PhotoCandidateFilter.check(file(mime, "CC0"), MediaInfo.NONE))
+        assertThat(PhotoCandidateFilter.check(file(mime, "CC0"), MediaInfo.NONE, 600))
                 .contains(PhotoRejection.UNSUPPORTED_FORMAT);
     }
 
     @Test
     void rejectsAFileWithoutThumbnailOrSourcePage() {
-        CommonsFile noThumb = new CommonsFile("File:A.jpg", 1, "image/jpeg", null, "https://commons/A", null, null, "CC0", null, null);
-        CommonsFile noPage = new CommonsFile("File:A.jpg", 1, "image/jpeg", "https://upload/A", null, null, null, "CC0", null, null);
+        CommonsFile noThumb = new CommonsFile("File:A.jpg", 1, "image/jpeg", null, "https://commons/A", null, null, "CC0", null, null, 1000);
+        CommonsFile noPage = new CommonsFile("File:A.jpg", 1, "image/jpeg", "https://upload/A", null, null, null, "CC0", null, null, 1000);
 
-        assertThat(PhotoCandidateFilter.check(noThumb, MediaInfo.NONE)).contains(PhotoRejection.UNSUPPORTED_FORMAT);
-        assertThat(PhotoCandidateFilter.check(noPage, MediaInfo.NONE)).contains(PhotoRejection.UNSUPPORTED_FORMAT);
+        assertThat(PhotoCandidateFilter.check(noThumb, MediaInfo.NONE, 600)).contains(PhotoRejection.UNSUPPORTED_FORMAT);
+        assertThat(PhotoCandidateFilter.check(noPage, MediaInfo.NONE, 600)).contains(PhotoRejection.UNSUPPORTED_FORMAT);
     }
 
     @Test
     void rejectsALicenseOutsideTheAllowList() {
-        assertThat(PhotoCandidateFilter.check(file("image/jpeg", "GFDL"), MediaInfo.NONE))
+        assertThat(PhotoCandidateFilter.check(file("image/jpeg", "GFDL"), MediaInfo.NONE, 600))
                 .contains(PhotoRejection.LICENSE_NOT_ALLOWED);
     }
 
     @Test
     void rejectsAGroupPhoto() {
-        assertThat(PhotoCandidateFilter.check(file("image/jpeg", "CC0"), new MediaInfo(List.of(), 2)))
+        assertThat(PhotoCandidateFilter.check(file("image/jpeg", "CC0"), new MediaInfo(List.of(), 2), 600))
                 .contains(PhotoRejection.GROUP_PHOTO);
     }
 
@@ -68,9 +68,23 @@ class PhotoCandidateFilterTest {
         assertThat(PhotoCandidateFilter.isAllowedLicense(license)).isFalse();
     }
 
+    @Test
+    void refusesAThumbnailShorterThanTheMinimumHeight() {
+        assertThat(PhotoCandidateFilter.check(file(599), MediaInfo.NONE, 600)).contains(PhotoRejection.TOO_SMALL);
+        assertThat(PhotoCandidateFilter.check(file(600), MediaInfo.NONE, 600)).isEmpty();
+        // Commons did not tell the height: refused rather than shown blurry.
+        assertThat(PhotoCandidateFilter.check(file(0), MediaInfo.NONE, 600)).contains(PhotoRejection.TOO_SMALL);
+    }
+
+    private static CommonsFile file(int thumbnailHeight) {
+        return new CommonsFile(
+                "File:A.jpg", 1, "image/jpeg", "https://upload.wikimedia.org/a.jpg",
+                "https://commons.wikimedia.org/wiki/File:A.jpg", null, null, "CC0", null, null, thumbnailHeight);
+    }
+
     private static CommonsFile file(String mime, String license) {
         return new CommonsFile(
                 "File:A.jpg", 1, mime, "https://upload.wikimedia.org/a.jpg", "https://commons.wikimedia.org/wiki/File:A.jpg",
-                null, null, license, null, null);
+                null, null, license, null, null, 1000);
     }
 }

@@ -8,6 +8,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import app.ageguessr.features.people.ExclusionReason;
 import app.ageguessr.features.people.Person;
 import app.ageguessr.features.people.PersonPhoto;
 import app.ageguessr.features.people.PersonPhotoRepository;
@@ -55,7 +56,7 @@ class SearchPeopleHandlerTest {
     void reportsHowManyPhotosEachPersonHasAndWhetherTheyAreExcluded() {
         Person withPhotos = person("Q1");
         Person excluded = person("Q2");
-        excluded.setExcluded(true);
+        excluded.exclude(ExclusionReason.MANUAL);
         when(people.searchByName("Jane", 20)).thenReturn(List.of(withPhotos, excluded));
         when(photos.findByPersonIdIn(List.of(withPhotos.getId(), excluded.getId())))
                 .thenReturn(List.of(photoOf(withPhotos), photoOf(withPhotos)));
