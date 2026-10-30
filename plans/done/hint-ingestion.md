@@ -329,7 +329,8 @@ Status: Complete
   comparé aux photos par décennie.
 
 ### Phase Summary
-_(à écrire quand la phase est terminée)_
+Musique validée le 2026-10-30 : 0 année sous le minimum, 0 traduction nécessaire. Feu vert de
+l'utilisateur pour les cinq autres catégories, donné avec la demande de la phase 3.
 
 ## Phase 5 : Les cinq autres catégories
 Status: Complete
@@ -384,21 +385,31 @@ les signalements des joueurs prendront le relais.
   soumettre à `code-reviewer`, la ligne éditoriale refusant de le faire dans le dépôt public.
 
 ## Phase 6 : Revue, mise en production et clôture
-Status: In progress
+Status: Complete côté code, prod dans le Deployment Plan
 
 - [x] Reviewers `architecture-reviewer` et `code-reviewer`, corrections
 - [x] Compléter « Sourcing des indices » dans `docs/decisions/architecture.md`, mettre à
       jour `docs/roadmap.md`
-- [ ] PR vers `develop`, release, import de toutes les catégories en prod
-- [ ] Validation des traductions en prod
-- [ ] Final Recap, Deployment Plan, archivage dans `plans/done/hint-ingestion.md`
+- [x] PR vers `develop` (#26) ; release, import et validation des traductions : voir le
+      Deployment Plan
+- [x] Final Recap, Deployment Plan, archivage dans `plans/done/hint-ingestion.md`
 
 ### Verification Plan
 - `GET /api/admin/hints/coverage` en prod : décompte des années sous le minimum.
 - `git diff --stat` : docs à jour, plan archivé, plus de `plans/active-plan.md`.
 
 ### Phase Summary
-_(à écrire quand la phase est terminée)_
+**Revues** : aucun bloquant. `code-reviewer` : lignes nommant une personne vivante à côté
+d'un crime écartées (3, par empreinte du texte, dont une ajoutée après vérification),
+section 8 de `/privacy` étendue aux personnes citées, mention de licence dans le `README.md`
+(le fichier `LICENSE` reste intact pour la détection de la licence MIT), une ligne mal écrite
+écartée. `architecture-reviewer` : parseur HTML déplacé dans `common.py`, Musique construite
+avec le `hint()` commun, paramètre d'un test Vitest corrigé. Non appliqué : `FIRST_YEAR` en
+propriété (n'éviterait pas un oubli), index de la couverture et chargement des clés (sans
+effet à ce volume). Musique, Sport et Cinéma ressortent identiques à la relance.
+
+**Vérification finale** : backend **764/764**, front **187/187**, lint, Prettier, CI de la
+PR #26 verte.
 
 ## Tests : catégories retenues
 
@@ -432,7 +443,31 @@ et le signalement des joueurs rattrape le reste.
   sous le minimum.
 
 ## Final Recap
-_(à écrire quand tout est terminé)_
+**Livré** (PR #26, `feature/hint-ingestion`) : 7 978 indices prêts, sans rien montrer aux
+joueurs avant le tirage (Semaine 3) et l'écran de résultat (Semaine 4).
+- Extraction Python hors application, JSON versionnés : Musique 1 680, Monde 1 680, Science
+  1 475 (dont 29 traduits), Cinéma 1 198, Sport 1 185, Célébrités 760.
+- Table `hints` (V11), import idempotent (profil `import-hints`), page `/admin/hints`
+  (traductions, couverture).
+- Aucune année sous 5 indices sur 1932-2008 une fois les traductions validées. Sport EN 2015
+  sous 5, sans effet avant 2033.
+
+**Reste ailleurs** : signalement des indices (`hint_reports`) et attribution à l'écran de
+résultat (Semaine 4) ; le tirage (Semaine 3) doit éviter de citer la personne à deviner et ne
+pas exposer `subject_qid`.
+
+**Limites** : la page et la vraie API n'avaient jamais tourné ensemble avant la prod. Qualité
+inégale de Monde, Science et Sport, sans recoupement des faits.
 
 ## Deployment Plan
-_(à écrire quand tout est terminé)_
+1. Merger #26 vers `develop`, puis la PR de release `develop` → `main` en **merge commit**.
+   Le déploiement applique V11.
+2. Sur le VPS :
+   `cd /opt/ageguessr && docker compose -f docker-compose.prod.yml run --rm backend --spring.profiles.active=prod,import-hints`
+   Rien n'est rejeté, 7 978 lignes ajoutées ; relancer n'ajoute rien. Exige `JWT_SECRET` et
+   `RESEND_API_KEY` pour démarrer, aucun mail n'est envoyé.
+3. Sur `/admin/hints`, avec un vrai compte admin : valider les 29 traductions, ce qui fait
+   aussi office de premier essai de la page avec la vraie API.
+4. Vérifier la couverture : plus aucune année Science FR sous 5.
+5. Cocher « Ingestion des indices » dans `docs/roadmap.md`. Chaque année vers mars : relance
+   de Célébrités (`scripts/hints/README.md`).
