@@ -59,11 +59,11 @@ la suivante).
       dictateurs et dirigeants autoritaires, extrême droite, écartés de chaque vague et
       exclus de la base (`--apply-editorial-line`), motif d'exclusion en base (V10) — PR
       `feature/editorial-line`
-- [ ] Ingestion des indices (Musique, Cinéma, Sport, Science et techno, Monde,
+- [x] Ingestion des indices (Musique, Cinéma, Sport, Science et techno, Monde,
       Célébrités), au moins 5 par année, par catégorie et par public, sur 1932-2008 pour
-      Célébrités et 1932-2015 ailleurs. Fait dans la PR `feature/hint-ingestion` : extraction,
-      table `hints`, import idempotent, page `/admin/hints` (traductions et couverture).
-      Reste l'import en prod et la validation des 29 traductions. Seuls les indices
+      Célébrités et 1932-2015 ailleurs : extraction, table `hints`, import idempotent, page
+      `/admin/hints` (traductions et couverture), PR `feature/hint-ingestion`. 7 978
+      indices importés en prod et traductions validées. Seuls les indices
       traduits sont relus, les autres entrent directement en jeu. Célébrités : extraction
       relancée à la main chaque année vers mars, pour ajouter les personnes qui viennent
       d'avoir 18 ans
