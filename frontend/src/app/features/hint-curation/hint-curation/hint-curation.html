@@ -1,0 +1,177 @@
+<div class="mx-auto max-w-5xl space-y-6 px-4 py-8 sm:px-6">
+  <div class="flex flex-wrap items-baseline justify-between gap-2">
+    <h1 class="font-display text-3xl">Hint curation</h1>
+    @if (status() === 'ready') {
+      <p class="text-muted text-sm" role="status">{{ totalPending() }} left to review</p>
+    }
+  </div>
+
+  <p class="text-muted text-sm">
+    Only translated hints wait here: the others are already in the game. Approve a hint if it is
+    true, belongs to its year and reads well. Correct the text if need be: it cannot contain a year.
+    Shortcuts: <kbd>A</kbd> approve, <kbd>R</kbd> reject, <kbd>→</kbd> skip, <kbd>U</kbd> undo.
+  </p>
+
+  @if (message()) {
+    <p class="text-danger text-sm" role="alert">{{ message() }}</p>
+  }
+
+  @if (status() === 'loading') {
+    <p class="text-muted">Loading…</p>
+  } @else if (status() === 'error') {
+    <p class="text-danger" role="alert">The queue could not be loaded.</p>
+    <button
+      type="button"
+      (click)="reload()"
+      class="bg-accent text-accent-foreground rounded-md px-4 py-2 text-sm font-medium"
+    >
+      Retry
+    </button>
+  } @else if (current(); as item) {
+    <section
+      class="bg-surface border-border space-y-4 rounded-lg border p-4 text-sm sm:p-6"
+      aria-labelledby="hint-title"
+    >
+      <h2 id="hint-title" class="font-display text-2xl">
+        {{ categoryLabels[item.category] }} · {{ item.year }}
+      </h2>
+      <dl class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1">
+        <dt class="text-muted">Audience</dt>
+        <dd>{{ item.audience }}</dd>
+        <dt class="text-muted">Source</dt>
+        <dd class="min-w-0 break-words">
+          <a
+            class="text-accent underline"
+            [href]="item.sourceUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            >{{ item.sourceUrl }}</a
+          >
+          ({{ item.sourceKind }})
+        </dd>
+      </dl>
+
+      @if (item.textFr !== null) {
+        <label class="block space-y-1">
+          <span class="text-muted">French text</span>
+          <textarea
+            rows="3"
+            class="border-border bg-background w-full rounded-md border p-2"
+            [value]="draftFr()"
+            (input)="onDraft('fr', $event)"
+          ></textarea>
+        </label>
+      }
+      @if (item.textEn !== null) {
+        <label class="block space-y-1">
+          <span class="text-muted">English text</span>
+          <textarea
+            rows="3"
+            class="border-border bg-background w-full rounded-md border p-2"
+            [value]="draftEn()"
+            (input)="onDraft('en', $event)"
+          ></textarea>
+        </label>
+      }
+
+      <div class="flex flex-wrap gap-2">
+        <button
+          type="button"
+          (click)="decide('APPROVED')"
+          [disabled]="busy()"
+          class="bg-accent text-accent-foreground rounded-md px-4 py-2 font-medium disabled:opacity-50"
+        >
+          Approve (A)
+        </button>
+        <button
+          type="button"
+          (click)="decide('REJECTED')"
+          [disabled]="busy()"
+          class="bg-danger text-danger-foreground rounded-md px-4 py-2 font-medium disabled:opacity-50"
+        >
+          Reject (R)
+        </button>
+        <button
+          type="button"
+          (click)="skip()"
+          [disabled]="busy()"
+          class="border-border rounded-md border px-4 py-2 disabled:opacity-50"
+        >
+          Skip (→)
+        </button>
+        <button
+          type="button"
+          (click)="undo()"
+          [disabled]="busy() || !lastAction()"
+          class="border-border rounded-md border px-4 py-2 disabled:opacity-50"
+        >
+          Undo (U)
+        </button>
+      </div>
+    </section>
+  } @else {
+    <p class="text-muted" role="status">Nothing left to review.</p>
+    @if (lastAction()) {
+      <button
+        type="button"
+        (click)="undo()"
+        [disabled]="busy()"
+        class="border-border rounded-md border px-4 py-2 text-sm disabled:opacity-50"
+      >
+        Undo (U)
+      </button>
+    }
+  }
+
+  <section class="space-y-3" aria-labelledby="coverage-title">
+    <h2 id="coverage-title" class="font-display text-2xl">Coverage</h2>
+    @if (coverage(); as data) {
+      <p class="text-muted text-sm">
+        Approved hints per year, French / English. Under {{ data.minimum }}, the category is hidden
+        for that audience: <strong class="text-foreground">{{ data.gaps }} gaps</strong> today.
+      </p>
+      <div class="border-border max-h-[70vh] overflow-auto rounded-lg border" tabindex="0">
+        <table class="w-full text-sm">
+          <thead class="bg-surface sticky top-0">
+            <tr>
+              <th scope="col" class="px-3 py-2 text-left font-medium">Year</th>
+              @for (category of categories; track category) {
+                <th scope="col" class="px-3 py-2 text-right font-medium">
+                  {{ categoryLabels[category] }}
+                </th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of data.rows; track row.year) {
+              <tr class="border-border border-t">
+                <th scope="row" class="px-3 py-1 text-left font-normal">{{ row.year }}</th>
+                @for (category of categories; track category) {
+                  @let total = cell(row.cells, category);
+                  <td
+                    class="px-3 py-1 text-right whitespace-nowrap"
+                    [class.text-danger]="isGap(total, data.minimum)"
+                    [class.font-medium]="isGap(total, data.minimum)"
+                  >
+                    {{ total.fr }} / {{ total.en }}
+                  </td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else if (coverageFailed()) {
+      <p class="text-danger text-sm" role="alert">The coverage could not be loaded.</p>
+      <button
+        type="button"
+        (click)="reloadCoverage()"
+        class="border-border rounded-md border px-4 py-2 text-sm"
+      >
+        Retry
+      </button>
+    } @else {
+      <p class="text-muted text-sm">Loading…</p>
+    }
+  </section>
+</div>

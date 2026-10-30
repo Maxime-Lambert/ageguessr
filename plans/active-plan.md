@@ -287,14 +287,14 @@ interdit à `features/hints`, même en test, de dépendre de `auth`.
 de `JWT_SECRET` et `RESEND_API_KEY`, comme l'ingestion. Aucun mail n'est envoyé.
 
 ## Phase 3 : Validation des traductions et couverture
-Status: Not started
+Status: Complete
 
-- [ ] `GET /api/admin/hints/pending`, `PUT /api/admin/hints/{id}/review` (décision + texte
+- [x] `GET /api/admin/hints/pending`, `PUT /api/admin/hints/{id}/review` (décision + texte
       corrigé, un indice `APPROVED` pouvant passer `REJECTED`),
       `GET /api/admin/hints/coverage`
-- [ ] Page `/admin/hints` réduite aux indices traduits, au clavier (mêmes raccourcis que
+- [x] Page `/admin/hints` réduite aux indices traduits, au clavier (mêmes raccourcis que
       `/admin/curation`), texte modifiable
-- [ ] Tableau de couverture : années × catégories × publics, en évidence sous 5 indices
+- [x] Tableau de couverture : années × catégories × publics, en évidence sous 5 indices
       validés
 
 ### Verification Plan
@@ -304,14 +304,23 @@ Status: Not started
   la couverture changer. Ce fichier n'est pas versionné dans `resources/hints/`.
 
 ### Phase Summary
-_(à écrire quand la phase est terminée)_
+**Résultat** : endpoints admin et page `/admin/hints` livrés (validation au clavier, texte
+corrigeable, couverture sous la file, lien dans l'en-tête). Backend, frontend et Playwright
+passent, et un test fonctionnel suit la couverture après valider, rejeter et annuler.
+
+**Non fait** : l'essai manuel en local, API lancée, a été refusé par le contrôle des
+permissions (jeton admin forgé, arrêt de processus). La séquence est couverte par le test
+fonctionnel, et la page par Playwright avec réseau mocké : page et vraie API n'ont donc pas été
+essayées ensemble. À faire à la main avec un vrai compte admin.
+
+**Écarts** : `HintText` à la racine de la feature porte les règles communes à l'import et à la
+correction. La couverture va de 1932 à l'année en cours moins 18 (2008 aujourd'hui).
 
 ## Phase 4 : Validation du prototype
-Status: Not started
+Status: Complete
 
-- [ ] Mesurer en local : années sous le minimum, nombre de manches concernées, nombre de
-      traductions, résultat de l'audit d'échantillon
-- [ ] **Décision avec l'utilisateur** : continuer, ajuster les sources, ou repenser
+- [x] Mesurer en local : 0 année sous le minimum en musique, 0 traduction, audit de la phase 1
+- [x] **Décision avec l'utilisateur** (2026-10-30) : continuer avec les autres catégories
 
 ### Verification Plan
 - `GET /api/admin/hints/coverage` en local : décompte des années sous le minimum,

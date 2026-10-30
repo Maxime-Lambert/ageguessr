@@ -5,6 +5,7 @@ import static app.ageguessr.features.hints.ImportHints.HintFixtures.french;
 import static app.ageguessr.features.hints.ImportHints.HintFixtures.withTexts;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import app.ageguessr.features.hints.HintText;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -77,7 +78,7 @@ class HintRulesTest {
 
     @Test
     void refusesATextLongerThanTheColumn() {
-        String longest = "a".repeat(HintRules.MAX_TEXT_LENGTH);
+        String longest = "a".repeat(HintText.MAX_LENGTH);
 
         assertThat(check(withTexts("FR", longest, null))).isEmpty();
         assertThat(check(withTexts("FR", longest + "a", null))).contains(HintRejection.TEXT_TOO_LONG);
