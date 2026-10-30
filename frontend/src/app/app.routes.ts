@@ -61,6 +61,13 @@ export const routes: Routes = [
     loadComponent: () => import('./features/curation/curation/curation').then((m) => m.Curation),
   },
   {
+    path: 'admin/hints',
+    title: 'Hint curation · Ageguessr',
+    canActivate: [adminGuard],
+    loadComponent: () =>
+      import('./features/hint-curation/hint-curation/hint-curation').then((m) => m.HintCuration),
+  },
+  {
     path: 'legal-notice',
     title: 'Legal notice · Ageguessr',
     loadComponent: () =>

@@ -64,6 +64,7 @@ describe('Header', () => {
       role: 'USER',
     });
     expect(links()).not.toContain('Curation');
+    expect(links()).not.toContain('Hints');
 
     auth.currentUser.set({
       id: '2',
@@ -73,6 +74,7 @@ describe('Header', () => {
       role: 'ADMIN',
     });
     expect(links()).toContain('Curation');
+    expect(links()).toContain('Hints');
   });
 
   it('logging out returns to the home page as a guest', () => {

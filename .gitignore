@@ -28,3 +28,7 @@ logs/
 
 # Plans terminés (optionnel - à toi de décider)
 # plans/done/
+
+# Pages Wikipedia mises en cache par scripts/hints
+scripts/hints/.cache/
+__pycache__/
