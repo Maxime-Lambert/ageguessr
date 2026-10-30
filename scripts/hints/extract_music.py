@@ -8,20 +8,12 @@ Standard library only. Pages are cached, so a rerun does not call Wikipedia agai
 """
 import argparse
 import html
-import json
 import re
-import sys
-import time
-import urllib.parse
-import urllib.request
 from html.parser import HTMLParser
 from pathlib import Path
 
-USER_AGENT = "Ageguessr/1.0 (https://ageguessr.app; contact@ageguessr.app)"
-CACHE = Path(__file__).parent / ".cache"
-FIRST_YEAR, LAST_YEAR = 1932, 2015
-MINIMUM, TARGET = 5, 10
-YEAR_IN_TEXT = re.compile(r"\b(1[89]|20)\d\d\b")
+from common import FIRST_YEAR, LAST_YEAR, TARGET, YEAR_IN_TEXT, cached, key, report, url, wiki_api, write
+
 # Political and military songs say more about a regime than about the year's music.
 NOT_POP = re.compile(
     r"hymne|anthem|\bnational\b|nationale|marche |march\b|militaire|military|patrioti|politi|communis|socialis|"
@@ -32,34 +24,6 @@ ORCHESTRA = re.compile(r"\s+(with|and (his|her|the))\b.*orchestra.*$", re.I)
 TITLE_HEADER = re.compile(r"^(titre|title|single|song|chanson)s?\b", re.I)
 ARTIST_HEADER = re.compile(r"^(artiste|artist|interpr[èe]te|performer)", re.I)
 ALBUM_HEADER = re.compile(r"^album", re.I)
-
-
-def wiki_api(lang, **params):
-    params.update(format="json", formatversion=2)
-    request = urllib.request.Request(
-        f"https://{lang}.wikipedia.org/w/api.php",
-        data=urllib.parse.urlencode(params).encode(),
-        headers={"User-Agent": USER_AGENT},
-    )
-    for attempt in range(6):
-        try:
-            with urllib.request.urlopen(request, timeout=120) as response:
-                result = json.load(response)
-            time.sleep(0.3)
-            return result
-        except OSError as error:
-            print(f"retry after {error}", file=sys.stderr)
-            time.sleep(5 * (attempt + 1))
-    raise RuntimeError(f"Wikipedia does not answer: {params}")
-
-
-def cached(name, compute):
-    path = CACHE / (urllib.parse.quote(name, safe="") + ".json")
-    if path.exists():
-        return json.loads(path.read_text())
-    value = compute()
-    path.write_text(json.dumps(value, ensure_ascii=False))
-    return value
 
 
 def page_html(lang, title):
@@ -278,14 +242,6 @@ def category_songs(lang, category):
     return sorted(songs, key=lambda s: (lang == "fr" and not s["french"], -s["languages"]))
 
 
-def url(lang, page):
-    return f"https://{lang}.wikipedia.org/wiki/" + urllib.parse.quote(page.replace(" ", "_"), safe="/:()',")
-
-
-def key(*parts):
-    return re.sub(r"[^a-z0-9à-ÿ]+", "-", " ".join(parts).lower()).strip("-")
-
-
 def hint(year, audience, text, source, kind, *parts):
     return {
         "category": "MUSIC", "year": year, "audience": audience,
@@ -341,20 +297,6 @@ def collect(years):
     return hints
 
 
-def report(hints, years):
-    print(f"{'public':8}{'indices':>9}{'années >= 5':>13}{'années >= 10':>14}   par source")
-    for audience in ("FR", "EN"):
-        mine = [h for h in hints if h["audience"] == audience]
-        counts = {y: sum(h["year"] == y for h in mine) for y in years}
-        kinds = {}
-        for h in mine:
-            kinds[h["sourceKind"]] = kinds.get(h["sourceKind"], 0) + 1
-        print(f"{audience:8}{len(mine):>9}{sum(v >= MINIMUM for v in counts.values()):>13}"
-              f"{sum(v >= TARGET for v in counts.values()):>14}   {kinds}")
-        print(f"  sous {MINIMUM} : {[y for y, v in counts.items() if v < MINIMUM]}")
-        print(f"  sous {TARGET} : {[y for y, v in counts.items() if MINIMUM <= v < TARGET]}")
-
-
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--first", type=int, default=FIRST_YEAR)
@@ -362,14 +304,12 @@ def main():
     parser.add_argument("--report", action="store_true")
     parser.add_argument("--out", type=Path)
     args = parser.parse_args()
-    CACHE.mkdir(exist_ok=True)
     years = range(args.first, args.last + 1)
     hints = collect(years)
     if args.report:
         report(hints, years)
     if args.out:
-        args.out.parent.mkdir(parents=True, exist_ok=True)
-        args.out.write_text(json.dumps(hints, ensure_ascii=False, indent=1) + "\n")
+        write(hints, args.out)
 
 
 if __name__ == "__main__":

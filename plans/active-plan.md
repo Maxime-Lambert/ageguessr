@@ -185,8 +185,10 @@ tranche 74-81).
 
 ## Fichiers
 Créés :
-- `scripts/hints/extract_music.py`, `scripts/hints/README.md`
-- `ageguessr-api/src/main/resources/hints/music.json`, `.../hints/README.md`
+- `scripts/hints/extract_music.py`, `common.py`, `extract_events.py`, `extract_wikidata.py`,
+  `science_translations.json`, `scripts/hints/README.md`
+- `ageguessr-api/src/main/resources/hints/` : `music.json`, `world.json`, `science.json`,
+  `sport.json`, `film.json`, `celebrities.json`, `README.md`
 - `ageguessr-api/src/main/resources/db/migration/V11__create_hints.sql`
 - `ageguessr-api/src/main/java/app/ageguessr/features/hints/` : `Hint.java`,
   `HintCategory.java`, `HintAudience.java`, `HintReviewStatus.java`,
@@ -330,26 +332,56 @@ Status: Complete
 _(à écrire quand la phase est terminée)_
 
 ## Phase 5 : Les cinq autres catégories
-Status: Not started
+Status: Complete
 
-Ne démarre qu'après la décision de la Phase 4. Même branche et même PR.
+Même branche et même PR.
 
-- [ ] Cinéma : box-office France, Wikidata avec date `MIN`
-- [ ] Sport : palmarès, repli 1940-1946
-- [ ] Science et techno : `Y en science` / `Y in science`
-- [ ] Monde : pages de l'année dans chaque langue, sans filtre de contenu
-- [ ] Célébrités : extraction Wikidata par année de naissance (1932-2008), classée par
-      sitelinks, avec description courte et ligne éditoriale, personnes majeures
-      uniquement, relance annuelle documentée dans `scripts/hints/README.md`
-- [ ] Solutions de comblement si le masquage reste trop fréquent
-- [ ] Traductions en dernier recours, validées sur `/admin/hints`
+- [x] Cinéma : films les plus connus de Wikidata avec date `MIN`, box-office France en plus pour
+      le public français, films de propagande écartés
+- [x] Sport : pages `Y en sport` / `Y in sports`, lignes donnant un vainqueur
+- [x] Science et techno : `Y en science` / `Y in science`
+- [x] Monde : pages de l'année dans chaque langue, sans filtre de contenu, pages mensuelles quand
+      la page française est vide
+- [x] Célébrités : listes de naissances, puis Wikidata (description, ligne éditoriale, personnes
+      majeures uniquement), relance annuelle documentée dans `scripts/hints/README.md`
+- [x] Solutions de comblement : aucune nécessaire, les seuls trous sont comblés par les traductions
+- [x] Traductions en dernier recours, à valider sur `/admin/hints` : 29 indices de Science FR
 
 ### Verification Plan
 - Rapport de couverture de chaque extraction : au moins 5 candidats par année et par
   public, ou années manquantes listées.
 
 ### Phase Summary
-_(à écrire quand la phase est terminée)_
+**Résultat** : 7 979 indices dans 6 fichiers, tous acceptés par l'import.
+
+| Catégorie | Indices | Années sous 5, FR | Années sous 5, EN |
+|---|---:|---|---|
+| Musique | 1 680 | 0 | 0 |
+| Monde | 1 680 | 0 | 0 |
+| Cinéma | 1 198 | 0 | 0 |
+| Science | 1 476 | 0 (9 sur 1932-2008 tant que les 29 traductions ne sont pas validées) | 0 |
+| Sport | 1 185 | 0 | 2015 (sans effet avant 2033) |
+| Célébrités | 760 | 0 | 0 |
+
+Célébrités couvre 1932-2008, avec 5 à 9 indices sur 1932-1934 et 10 sinon.
+
+**Qualité** : plus inégale qu'en musique pour Monde, Science et Sport. Une ligne de page d'année
+est choisie par la notoriété de ses liens : la plupart sont compréhensibles, certaines restent
+obscures ou manquent de contexte. Cinéma et Célébrités sont nettement meilleurs. Le contrôle a
+porté sur un échantillon et une recherche automatique de défauts, sans recoupement des faits :
+les signalements des joueurs prendront le relais.
+
+**Écarts** :
+- Sport : pages par année au lieu de palmarès Wikidata. `P1346` mêle sur un Tour de France les
+  vainqueurs d'étape et de classement, sans moyen simple de garder le seul vainqueur.
+- Célébrités : Wikidata ne classe pas toute une année de personnes (QLever en panne depuis le
+  2026-10-30, 502 ; le service officiel expire). Les listes de naissances Wikipédia réduisent
+  d'abord les candidats. Audience `ALL`, avec article FR et EN non exigé mais libellés et
+  descriptions dans les deux langues.
+- Cinéma : audience `ALL` pour Wikidata, `FR` pour le box-office (à partir de 1943).
+- Filtre de propagande ajouté à Cinéma : 8 films écartés, dont un film de propagande nazie.
+- Monde sans filtre, mais des personnes vivantes peuvent y être citées à côté de crimes : à
+  soumettre à `code-reviewer`, la ligne éditoriale refusant de le faire dans le dépôt public.
 
 ## Phase 6 : Revue, mise en production et clôture
 Status: Not started
