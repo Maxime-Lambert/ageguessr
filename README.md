@@ -1,11 +1,11 @@
 # Ageguessr 🎂
 
-> Guess their age. Get warmer. Unlock a clue from the year they were born.
+> Guess their age. Get warmer. Unlock a clue from the year that gives it away.
 
 Ageguessr is a daily web game: guess the age of a handful of well-known people from
-their photo. First guess gets you a hot/cold hint. Still off? Pick a category — sports,
-music, politics — and unlock a real historical event from their birth year before your
-second and final guess.
+their photo. First guess gets you a hot/cold hint. Still off? Pick a category — music,
+film, sports, science, world news, celebrities — and unlock a clue from a year you can
+subtract from today's to get their age on the photo, before your second and final guess.
 
 ## Stack
 

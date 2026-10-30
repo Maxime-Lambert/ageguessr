@@ -542,18 +542,39 @@ voulu :
   doit être servie à des joueurs avant cet affichage.
 
 ### Sourcing des indices événementiels par catégorie
-**Décision** : pages Wikipédia par année et catégorie (ex. `1976_in_music`,
-`1976_in_sports`, `1976_in_politics`) comme source des indices "événement survenu
-l'année de naissance de la personne".
+**Décision** (2026-10-30, détail et mesures dans le plan des indices) : un indice doit
+permettre de calculer l'âge sur la photo. Son **année de référence est l'année du jour −
+`age_at_photo`**, pas l'année de naissance, puisque l'année de la photo n'est pas montrée
+au joueur.
+- **Catégories** : Musique, Cinéma, Sport, Science et techno, Monde, Célébrités. Au moins
+  5 indices par catégorie, par année et par public ; en dessous, la catégorie est masquée
+  pour cette année.
+- **Sources** : une source Wikipédia ou Wikidata précise par catégorie (classements,
+  box-office, palmarès, pages de l'année) plutôt que les seules pages `YYYY in …`.
+- **Base pré-construite** : extraction en Python hors de l'application (`scripts/hints/`),
+  sortie JSON versionnée, import idempotent par Java. Pas d'appel à un LLM, à Wikipédia
+  ou à Wikidata depuis l'application.
+- **Relance annuelle de Célébrités** : aucun mineur n'est cité, donc l'extraction se
+  relance à la main vers mars pour ajouter les personnes qui viennent d'avoir 18 ans. Les
+  indices étant rangés par année de naissance, les autres n'ont pas à être mis à jour.
+  Pas de job automatique : il écrirait en prod et devrait être surveillé pour ~2 % des
+  photos (estimation) et une catégorie sur six. Un oubli ne fait que masquer la catégorie
+  sur les photos de 18 ans.
+- **Relecture limitée aux traductions** : un indice tiré d'une page dans sa langue entre
+  directement en jeu, seul un indice traduit attend une validation. Tout relire serait
+  trop long.
+- **Signalement par les joueurs** : c'est le filet de sécurité de ces indices. Depuis
+  l'écran de résultat, sur le modèle des photos, sans retrait automatique.
 
-**Raison** : reste dans l'écosystème Wikipedia déjà retenu pour les personnes — un seul
-type de source à parser (Wikidata + Wikipedia) plutôt que d'ajouter un site tiers.
+**Raison** : Wikipédia et Wikidata restent l'écosystème déjà retenu pour les personnes,
+et les événements passés ne changent pas : un travail ponctuel, dont la sortie est
+contrôlée, suffit.
 
-**Limite connue** : contenu semi-structuré (texte, pas une API propre), qualité
-inégale selon les années/catégories — nécessitera curation manuelle sur un échantillon
-avant d'industrialiser l'extraction, potentiellement une base d'indices pré-construite
-une fois (ingestion ponctuelle) plutôt qu'un job récurrent nightly, les événements
-historiques ne changeant pas.
+**Limites connues** :
+- Sans relecture, une erreur peut atteindre un joueur avant d'être signalée.
+- Les textes issus de Wikipédia sont sous CC BY-SA, hors de la licence MIT du dépôt :
+  `resources/hints/README.md` le précise, et chaque indice garde sa source pour
+  l'attribution sur l'écran de résultat.
 
 ### Anti-triche sur l'image
 **Décision** : les images ne sont jamais servies depuis l'URL Wikimedia Commons brute.

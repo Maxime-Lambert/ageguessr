@@ -45,10 +45,9 @@ la suivante).
       continent de nationalité × genre (« autre » à son poids réel), préférence des
       tranches d'âge rares, cible de 5 000 photos en jeu, mesure du rendement
       (`--sample`, `--dry-run`) — PR `feature/people-pool-balance`
-- [ ] Ingestion en production (cible 5 000 photos en jeu), puis curation et relances
-      jusqu'à 5 000 photos approuvées. Estimation : ~8 800 photos collectées en tout
-      (~43 % de rejets), ~7 h de collecte, ~1,5 Go (les photos rejetées gardent leur
-      image)
+- [x] Ingestion en production (cible 5 000 photos en jeu), puis curation et relances
+      jusqu'à 5 000 photos approuvées. Curation terminée le 2026-10-30 ; quelques erreurs
+      sont passées, d'où le signalement par les joueurs (Semaine 4)
 - [x] Vagues d'ingestion ciblées : professions exclues ou seules (footballeurs écartés
       pour la suite), cases, tranches d'âge ; quotas comptés en photos approuvées
       attendues (en attente × taux d'approbation) ; `--analyze` pour voir le pool et la
@@ -60,12 +59,15 @@ la suivante).
       dictateurs et dirigeants autoritaires, extrême droite, écartés de chaque vague et
       exclus de la base (`--apply-editorial-line`), motif d'exclusion en base (V10) — PR
       `feature/editorial-line`
-- [ ] Ingestion + curation des indices événementiels par catégorie et par année
-      (pages Wikipedia "YYYY in music/sports/politics...", parsing + vérification sur
-      échantillon avant d'industrialiser)
+- [ ] Ingestion des indices (Musique, Cinéma, Sport, Science et techno, Monde,
+      Célébrités), au moins 5 par année, par catégorie et par public, sur 1932-2015 :
+      prototype musique validé en local, puis toutes les catégories dans la même PR.
+      Une source précise par catégorie. Seuls les indices traduits sont relus, les
+      autres entrent directement en jeu (voir `plans/active-plan.md`). Célébrités :
+      extraction relancée à la main chaque année vers mars, pour ajouter les personnes
+      qui viennent d'avoir 18 ans
 - [ ] Schéma de données final : personnes et photos faites (V4, PR
-      `feature/people-sourcing`) ; catégories d'indices et événements par année restent
-      à faire avec le plan des indices
+      `feature/people-sourcing`) ; indices à faire (V11) avec le plan des indices
 
 ## Semaine 3 — Moteur de jeu
 - [ ] Algorithme de sélection quotidienne (3 personnes/jour, minuit UTC). Une même
@@ -85,7 +87,46 @@ la suivante).
 - [ ] Écran principal : photo, input d'âge, jauge chaud/froid
 - [ ] Sélection de catégorie d'indice + affichage de l'indice
 - [ ] Écran de résultat (âge réel, identité révélée, points gagnés, **crédit de la photo :
-      auteur + licence**, obligatoire avant de servir des photos CC BY / BY-SA aux joueurs)
+      auteur + licence**, obligatoire avant de servir des photos CC BY / BY-SA aux joueurs ;
+      indice réaffiché avec son année et sa source, pour l'attribution CC BY-SA)
+  - Identité : nom (`name_fr`/`name_en`, déjà en base) + lien Wikipedia sans rien stocker,
+    via `https://<lang>.wikipedia.org/wiki/Special:GoToLinkedPage/<lang>wiki/<QID>`
+    (repli sur la page Wikidata si l'article n'existe pas dans la langue)
+  - Fonction principale (optionnel) : P106 est lu à l'ingestion mais pas stocké. Il
+    faudrait une colonne + le libellé fr/en, et un rattrapage des personnes existantes
+    (une requête QLever par lot de QID). Choisir « la » fonction principale n'est pas
+    évident (P106 n'a pas d'ordre fiable) : préférer la description courte Wikidata
+    (`schema:description`), plus parlante (« actrice et chanteuse française »)
+- [ ] Signalement d'une photo par les joueurs, depuis l'écran de résultat (identité
+      connue, donc « mauvaise personne » signalable, et aucun indice donné avant de
+      répondre)
+  - Joueur : petit bouton « Signaler l'image » puis motif dans une liste fermée (image
+    trop petite, personne pas clairement identifiable sur la photo, ce n'est pas la
+    bonne personne, la personne paraît mineure, cette personne me dérange, autre), sans
+    texte libre ni compte. « Cette personne me dérange » vise la ligne éditoriale et
+    mène plutôt à une exclusion qu'à un rejet de la photo. Rien de personnel en base :
+    ni IP, ni utilisateur. Limite par IP
+    via `RateLimiter`, le filtre actuel ne couvrant que `/api/auth/`
+  - Base : table `photo_reports` en `ON DELETE CASCADE` sur la photo, pour qu'une
+    exclusion efface aussi les signalements
+  - Admin : file triée par nombre de signalements dans la page de curation, avec
+    rejeter (`ReviewPhotoHandler` accepte déjà APPROVED → REJECTED), garder (les
+    signalements sont classés) ou exclure la personne. Aucun moyen de retrouver une
+    photo approuvée aujourd'hui
+  - Aucun retrait automatique : un script anonyme pourrait vider le pool
+  - À trancher avec le tirage quotidien (Semaine 3) : que devient la partie du jour si
+    une de ses photos est rejetée (`/api/images` répond alors 404)
+- [ ] Signalement d'un indice par les joueurs, depuis l'écran de résultat : c'est le
+      filet de sécurité des indices, que personne ne relit (sauf les traductions)
+  - Joueur : mêmes règles que pour les photos, avec les motifs mauvaise année,
+    information fausse, incompréhensible, cet indice me dérange, autre. Sans texte
+    libre ni compte, rien de personnel en base, limite par IP
+  - Base : table `hint_reports` en `ON DELETE CASCADE` sur l'indice, séparée de
+    `photo_reports` (les features ne dépendent pas l'une de l'autre)
+  - Admin : file triée par nombre de signalements dans `/admin/hints`, avec rejeter,
+    garder ou corriger le texte
+  - Aucun retrait automatique. Un indice rejeté n'est plus tiré ; sous 5 indices, la
+    catégorie est masquée pour cette année
 - [ ] Enchaînement des 3 personnes du jour + récapitulatif final
 - [ ] Page d'accueil publique
 - [ ] Vocabulaire de jeu centralisé dans un seul fichier (essai du ton « enquête »,
