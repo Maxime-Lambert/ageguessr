@@ -45,6 +45,10 @@ SENTENCE_END = re.compile(r"(?<=[a-zéèàûôî)»\"]{3})\. (?=[A-ZÉÈÀ«])")
 # French year pages hold no events from this size down: they point to a page per month.
 THIN_PAGE = 20000
 MONTH_PAGES_FR = MONTHS_FR.split("|")
+# Lines left out by hand. By digest of their text, so that this public file holds no name: a
+# living person named beside a crime, which the editorial line keeps out of the repository, or
+# a line the source garbles.
+LEFT_OUT = {"013487999a84", "3f9ad18475d3", "b4e5fbeef71c", "d6b25a64dd9b"}
 # A sports line is a hint only if it tells who won: the rest is a fixture or a record.
 RESULT = re.compile(r"\b(remport|gagn|vainqueur|champions?\b|bat\b|battent|wins?\b|won\b|beats?\b|defeats?\b)", re.I)
 HEADLESS = re.compile(r"^(vainqueur|winner|champion|won|wins|bat|men's|women's|final|finale|première édition)\b", re.I)
@@ -54,6 +58,10 @@ SOURCES = {
     "science": {"FR": ("fr", "{year} en science"), "EN": ("en", "{year} in science")},
     "sport": {"FR": ("fr", "{year} en sport"), "EN": ("en", "{year} in sports")},
 }
+
+
+def digest_of(text):
+    return hashlib.sha1(text.encode()).hexdigest()[:12]
 
 
 def template_text(match):
@@ -141,7 +149,9 @@ def collect(category, years):
             for page in titles:
                 for line in event_lines(category, lang, page):
                     candidate = clean(line, audience)
-                    if candidate and (category != "sport" or is_result(candidate["text"])):
+                    if not candidate or digest_of(candidate["text"]) in LEFT_OUT:
+                        continue
+                    if category != "sport" or is_result(candidate["text"]):
                         candidate["page"] = page
                         candidate["subject"] = max(map(normalized, candidate["links"]), key=worth, default=None)
                         candidate["worth"] = worth(candidate["subject"])
@@ -155,10 +165,9 @@ def collect(category, years):
                     continue
                 used.add(candidate["subject"])
                 kept += 1
-                digest = hashlib.sha1(candidate["text"].encode()).hexdigest()[:12]
                 texts = {"text_fr": candidate["text"]} if audience == "FR" else {"text_en": candidate["text"]}
                 hints.append(hint(category.upper(), year, audience, **texts, source=url(lang, candidate["page"]),
-                                  kind="year-page", key_parts=[str(year), digest]))
+                                  kind="year-page", key_parts=[str(year), digest_of(candidate["text"])]))
     if category == "science":
         hints += translations(hints, years)
     return hints

@@ -34,6 +34,15 @@ langues), hors liens présents sur beaucoup d'années (pays, villes).
 minimum, en dernier recours. Ces indices arrivent en attente dans `/admin/hints`. Si
 l'extraction change un texte anglais, sa traduction ne s'applique plus : le rapport le montre.
 
+`LEFT_OUT` (`extract_events.py`) écarte des lignes à la main, par empreinte de leur texte pour
+qu'aucun nom ne figure dans le script : une personne vivante nommée à côté d'un crime, ou une
+ligne mal écrite dans la source. La ligne suivante de l'année prend sa place à la relance.
+
+Pour retirer un indice déjà en prod, sur demande d'une personne citée par exemple, le passer en
+`REJECTED` en base plutôt que de le supprimer : l'import ne touche pas une clé qu'il connaît,
+alors qu'il recréerait une ligne supprimée. Une personne citée se retrouve par `subject_qid`
+en Célébrités, par recherche sur le texte ailleurs.
+
 ## Relance annuelle de Célébrités, vers mars
 
 Les indices sont rangés par année de naissance, donc les autres n'ont pas à changer. Il ne

@@ -40,7 +40,7 @@ describe('HintCuration', () => {
     return page.querySelector('textarea') as HTMLTextAreaElement;
   }
 
-  function expectReview(hintId: string, body: object, textFr = 'Découverte.'): void {
+  function expectReview(hintId: string, body: object, textFr = 'Découverte h1.'): void {
     const req = http.expectOne(`/api/admin/hints/${hintId}/review`);
     expect(req.request.body).toEqual(body);
     req.flush({ hintId, reviewStatus: 'APPROVED', textEn: null, textFr });

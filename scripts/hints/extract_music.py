@@ -7,12 +7,11 @@
 Standard library only. Pages are cached, so a rerun does not call Wikipedia again.
 """
 import argparse
-import html
 import re
-from html.parser import HTMLParser
 from pathlib import Path
 
-from common import FIRST_YEAR, LAST_YEAR, TARGET, YEAR_IN_TEXT, cached, key, report, url, wiki_api, write
+from common import (FIRST_YEAR, LAST_YEAR, TARGET, YEAR_IN_TEXT, cached, hint, report, tables_of, tidy, url, wiki_api,
+                    write)
 
 # Political and military songs say more about a regime than about the year's music.
 NOT_POP = re.compile(
@@ -24,14 +23,6 @@ ORCHESTRA = re.compile(r"\s+(with|and (his|her|the))\b.*orchestra.*$", re.I)
 TITLE_HEADER = re.compile(r"^(titre|title|single|song|chanson)s?\b", re.I)
 ARTIST_HEADER = re.compile(r"^(artiste|artist|interpr[èe]te|performer)", re.I)
 ALBUM_HEADER = re.compile(r"^album", re.I)
-
-
-def page_html(lang, title):
-    def fetch():
-        result = wiki_api(lang, action="parse", page=title, prop="text", redirects=1)
-        return result.get("parse", {}).get("text")
-
-    return cached(f"{lang}-html-{title}", fetch)
 
 
 def category_members(lang, category):
@@ -62,113 +53,8 @@ def category_members(lang, category):
     return cached(f"{lang}-members-{category}", fetch)
 
 
-class Tables(HTMLParser):
-    """Wikitables of a rendered page: rows of text cells, rowspan and colspan resolved."""
-
-    SKIPPED = {"sup", "style", "script"}
-
-    def __init__(self):
-        super().__init__(convert_charrefs=True)
-        self.tables, self.heading = [], ""
-        self.stack, self.skip, self.cell, self.in_heading, self.heading_text = [], 0, None, False, []
-
-    def handle_starttag(self, tag, attrs):
-        attrs = dict(attrs)
-        if tag in self.SKIPPED:
-            self.skip += 1
-        elif tag in ("h2", "h3"):
-            self.in_heading, self.heading_text = True, []
-        elif tag == "table":
-            self.stack.append({"rows": [], "row": None, "heading": self.heading,
-                               "wiki": "wikitable" in (attrs.get("class") or "")})
-        elif not self.stack:
-            return
-        elif tag == "tr":
-            self.stack[-1]["row"] = []
-        elif tag in ("td", "th") and self.stack[-1]["row"] is not None:
-            self.cell = {"text": [], "rowspan": _span(attrs, "rowspan"), "colspan": _span(attrs, "colspan"),
-                         "header": tag == "th"}
-
-    def handle_endtag(self, tag):
-        if tag in self.SKIPPED:
-            self.skip = max(0, self.skip - 1)
-        elif tag in ("h2", "h3"):
-            self.in_heading, self.heading = False, " ".join(self.heading_text).strip()
-        elif tag == "table" and self.stack:
-            table = self.stack.pop()
-            if table["wiki"]:
-                self.tables.append({"heading": table["heading"], "rows": _grid(table["rows"])})
-        elif not self.stack:
-            return
-        elif tag in ("td", "th") and self.cell is not None:
-            self.cell["text"] = re.sub(r"\s+", " ", "".join(self.cell["text"])).strip()
-            self.stack[-1]["row"].append(self.cell)
-            self.cell = None
-        elif tag == "tr" and self.stack[-1]["row"] is not None:
-            self.stack[-1]["rows"].append(self.stack[-1]["row"])
-            self.stack[-1]["row"] = None
-
-    def handle_data(self, data):
-        if self.skip:
-            return
-        if self.in_heading:
-            self.heading_text.append(data)
-        elif self.cell is not None:
-            self.cell["text"].append(data)
-
-
-def _span(attrs, name):
-    match = re.match(r"\d+", attrs.get(name) or "1")
-    return max(1, int(match.group())) if match else 1
-
-
-def _grid(rows):
-    """Repeats a spanning cell on each row it covers, so that columns line up."""
-    grid, pending = [], {}
-    for row in rows:
-        line, cells, column = {}, iter(row), 0
-        while True:
-            if column in pending and pending[column][0] > 0:
-                pending[column][0] -= 1
-                line[column] = pending[column][1]
-                column += 1
-                continue
-            cell = next(cells, None)
-            if cell is None:
-                if any(c in pending and pending[c][0] > 0 and c > column for c in pending):
-                    column += 1
-                    continue
-                break
-            for _ in range(cell["colspan"]):
-                line[column] = cell
-                if cell["rowspan"] > 1:
-                    pending[column] = [cell["rowspan"] - 1, cell]
-                column += 1
-        grid.append([line[c] for c in sorted(line)])
-    return grid
-
-
-def tables_of(lang, title):
-    text = page_html(lang, title)
-    if not text:
-        return []
-    parser = Tables()
-    parser.feed(text)
-    return parser.tables
-
-
 def short_artist(artist):
     return ORCHESTRA.sub("", artist)
-
-
-def tidy(text):
-    text = html.unescape(text)
-    text = re.sub(r"\[[^\]]*\]", "", text)
-    text = re.sub(r"[†‡§*^]+", "", text)
-    text = re.sub(r"\s+", " ", text).strip()
-    text = text.strip("\"“”«» ‘’").strip()
-    # A title followed by a remix name loses its opening quote above: drop the orphan.
-    return text.replace('"', "") if text.count('"') % 2 else text
 
 
 def from_french(artist):
@@ -242,24 +128,19 @@ def category_songs(lang, category):
     return sorted(songs, key=lambda s: (lang == "fr" and not s["french"], -s["languages"]))
 
 
-def hint(year, audience, text, source, kind, *parts):
-    return {
-        "category": "MUSIC", "year": year, "audience": audience,
-        "textFr": text if audience == "FR" else None,
-        "textEn": text if audience == "EN" else None,
-        "sourceUrl": source, "sourceKind": kind,
-        "dedupeKey": key("music", audience, kind, *parts), "translated": False,
-    }
+def music_hint(year, audience, text, source, kind, *parts):
+    texts = {"text_fr": text} if audience == "FR" else {"text_en": text}
+    return hint("MUSIC", year, audience, **texts, source=source, kind=kind, key_parts=parts)
 
 
 def french_candidates(year):
     page = f"Liste des titres musicaux numéro un en France en {year}"
     singles, _ = chart("fr", page)
     for entry in singles:
-        yield hint(year, "FR", f"Numéro un en France : « {entry['title']} » {from_french(entry['artist'])}.",
+        yield music_hint(year, "FR", f"Numéro un en France : « {entry['title']} » {from_french(entry['artist'])}.",
                    url("fr", page), "chart", entry["artist"], entry["title"])
     for song in category_songs("fr", f"Catégorie:Chanson de {year}"):
-        yield hint(year, "FR", f"Chanson sortie cette année-là : « {song['title']} ».",
+        yield music_hint(year, "FR", f"Chanson sortie cette année-là : « {song['title']} ».",
                    url("fr", song["page"]), "category", song["title"])
 
 
@@ -267,16 +148,16 @@ def english_candidates(year):
     charts = [f"List of Billboard Hot 100 number ones of {year}", f"List of Billboard number-one singles of {year}"]
     for page in charts:
         for entry in chart("en", page)[0]:
-            yield hint(year, "EN", f"Billboard No. 1: \"{entry['title']}\" by {short_artist(entry['artist'])}.",
+            yield music_hint(year, "EN", f"Billboard No. 1: \"{entry['title']}\" by {short_artist(entry['artist'])}.",
                        url("en", page), "chart", entry["artist"], entry["title"])
     page = f"List of Billboard 200 number-one albums of {year}"
     for entry in chart("en", page)[1]:
         if "soundtrack" in entry["artist"].lower():
             continue
-        yield hint(year, "EN", f"Billboard No. 1 album: {entry['title']} by {entry['artist']}.",
+        yield music_hint(year, "EN", f"Billboard No. 1 album: {entry['title']} by {entry['artist']}.",
                    url("en", page), "album", entry["artist"], entry["title"])
     for song in category_songs("en", f"Category:{year} songs"):
-        yield hint(year, "EN", f"A song released that year: \"{song['title']}\".",
+        yield music_hint(year, "EN", f"A song released that year: \"{song['title']}\".",
                    url("en", song["page"]), "category", song["title"])
 
 

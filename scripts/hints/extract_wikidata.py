@@ -12,9 +12,8 @@ import datetime
 import re
 from pathlib import Path
 
-from extract_music import tables_of, tidy
 from common import (FIRST_YEAR, LAST_YEAR, TARGET, YEAR_IN_TEXT, cached, hint, link_fame, qid, report, sparql,
-                    url, wiki_api, wikidata_url, write)
+                    tables_of, tidy, url, wiki_api, wikidata_url, write)
 
 MAX_FILM_YEAR = LAST_YEAR
 FILM_SITELINKS = 12

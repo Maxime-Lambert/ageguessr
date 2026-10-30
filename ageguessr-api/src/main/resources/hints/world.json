@@ -8396,17 +8396,6 @@
   "category": "WORLD",
   "year": 2008,
   "audience": "FR",
-  "textFr": "Californie : À Los Angeles, ouverture du procès du détective privé Tony Pellicano (63 ans) pour plus de cent chefs d'accusation.",
-  "textEn": null,
-  "sourceUrl": "https://fr.wikipedia.org/wiki/Mars_2008",
-  "sourceKind": "year-page",
-  "dedupeKey": "world-fr-year-page-2008-b4e5fbeef71c",
-  "translated": false
- },
- {
-  "category": "WORLD",
-  "year": 2008,
-  "audience": "FR",
   "textFr": "Kosovo : L'Estonie, l'Italie, le Danemark et le Luxembourg reconnaissent officiellement le nouvel État indépendant ce qui monte à 16 le nombre d'Etats indépendants à établir des liens diplomatiques avec le Kosovo.",
   "textEn": null,
   "sourceUrl": "https://fr.wikipedia.org/wiki/F%C3%A9vrier_2008",
@@ -8467,6 +8456,17 @@
   "sourceUrl": "https://fr.wikipedia.org/wiki/Janvier_2008",
   "sourceKind": "year-page",
   "dedupeKey": "world-fr-year-page-2008-ae4d63804f84",
+  "translated": false
+ },
+ {
+  "category": "WORLD",
+  "year": 2008,
+  "audience": "FR",
+  "textFr": "Atterrissage sur Mars de la sonde spatiale Phoenix.",
+  "textEn": null,
+  "sourceUrl": "https://fr.wikipedia.org/wiki/Mai_2008",
+  "sourceKind": "year-page",
+  "dedupeKey": "world-fr-year-page-2008-82c45ccd4f97",
   "translated": false
  },
  {
@@ -17054,17 +17054,6 @@
   "year": 2003,
   "audience": "EN",
   "textFr": null,
-  "textEn": "21 teenage teenage children are killed after a car accident in Tempi, Greece, after a school trip.",
-  "sourceUrl": "https://en.wikipedia.org/wiki/2003",
-  "sourceKind": "year-page",
-  "dedupeKey": "world-en-year-page-2003-013487999a84",
-  "translated": false
- },
- {
-  "category": "WORLD",
-  "year": 2003,
-  "audience": "EN",
-  "textFr": null,
   "textEn": "Slovakia approves joining the European Union in a referendum.",
   "sourceUrl": "https://en.wikipedia.org/wiki/2003",
   "sourceKind": "year-page",
@@ -17157,6 +17146,17 @@
   "sourceUrl": "https://en.wikipedia.org/wiki/2003",
   "sourceKind": "year-page",
   "dedupeKey": "world-en-year-page-2003-67f571e3d918",
+  "translated": false
+ },
+ {
+  "category": "WORLD",
+  "year": 2003,
+  "audience": "EN",
+  "textFr": null,
+  "textEn": "SCO Group files a lawsuit against IBM as part of an ongoing dispute regarding the use of Unix in the development of Linux.",
+  "sourceUrl": "https://en.wikipedia.org/wiki/2003",
+  "sourceKind": "year-page",
+  "dedupeKey": "world-en-year-page-2003-6e238d2e8d30",
   "translated": false
  },
  {
@@ -18099,17 +18099,6 @@
   "year": 2012,
   "audience": "EN",
   "textFr": null,
-  "textEn": "Former Liberian President Charles Taylor is found guilty on 11 counts of aiding and abetting war crimes and crimes against humanity during the Sierra Leone Civil War.",
-  "sourceUrl": "https://en.wikipedia.org/wiki/2012",
-  "sourceKind": "year-page",
-  "dedupeKey": "world-en-year-page-2012-3f9ad18475d3",
-  "translated": false
- },
- {
-  "category": "WORLD",
-  "year": 2012,
-  "audience": "EN",
-  "textFr": null,
   "textEn": "Mutinous soldiers in Guinea-Bissau stage a coup d'état and take control of the capital city, Bissau.",
   "sourceUrl": "https://en.wikipedia.org/wiki/2012",
   "sourceKind": "year-page",
@@ -18147,6 +18136,17 @@
   "sourceUrl": "https://en.wikipedia.org/wiki/2012",
   "sourceKind": "year-page",
   "dedupeKey": "world-en-year-page-2012-4399e8ec12c3",
+  "translated": false
+ },
+ {
+  "category": "WORLD",
+  "year": 2012,
+  "audience": "EN",
+  "textFr": null,
+  "textEn": "The UN General Assembly approves a motion granting Palestine non-member observer state status.",
+  "sourceUrl": "https://en.wikipedia.org/wiki/2012",
+  "sourceKind": "year-page",
+  "dedupeKey": "world-en-year-page-2012-614a66a2e219",
   "translated": false
  },
  {

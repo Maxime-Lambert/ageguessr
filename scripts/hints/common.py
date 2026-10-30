@@ -1,4 +1,5 @@
 """What the hint extractions share: Wikipedia and Wikidata access, cache, report, output."""
+import html
 import json
 import re
 import sys
@@ -6,6 +7,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+from html.parser import HTMLParser
 from pathlib import Path
 
 USER_AGENT = "Ageguessr/1.0 (https://ageguessr.app; contact@ageguessr.app)"
@@ -62,6 +64,119 @@ def page_wikitext(lang, title):
         return result.get("parse", {}).get("wikitext")
 
     return cached(f"{lang}-wikitext-{title}", fetch)
+
+
+def page_html(lang, title):
+    def fetch():
+        result = wiki_api(lang, action="parse", page=title, prop="text", redirects=1)
+        return result.get("parse", {}).get("text")
+
+    return cached(f"{lang}-html-{title}", fetch)
+
+
+class Tables(HTMLParser):
+    """Wikitables of a rendered page: rows of text cells, rowspan and colspan resolved."""
+
+    SKIPPED = {"sup", "style", "script"}
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.tables, self.heading = [], ""
+        self.stack, self.skip, self.cell, self.in_heading, self.heading_text = [], 0, None, False, []
+
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        if tag in self.SKIPPED:
+            self.skip += 1
+        elif tag in ("h2", "h3"):
+            self.in_heading, self.heading_text = True, []
+        elif tag == "table":
+            self.stack.append({"rows": [], "row": None, "heading": self.heading,
+                               "wiki": "wikitable" in (attrs.get("class") or "")})
+        elif not self.stack:
+            return
+        elif tag == "tr":
+            self.stack[-1]["row"] = []
+        elif tag in ("td", "th") and self.stack[-1]["row"] is not None:
+            self.cell = {"text": [], "rowspan": _span(attrs, "rowspan"), "colspan": _span(attrs, "colspan"),
+                         "header": tag == "th"}
+
+    def handle_endtag(self, tag):
+        if tag in self.SKIPPED:
+            self.skip = max(0, self.skip - 1)
+        elif tag in ("h2", "h3"):
+            self.in_heading, self.heading = False, " ".join(self.heading_text).strip()
+        elif tag == "table" and self.stack:
+            table = self.stack.pop()
+            if table["wiki"]:
+                self.tables.append({"heading": table["heading"], "rows": _grid(table["rows"])})
+        elif not self.stack:
+            return
+        elif tag in ("td", "th") and self.cell is not None:
+            self.cell["text"] = re.sub(r"\s+", " ", "".join(self.cell["text"])).strip()
+            self.stack[-1]["row"].append(self.cell)
+            self.cell = None
+        elif tag == "tr" and self.stack[-1]["row"] is not None:
+            self.stack[-1]["rows"].append(self.stack[-1]["row"])
+            self.stack[-1]["row"] = None
+
+    def handle_data(self, data):
+        if self.skip:
+            return
+        if self.in_heading:
+            self.heading_text.append(data)
+        elif self.cell is not None:
+            self.cell["text"].append(data)
+
+
+def _span(attrs, name):
+    match = re.match(r"\d+", attrs.get(name) or "1")
+    return max(1, int(match.group())) if match else 1
+
+
+def _grid(rows):
+    """Repeats a spanning cell on each row it covers, so that columns line up."""
+    grid, pending = [], {}
+    for row in rows:
+        line, cells, column = {}, iter(row), 0
+        while True:
+            if column in pending and pending[column][0] > 0:
+                pending[column][0] -= 1
+                line[column] = pending[column][1]
+                column += 1
+                continue
+            cell = next(cells, None)
+            if cell is None:
+                if any(c in pending and pending[c][0] > 0 and c > column for c in pending):
+                    column += 1
+                    continue
+                break
+            for _ in range(cell["colspan"]):
+                line[column] = cell
+                if cell["rowspan"] > 1:
+                    pending[column] = [cell["rowspan"] - 1, cell]
+                column += 1
+        grid.append([line[c] for c in sorted(line)])
+    return grid
+
+
+def tables_of(lang, title):
+    text = page_html(lang, title)
+    if not text:
+        return []
+    parser = Tables()
+    parser.feed(text)
+    return parser.tables
+
+
+def tidy(text):
+    text = html.unescape(text)
+    text = re.sub(r"\[[^\]]*\]", "", text)
+    text = re.sub(r"[†‡§*^]+", "", text)
+    text = re.sub(r"\s+", " ", text).strip()
+    text = text.strip("\"“”«» ‘’").strip()
+    # A title followed by a remix name loses its opening quote above: drop the orphan.
+    return text.replace('"', "") if text.count('"') % 2 else text
 
 
 def link_fame(lang, page):

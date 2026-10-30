@@ -384,10 +384,10 @@ les signalements des joueurs prendront le relais.
   soumettre à `code-reviewer`, la ligne éditoriale refusant de le faire dans le dépôt public.
 
 ## Phase 6 : Revue, mise en production et clôture
-Status: Not started
+Status: In progress
 
-- [ ] Reviewers `architecture-reviewer` et `code-reviewer`, corrections
-- [ ] Compléter « Sourcing des indices » dans `docs/decisions/architecture.md`, mettre à
+- [x] Reviewers `architecture-reviewer` et `code-reviewer`, corrections
+- [x] Compléter « Sourcing des indices » dans `docs/decisions/architecture.md`, mettre à
       jour `docs/roadmap.md`
 - [ ] PR vers `develop`, release, import de toutes les catégories en prod
 - [ ] Validation des traductions en prod

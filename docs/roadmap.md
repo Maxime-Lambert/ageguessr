@@ -60,14 +60,15 @@ la suivante).
       exclus de la base (`--apply-editorial-line`), motif d'exclusion en base (V10) — PR
       `feature/editorial-line`
 - [ ] Ingestion des indices (Musique, Cinéma, Sport, Science et techno, Monde,
-      Célébrités), au moins 5 par année, par catégorie et par public, sur 1932-2015 :
-      prototype musique validé en local, puis toutes les catégories dans la même PR.
-      Une source précise par catégorie. Seuls les indices traduits sont relus, les
-      autres entrent directement en jeu (voir `plans/active-plan.md`). Célébrités :
-      extraction relancée à la main chaque année vers mars, pour ajouter les personnes
-      qui viennent d'avoir 18 ans
-- [ ] Schéma de données final : personnes et photos faites (V4, PR
-      `feature/people-sourcing`) ; indices à faire (V11) avec le plan des indices
+      Célébrités), au moins 5 par année, par catégorie et par public, sur 1932-2008 pour
+      Célébrités et 1932-2015 ailleurs. Fait dans la PR `feature/hint-ingestion` : extraction,
+      table `hints`, import idempotent, page `/admin/hints` (traductions et couverture).
+      Reste l'import en prod et la validation des 29 traductions. Seuls les indices
+      traduits sont relus, les autres entrent directement en jeu. Célébrités : extraction
+      relancée à la main chaque année vers mars, pour ajouter les personnes qui viennent
+      d'avoir 18 ans
+- [x] Schéma de données final : personnes et photos (V4, PR `feature/people-sourcing`),
+      indices (V11, PR `feature/hint-ingestion`)
 
 ## Semaine 3 — Moteur de jeu
 - [ ] Algorithme de sélection quotidienne (3 personnes/jour, minuit UTC). Une même

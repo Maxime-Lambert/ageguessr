@@ -48,4 +48,5 @@ action requise.
 
 ## Licence
 
-MIT — voir [LICENSE](LICENSE)
+MIT — voir [LICENSE](LICENSE), sauf les indices de `ageguessr-api/src/main/resources/hints/`,
+tirés de Wikipédia (CC BY-SA 4.0) et de Wikidata (CC0) : voir le `README.md` de ce dossier.

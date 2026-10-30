@@ -565,6 +565,19 @@ au joueur.
   trop long.
 - **Signalement par les joueurs** : c'est le filet de sécurité de ces indices. Depuis
   l'écran de résultat, sur le modèle des photos, sans retrait automatique.
+- **Noms à côté d'un crime** : Monde reste sans filtre, mais une personne vivante n'est pas
+  nommée à côté d'un crime ou d'une accusation, conformément à la ligne éditoriale. Ces
+  lignes sont écartées à la main dans `extract_events.py`, par empreinte du texte pour
+  qu'aucun nom n'y figure. Les personnes décédées et les faits historiques restent.
+- **Stockage** (table `hints`, V11) : catégorie, année, public (`FR`, `EN`, `ALL`), textes,
+  source, `subject_qid` (Célébrités seulement), `dedupe_key` unique et statut de relecture.
+  L'import (profil `import-hints`) n'ajoute que les clés inconnues : il n'écrase jamais une
+  décision ni un texte corrigé, et un retrait passe par `REJECTED`, pas par une suppression.
+  Tout nombre de 1900 à 2099 est refusé dans un texte, il donnerait la réponse.
+- **Sport et Célébrités, écarts à la source prévue** : Sport lit les pages `Y en sport` /
+  `Y in sports`, car les palmarès Wikidata mêlent vainqueurs d'étape et de classement.
+  Célébrités part des listes de naissances Wikipédia, Wikidata seul ne tenant pas une année
+  entière dans le délai de requête.
 
 **Raison** : Wikipédia et Wikidata restent l'écosystème déjà retenu pour les personnes,
 et les événements passés ne changent pas : un travail ponctuel, dont la sortie est
