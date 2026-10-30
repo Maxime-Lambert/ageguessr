@@ -252,18 +252,18 @@ sûre.
 **Écarts** : le repli « succès de l'année » du spike est retiré, les catégories suffisent.
 
 ## Phase 2 : Schéma et import
-Status: Not started
+Status: Complete
 
-- [ ] V11 : table `hints` (`category`, `year`, `audience`, `text_en`, `text_fr`,
+- [x] V11 : table `hints` (`category`, `year`, `audience`, `text_en`, `text_fr`,
       `source_url`, `source_kind`, `subject_qid`, `dedupe_key`, `review_status`,
       `reviewed_at`, `reviewed_by`), unicité sur `dedupe_key`, contraintes de cohérence
       `audience`/textes. `source_kind` permet de retrouver les indices d'une source
       moins sûre (dates des catégories Wikipédia) ; `subject_qid` n'est rempli que pour
       Célébrités
-- [ ] Entités et enums de `features/hints/`
-- [ ] `ImportHintsRunner` sous profil `import-hints`, sans serveur HTTP, sortie explicite
+- [x] Entités et enums de `features/hints/`
+- [x] `ImportHintsRunner` sous profil `import-hints`, sans serveur HTTP, sortie explicite
       comme `IngestPeopleRunner`
-- [ ] Import idempotent, avec rejet motivé (année dans le texte, texte manquant, année
+- [x] Import idempotent, avec rejet motivé (année dans le texte, texte manquant, année
       hors bornes)
 
 ### Verification Plan
@@ -271,7 +271,20 @@ Status: Not started
 - Import lancé deux fois en local : le second ajoute 0 ligne.
 
 ### Phase Summary
-_(à écrire quand la phase est terminée)_
+**Résultat** : V11 et la feature `hints` sont en place. 744 tests backend passent, dont les
+contraintes de V11 sur un vrai Postgres, l'import des fichiers livrés et la conservation
+d'une décision à la relance.
+
+Essai réel en local : premier import 1 680 ajoutés, 0 refusé (840 FR et 840 EN, tous
+`APPROVED`, 1932-2015) ; second import 0 ajouté, 1 680 déjà présents.
+
+**Écarts** : `subject_qid` est ajouté à V11, obligatoire pour `CELEBRITIES` et interdit
+ailleurs. L'année d'un indice doit être comprise entre 1900 et l'année en cours. Les tests
+de contraintes sont dans `integration/hints/` : ils utilisent `UserRepository`, et l'ArchUnit
+interdit à `features/hints`, même en test, de dépendre de `auth`.
+
+**À savoir pour la prod** : le profil `import-hints` charge tout le contexte, donc il a besoin
+de `JWT_SECRET` et `RESEND_API_KEY`, comme l'ingestion. Aucun mail n'est envoyé.
 
 ## Phase 3 : Validation des traductions et couverture
 Status: Not started
