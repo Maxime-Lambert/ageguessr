@@ -20,11 +20,11 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 /**
  * CSRF is disabled: every protected endpoint is authorized via a Bearer header, which
  * a cross-site page cannot attach without XSS (CSRF specifically targets
- * cookie-authenticated mutations). The one cookie-driven flow (refresh/logout) is
- * additionally protected by the cookie's own SameSite=Lax (see
- * RefreshTokenCookieFactory), which blocks the cookie from being sent on cross-site
- * requests for anything but a top-level GET navigation - both endpoints are POST, so
- * that path is closed too. No CSRF token needed on top of that.
+ * cookie-authenticated mutations). The two cookie-driven flows (refresh/logout, and the
+ * guesses of a guest) are additionally protected by the cookies' own SameSite=Lax (see
+ * RefreshTokenCookieFactory and GuestCookie), which blocks the cookie from being sent on
+ * cross-site requests for anything but a top-level GET navigation - all those endpoints
+ * are POST, so that path is closed too. No CSRF token needed on top of that.
  */
 @Configuration
 @RequiredArgsConstructor
@@ -44,6 +44,14 @@ public class SecurityConfig {
 
     private static final String[] PUBLIC_GAME_GET_PATHS = {"/api/images/*"};
 
+    /**
+     * The game itself, GET and POST: playable without an account. The JWT stays optional
+     * there: sent and valid, the player is the account; absent, the guest cookie decides.
+     * Sent but invalid or expired, the resource server still answers 401 rather than
+     * playing as a guest, so the front refreshes the token and the account keeps its game.
+     */
+    private static final String PUBLIC_GAME_PATHS = "/api/game/**";
+
     private final RateLimitFilter rateLimitFilter;
 
     @Bean
@@ -56,8 +64,10 @@ public class SecurityConfig {
                         .permitAll()
                         // Game endpoints are guest-playable (docs/decisions/architecture.md):
                         // each one MUST be added here, or guest play silently breaks
-                        // behind a 401. GET only: nothing else exists on these paths.
+                        // behind a 401. GET only for the images: nothing else exists there.
                         .requestMatchers(HttpMethod.GET, PUBLIC_GAME_GET_PATHS)
+                        .permitAll()
+                        .requestMatchers(PUBLIC_GAME_PATHS)
                         .permitAll()
                         // Admin tools (photo curation): checked here, by path, so that the
                         // features behind them never need to know about roles.

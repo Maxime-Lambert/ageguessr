@@ -20,10 +20,11 @@ import jakarta.persistence.Entity;
 class ArchitectureTests {
 
     /**
-     * One exception: the game is built on the photos of the people feature (age, curation
-     * status, box, public id), so game may use people. Never the reverse, see the next
-     * rule: people knows nothing of the game, which is why a curation decision is read by
-     * the game rather than pushed to it (docs/decisions/architecture.md).
+     * Two exceptions, both from the game, which is built on the other features: on the
+     * photos of people (age, curation status, box, public id) and on the hints of a year.
+     * Never the reverse, see the next rules: neither knows anything of the game, which is
+     * why a curation decision is read by the game rather than pushed to it
+     * (docs/decisions/architecture.md).
      */
     @ArchTest
     static final ArchRule features_do_not_depend_on_each_other = slices().matching("app.ageguessr.features.(*)..")
@@ -31,12 +32,23 @@ class ArchitectureTests {
             .notDependOnEachOther()
             .ignoreDependency(
                     resideInAPackage("app.ageguessr.features.game.."),
-                    resideInAPackage("app.ageguessr.features.people.."));
+                    resideInAPackage("app.ageguessr.features.people.."))
+            .ignoreDependency(
+                    resideInAPackage("app.ageguessr.features.game.."),
+                    resideInAPackage("app.ageguessr.features.hints.."));
 
     @ArchTest
     static final ArchRule people_does_not_depend_on_the_game = noClasses()
             .that()
             .resideInAPackage("app.ageguessr.features.people..")
+            .should()
+            .dependOnClassesThat()
+            .resideInAPackage("app.ageguessr.features.game..");
+
+    @ArchTest
+    static final ArchRule hints_do_not_depend_on_the_game = noClasses()
+            .that()
+            .resideInAPackage("app.ageguessr.features.hints..")
             .should()
             .dependOnClassesThat()
             .resideInAPackage("app.ageguessr.features.game..");

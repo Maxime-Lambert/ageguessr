@@ -1,0 +1,93 @@
+<section aria-labelledby="round-title">
+  <h2 id="round-title" class="text-muted text-sm font-medium tracking-wide uppercase">
+    {{ title() }}
+  </h2>
+
+  @if (round().imageUrl; as imageUrl) {
+    <img
+      [src]="imageUrl"
+      [alt]="text.photoAlt"
+      class="archive-photo border-border mt-3 max-h-[60vh] w-full rounded-lg border object-contain"
+      (error)="imageFailed.emit()"
+    />
+  }
+
+  @if (direction(); as direction) {
+    <p class="font-display mt-4 text-2xl" aria-live="polite">
+      <span aria-hidden="true">{{ round().direction === 'OLDER' ? '↑' : '↓' }}</span>
+      {{ direction }}
+    </p>
+  }
+
+  @switch (step()) {
+    @case ('AWAITING_HINT') {
+      <div class="mt-4">
+        <p class="text-sm font-medium">{{ text.pickHint }}</p>
+        <div class="mt-2 flex flex-wrap gap-2">
+          @for (category of round().categories; track category) {
+            <button
+              #category
+              type="button"
+              class="border-input-border hover:bg-surface rounded-md border px-3 py-2 text-sm"
+              [disabled]="busy()"
+              (click)="pick(category)"
+            >
+              {{ categoryLabels[category] }}
+            </button>
+          }
+        </div>
+      </div>
+    }
+    @default {
+      @if (step() === 'AWAITING_SECOND_GUESS') {
+        <div class="bg-surface border-border mt-4 rounded-lg border p-4" aria-live="polite">
+          @if (round().hint; as hint) {
+            <p class="text-muted text-xs font-medium tracking-wide uppercase">
+              {{ text.hint }} · {{ categoryLabels[hint.category] }}
+            </p>
+            <p class="font-display mt-1 text-lg">{{ hint.text }}</p>
+          } @else {
+            <p class="text-sm">{{ text.noHint }}</p>
+          }
+        </div>
+      } @else {
+        <p class="font-display mt-4 text-2xl">{{ text.question }}</p>
+      }
+
+      <form class="mt-4 flex items-end gap-3" (submit)="$event.preventDefault(); submitGuess()">
+        <div>
+          <label for="guess" class="text-sm font-medium">{{ text.guessLabel }}</label>
+          <input
+            #guessInput
+            id="guess"
+            type="number"
+            inputmode="numeric"
+            [min]="minAge"
+            [max]="maxAge"
+            step="1"
+            [formControl]="guess"
+            [attr.aria-invalid]="guess.invalid && guess.touched"
+            aria-describedby="guess-error"
+            class="border-input-border bg-background mt-1 w-28 rounded-md border px-3 py-2 text-lg"
+          />
+        </div>
+        <button
+          type="submit"
+          [disabled]="busy()"
+          class="bg-accent text-accent-foreground rounded-md px-4 py-2 font-medium disabled:opacity-60"
+        >
+          {{ step() === 'AWAITING_SECOND_GUESS' ? text.secondGuessButton : text.firstGuessButton }}
+        </button>
+      </form>
+      <p id="guess-error" class="text-danger mt-2 text-sm" aria-live="polite">
+        @if (guess.invalid && guess.touched) {
+          {{ text.invalidAge }}
+        }
+      </p>
+    }
+  }
+
+  @if (error(); as error) {
+    <p class="text-danger mt-2 text-sm" role="alert">{{ error }}</p>
+  }
+</section>

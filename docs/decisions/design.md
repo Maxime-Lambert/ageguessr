@@ -79,6 +79,12 @@ rester visuellement distincts pour ne jamais laisser penser qu'un bouton normal 
 indicateur de jeu, ou l'inverse — deux familles de teintes bleues différentes plutôt que
 de réutiliser l'accent de marque comme couleur "froide" du jeu.
 
+**Tokens libres depuis le 2026-11-02** : le chaud/froid a été abandonné (voir
+`architecture.md`, « Déroulé d'une manche »). Le jeu n'indique plus que le sens, avec une
+flèche et un texte (« Older than 30 ») en couleurs neutres, sans aucune distance. Les
+tokens `hot` et `cold` restent définis et vérifiés pour le contraste, mais aucun écran
+ne les utilise. Les réutiliser seulement pour un sens qui ne suggère pas une proximité.
+
 ### Accessibilité des couleurs
 **Décision** : toute paire de tokens utilisée ensemble passe WCAG 2.x AA, en sombre comme
 en clair :
@@ -182,6 +188,10 @@ suffit pour repasser au vocabulaire neutre.
 **Règle d'implémentation (Semaine 4)** : tout le vocabulaire de jeu vient d'un seul
 fichier. Il n'est jamais écrit en dur dans les templates. Abandonner l'essai revient à
 modifier ce fichier, sans toucher aux écrans.
+
+**Mise en œuvre** (PR `feature/daily-guess`) : `frontend/src/app/features/game/game-vocabulary.ts`.
+`INVESTIGATION_VOICE` et `NEUTRAL_VOICE` ont les mêmes clés (vérifié par un test), et la
+constante `VOICE` choisit entre les deux.
 
 **Périmètre** : seulement les écrans de jeu. Compte, connexion et inscription restent
 en vocabulaire neutre (*Sign in* reste *Sign in*) : ce sont des parcours standards où

@@ -1,5 +1,6 @@
 package app.ageguessr.features.hints.GetHintCoverage;
 
+import app.ageguessr.features.hints.Hint;
 import app.ageguessr.features.hints.HintAudience;
 import app.ageguessr.features.hints.HintCategory;
 import app.ageguessr.features.hints.HintCount;
@@ -23,8 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class GetHintCoverageHandler {
 
-    /** Minimum of hints per year, category and audience; under it the category is hidden. */
-    static final int MINIMUM = 5;
+    static final int MINIMUM = Hint.MINIMUM_PER_CATEGORY;
 
     /** 2026 minus the highest age on a photo of the pool (plans/active-plan.md). */
     static final int FIRST_YEAR = 1932;

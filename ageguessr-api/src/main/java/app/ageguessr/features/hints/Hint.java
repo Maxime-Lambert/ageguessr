@@ -29,6 +29,13 @@ import lombok.Setter;
 @Builder
 public class Hint {
 
+    /**
+     * Approved hints a year needs in a category for one audience (ALL hints plus its own)
+     * before that category is offered: under it, a player would see the same hint again
+     * too often. Shared by the coverage page and the game.
+     */
+    public static final int MINIMUM_PER_CATEGORY = 5;
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;

@@ -1,0 +1,549 @@
+# Partie du jour jouable : guess, points et écran de jeu
+
+Rendre la partie du jour jouable de bout en bout, avec ou sans compte. Pour chaque
+photo : un 1er essai, puis « plus jeune / plus vieux », un indice choisi par catégorie,
+un 2e essai, et enfin le résultat. Le résultat montre l'âge, les points, l'identité, le
+crédit de la photo et la source de l'indice ; un récapitulatif clôt la journée. Le
+tirage quotidien est activé en prod. Hors scope : signalements, historique et profil,
+amis, partage, duotone, page d'accueil marketing.
+
+## For Future Agents
+Au fil du travail : cocher les cases `- [x]`. Quand une phase est finie, passer son
+statut à `Complete` et écrire son **Phase Summary**. Lancer le **Verification Plan** de
+la phase et noter le résultat avant de passer à la suivante. Ce fichier est la source de
+vérité, pas la conversation.
+
+## Contexte pour repartir à froid
+- Branche : `feature/daily-guess`, créée depuis `develop` après le merge de la PR #29
+  (sans upstream : `git push -u origin feature/daily-guess`). Ne jamais commiter sur
+  `develop` ou `main`.
+- Le tirage existe déjà (`plans/done/daily-draw.md`) :
+  - `DrawDailyGameHandler.drawIfMissing(date)` tire la partie si elle manque ;
+  - `DailyRoundRepository.findStatesOf(date)` calcule `PLAYABLE` / `NEUTRALIZED` à la
+    lecture ;
+  - `app.game.daily.draw-enabled` est **faux par défaut**, et cette PR le passe à vrai.
+- **`RoundState.photoId` est l'id interne : il ne sort jamais de l'API**. Seul le
+  `publicId` sort, via `/api/images/{publicId}`.
+- `SecurityConfig` a déjà `PUBLIC_GAME_GET_PATHS` avec un commentaire : chaque endpoint
+  de jeu y est ajouté, sinon le jeu sans compte tombe en 401.
+- `RateLimitFilter` ne couvre que `/api/auth/` ; `RateLimiter` (Redis) est réutilisable.
+- Indices (V11, `features/hints`) :
+  - année de référence = **année du jour − `age_at_photo`** ;
+  - au moins 5 indices APPROVED par année, catégorie et public (`ALL` + `FR` ou `EN`) ;
+  - `CELEBRITIES` : `subject_qid` ne doit jamais être la personne à deviner.
+- UI en anglais (`docs/decisions/design.md`). Les indices existent en FR et en EN.
+- Voix « enquête » à l'essai : tout le vocabulaire de jeu vient d'**un seul fichier**,
+  jamais en dur dans les templates (design.md, « Règle d'implémentation »).
+- Photos : filtre CSS de vieillissement obligatoire (design.md, « Traitement des
+  photos ») ; le duotone reste non tranché, hors scope.
+- `/privacy` doit refléter le code : cookies, durées de conservation. Le commentaire en
+  tête de `privacy.html` le rappelle.
+
+## Décisions validées avec l'utilisateur (2026-11-02)
+- **Déroulé** : 1er essai → « plus jeune » / « plus vieux » (aucune distance, pas de
+  « brûlant ») → choix d'une catégorie d'indice → 2e essai. Saisie de 18 à 100.
+- **Points** : jusqu'à 500 par essai, `round(500 × e^(−écart/10))`, à régler par
+  playtest. La manche vaut la somme des deux essais (/1 000) ; un 1er essai exact
+  termine la manche à 1 000. Les points du 1er essai ne s'affichent qu'au résultat. Les
+  manches neutralisées sortent du score du jour.
+- **Périmètre** : backend **et** écran de jeu (écran principal, indice, résultat avec
+  crédit, enchaînement des 3 photos, récapitulatif), puis activation du tirage.
+- **Architecture** : `game → hints` autorisé, comme `game → people` ; jamais l'inverse.
+- **État d'une partie** : en base, table `game_plays`, rattachée au compte si le joueur
+  est connecté, sinon à un id aléatoire dans un cookie invité httpOnly strictement
+  nécessaire. Les parties invitées sont purgées au bout de 7 jours. Limite connue, comme
+  Wordle : rien n'empêche de rejouer en navigation privée.
+- **Même indice pour tous** pour une même (jour, manche, catégorie, langue).
+
+## Décisions d'implémentation (validées par l'utilisateur le 2026-11-02)
+- **Le jeu est à `/`**, comme un daily puzzle : on arrive et on joue. La démo de tokens
+  de `home` disparaît. Son pitch (« Get warmer… from the year they were born ») est
+  devenu faux. La page d'accueil marketing reste un item à part de la roadmap.
+- **Langue des indices** : `fr` si `navigator.language` commence par `fr`, sinon `en`.
+  Elle est envoyée avec le 1er essai et fixée dans `game_plays` pour la manche. Le reste
+  de l'UI reste en anglais. Le nom révélé suit la même langue (`name_fr` ou `name_en`,
+  avec repli sur l'autre).
+- **Endpoints** (tous publics, JWT facultatif) :
+  - `GET /api/game/today` : la date, et pour chaque manche :
+    - position, statut, URL de l'image et état du joueur ;
+    - le résultat complet, seulement si la manche est finie ;
+    - le score du jour.
+
+    Jamais d'âge, d'identité ni de crédit pour une manche non finie.
+  - `POST /api/game/{date}/rounds/{position}/first-guess` `{age, language}` →
+    direction et catégories disponibles, ou résultat si l'essai est exact.
+  - `POST …/hint` `{category}` → texte de l'indice.
+  - `POST …/second-guess` `{age}` → résultat.
+  - Erreurs métier (409) :
+    - `GAME_CLOSED` : la date n'est pas aujourd'hui ;
+    - `ROUND_NEUTRALIZED` ;
+    - `WRONG_STEP` : étape déjà jouée, ou pas encore permise ;
+    - `CATEGORY_UNAVAILABLE`.
+- **Machine à états d'une manche** : `NOT_STARTED → AWAITING_HINT → AWAITING_SECOND_GUESS
+  → FINISHED`, ou directement `FINISHED` sur un 1er essai exact. L'indice est
+  **obligatoire** avant le 2e essai, sauf si aucune catégorie n'est disponible : on
+  passe alors directement à `AWAITING_SECOND_GUESS`.
+- **Catégories disponibles** : celles qui ont au moins `app.game.hints.min-per-category`
+  (5) indices APPROVED pour (année de référence, catégorie, `ALL` + langue). Un indice
+  `CELEBRITIES` dont le `subject_qid` est la personne à deviner est exclu.
+  - Fuite marginale assumée : une catégorie masquée dit que l'année est en dehors de sa
+    couverture (par exemple pas de Célébrités avant 1932, donc plus de 94 ans).
+  - Elles ne sont envoyées qu'**après** le 1er essai.
+- **Indice déterministe** : parmi les indices éligibles triés par id, on prend l'indice
+  d'index `hash(date, position, catégorie, langue) mod n`. On stocke son id dans
+  `game_plays.hint_id` (`ON DELETE SET NULL`), pour qu'un joueur revoie toujours le même.
+- **Points stockés à l'essai**, pas recalculés : régler la formule plus tard ne réécrit
+  pas les parties passées.
+- **Minuit** : on ne peut jouer que la date du jour. Une manche commencée à 23:59 et
+  finie après minuit est refusée (`GAME_CLOSED`), et le front recharge la nouvelle
+  partie. Accepter la veille pour une manche commencée serait possible plus tard.
+- **Joueur connecté qui a aussi un cookie invité** : le compte gagne. Les parties
+  invitées ne sont pas fusionnées dans le compte à la connexion (hors scope, noté pour
+  l'historique en Semaine 5).
+- **Cookie invité `ageguessr_guest`** :
+  - UUID aléatoire, httpOnly, `Secure` en prod, `SameSite=Lax`, `Path=/api/game`,
+    30 jours ;
+  - posé au 1er POST s'il manque ; le GET sans cookie renvoie des manches
+    `NOT_STARTED` ;
+  - `SameSite=Lax` bloque les POST cross-site : sans jeton CSRF, au pire un site tiers
+    ne pourrait que jouer à la place d'un invité. À faire valider par `code-reviewer`.
+- **Limite par IP** sur `POST /api/game/**` (`app.rate-limit.game.*`, 60 / min), dans
+  un second `RateLimitFilter` ou en généralisant l'actuel.
+- **Purge** des lignes invitées dont `game_date` < aujourd'hui − 7 jours, chaque jour
+  (`@Scheduled`). Les lignes d'un compte disparaissent avec lui (`ON DELETE CASCADE`).
+- **Identité révélée** : nom + lien Wikipedia sans rien stocker,
+  `https://www.wikidata.org/wiki/Special:GoToLinkedPage/<lang>wiki/<QID>`.
+  *Hypothèse à vérifier en phase 1 à la main* : ce lien redirige vers l'article, ou
+  reste sur Wikidata quand l'article manque.
+- **Crédit** : auteur (`author_text`, sinon « Unknown author »), licence avec son lien,
+  et lien vers la page Commons. L'indice est réaffiché avec son année et sa source (CC
+  BY-SA).
+- **Couleurs** : `hot` et `cold` (proximité) n'ont plus d'usage. Le sens s'affiche avec
+  une flèche et un texte, en couleurs neutres. Les tokens restent, et `design.md` note
+  qu'ils sont libres.
+
+## Fichiers
+Backend, à créer (`ageguessr-api/src/main/java/app/ageguessr/…`) :
+- `resources/db/migration/V13__create_game_plays.sql`
+- `features/game/GamePlay.java`, `GamePlayRepository.java`, `RoundStep.java`
+  (`NOT_STARTED`…`FINISHED`), `Direction.java` (`OLDER`, `YOUNGER`)
+- `features/game/Scoring.java` (formule pure)
+- `features/game/GuestCookie.java` (création, lecture), `PlayerKey.java` (compte ou
+  invité)
+- `features/game/HintPicker.java` (catégories disponibles + choix déterministe, lit
+  `HintRepository`)
+- `features/game/RoundReveal.java` (construction du résultat : âge, points, identité,
+  crédit, indice)
+- `features/game/GetTodayGame/` : `GetTodayGameController`, `GetTodayGameHandler`,
+  `TodayGameResponse`
+- `features/game/SubmitFirstGuess/` : `…Command`, `…Controller`, `…Handler`, `…Response`
+- `features/game/RevealHint/` : `…Command`, `…Controller`, `…Handler`, `…Response`
+- `features/game/SubmitSecondGuess/` : `…Command`, `…Controller`, `…Handler`
+- `features/game/PurgeGuestPlays/PurgeGuestPlaysScheduler.java`
+- `TestSupportController` (profil `e2e`) : `POST /test-support/seed-daily-game`, qui
+  crée 3 personnes de cases différentes avec photo APPROVED, image et indices, puis tire
+  aujourd'hui
+- Requêtes à ajouter : `HintRepository` (indices éligibles d'une année, d'une catégorie
+  et d'un public), et, côté game, la photo + personne d'une manche
+
+Backend, à modifier :
+- `config/SecurityConfig.java` : `/api/game/**` public (GET et POST), JWT facultatif
+- `shared/ratelimit/RateLimitFilter.java` (ou un second filtre) + propriétés
+- `resources/application.properties` + `test/resources/application.properties` :
+  `app.game.daily.draw-enabled=${GAME_DAILY_DRAW_ENABLED:true}`,
+  `app.game.guest-cookie.*`, `app.game.guest-retention-days=7`,
+  `app.game.hints.min-per-category=5`, `app.rate-limit.game.*`
+- `test/.../architecture/ArchitectureTests.java` : exception `game → hints`, et
+  `hints` ne dépend pas de `game`
+
+Frontend, à créer (`frontend/src/app/features/game/`) :
+- `game-api.ts` (service HttpClient), `models.ts`
+- `game-vocabulary.ts` (tout le vocabulaire de jeu, voix enquête + repli neutre)
+- `game/game.ts|html` (page `/` : enchaîne les manches et le récapitulatif)
+- `round/round.ts|html` (photo filtrée, saisie, sens, choix de catégorie, indice, 2e
+  essai)
+- `round-result/round-result.ts|html` (verdict, points des deux essais, identité, crédit,
+  indice avec année et source)
+- `day-summary/day-summary.ts|html` (récapitulatif : score /3 000, une ligne par
+  manche, manches retirées)
+- Specs Vitest à côté de chaque fichier, `e2e/component/game.spec.ts`,
+  `e2e/journeys/daily-game.spec.ts`
+
+Frontend, à modifier :
+- `app.routes.ts` (`/` → jeu), suppression de `features/home/`
+- `features/legal/privacy/privacy.html` + `PRIVACY_UPDATED` : cookie
+  `ageguessr_guest`, parties conservées (compte : avec le compte ; invité : 7 jours),
+  en FR et en EN
+- `styles.css` si une classe utilitaire de filtre photo manque
+
+Docs : `docs/decisions/architecture.md` (exception `game → hints`, état des parties,
+cookie invité, endpoints), `docs/decisions/design.md` (`hot`/`cold` libres, voix
+enquête mise en œuvre), `docs/roadmap.md`.
+
+## Phase 1 : Domaine backend (état, points, indices, résultat)
+Status: Complete
+
+- [x] V13 `game_plays` :
+  - colonnes : `id`, `game_date`, `position` (FK vers `daily_rounds`), `user_id` (FK
+    `users` `ON DELETE CASCADE`), `guest_id`, `language`, `first_guess`,
+    `first_points`, `hint_category`, `hint_id` (FK `hints` `ON DELETE SET NULL`),
+    `second_guess`, `second_points`, `started_at`, `finished_at` ;
+  - contraintes : `CHECK num_nonnulls(user_id, guest_id) = 1`, `CHECK` 18-100 sur les
+    essais, `CHECK` 0-500 sur les points ;
+  - uniques partiels `(game_date, position, user_id)` et `(game_date, position,
+    guest_id)`, et un index `(guest_id, game_date)` pour la purge.
+- [x] Entité `GamePlay` (méthode `step()` dérivée des colonnes), `GamePlayRepository`,
+      `RoundStep`, `Direction`
+- [x] `Scoring.points(écart)` et `Scoring` d'une manche (1er exact = 500 + 500)
+- [x] `HintPicker` : `availableCategories(year, language, personQid)` et
+      `pick(date, position, category, language, year, personQid)`, déterministe
+- [x] `RoundReveal` : âge, essais, points, identité (nom selon la langue, lien),
+      crédit, indice (texte, année, source)
+- [x] Vérifier à la main un lien `Special:GoToLinkedPage` : un QID avec article FR, et
+      un sans. Noter le résultat ici et ajuster le lien si besoin.
+- [x] `ArchitectureTests` : `game → hints` autorisé, `hints` ne dépend pas de `game`
+- [x] Tests unitaires : `ScoringTest` (0, 1, 5, 10, 20, 82 ans d'écart, arrondi, jamais
+      négatif), `HintPickerTest`, `GamePlayTest` (étapes), `RoundRevealTest`
+- [x] Test d'intégration `GamePlaysIntegrationTest` :
+  - contraintes V13 ;
+  - cascade à la suppression du compte, `SET NULL` sur l'indice ;
+  - unicité par joueur ;
+  - requête des indices éligibles (public `ALL` + langue, exclusion de la personne).
+
+### Verification Plan
+- `cd ageguessr-api && ./mvnw test -Dtest='Scoring*,HintPicker*,GamePlay*,RoundReveal*,ArchitectureTests'`
+  → vert
+
+### Phase Summary
+- **V13 `game_plays`** : une ligne créée au 1er essai (pas de ligne = `NOT_STARTED`).
+  Uniques `(user_id, game_date, position)` et `(guest_id, …)` non partiels : Postgres ne
+  compare jamais deux NULL dans un index unique. Index partiel `game_date WHERE guest_id
+  IS NOT NULL` pour la purge. CHECK : un seul joueur, langue `EN`/`FR`, essais 18-100,
+  points 0-500, catégorie connue, 2e essai complet (points + `finished_at`). FK
+  `(game_date, position)` vers `daily_rounds`.
+- **Domaine** (`features/game`) : `GamePlay` (`start`, `revealHint`, `secondGuess`,
+  `step()` dérivé des colonnes, `acceptsSecondGuess(anyCategoryAvailable)`, `points()`),
+  `PlayerKey` (créé dès cette phase : `GamePlay.start` en a besoin), `Language` (`EN`,
+  `FR`, avec `audiences()` = `ALL` + la sienne), `RoundStep`, `Direction`, `Scoring`,
+  `GameHint`, `HintOffer` (catégories offertes + choix déterministe), `HintPicker`
+  (`offerFor(date, age, langue, qid)`, `shown(hintId, langue)` qui masque un indice
+  rejeté), `RoundReveal` (auteur null laissé au front pour « Unknown author »).
+- **Écart au plan** : pas de propriété `app.game.hints.min-per-category`. Le minimum est
+  la constante `Hint.MINIMUM_PER_CATEGORY` (5), partagée avec la page de couverture
+  admin, pour que les deux ne divergent jamais.
+- **Une seule requête d'indices** : `HintRepository.findEligible(year, audiences,
+  personQid)`, toutes catégories, triée par id. Le comptage et le choix se font en Java.
+- **Choix déterministe** : `floorMod("date|position|CATEGORIE|LANGUE".hashCode(), n)`.
+  `String.hashCode` est fixé par la spec Java, contrairement au hash d'une enum, qui
+  change à chaque démarrage.
+- **Lien Wikipedia vérifié le 2026-11-02** : `Special:GoToLinkedPage/frwiki/Q42` donne
+  un 302 vers `fr.wikipedia.org/wiki/Douglas_Adams`. Pour un QID sans article dans la
+  langue (Q110000000 en frwiki), Wikidata affiche sa propre page (200). C'est rare pour
+  des personnes choisies par sitelinks ; on garde le lien sans rien stocker.
+- **Tests** : `ScoringTest` (14), `DirectionTest` (3), `GamePlayTest` (11),
+  `HintOfferTest` (5), `HintPickerTest` (4), `RoundRevealTest` (4),
+  `GamePlaysIntegrationTest` (20), `ArchitectureTests` (7, dont
+  `hints_do_not_depend_on_the_game`). Tous verts, ainsi que `HintConstraints*`,
+  `GetHintCoverage*` et `DailyRounds*`.
+
+## Phase 2 : Endpoints, cookie invité, sécurité, purge, activation du tirage
+Status: Complete
+
+- [x] `GuestCookie` + `PlayerKey` :
+  - compte si le JWT est valide ;
+  - sinon cookie invité, créé au 1er POST s'il manque.
+- [x] `GetTodayGameHandler` :
+  - appelle `drawIfMissing(today)`, puis `findStatesOf` ;
+  - fusionne avec les `game_plays` du joueur ;
+  - calcule le score du jour (manches PLAYABLE finies seulement) ;
+  - ne renvoie jamais `photoId`, l'âge ni l'identité d'une manche non finie.
+- [x] `SubmitFirstGuessHandler`, `RevealHintHandler`, `SubmitSecondGuessHandler` :
+  - Bean Validation (`@Min(18) @Max(100)`, langue `en`/`fr`, catégorie connue) ;
+  - erreurs 409 `GAME_CLOSED`, `ROUND_NEUTRALIZED`, `WRONG_STEP`,
+    `CATEGORY_UNAVAILABLE` ;
+  - double soumission concurrente : l'unique V13 donne un 409, pas un 500.
+- [x] `SecurityConfig` : `/api/game/**` public, avec un commentaire sur le JWT
+      facultatif (un jeton invalide reste un 401, et l'intercepteur front rafraîchit)
+- [x] Limite par IP sur `POST /api/game/**`
+- [x] `PurgeGuestPlaysScheduler` (quotidien, conditionné comme le tirage)
+- [x] `TestSupportController` : `seed-daily-game` (profil `e2e` uniquement), et son
+      chemin public seulement sous ce profil (`TestSupportSecurityConfig`)
+- [x] `app.game.daily.draw-enabled` vrai par défaut (le jeu est jouable dans cette PR)
+- [x] Tests unitaires des trois handlers :
+  - chaque transition et chaque refus ;
+  - 1er essai exact = 1 000, sans indice ;
+  - aucune catégorie disponible : passage direct au 2e essai ;
+  - manche neutralisée entre les deux essais ;
+  - la date d'hier refusée.
+- [x] Test fonctionnel `GameFunctionalTest` (MockMvc + Postgres) :
+  - partie invitée complète, avec cookie posé puis relu ;
+  - partie connectée complète, avec JWT ;
+  - un invité et un compte ne se voient pas ;
+  - un GET avant la fin ne contient ni âge, ni nom, ni crédit, ni `photoId` (on
+    vérifie le JSON brut) ;
+  - un 2e 1er essai renvoie 409 ;
+  - la limite par IP renvoie 429 (contexte dédié, comme `RateLimitFunctionalTest`) ;
+  - `GAME_CLOSED`.
+- [x] Test d'intégration de la purge : les lignes invitées de 8 jours sont supprimées,
+      celles de 7 jours et celles d'un compte gardées
+
+### Verification Plan
+- `cd ageguessr-api && ./mvnw test` → tout vert
+- En local, avec `GAME_DAILY_DRAW_ENABLED=true` et au moins 3 photos APPROVED de cases
+  différentes : `curl -c jar -b jar localhost:8080/api/game/today`, puis le 1er essai
+  et la suite en `curl`, jusqu'au résultat. **Non fait** : la base locale n'a aucune
+  photo APPROVED, et on n'approuve pas de photos juste pour un test.
+  `GameFunctionalTest` couvre le même parcours en HTTP, cookie compris. Le parcours
+  e2e de la phase 4 le refera sur l'app complète.
+
+### Phase Summary
+- **Endpoints** : tous renvoient un `RoundView` (le GET, la liste du jour et le score),
+  la seule forme sous laquelle une manche sort de l'API. Tant qu'elle n'est pas finie :
+  ni âge, ni identité, ni crédit, ni `photoId`, ni **année de l'indice** (année du jour
+  − âge, elle donnerait la réponse). D'où `RoundView.ShownHint(category, text)`
+  pendant la manche, et `GameHint` complet seulement dans `result`. On renvoie aussi le
+  1er essai du joueur, pour l'afficher au rechargement.
+- **Partagés dans `features/game`** :
+  - `GameRounds` charge les manches du jour avec photo et personne. `playable()` vérifie
+    la date, puis la position (404), puis la neutralisation. Une photo disparue entre
+    deux lectures donne une manche neutralisée, pas un 500 ;
+  - `RoundViews` construit la vue. Sans catégorie disponible, l'étape affichée passe à
+    `AWAITING_SECOND_GUESS` ;
+  - `GameErrors` regroupe les 409 ;
+  - `PlayerResolver.existing` (lecture, aucun cookie posé) et `playing` (1er essai,
+    cookie créé), `GuestCookie`, `GuestProperties` (`app.game.guest.*`).
+- **Écarts au plan** :
+  - indice et 2e essai sans cookie : 409 `WRONG_STEP`, sans poser de cookie ;
+  - **V13 modifiée** pour ajouter `version` (`@Version`). Deux onglets qui jouent la
+    même étape : le second reçoit 409 au lieu d'écraser. Sans risque, car V13 n'a été
+    appliquée nulle part hors Testcontainers (ni en local, ni en prod, et pas mergée) ;
+  - le GET ne tire la partie que si `draw-enabled` est vrai. Sinon le drapeau ne
+    voudrait plus rien dire ;
+  - purge conditionnée par sa propre propriété `app.game.guest.purge-enabled` (vraie par
+    défaut, fausse en test, ingest et import-hints), pas par le tirage : c'est une règle
+    RGPD, distincte du jeu ;
+  - limite par IP : `RateLimitFilter` généralisé avec deux compteurs distincts (`auth:`
+    et `game:`). Seuls les POST `/api/game/` sont limités ;
+  - `GlobalExceptionHandler` : `MethodArgumentTypeMismatchException` → 400
+    `VALIDATION_ERROR` (date non ISO). Avant, c'était un 500 ;
+  - `GameTestSupportController` à part (racine `app.ageguessr`, profil `e2e`). Il
+    remplace les manches du jour par 3 personnes connues (âges 40, 55, 30), avec images
+    JPEG réelles et 5 indices MUSIC + 5 FILM chacune, et renvoie les âges.
+- **Sécurité** :
+  - `/api/game/**` en `permitAll` (GET et POST) ;
+  - un jeton invalide reste un 401 (testé) ;
+  - CSRF : cookie `SameSite=Lax` + POST uniquement, documenté dans `SecurityConfig` ;
+  - `Cache-Control: no-store` par défaut de Spring Security (testé).
+- **Tests** : `GameRoundsTest` (5), `RoundViewsTest` (7), les 4 `*HandlerTest` (5 + 4 +
+  5 + 6), `GameFunctionalTest` (11, qui vérifie l'absence de fuite dans le JSON brut à
+  chaque étape), `RateLimitFunctionalTest` (+1 : 429 sur les essais, GET libre,
+  compteur auth séparé), `PurgeGuestPlaysIntegrationTest` (1).
+  `./mvnw test` : **898 tests, 0 échec**.
+
+## Phase 3 : Écran de jeu
+Status: Complete
+
+- [x] `game-api.ts` + `models.ts` (les appels de jeu ; le cookie passe en same-origin
+      via le proxy dev et Caddy)
+- [x] `game-vocabulary.ts` : *case*, *today's file*, *lead*, *verdict*, *case report*,
+      « older / younger », messages d'erreur. Aucun texte de jeu en dur dans les
+      templates.
+- [x] `round` :
+  - photo avec le filtre de vieillissement ;
+  - saisie 18-100, au clavier, mobile-first ;
+  - flèche + texte pour le sens ;
+  - boutons de catégorie (seulement celles disponibles), puis indice et 2e essai ;
+  - accessibilité : labels, `aria-live` sur le sens et l'indice, focus déplacé à
+    chaque étape.
+- [x] `round-result` :
+  - âge réel, les deux essais et leurs points ;
+  - nom + lien Wikipedia (nouvel onglet, `rel="noopener"`) ;
+  - crédit : auteur, licence avec lien, page Commons ;
+  - indice avec son année et sa source.
+- [x] `day-summary` : score /3 000 (ou /1 000 × manches jouables), une ligne par manche,
+      « photo removed » pour une manche neutralisée
+- [x] `game` à `/` :
+  - reprend l'état du jour au rechargement ;
+  - enchaîne les manches ;
+  - affiche une manche neutralisée comme retirée et passe à la suivante ;
+  - gère le 409 `GAME_CLOSED` en rechargeant ;
+  - gère une image en 404 (manche retirée) ;
+  - suppression de `features/home`.
+- [x] `/privacy` FR + EN : cookie `ageguessr_guest` (30 jours, strictement nécessaire),
+      conservation des parties, date de mise à jour
+- [x] Specs Vitest : service, vocabulaire (aucune clé vide), `round` (étapes,
+      validation, focus), `round-result`, `day-summary`, `game` (reprise d'état,
+      neutralisée, `GAME_CLOSED`)
+- [x] `e2e/component/game.spec.ts` (Playwright, réseau simulé) : rendu mobile et
+      desktop, filtre photo, parcours d'une manche, manche retirée
+
+### Verification Plan
+- `cd frontend && pnpm test` → vert ; `pnpm lint` et le format, comme la CI
+- `cd frontend && pnpm exec playwright test e2e/component/game.spec.ts` → vert
+- `pnpm start` + l'API locale : jouer les 3 manches à la main, en mobile (devtools) et
+  en desktop. **Non fait** : la base locale n'a aucune photo APPROVED. Le parcours e2e
+  de la phase 4 joue les 3 manches sur l'app complète (backend en profil `e2e`).
+
+### Phase Summary
+- **`features/game`** :
+  - `models.ts`, `game-api.ts` (+ `browserLanguage()` : `FR` si `navigator.language`
+    commence par `fr`) ;
+  - `game-vocabulary.ts` : `INVESTIGATION_VOICE` / `NEUTRAL_VOICE` (mêmes clés,
+    testé), `GAME_TEXT`, `CATEGORY_LABELS`, `directionText`, `roundTitle`. Passer au
+    vocabulaire neutre = changer la constante `VOICE` ;
+  - `testing.ts`, avec les fixtures des specs.
+- **Composants** :
+  - `round` : photo `archive-photo`, saisie 18-100 entière, flèche + texte du sens,
+    catégories, indice en `aria-live`, focus déplacé à chaque étape. Il émet les
+    actions, c'est `game` qui appelle l'API ;
+  - `round-result` : âge, essais et points, nom en lien (nouvel onglet,
+    `rel=noopener`), crédit avec repli « Unknown author », indice avec année et source.
+    Focus sur le titre ;
+  - `day-summary` : score / max, une ligne par manche, manche retirée comprise ;
+  - `game` à `/` : reprise d'état, enchaînement, 409 `GAME_CLOSED`, `ROUND_NEUTRALIZED`
+    et `WRONG_STEP` (rechargement + message), image en erreur (un rechargement, puis un
+    message avec « Try again »).
+- **Écarts** :
+  - `(submit)` au lieu de `(ngSubmit)` : un formulaire sans `[formGroup]` n'émet pas
+    `ngSubmit` ;
+  - utilitaire Tailwind `@utility archive-photo` dans `styles.css`
+    (`grayscale(.35) sepia(.25) contrast(1.1)`) ;
+  - `features/home` supprimé ;
+  - `/privacy` : sections 2, 3, 4 et 6 en FR et EN, mise à jour le 2026-11-02.
+- **Tests** :
+  - `pnpm test` : 226 verts. Nouveaux : api 6, vocabulaire 4, round 10, round-result
+    7, day-summary 1, game 11 ;
+  - `pnpm lint` et `format:check` OK ;
+  - Playwright component : `game.spec.ts` 4 verts, dont le filtre réellement appliqué
+    et pas de défilement horizontal à 375 px. Suite complète : 51 verts. Les
+    `ECONNREFUSED` du serveur de dev sont les appels non simulés des tests existants
+    qui visitent `/`, sans effet.
+
+## Phase 4 : Parcours complet, documentation, reviews
+Status: Complete
+
+- [x] `e2e/journeys/daily-game.spec.ts` (app complète, profil `e2e`) :
+  - `seed-daily-game`, puis un invité joue les 3 manches jusqu'au récapitulatif ;
+  - un rechargement en cours de manche reprend au bon endroit.
+- [x] `docs/decisions/architecture.md` :
+  - exception `game → hints` ;
+  - « État d'une partie » (table, cookie invité, purge, compte prioritaire, minuit) ;
+  - endpoints et règle « rien avant la fin ».
+- [x] `docs/decisions/design.md` : `hot`/`cold` libérés, voix enquête mise en œuvre
+      (fichier de vocabulaire)
+- [x] `docs/roadmap.md` : cocher guess, points, écran principal, indice, résultat avec
+      crédit, enchaînement + récapitulatif, vocabulaire centralisé. Garder ouverts le
+      signalement, le duotone, la page d'accueil et le cache HTTP des images.
+- [x] Agents `architecture-reviewer` et `code-reviewer` (endpoints publics, cookie,
+      données de compte, RGPD), puis appliquer leurs retours
+
+### Verification Plan
+- `cd ageguessr-api && ./mvnw test` et `cd frontend && pnpm test` → vert
+- `pnpm exec playwright test` (component + journeys, stack e2e lancée) → vert
+
+### Phase Summary
+- **Parcours `e2e/journeys/daily-game.spec.ts`** : `seed-daily-game`, puis un invité
+  joue les 3 manches (erreur + indice + rechargement en cours de manche, 1er essai
+  exact, erreur + indice), jusqu'au récapitulatif : 2368 / 3000. Un rechargement final
+  réaffiche le récapitulatif.
+- **Lancement des parcours** : Postgres et Redis jetables (`docker run --rm`, ports
+  5499 et 6399), API en profil `e2e`. Les 5 parcours passent avec
+  `AUTH_RATE_LIMIT_MAX_ATTEMPTS=1000`. Avec la limite de prod (20 par minute), les 4
+  parcours d'auth échouent quand tout tourne en parallèle derrière une même IP. C'est
+  sans rapport avec cette PR : seuls, ils passent. Documenté dans
+  `testing-strategy.md`.
+- **Docs** : `architecture.md` (exceptions `game → hints`, « État d'une partie »,
+  endpoints, tirage activé), `design.md` (`hot`/`cold` libres, fichier de vocabulaire),
+  `testing-strategy.md`, `roadmap.md`.
+- **architecture-reviewer** : rien de bloquant sur le fond. Appliqué :
+  - les 4 contrôleurs passent en `public`, comme les 18 existants ;
+  - `PlayerResolver.existingOrThrow` ;
+  - `GamePlay.secondGuess` renommé `finishWithSecondGuess` ;
+  - `@Builder` sur `RoundView`, au lieu des listes de `null`.
+
+  Laissé :
+  - `@Value` dans `GuestCookie` : `app.cookie.secure` est partagé avec le cookie de
+    refresh ;
+  - `Hint.MINIMUM_PER_CATEGORY` côté `hints` : c'est la même règle que la page de
+    couverture, volontairement à une seule source ;
+  - `total` compte aussi les manches retirées (« Case 2 of 3 » reste vrai : la journée
+    a 3 manches).
+- **code-reviewer** : rien de bloquant ni d'important. Anti-triche, cookie, CSRF,
+  isolation compte/invité, JWT facultatif, concurrence, endpoint de test, XSS, liens
+  et RGPD vérifiés. Appliqué le point mineur : la base légale du jeu invité devient
+  l'intérêt légitime (art. 6.1.f) sur `/privacy`, faute de contrat pour un invité.
+- **Vérification finale** : `./mvnw test` 898 verts, `pnpm test` 226 verts, lint et
+  format OK, Playwright component 51 verts, journeys 5 verts.
+
+## Tests : catégories retenues
+- **Unitaire backend** : oui. Formule de points, choix d'indice, étapes d'une manche,
+  construction du résultat, handlers.
+- **Intégration** : oui. Contraintes V13, cascades, requêtes d'indices, purge.
+- **Fonctionnel** : oui. Les endpoints publics sont la surface anti-triche : rien
+  avant la fin, cookie, JWT facultatif, 409, 429.
+- **Unitaire front** : oui. Service, composants, vocabulaire.
+- **Interface (Playwright component)** : oui. Nouvel écran principal, rendu mobile et
+  filtre photo que jsdom ne voit pas.
+- **QA e2e** : oui. La « partie quotidienne complète » est le parcours critique cité par
+  `docs/testing-strategy.md`.
+- **Architecture** : oui. Exception `game → hints` et son sens.
+- **Mutation** : oui, sans action dédiée. `Scoring` et `HintPicker` sont purs et ciblés
+  par PIT.
+
+## Edge cases
+- 1er essai exact : manche finie à 1 000, aucun indice demandé.
+- Aucune catégorie disponible : 2e essai direct, sans indice.
+- Indice rejeté après avoir été donné : `hint_id` à NULL, le résultat s'affiche sans
+  indice.
+- Célébrités : l'indice ne cite jamais la personne à deviner.
+- Manche neutralisée avant, pendant (entre les essais) ou après la manche : refus des
+  essais, la manche sort du score, et l'image 404 est gérée côté front.
+- Double clic ou deux onglets : un seul 1er essai enregistré (unique V13 → 409).
+- Minuit pendant une manche : `GAME_CLOSED`, puis le front recharge la nouvelle partie.
+- Invité sans cookie qui fait un GET : manches `NOT_STARTED`, pas de cookie posé.
+- JWT expiré : 401, rafraîchissement par l'intercepteur, puis la partie du compte.
+- Partie du jour avec moins de 3 manches (pool trop petit) : score /1 000 × manches
+  jouables.
+- Nom sans version française : repli sur l'anglais, et inversement.
+- Photo sans auteur : « Unknown author », licence et lien toujours affichés.
+
+## Final Recap
+La partie du jour est jouable de bout en bout, avec ou sans compte, à `/`.
+- **Backend** :
+  - V13 `game_plays` ;
+  - 4 endpoints publics qui ne renvoient qu'un `RoundView`, sans rien de la réponse
+    avant la fin ;
+  - cookie invité, purge à 7 jours, limite par IP sur les essais, 409 métier ;
+  - verrou optimiste ;
+  - tirage activé par défaut.
+- **Front** : écran de manche, résultat avec crédit et identité, récapitulatif,
+  vocabulaire centralisé, `/privacy` à jour.
+- **Écarts au plan**, détaillés par phase :
+  - minimum d'indices en constante partagée ;
+  - `version` ajoutée à V13 ;
+  - purge sous son propre drapeau ;
+  - tirage depuis le GET seulement si le drapeau est vrai ;
+  - année de l'indice masquée pendant la manche ;
+  - base légale invité en intérêt légitime.
+- **Restent ouverts** (roadmap) : signalements, duotone, page d'accueil publique, cache
+  HTTP des images, fonction principale de la personne au résultat.
+
+## Deployment Plan
+1. Merger la PR dans `develop`, puis la release `develop → main` en **merge commit**.
+2. Au déploiement, Flyway applique **V13** (`game_plays`), une création de table sans
+   effet sur les données existantes.
+3. **Le tirage démarre seul** (`GAME_DAILY_DRAW_ENABLED` vrai par défaut) : au
+   démarrage, puis à 00:00:05 UTC. Il faut au moins 3 photos APPROVED dans des cases
+   différentes. Sinon, le jour a moins de manches (`log.error`) ou aucune. Vérifier dans
+   les logs « Game of <date> » et, avec l'accord de l'utilisateur pour requêter la
+   prod, `SELECT * FROM daily_rounds WHERE game_date = current_date`.
+4. Variables facultatives, toutes avec défaut : `GAME_GUEST_COOKIE_TTL_DAYS` (30),
+   `GAME_GUEST_RETENTION_DAYS` (7), `GAME_GUEST_PURGE_ENABLED` (true),
+   `GAME_RATE_LIMIT_MAX_ATTEMPTS` (60), `GAME_RATE_LIMIT_WINDOW_MINUTES` (1).
+   `COOKIE_SECURE=true` est déjà posé en prod.
+5. Vérification manuelle en prod : ouvrir `/` en navigation privée, jouer une manche,
+   vérifier le cookie `ageguessr_guest` (HttpOnly, Secure, Path=/api/game) et le
+   crédit au résultat ; recharger en cours de manche.
+6. Le lendemain : la purge de 00:30 UTC logue « Purged N guest game rows ».
+7. Retour arrière : `GAME_DAILY_DRAW_ENABLED=false` arrête de consommer le pool, sans
+   toucher au reste. Le jeu affiche alors « No case today » pour un jour non tiré.
