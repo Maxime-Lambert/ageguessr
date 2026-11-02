@@ -21,6 +21,14 @@
       server does not keep access logs. Your theme choice (dark or light) is stored on your device
       only and never sent to us.
     </p>
+    <p>
+      When you play, your first guess gives your browser a random identifier, in the
+      <code>ageguessr_guest</code> cookie. It tells us nothing about you; it only ties your guesses
+      of the day together, so that you can reload the page and pick up where you were, and play each
+      photo once (legitimate interest, GDPR art. 6(1)(f): the game cannot work otherwise). We record
+      your guesses, the hint you chose and your points against it. Your IP address also goes into an
+      anti-abuse counter on guesses.
+    </p>
 
     <h2>3. With an account: what we process and why</h2>
     <ul>
@@ -43,6 +51,10 @@
         <strong>To prove you accepted the Terms</strong> (legitimate interest): the version of the
         Terms you accepted and when.
       </li>
+      <li>
+        <strong>To keep your games</strong> (performance of the contract): your guesses, the hints
+        you chose and your points, for each day you play while signed in.
+      </li>
     </ul>
     <p>
       Your username may be shown to other players (for example to your friends, once that feature
@@ -62,6 +74,10 @@
       <li>
         Tokens expire on their own: 90 days for staying signed in, 1 to 24 hours for links sent by
         email.
+      </li>
+      <li>
+        Games played while signed in: with your account, deleted with it. Games played without an
+        account: 7 days after the day played.
       </li>
       <li>IP address in the anti-abuse counter: 1 minute.</li>
       <li>Emails at our email provider: 30 days.</li>
@@ -93,6 +109,10 @@
       <li>
         <code>ageguessr_refresh_token</code> (cookie, 90 days): keeps you signed in. Not readable by
         scripts.
+      </li>
+      <li>
+        <code>ageguessr_guest</code> (cookie, 30 days): the random identifier of your games when you
+        play without an account. Not readable by scripts, sent only to the game.
       </li>
       <li><code>ageguessr-theme</code> (local storage): remembers your theme choice.</li>
       <li>
@@ -193,6 +213,14 @@
       afficher les pages ; notre serveur ne conserve pas de journal des accès. Votre choix de thème
       (sombre ou clair) est enregistré sur votre appareil uniquement et ne nous est jamais envoyé.
     </p>
+    <p>
+      Quand vous jouez, votre premier essai donne à votre navigateur un identifiant aléatoire, dans
+      le cookie <code>ageguessr_guest</code>. Il ne dit rien de vous ; il relie seulement vos essais
+      du jour, pour que vous puissiez recharger la page et reprendre où vous en étiez, et jouer
+      chaque photo une seule fois (intérêt légitime, RGPD art. 6.1.f : le jeu ne peut pas
+      fonctionner autrement). Nous enregistrons vos essais, l'indice choisi et vos points avec cet
+      identifiant. Votre adresse IP passe aussi dans un compteur anti-abus sur les essais.
+    </p>
 
     <h2>3. Avec un compte : données traitées et finalités</h2>
     <ul>
@@ -216,6 +244,10 @@
         <strong>Prouver votre acceptation des CGU</strong> (intérêt légitime) : la version des
         conditions acceptée et sa date.
       </li>
+      <li>
+        <strong>Conserver vos parties</strong> (exécution du contrat) : vos essais, les indices
+        choisis et vos points, pour chaque jour joué en étant connecté.
+      </li>
     </ul>
     <p>
       Votre pseudo peut être visible par d'autres joueurs (par exemple vos amis, quand cette
@@ -236,6 +268,10 @@
       <li>
         Les jetons expirent d'eux-mêmes : 90 jours pour rester connecté, de 1 à 24 heures pour les
         liens envoyés par email.
+      </li>
+      <li>
+        Parties jouées en étant connecté : avec votre compte, supprimées avec lui. Parties jouées
+        sans compte : 7 jours après le jour joué.
       </li>
       <li>Adresse IP dans le compteur anti-abus : 1 minute.</li>
       <li>Emails chez notre prestataire d'envoi : 30 jours.</li>
@@ -271,6 +307,10 @@
       <li>
         <code>ageguessr_refresh_token</code> (cookie, 90 jours) : vous garde connecté. Illisible par
         les scripts.
+      </li>
+      <li>
+        <code>ageguessr_guest</code> (cookie, 30 jours) : l'identifiant aléatoire de vos parties
+        quand vous jouez sans compte. Illisible par les scripts, envoyé seulement au jeu.
       </li>
       <li><code>ageguessr-theme</code> (stockage local) : retient votre choix de thème.</li>
       <li>

@@ -59,11 +59,11 @@ la suivante).
       dictateurs et dirigeants autoritaires, extrême droite, écartés de chaque vague et
       exclus de la base (`--apply-editorial-line`), motif d'exclusion en base (V10) — PR
       `feature/editorial-line`
-- [ ] Ingestion des indices (Musique, Cinéma, Sport, Science et techno, Monde,
+- [x] Ingestion des indices (Musique, Cinéma, Sport, Science et techno, Monde,
       Célébrités), au moins 5 par année, par catégorie et par public, sur 1932-2008 pour
-      Célébrités et 1932-2015 ailleurs. Fait dans la PR `feature/hint-ingestion` : extraction,
-      table `hints`, import idempotent, page `/admin/hints` (traductions et couverture).
-      Reste l'import en prod et la validation des 29 traductions. Seuls les indices
+      Célébrités et 1932-2015 ailleurs : extraction, table `hints`, import idempotent, page
+      `/admin/hints` (traductions et couverture), PR `feature/hint-ingestion`. 7 978
+      indices importés en prod et traductions validées. Seuls les indices
       traduits sont relus, les autres entrent directement en jeu. Célébrités : extraction
       relancée à la main chaque année vers mars, pour ajouter les personnes qui viennent
       d'avoir 18 ans
@@ -71,28 +71,38 @@ la suivante).
       indices (V11, PR `feature/hint-ingestion`)
 
 ## Semaine 3 — Moteur de jeu
-- [ ] Algorithme de sélection quotidienne (3 personnes/jour, minuit UTC). Une même
-      photo n'est pas rejouée avant **3 ans** (le pool vise au moins 5 000 photos
-      approuvées, 3 ans en consomment 3 285). Les règles portent sur la personne, pas
-      sur la photo : jamais deux photos d'une même personne dans une partie, et un
-      délai minimal entre deux apparitions d'une même personne. Tirer les tranches d'âge
-      de 8 ans (18-25 … 82+) de façon équilibrée, la collecte n'y penchant que
-      faiblement (voir `docs/decisions/architecture.md`)
-- [ ] Logique de guess en 2 étapes : 1ère tentative → chaud/froid, sélection d'une
-      catégorie d'indice, 2e tentative
-- [ ] Système de points (bonus 1er coup, majorité des points sur la précision du 2e coup
-      — formule à finaliser par playtest)
-- [ ] Cache Redis des parties du jour déjà calculées
+- [x] Tirage quotidien : 3 photos par jour (configurable), minuit UTC et au démarrage,
+      table `daily_rounds` (V12). Hasard uniforme, jamais deux personnes de la même case
+      (continent × genre) le même jour, pas de rejeu d'une photo avant **3 ans**, pas de
+      pondération par âge ni de délai par personne. Nouveau `publicId` à chaque tirage.
+      Une photo rejetée ou une personne exclue neutralise la manche pour tous, et un
+      simple signalement ne neutralise rien (voir `docs/decisions/architecture.md`,
+      « Tirage quotidien ») — PR `feature/daily-draw`
+- [x] Logique de guess en 2 étapes : 1er essai, puis « plus jeune / plus vieux » (le
+      chaud/froid donnait trop d'aide, voir « Déroulé d'une manche »), sélection d'une
+      catégorie d'indice, 2e essai. Saisie de 18 à 100 ans. Endpoints publics, JWT
+      facultatif, sans jamais révéler l'âge, l'identité, le crédit ni l'année de
+      l'indice avant la réponse. État en base (`game_plays`, V13), cookie invité
+      `ageguessr_guest`, purge des parties invitées après 7 jours, limite par IP. Tirage
+      activé par défaut (voir « État d'une partie ») — PR `feature/daily-guess`
+- [x] Système de points : jusqu'à 500 points par essai selon l'écart (piste
+      `500 × e^(−écart/10)`, à régler par playtest), manche = somme des deux essais, un
+      1er essai exact vaut 1 000. Manches neutralisées hors du score du jour
+- [ ] Cache HTTP des images (`Cache-Control` long sur `/api/images/{publicId}`, l'id
+      changeant à chaque tirage). Remplace le cache Redis des parties : la table
+      `daily_rounds` évite déjà de recalculer
 
 ## Semaine 4 — Interface de jeu
-- [ ] Écran principal : photo, input d'âge, jauge chaud/froid
-- [ ] Sélection de catégorie d'indice + affichage de l'indice
-- [ ] Écran de résultat (âge réel, identité révélée, points gagnés, **crédit de la photo :
+- [x] Écran principal : photo, input d'âge, « plus jeune / plus vieux » après le 1er
+      essai. Le jeu est à `/` — PR `feature/daily-guess`
+- [x] Sélection de catégorie d'indice + affichage de l'indice
+- [x] Écran de résultat (âge réel, identité révélée, points gagnés, **crédit de la photo :
       auteur + licence**, obligatoire avant de servir des photos CC BY / BY-SA aux joueurs ;
       indice réaffiché avec son année et sa source, pour l'attribution CC BY-SA)
   - Identité : nom (`name_fr`/`name_en`, déjà en base) + lien Wikipedia sans rien stocker,
-    via `https://<lang>.wikipedia.org/wiki/Special:GoToLinkedPage/<lang>wiki/<QID>`
-    (repli sur la page Wikidata si l'article n'existe pas dans la langue)
+    via `https://www.wikidata.org/wiki/Special:GoToLinkedPage/<lang>wiki/<QID>`
+    (vérifié le 2026-11-02 : 302 vers l'article ; sans article dans la langue, Wikidata
+    affiche sa propre page)
   - Fonction principale (optionnel) : P106 est lu à l'ingestion mais pas stocké. Il
     faudrait une colonne + le libellé fr/en, et un rattrapage des personnes existantes
     (une requête QLever par lot de QID). Choisir « la » fonction principale n'est pas
@@ -115,8 +125,12 @@ la suivante).
     signalements sont classés) ou exclure la personne. Aucun moyen de retrouver une
     photo approuvée aujourd'hui
   - Aucun retrait automatique : un script anonyme pourrait vider le pool
-  - À trancher avec le tirage quotidien (Semaine 3) : que devient la partie du jour si
-    une de ses photos est rejetée (`/api/images` répond alors 404)
+  - Notification prononcée de l'admin (email par exemple) quand plusieurs joueurs
+    signalent une même photo, surtout si elle est dans la partie du jour, pour réagir
+    vite (seuil à fixer)
+  - Photo de la partie du jour rejetée : tranché avec le tirage quotidien. La manche
+    est neutralisée pour tous les joueurs et sort du score du jour (`/api/images`
+    répond alors 404)
 - [ ] Signalement d'un indice par les joueurs, depuis l'écran de résultat : c'est le
       filet de sécurité des indices, que personne ne relit (sauf les traductions)
   - Joueur : mêmes règles que pour les photos, avec les motifs mauvaise année,
@@ -128,9 +142,9 @@ la suivante).
     garder ou corriger le texte
   - Aucun retrait automatique. Un indice rejeté n'est plus tiré ; sous 5 indices, la
     catégorie est masquée pour cette année
-- [ ] Enchaînement des 3 personnes du jour + récapitulatif final
+- [x] Enchaînement des 3 personnes du jour + récapitulatif final
 - [ ] Page d'accueil publique
-- [ ] Vocabulaire de jeu centralisé dans un seul fichier (essai du ton « enquête »,
+- [x] Vocabulaire de jeu centralisé dans un seul fichier (essai du ton « enquête »,
       critère de validation au premier playtest — voir `docs/decisions/design.md`)
 - [ ] Trancher le duotone des photos sur de vraies photos Commons
 

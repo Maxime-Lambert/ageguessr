@@ -50,11 +50,11 @@ public class Person {
 
     private int sitelinks;
 
-    /** Null when Wikidata does not tell. Used only to balance the pool. */
+    /** Null when Wikidata does not tell. Used only to balance the pool and the daily game. */
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    /** Continent of nationality, null when Wikidata does not tell. Used only to balance the pool. */
+    /** Continent of nationality, null when Wikidata does not tell. Used only to balance the pool and the daily game. */
     @Enumerated(EnumType.STRING)
     private Continent continent;
 

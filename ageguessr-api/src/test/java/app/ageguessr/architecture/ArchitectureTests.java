@@ -1,5 +1,6 @@
 package app.ageguessr.architecture;
 
+import static com.tngtech.archunit.core.domain.JavaClass.Predicates.resideInAPackage;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 import static com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices;
@@ -10,17 +11,47 @@ import com.tngtech.archunit.lang.ArchRule;
 import jakarta.persistence.Entity;
 
 /**
- * First ArchUnit ruleset for the project — kept deliberately minimal (three rules)
- * rather than over-engineered, per docs/testing-strategy.md's own "seuil informatif au
+ * ArchUnit ruleset for the project — kept deliberately minimal rather than
+ * over-engineered, per docs/testing-strategy.md's own "seuil informatif au
  * démarrage, à durcir manuellement" framing. More rules should be added as later
  * features surface real needs, not preemptively.
  */
 @AnalyzeClasses(packages = "app.ageguessr")
 class ArchitectureTests {
 
+    /**
+     * Two exceptions, both from the game, which is built on the other features: on the
+     * photos of people (age, curation status, box, public id) and on the hints of a year.
+     * Never the reverse, see the next rules: neither knows anything of the game, which is
+     * why a curation decision is read by the game rather than pushed to it
+     * (docs/decisions/architecture.md).
+     */
     @ArchTest
-    static final ArchRule features_do_not_depend_on_each_other =
-            slices().matching("app.ageguessr.features.(*)..").should().notDependOnEachOther();
+    static final ArchRule features_do_not_depend_on_each_other = slices().matching("app.ageguessr.features.(*)..")
+            .should()
+            .notDependOnEachOther()
+            .ignoreDependency(
+                    resideInAPackage("app.ageguessr.features.game.."),
+                    resideInAPackage("app.ageguessr.features.people.."))
+            .ignoreDependency(
+                    resideInAPackage("app.ageguessr.features.game.."),
+                    resideInAPackage("app.ageguessr.features.hints.."));
+
+    @ArchTest
+    static final ArchRule people_does_not_depend_on_the_game = noClasses()
+            .that()
+            .resideInAPackage("app.ageguessr.features.people..")
+            .should()
+            .dependOnClassesThat()
+            .resideInAPackage("app.ageguessr.features.game..");
+
+    @ArchTest
+    static final ArchRule hints_do_not_depend_on_the_game = noClasses()
+            .that()
+            .resideInAPackage("app.ageguessr.features.hints..")
+            .should()
+            .dependOnClassesThat()
+            .resideInAPackage("app.ageguessr.features.game..");
 
     @ArchTest
     static final ArchRule entities_live_in_the_feature_root_package = classes()

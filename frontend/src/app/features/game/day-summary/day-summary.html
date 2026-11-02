@@ -1,0 +1,24 @@
+<section aria-labelledby="summary-title">
+  <h2 #heading id="summary-title" tabindex="-1" class="font-display text-3xl">
+    {{ text.summary }}
+  </h2>
+  <p class="font-display mt-2 text-4xl">
+    {{ game().score.points }}
+    <span class="text-muted text-lg">{{ text.outOf }} {{ game().score.max }}</span>
+  </p>
+
+  <ol class="divide-border border-border mt-6 divide-y rounded-lg border">
+    @for (line of lines(); track line.position) {
+      <li class="flex items-baseline justify-between gap-4 px-4 py-3">
+        <span>
+          {{ text.round }} {{ line.position }} · {{ line.removed ? text.removed : line.name }}
+        </span>
+        @if (!line.removed) {
+          <span class="font-medium">{{ line.points }} {{ text.points }}</span>
+        }
+      </li>
+    }
+  </ol>
+
+  <p class="text-muted mt-4 text-sm">{{ text.comeBack }}</p>
+</section>
