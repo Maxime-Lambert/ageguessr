@@ -1,4 +1,4 @@
--- Parties jouees (plans/active-plan.md) : une ligne par joueur et par manche, creee au 1er
+-- Parties jouees (plans/done/daily-guess.md) : une ligne par joueur et par manche, creee au 1er
 -- essai. Pas de ligne = manche pas commencee. L'etat est garde en base et pas dans le
 -- navigateur : l'age ne doit jamais y arriver avant la reponse, et le serveur fait foi pour
 -- les points.
