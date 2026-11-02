@@ -1,9 +1,7 @@
-@if (language() === 'en') {
+@if (language === 'en') {
   <article>
     <h1>Legal notice</h1>
-    <p class="meta">
-      Last updated: {{ updated() }} · <app-language-switch [language]="language()" />
-    </p>
+    <p class="meta">Last updated: {{ updated }} · <app-language-switch /></p>
 
     <h2>Publisher</h2>
     <p>
@@ -51,9 +49,7 @@
 } @else {
   <article lang="fr">
     <h1>Mentions légales</h1>
-    <p class="meta">
-      Dernière mise à jour : {{ updated() }} · <app-language-switch [language]="language()" />
-    </p>
+    <p class="meta">Dernière mise à jour : {{ updated }} · <app-language-switch /></p>
 
     <h2>Éditeur</h2>
     <p>

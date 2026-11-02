@@ -1,11 +1,9 @@
 <!-- Every statement here must match what the code does (retention periods, cookies,
      processors). Changing one of them in the code means updating this page. -->
-@if (language() === 'en') {
+@if (language === 'en') {
   <article>
     <h1>Privacy Policy</h1>
-    <p class="meta">
-      Last updated: {{ updated() }} · <app-language-switch [language]="language()" />
-    </p>
+    <p class="meta">Last updated: {{ updated }} · <app-language-switch /></p>
 
     <h2>1. Who is responsible</h2>
     <p>
@@ -194,9 +192,7 @@
 } @else {
   <article lang="fr">
     <h1>Politique de confidentialité</h1>
-    <p class="meta">
-      Dernière mise à jour : {{ updated() }} · <app-language-switch [language]="language()" />
-    </p>
+    <p class="meta">Dernière mise à jour : {{ updated }} · <app-language-switch /></p>
 
     <h2>1. Responsable du traitement</h2>
     <p>

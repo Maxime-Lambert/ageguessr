@@ -9,10 +9,12 @@ import { SiteLanguageService } from '../../i18n/site-language';
 import { USERNAME_PATTERN } from '../models';
 import {
   NEW_PASSWORD_VALIDATORS,
+  PASSWORDS_DIFFER_MESSAGE,
   PASSWORD_HINT,
   PASSWORD_TOO_LONG_MESSAGE,
   passwordRefusalMessage,
 } from '../password-rules';
+import { COMMON_MESSAGES } from '../../../shared/common-messages';
 
 @Component({
   imports: [ReactiveFormsModule, RouterLink],
@@ -57,7 +59,7 @@ export class Register {
 
     const { email, username, password, confirmPassword, acceptTerms } = this.form.getRawValue();
     if (password !== confirmPassword) {
-      this.errorMessage.set("Passwords don't match.");
+      this.errorMessage.set(PASSWORDS_DIFFER_MESSAGE);
       return;
     }
 
@@ -83,8 +85,8 @@ export class Register {
           }
           this.errorMessage.set(
             error.status === 409
-              ? 'An account with this email already exists.'
-              : 'Something went wrong. Please try again.',
+              ? $localize`:@@register.emailTaken:An account with this email already exists.`
+              : COMMON_MESSAGES.genericError,
           );
         },
       });

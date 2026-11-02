@@ -270,26 +270,56 @@ Status: Complete
   `en/index.html` (`lang="en"`, `<base href="/en/">`) et `fr/index.html`.
 
 ## Phase 3 : Traduction des écrans joueur
-Status: Not started
+Status: Complete
 
-- [ ] Marquer tous les textes non admin (`i18n` avec id `@@…`, `$localize` en TS) :
+- [x] Marquer tous les textes non admin (`i18n` avec id `@@…`, `$localize` en TS) :
       en-tête, pied de page, auth, compte, jeu, thème, titres des routes, messages
       d'erreur
-- [ ] `game-vocabulary.ts` en `$localize`, voix enquête et repli neutre dans les deux
+- [x] `game-vocabulary.ts` en `$localize`, voix enquête et repli neutre dans les deux
       langues
-- [ ] Pages légales : choix de la version par `LOCALE_ID`, suppression de `?lang` et de
+- [x] Pages légales : choix de la version par `LOCALE_ID`, suppression de `?lang` et de
       `LanguageSwitch`
-- [ ] Vérifier qu'aucun écran n'affiche le `message` de l'API
-- [ ] `messages.fr.xlf` complet, **vouvoiement** (l'utilisateur corrigera au cas par cas
+- [x] Vérifier qu'aucun écran n'affiche le `message` de l'API
+- [x] `messages.fr.xlf` complet, **vouvoiement** (l'utilisateur corrigera au cas par cas
       ce qui ne sonne pas naturel), voix enquête gardée en français
-- [ ] Specs existantes mises à jour (elles tournent dans la langue source)
+- [x] Specs existantes mises à jour (elles tournent dans la langue source)
 
 ### Verification Plan
 - `pnpm test`, lint, format → vert ; `pnpm build` sans traduction manquante
-- `pnpm start:fr` : chaque écran joueur en français, aucun reste d'anglais hors admin
+- `pnpm start:fr` : chaque écran joueur en français, aucun reste d'anglais hors admin.
+  Fait par un scan des templates (tout texte sans `i18n` est imbriqué dans un message
+  marqué, ou c'est le nom du site ou un lien admin). Le contrôle visuel se fait en
+  phase 5, avec les tests Playwright en français.
 
 ### Phase Summary
-_(à écrire à la fin de la phase)_
+- **163 messages** extraits (`src/locale/messages.xlf`), tous traduits dans
+  `messages.fr.xlf`. La build échoue sur toute traduction manquante.
+- **Ids explicites `@@zone.nom`**. Les textes communs à plusieurs écrans ont un id
+  `@@common.*` (« Email », « Link invalid or expired », etc.). Dans le TS,
+  `shared/common-messages.ts` regroupe l'erreur générique et le « Too many attempts ».
+- **Marqués** : en-tête, pied de page, thème, les 8 écrans d'auth et le compte, les
+  messages de `password-rules.ts`, les titres des routes légales, et
+  `game-vocabulary.ts`, avec la voix enquête et le repli neutre en `$localize`.
+- **Pages légales** : la version vient de `SiteLanguageService.current`, et la date suit
+  la langue. `legal-language.ts` et l'ancien `LanguageSwitch` légal sont supprimés : le
+  lien « Version française » des pages légales est maintenant le sélecteur global. Les
+  textes légaux restent en blocs entiers dans le template, hors catalogue : un texte
+  juridique se relit en entier.
+- **Le `message` de l'API** n'est affiché par aucun écran joueur (vérifié).
+- **Choix de traduction** :
+  - vouvoiement ;
+  - voix enquête : *Affaire*, *Le dossier du jour*, *Piste*, *Affaire classée*,
+    *Rapport d'enquête* ;
+  - **« Plus de 30 ans » / « Moins de 30 ans »** pour le sens : neutre en genre (on ne
+    connaît pas le genre de la personne) et sans distance ;
+  - catégories : Musique, Cinéma, Sport, Science, Actualité du monde, Célébrités.
+  - **À relire par l'utilisateur**, qui corrigera au cas par cas.
+- **Outillage** : le catalogue FR a été écrit avec un script local, hors dépôt, qui
+  vérifie les ids et les balises. La suite se fait à la main dans le XLIFF, ou avec un
+  outil de traduction : c'est le format standard.
+- **Specs** : les specs légales choisissent la langue par `LOCALE_ID`, et la spec de la
+  date des CGU est séparée en EN et FR. `pnpm test` **246 verts**, lint et format OK,
+  `pnpm build` (EN + FR) OK.
 
 ## Phase 4 : Déploiement des deux langues (Caddy, image, CI)
 Status: Not started

@@ -10,10 +10,11 @@ import {
   PASSWORD_TOO_LONG_MESSAGE,
   passwordRefusalMessage,
 } from '../password-rules';
+import { COMMON_MESSAGES } from '../../../shared/common-messages';
 
-const WRONG_PASSWORD_MESSAGE =
-  'Incorrect password. After too many attempts, your account is locked for 15 minutes.';
-const GENERIC_ERROR_MESSAGE = 'Something went wrong. Please try again.';
+const WRONG_PASSWORD_MESSAGE = $localize`:@@account.wrongPassword:Incorrect password. After too many attempts, your account is locked for 15 minutes.`;
+const GENERIC_ERROR_MESSAGE = COMMON_MESSAGES.genericError;
+const USERNAME_TAKEN_MESSAGE = $localize`:@@account.usernameTaken:This username is already taken.`;
 
 function isWrongPassword(error: HttpErrorResponse): boolean {
   return (
@@ -71,7 +72,7 @@ export class Account {
         const body = error.error as ApiErrorResponse | null;
         this.usernameError.set(
           error.status === 409 && body?.errorCode === 'USERNAME_TAKEN'
-            ? 'This username is already taken.'
+            ? USERNAME_TAKEN_MESSAGE
             : GENERIC_ERROR_MESSAGE,
         );
       },
@@ -86,7 +87,7 @@ export class Account {
 
     const { currentPassword, newPassword, confirmPassword } = this.passwordForm.getRawValue();
     if (newPassword !== confirmPassword) {
-      this.passwordError.set("New passwords don't match.");
+      this.passwordError.set($localize`:@@account.passwordsDiffer:New passwords don't match.`);
       return;
     }
 

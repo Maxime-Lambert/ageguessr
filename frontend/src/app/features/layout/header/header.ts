@@ -13,6 +13,10 @@ export class Header {
   private readonly router = inject(Router);
   protected readonly auth = inject(Auth);
 
+  accountLabel(username: string): string {
+    return $localize`:@@header.account:Account settings for ${username}:username:`;
+  }
+
   logout(): void {
     this.auth.logout().subscribe({
       complete: () => this.router.navigate(['/']),
