@@ -270,7 +270,7 @@ Status: Complete
   tirage.
 
 ## Phase 3 : Documentation et reviews
-Status: In progress
+Status: Complete
 
 - [x] `docs/decisions/architecture.md` :
   - nouvelle section « Tirage quotidien » (règles, paresseux et idempotent,
@@ -286,9 +286,9 @@ Status: In progress
   - ajouter la notification admin au signalement des photos ;
   - trancher « que devient la partie du jour si une photo est rejetée » ;
   - noter que le cache Redis est à réévaluer.
-- [ ] Agents `architecture-reviewer` et `code-reviewer`. La PR touche des données de
+- [x] Agents `architecture-reviewer` et `code-reviewer`. La PR touche des données de
       personnes et un effacement RGPD (`SET NULL`) : le second s'applique.
-- [ ] Appliquer les retours de review, puis relancer `./mvnw test`
+- [x] Appliquer les retours de review, puis relancer `./mvnw test`
 
 ### Verification Plan
 - `cd ageguessr-api && ./mvnw test` → tout vert
@@ -297,8 +297,34 @@ Status: In progress
 - `grep -n "chaud" docs/roadmap.md docs/decisions/architecture.md` → plus aucune mention
   du chaud/froid comme mécanique retenue
 
+**Résultat** :
+- `./mvnw test` : 791 tests, 0 échec. Un premier run avait 99 erreurs de chargement de
+  contexte (conteneur Postgres de Testcontainers injoignable en cours de run, problème
+  d'environnement) ; le run suivant est vert sans aucun changement.
+- `pnpm test` : 187 tests verts.
+- `chaud` n'apparaît plus que comme mécanique écartée.
+
 ### Phase Summary
-_(à écrire à la fin de la phase)_
+- Doc : `architecture.md` (exception `game → people`, « Tirage quotidien », « Déroulé
+  d'une manche », « Système de points » réécrit, limite du `publicId`), `roadmap.md`
+  (tirage coché, guess, points, cache HTTP, notification et neutralisation au
+  signalement), `testing-strategy.md`.
+- Reviews appliquées (voir « Retours de review »).
+- **Ajout après coup** : `app.game.daily.draw-enabled` est **faux par défaut**. En prod,
+  avant que le jeu soit jouable, chaque jour tiré sortirait 3 photos du pool pour 3 ans
+  (~90 par mois). La PR de l'endpoint de jeu le passe à vrai ; c'est noté dans la
+  roadmap.
+
+## Retours de review (phase 3)
+- `code-reviewer` : rien de bloquant ni d'important. Ids de photos retirés du log du
+  tirage (appliqué). **Pour la PR de jeu** : `RoundState.photoId` est l'id interne,
+  il ne doit jamais être sérialisé dans une réponse. N'exposer que le `publicId`.
+- `architecture-reviewer` : rien de bloquant ni d'important.
+  - `docs/testing-strategy.md` mentionne maintenant l'exception `game → people`
+    (appliqué).
+  - Coût du filtre de `DailyDraw` en O(candidats × manches) : négligeable à 3 manches,
+    et le passer par case changerait le modèle de hasard (uniforme sur les cases au
+    lieu des photos). Laissé tel quel.
 
 ## Tests : catégories retenues
 - **Unitaire** : oui. `DailyDraw` (le cœur des règles) et `DrawDailyGameHandler`
@@ -328,7 +354,33 @@ _(à écrire à la fin de la phase)_
   garantit, et un UUID v4 rend la collision négligeable.
 
 ## Final Recap
-_(à écrire quand toutes les phases sont terminées)_
+- Nouvelle feature `features/game`. Le tirage `DailyDraw` est pur et testé avec une
+  graine fixe. `DrawDailyGameHandler.drawIfMissing(date)` est paresseux, idempotent et
+  sûr en concurrence. `DailyDrawScheduler` tire à minuit UTC et au démarrage, et il est
+  coupé par défaut.
+- V12 crée `daily_rounds`, avec `photo_id` en `ON DELETE SET NULL` pour respecter
+  l'effacement.
+- Neutralisation calculée à la lecture (`findStatesOf`). Nouveau `publicId` à chaque
+  tirage, et `SecureRandom` pour un tirage imprévisible.
+- ArchUnit : `game → people` autorisé, et l'inverse verrouillé.
+- Hors scope, consigné pour la suite : l'endpoint de jeu (y activer le tirage, ne jamais
+  sérialiser `RoundState.photoId`), le guess plus jeune / plus vieux, les points sur
+  500, le cache HTTP des images, la notification admin sur les signalements, et la
+  neutralisation dans l'historique.
 
 ## Deployment Plan
-_(à écrire quand toutes les phases sont terminées)_
+1. Merger la PR #28 (roadmap des indices) si ce n'est pas fait, puis la PR de cette
+   branche vers `develop`. La release `develop → main` se fait en **merge commit**
+   (voir la mémoire du projet).
+2. Le déploiement applique V12 par Flyway au démarrage de l'API. Aucune variable
+   d'environnement n'est à ajouter : les trois propriétés ont des valeurs par défaut,
+   et le tirage reste coupé.
+3. Vérifier en prod (lecture seule) :
+   - `SELECT version, success FROM flyway_schema_history WHERE version = '12'` → `t` ;
+   - `SELECT count(*) FROM daily_rounds` → 0 (le tirage est coupé) ;
+   - la mesure reportée de la phase 1 : `SELECT count(*) FILTER (WHERE p.gender IS NULL
+     OR p.continent IS NULL), count(*) FROM person_photos ph JOIN people p ON p.id =
+     ph.person_id WHERE NOT p.excluded AND ph.review_status = 'APPROVED'`. Si le nombre
+     de cases inconnues n'est pas négligeable, envisager un rattrapage du genre et du
+     continent avant le lancement.
+4. Rien à annuler en cas de retour arrière : la table est vide et rien ne la lit encore.

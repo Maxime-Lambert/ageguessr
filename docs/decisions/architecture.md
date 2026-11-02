@@ -644,7 +644,8 @@ sont tirées dans `daily_rounds` (V12), les mêmes pour tous les joueurs.
 - **Paresseux et idempotent** : `DrawDailyGameHandler.drawIfMissing(date)` renvoie la
   partie si elle existe, sinon la tire. Il est appelé à 00:00:05 UTC et au démarrage
   (rattrapage après une coupure à minuit), sauf si `app.game.daily.draw-enabled` est
-  faux (tests, commandes ponctuelles). Deux tirages concurrents : la clé primaire
+  faux (tests, commandes ponctuelles, et par défaut tant que le jeu n'est pas jouable :
+  un jour tiré sans joueur gaspille 3 photos pour 3 ans). Deux tirages concurrents : la clé primaire
   `(game_date, position)` refuse le second, qui relit le premier.
 - **Nouveau `publicId`** pour chaque photo tirée (voir « Anti-triche sur l'image »).
 - **Photo retirée pendant son jour** : une manche est neutralisée pour tous si sa photo

@@ -13,6 +13,7 @@ public record GameProperties(
         // A photo is not played again before this many years: 3 years of 3 rounds use
         // 3 285 of the ~5 000 approved photos.
         @Positive int replayYears,
-        // Draws the game at midnight UTC and at startup. Off in tests and in the one-off
-        // commands (ingestion, hint import), which must not draw anything.
+        // Draws the game at midnight UTC and at startup. Off by default until the game can
+        // be played (a day drawn with no player wastes 3 photos for 3 years), and always
+        // off in tests and in the one-off commands (ingestion, hint import).
         boolean drawEnabled) {}

@@ -100,7 +100,10 @@ public class DrawDailyGameHandler {
         photos.saveAllAndFlush(drawnPhotos);
     }
 
-    /** Ids only: a name or a Commons file name in the logs would give the game away. */
+    /**
+     * Counts only. A name or a Commons file name would give the game away, and so would
+     * the photo ids to whoever reads the logs before midnight with database access.
+     */
     private void report(LocalDate day, DailyDraw.Outcome outcome) {
         int count = outcome.photoIds().size();
         if (count < properties.rounds()) {
@@ -111,6 +114,6 @@ public class DrawDailyGameHandler {
             log.warn("Game of {}: {} photo(s) played again before {} years, the pool is running out",
                     day, outcome.replayedEarly(), properties.replayYears());
         }
-        log.info("Game of {} drawn: {} round(s), photos {}", day, count, outcome.photoIds());
+        log.info("Game of {} drawn: {} round(s)", day, count);
     }
 }

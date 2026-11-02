@@ -81,7 +81,8 @@ la suivante).
 - [ ] Logique de guess en 2 étapes : 1er essai, puis « plus jeune / plus vieux » (le
       chaud/froid donnait trop d'aide, voir « Déroulé d'une manche »), sélection d'une
       catégorie d'indice, 2e essai. Saisie de 18 à 100 ans. Endpoint public de la partie
-      du jour, sans jamais révéler l'âge avant la réponse
+      du jour, sans jamais révéler l'âge avant la réponse. Activer alors le tirage
+      (`app.game.daily.draw-enabled`, coupé par défaut pour ne pas consommer le pool)
 - [ ] Système de points : jusqu'à 500 points par essai selon l'écart (piste
       `500 × e^(−écart/10)`, à régler par playtest), manche = somme des deux essais, un
       1er essai exact vaut 1 000. Manches neutralisées hors du score du jour
