@@ -322,14 +322,14 @@ Status: Complete
   `pnpm build` (EN + FR) OK.
 
 ## Phase 4 : Déploiement des deux langues (Caddy, image, CI)
-Status: Not started
+Status: Complete
 
-- [ ] `Dockerfile.edge` : les deux builds dans `/srv/en` et `/srv/fr`
-- [ ] `Caddyfile` : `handle /en/*`, `handle /fr/*`, redirection 302 du reste (cookie,
+- [x] `Dockerfile.edge` : les deux builds dans `/srv/en` et `/srv/fr`
+- [x] `Caddyfile` : `handle /en/*`, `handle /fr/*`, redirection 302 du reste (cookie,
       puis `Accept-Language`, sinon `en`), `?lang=fr`, `no-store` + `Vary`
-- [ ] Script `scripts/check-edge-locales.sh` : construit l'image edge, la lance et
+- [x] Script `scripts/check-edge-locales.sh` : construit l'image edge, la lance et
       vérifie les redirections et les deux `index.html` en `curl`
-- [ ] CI : build localisée dans `frontend-test`
+- [x] CI : build localisée dans `frontend-test`
 
 ### Verification Plan
 - `scripts/check-edge-locales.sh` → tous les cas OK :
@@ -341,7 +341,29 @@ Status: Not started
   - `/api/health` passe toujours au backend.
 
 ### Phase Summary
-_(à écrire à la fin de la phase)_
+- **`Dockerfile.edge` inchangé** : il copie déjà `dist/frontend/browser` dans `/srv`,
+  qui contient maintenant `en/` et `fr/`.
+- **`Caddyfile`** :
+  - `handle` de `/en` et `/en/*` (`try_files {path} /en/index.html`), même chose pour
+    `/fr` ;
+  - deux `map` : `Accept-Language` (`~^fr` → `fr`, sinon `en`), puis le cookie
+    `ageguessr_lang` (`en` / `fr`, sinon la langue du navigateur) ;
+  - `?lang=fr` → `/fr{path}` ;
+  - tout le reste → `302 /{site_lang}{uri}`, avec `Cache-Control: no-store` et
+    `Vary: Cookie, Accept-Language`.
+- **Piège Caddy** : `redir /fr{path} 302` est lu comme un matcher de chemin
+  (`/fr{path}`) suivi de la cible `302`, et la requête finit en 200 vide. Il faut écrire
+  `redir * <cible> 302`. Vu grâce à `caddy adapt`.
+- **`scripts/check-edge-locales.sh`** : il construit l'image edge, la lance sur le port
+  8099 et vérifie 12 cas en `curl`. **Tous OK** :
+  - `/` → `/en/`, avec un navigateur FR → `/fr/`, avec un navigateur EN → `/en/` ;
+  - le cookie l'emporte sur le navigateur, avec plusieurs cookies aussi, et un cookie
+    inconnu est ignoré ;
+  - un ancien lien d'email garde son `?token=`, et `/privacy?lang=fr` → `/fr/privacy` ;
+  - les `index.html` EN et FR sont servis, y compris sur une route ;
+  - `/api/*` n'est pas redirigé (502 sans backend).
+- **CI** : une étape « Build (EN + FR) » dans `frontend-test`, pour qu'une traduction
+  manquante bloque la PR.
 
 ## Phase 5 : Parcours, documentation, reviews
 Status: Not started

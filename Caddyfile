@@ -26,9 +26,47 @@
 		}
 	}
 
-	handle {
+	# Une build par langue (Angular i18n, plans/done/i18n.md) : /en/ et /fr/, chacune
+	# avec son index.html pour les routes de l'application.
+	@en path /en /en/*
+	handle @en {
 		root * /srv
-		try_files {path} /index.html
+		try_files {path} /en/index.html
 		file_server
+	}
+
+	@fr path /fr /fr/*
+	handle @fr {
+		root * /srv
+		try_files {path} /fr/index.html
+		file_server
+	}
+
+	# Langue d'une URL sans prefixe ("/", anciens liens, liens d'emails) : le choix fait
+	# sur le site (cookie ageguessr_lang), sinon la langue du navigateur, sinon l'anglais.
+	map {http.request.header.Accept-Language} {browser_lang} {
+		~^fr fr
+		default en
+	}
+	map {http.request.cookie.ageguessr_lang} {site_lang} {
+		en en
+		fr fr
+		default {browser_lang}
+	}
+
+	# Les anciennes pages legales en ?lang=fr gardent leur langue.
+	@legacyFrench query lang=fr
+	handle @legacyFrench {
+		header Cache-Control "no-store"
+		redir * /fr{path} 302
+	}
+
+	# 302 et no-store : la reponse depend du visiteur (cookie, navigateur), Cloudflare ne
+	# doit pas servir a tous la redirection d'un seul. {uri} garde le chemin et la query
+	# (?token= des liens d'emails).
+	handle {
+		header Cache-Control "no-store"
+		header Vary "Cookie, Accept-Language"
+		redir * /{site_lang}{uri} 302
 	}
 }
