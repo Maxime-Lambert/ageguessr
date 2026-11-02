@@ -4,6 +4,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { GAME_TEXT } from '../game-vocabulary';
 import { TodayGame } from '../models';
 import { finished, round, today } from '../testing';
+import { HintLanguage } from '../hint-language';
 import { Game } from './game';
 
 describe('Game', () => {
@@ -12,6 +13,7 @@ describe('Game', () => {
   let page: HTMLElement;
 
   beforeEach(() => {
+    localStorage.clear();
     TestBed.configureTestingModule({
       providers: [provideHttpClient(), provideHttpClientTesting()],
     });
@@ -50,7 +52,7 @@ describe('Game', () => {
 
     guess('30');
     const first = http.expectOne('/api/game/2026-11-02/rounds/1/first-guess');
-    expect(first.request.body).toEqual({ guess: 30, language: expect.stringMatching(/^(EN|FR)$/) });
+    expect(first.request.body).toEqual({ guess: 30, language: 'EN' });
     first.flush(
       round(1, {
         step: 'AWAITING_HINT',
@@ -81,6 +83,17 @@ describe('Game', () => {
     button(GAME_TEXT.next).click();
     fixture.detectChanges();
     expect(page.querySelector('h2')?.textContent).toContain(`${GAME_TEXT.round} 2 of 3`);
+  });
+
+  it('sends the language of the hints the player chose with the first guess', () => {
+    TestBed.inject(HintLanguage).set('FR');
+    load(today([round(1)]));
+
+    guess('30');
+
+    const first = http.expectOne('/api/game/2026-11-02/rounds/1/first-guess');
+    expect(first.request.body).toEqual({ guess: 30, language: 'FR' });
+    first.flush(finished(1));
   });
 
   it('picks up where the player was, past the rounds finished or withdrawn', () => {

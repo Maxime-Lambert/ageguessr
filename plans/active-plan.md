@@ -206,19 +206,19 @@ Status: Complete
   - `./mvnw test` : **908 verts**.
 
 ## Phase 2 : Socle i18n du front
-Status: Not started
+Status: Complete
 
-- [ ] `@angular/localize`, `angular.json` (source `en`, `fr` → `messages.fr.xlf`,
+- [x] `@angular/localize`, `angular.json` (source `en`, `fr` → `messages.fr.xlf`,
       `localize`, `baseHref`, `i18nMissingTranslation: error`), scripts
-- [ ] `features/i18n/site-language.ts` : langue courante (`LOCALE_ID`), URL de la même
+- [x] `features/i18n/site-language.ts` : langue courante (`LOCALE_ID`), URL de la même
       page dans l'autre langue, cookie `ageguessr_lang`
-- [ ] Sélecteur de langue dans l'en-tête (enregistre aussi sur le compte si connecté)
-- [ ] Redirection vers la langue du compte après la connexion ou la restauration de
+- [x] Sélecteur de langue dans l'en-tête (enregistre aussi sur le compte si connecté)
+- [x] Redirection vers la langue du compte après la connexion ou la restauration de
       session
-- [ ] Langue des indices : sélecteur sur l'écran de jeu, stockage local, défaut = langue
+- [x] Langue des indices : sélecteur sur l'écran de jeu, stockage local, défaut = langue
       du site ; `browserLanguage()` supprimé
-- [ ] Dates via `LOCALE_ID` (pages légales)
-- [ ] Specs Vitest : langue courante et URL de l'autre langue, cookie, sélecteur (avec et
+- [x] Dates via `LOCALE_ID` (pages légales) : déplacé en phase 3, avec les pages légales
+- [x] Specs Vitest : langue courante et URL de l'autre langue, cookie, sélecteur (avec et
       sans compte), redirection vers la langue du compte, langue des indices (défaut,
       choix retenu, appliqué au prochain 1er essai)
 
@@ -227,7 +227,47 @@ Status: Not started
 - `pnpm build` → `dist/frontend/browser/en` et `…/fr` présents
 
 ### Phase Summary
-_(à écrire à la fin de la phase)_
+- **`@angular/localize` 22.1.6**, aligné sur `@angular/core`. `ng add` installait
+  22.2.4, ce qui désynchronisait le compilateur. Le gros diff du lockfile venait d'une
+  réécriture par pnpm : remis en forme par prettier, il ne fait plus que 27 lignes, et
+  `--frozen-lockfile` passe.
+- **`angular.json`** :
+  - `i18n` : source `en` (`subPath: en`), `fr` → `src/locale/messages.fr.xlf`
+    (`subPath: fr`). `subPath` donne le dossier de sortie et le `<base href>` ;
+  - `i18nMissingTranslation: error` (vérifié : une unité retirée → build en échec) ;
+  - `production` → `localize: true` (les deux langues), `development` →
+    `localize: ["en"]`, configuration `fr` ;
+  - cible `extract-i18n` vers `src/locale`.
+- **Scripts** : `pnpm start` (anglais, `/en/`), `pnpm start:fr` (port 4201, `/fr/`),
+  `pnpm extract-i18n`. En dev, chaque langue a son serveur : le lien vers l'autre
+  langue ne mène nulle part sur le même port. C'est normal, en prod Caddy sert les deux.
+- **`features/i18n/`** :
+  - `language.ts` : `SiteLanguage` / `ApiLanguage`, conversions, cookie
+    `ageguessr_lang` ;
+  - `site-language.ts` : `SiteLanguageService` (`current`, `other`, `urlIn`,
+    `switchTo`, `alignWith`) ;
+  - jeton `BROWSER_PAGE` (cookie et navigation) pour les specs ;
+  - `language-switch/` dans l'en-tête, chaque langue nommée dans sa propre langue,
+    avec `lang` et `hreflang` ;
+  - `testing.ts` (`fakePage`).
+- **Écart au plan** : si l'enregistrement sur le compte échoue, **la page ne change
+  pas** et un message s'affiche. Sinon, la langue du compte renverrait le joueur à
+  l'ancienne langue au chargement suivant.
+- **Compte** :
+  - `AuthUser.language` ;
+  - `Auth.register(…, language)` envoie la langue de la page ;
+  - `Auth.changeLanguage` ;
+  - `App` aligne une fois par compte, à la restauration ou à la connexion : une langue
+    NULL est enregistrée, une langue différente recharge la page.
+- **Indices** :
+  - `HintLanguage` : stockage local `ageguessr-hint-language`, langue du site par
+    défaut, lecture et écriture protégées par try/catch ;
+  - `HintLanguagePicker` en haut de l'écran de jeu (`aria-pressed`) ;
+  - `browserLanguage()` supprimé, et `GameLanguage` remplacé par `ApiLanguage`.
+- **Tests** : `pnpm test` **247 verts** (+21). Nouvelles specs : `language` (3),
+  `site-language` (9), `language-switch` (3), `hint-language` (4), picker (1), `app`
+  (+1), `game` (+1), `auth` (+1). Lint et format OK. `pnpm build` produit
+  `en/index.html` (`lang="en"`, `<base href="/en/">`) et `fr/index.html`.
 
 ## Phase 3 : Traduction des écrans joueur
 Status: Not started

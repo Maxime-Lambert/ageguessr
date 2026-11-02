@@ -11,6 +11,7 @@ const USER = {
   username: 'Player',
   emailVerified: true,
   role: 'USER' as const,
+  language: 'EN' as const,
 };
 const WRONG_PASSWORD = {
   body: { errorCode: 'INVALID_CURRENT_PASSWORD', message: 'nope' },

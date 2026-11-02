@@ -41,6 +41,7 @@ describe('guestGuard', () => {
       username: 'Player',
       emailVerified: true,
       role: 'USER',
+      language: 'EN',
     });
 
     const result = await firstValueFrom(run());

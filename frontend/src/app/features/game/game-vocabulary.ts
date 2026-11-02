@@ -63,6 +63,7 @@ export const GAME_TEXT = {
   closed: "Today's file is closed. Here is the new one.",
   genericError: 'Something went wrong. Please try again.',
   comeBack: 'A new file opens at midnight UTC.',
+  hintLanguage: 'Hints in',
 } as const;
 
 /** The side only, never how far: no "warm" or "cold" (« Déroulé d'une manche »). */

@@ -88,6 +88,7 @@ describe('Login return URL', () => {
       username: 'Player',
       emailVerified: true,
       role: 'USER',
+      language: 'EN',
     });
 
     return navigateSpy.mock.calls[0][0] as string;

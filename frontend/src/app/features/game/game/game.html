@@ -1,5 +1,8 @@
 <main class="mx-auto max-w-xl px-4 py-8">
-  <h1 class="font-display text-3xl">{{ text.dailyGame }}</h1>
+  <div class="flex flex-wrap items-baseline justify-between gap-3">
+    <h1 class="font-display text-3xl">{{ text.dailyGame }}</h1>
+    <app-hint-language-picker />
+  </div>
 
   @if (notice(); as notice) {
     <p class="bg-surface border-border mt-4 rounded-md border p-3 text-sm" role="status">

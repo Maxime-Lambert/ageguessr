@@ -35,6 +35,7 @@ describe('authGuard', () => {
       username: 'Player',
       emailVerified: true,
       role: 'USER',
+      language: 'EN',
     });
     auth.sessionChecked.set(true);
 
@@ -63,6 +64,7 @@ describe('authGuard', () => {
       username: 'Player',
       emailVerified: true,
       role: 'USER',
+      language: 'EN',
     });
     auth.sessionChecked.set(true);
     TestBed.tick();
