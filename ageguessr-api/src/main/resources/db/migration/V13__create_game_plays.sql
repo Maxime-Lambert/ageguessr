@@ -25,6 +25,9 @@ CREATE TABLE game_plays (
     started_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     -- Pose au 2e essai, ou des le 1er quand il est exact (manche a 1 000 sans indice).
     finished_at TIMESTAMPTZ,
+    -- Verrou optimiste (@Version) : deux onglets qui jouent la meme etape en meme temps,
+    -- le second recoit un 409 au lieu d'ecraser le premier.
+    version INT NOT NULL DEFAULT 0,
     FOREIGN KEY (game_date, position) REFERENCES daily_rounds (game_date, position),
     CONSTRAINT game_plays_one_player CHECK (num_nonnulls(user_id, guest_id) = 1),
     CONSTRAINT game_plays_language CHECK (language IN ('EN', 'FR')),

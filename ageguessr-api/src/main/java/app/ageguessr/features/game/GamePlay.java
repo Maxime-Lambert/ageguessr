@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
@@ -63,6 +64,10 @@ public class GamePlay {
     private Instant startedAt;
 
     private Instant finishedAt;
+
+    /** Two tabs playing the same step at once: the second write fails instead of overwriting. */
+    @Version
+    private int version;
 
     /** Starts the round with its first guess; an exact one ends it at once. */
     public static GamePlay start(

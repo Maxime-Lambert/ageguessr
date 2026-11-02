@@ -247,35 +247,35 @@ Status: Complete
   `GetHintCoverage*` et `DailyRounds*`.
 
 ## Phase 2 : Endpoints, cookie invité, sécurité, purge, activation du tirage
-Status: Not started
+Status: Complete
 
-- [ ] `GuestCookie` + `PlayerKey` :
+- [x] `GuestCookie` + `PlayerKey` :
   - compte si le JWT est valide ;
   - sinon cookie invité, créé au 1er POST s'il manque.
-- [ ] `GetTodayGameHandler` :
+- [x] `GetTodayGameHandler` :
   - appelle `drawIfMissing(today)`, puis `findStatesOf` ;
   - fusionne avec les `game_plays` du joueur ;
   - calcule le score du jour (manches PLAYABLE finies seulement) ;
   - ne renvoie jamais `photoId`, l'âge ni l'identité d'une manche non finie.
-- [ ] `SubmitFirstGuessHandler`, `RevealHintHandler`, `SubmitSecondGuessHandler` :
+- [x] `SubmitFirstGuessHandler`, `RevealHintHandler`, `SubmitSecondGuessHandler` :
   - Bean Validation (`@Min(18) @Max(100)`, langue `en`/`fr`, catégorie connue) ;
   - erreurs 409 `GAME_CLOSED`, `ROUND_NEUTRALIZED`, `WRONG_STEP`,
     `CATEGORY_UNAVAILABLE` ;
   - double soumission concurrente : l'unique V13 donne un 409, pas un 500.
-- [ ] `SecurityConfig` : `/api/game/**` public, avec un commentaire sur le JWT
+- [x] `SecurityConfig` : `/api/game/**` public, avec un commentaire sur le JWT
       facultatif (un jeton invalide reste un 401, et l'intercepteur front rafraîchit)
-- [ ] Limite par IP sur `POST /api/game/**`
-- [ ] `PurgeGuestPlaysScheduler` (quotidien, conditionné comme le tirage)
-- [ ] `TestSupportController` : `seed-daily-game` (profil `e2e` uniquement), et son
+- [x] Limite par IP sur `POST /api/game/**`
+- [x] `PurgeGuestPlaysScheduler` (quotidien, conditionné comme le tirage)
+- [x] `TestSupportController` : `seed-daily-game` (profil `e2e` uniquement), et son
       chemin public seulement sous ce profil (`TestSupportSecurityConfig`)
-- [ ] `app.game.daily.draw-enabled` vrai par défaut (le jeu est jouable dans cette PR)
-- [ ] Tests unitaires des trois handlers :
+- [x] `app.game.daily.draw-enabled` vrai par défaut (le jeu est jouable dans cette PR)
+- [x] Tests unitaires des trois handlers :
   - chaque transition et chaque refus ;
   - 1er essai exact = 1 000, sans indice ;
   - aucune catégorie disponible : passage direct au 2e essai ;
   - manche neutralisée entre les deux essais ;
   - la date d'hier refusée.
-- [ ] Test fonctionnel `GameFunctionalTest` (MockMvc + Postgres) :
+- [x] Test fonctionnel `GameFunctionalTest` (MockMvc + Postgres) :
   - partie invitée complète, avec cookie posé puis relu ;
   - partie connectée complète, avec JWT ;
   - un invité et un compte ne se voient pas ;
@@ -284,17 +284,61 @@ Status: Not started
   - un 2e 1er essai renvoie 409 ;
   - la limite par IP renvoie 429 (contexte dédié, comme `RateLimitFunctionalTest`) ;
   - `GAME_CLOSED`.
-- [ ] Test d'intégration de la purge : les lignes invitées de 8 jours sont supprimées,
+- [x] Test d'intégration de la purge : les lignes invitées de 8 jours sont supprimées,
       celles de 7 jours et celles d'un compte gardées
 
 ### Verification Plan
 - `cd ageguessr-api && ./mvnw test` → tout vert
 - En local, avec `GAME_DAILY_DRAW_ENABLED=true` et au moins 3 photos APPROVED de cases
   différentes : `curl -c jar -b jar localhost:8080/api/game/today`, puis le 1er essai
-  et la suite en `curl`, jusqu'au résultat
+  et la suite en `curl`, jusqu'au résultat. **Non fait** : la base locale n'a aucune
+  photo APPROVED, et on n'approuve pas de photos juste pour un test.
+  `GameFunctionalTest` couvre le même parcours en HTTP, cookie compris. Le parcours
+  e2e de la phase 4 le refera sur l'app complète.
 
 ### Phase Summary
-_(à écrire à la fin de la phase)_
+- **Endpoints** : tous renvoient un `RoundView` (le GET, la liste du jour et le score),
+  la seule forme sous laquelle une manche sort de l'API. Tant qu'elle n'est pas finie :
+  ni âge, ni identité, ni crédit, ni `photoId`, ni **année de l'indice** (année du jour
+  − âge, elle donnerait la réponse). D'où `RoundView.ShownHint(category, text)`
+  pendant la manche, et `GameHint` complet seulement dans `result`. On renvoie aussi le
+  1er essai du joueur, pour l'afficher au rechargement.
+- **Partagés dans `features/game`** :
+  - `GameRounds` charge les manches du jour avec photo et personne. `playable()` vérifie
+    la date, puis la position (404), puis la neutralisation. Une photo disparue entre
+    deux lectures donne une manche neutralisée, pas un 500 ;
+  - `RoundViews` construit la vue. Sans catégorie disponible, l'étape affichée passe à
+    `AWAITING_SECOND_GUESS` ;
+  - `GameErrors` regroupe les 409 ;
+  - `PlayerResolver.existing` (lecture, aucun cookie posé) et `playing` (1er essai,
+    cookie créé), `GuestCookie`, `GuestProperties` (`app.game.guest.*`).
+- **Écarts au plan** :
+  - indice et 2e essai sans cookie : 409 `WRONG_STEP`, sans poser de cookie ;
+  - **V13 modifiée** pour ajouter `version` (`@Version`). Deux onglets qui jouent la
+    même étape : le second reçoit 409 au lieu d'écraser. Sans risque, car V13 n'a été
+    appliquée nulle part hors Testcontainers (ni en local, ni en prod, et pas mergée) ;
+  - le GET ne tire la partie que si `draw-enabled` est vrai. Sinon le drapeau ne
+    voudrait plus rien dire ;
+  - purge conditionnée par sa propre propriété `app.game.guest.purge-enabled` (vraie par
+    défaut, fausse en test, ingest et import-hints), pas par le tirage : c'est une règle
+    RGPD, distincte du jeu ;
+  - limite par IP : `RateLimitFilter` généralisé avec deux compteurs distincts (`auth:`
+    et `game:`). Seuls les POST `/api/game/` sont limités ;
+  - `GlobalExceptionHandler` : `MethodArgumentTypeMismatchException` → 400
+    `VALIDATION_ERROR` (date non ISO). Avant, c'était un 500 ;
+  - `GameTestSupportController` à part (racine `app.ageguessr`, profil `e2e`). Il
+    remplace les manches du jour par 3 personnes connues (âges 40, 55, 30), avec images
+    JPEG réelles et 5 indices MUSIC + 5 FILM chacune, et renvoie les âges.
+- **Sécurité** :
+  - `/api/game/**` en `permitAll` (GET et POST) ;
+  - un jeton invalide reste un 401 (testé) ;
+  - CSRF : cookie `SameSite=Lax` + POST uniquement, documenté dans `SecurityConfig` ;
+  - `Cache-Control: no-store` par défaut de Spring Security (testé).
+- **Tests** : `GameRoundsTest` (5), `RoundViewsTest` (7), les 4 `*HandlerTest` (5 + 4 +
+  5 + 6), `GameFunctionalTest` (11, qui vérifie l'absence de fuite dans le JSON brut à
+  chaque étape), `RateLimitFunctionalTest` (+1 : 429 sur les essais, GET libre,
+  compteur auth séparé), `PurgeGuestPlaysIntegrationTest` (1).
+  `./mvnw test` : **898 tests, 0 échec**.
 
 ## Phase 3 : Écran de jeu
 Status: Not started

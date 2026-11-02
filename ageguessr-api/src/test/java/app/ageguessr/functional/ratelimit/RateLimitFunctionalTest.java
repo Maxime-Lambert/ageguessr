@@ -1,5 +1,6 @@
 package app.ageguessr.functional.ratelimit;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -23,7 +24,13 @@ import tools.jackson.databind.ObjectMapper;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Import({TestcontainersConfiguration.class, AuthFunctionalTestConfig.class})
-@TestPropertySource(properties = {"app.rate-limit.auth.max-attempts=3", "app.rate-limit.auth.window-minutes=1"})
+@TestPropertySource(
+        properties = {
+            "app.rate-limit.auth.max-attempts=3",
+            "app.rate-limit.auth.window-minutes=1",
+            "app.rate-limit.game.max-attempts=2",
+            "app.rate-limit.game.window-minutes=1"
+        })
 class RateLimitFunctionalTest {
 
     @Autowired
@@ -65,6 +72,34 @@ class RateLimitFunctionalTest {
         resendVerificationFrom(exhaustedClient).andExpect(status().isTooManyRequests());
 
         resendVerificationFrom("203.0.113.11").andExpect(status().isAccepted());
+    }
+
+    /**
+     * The guesses have their own counter: whatever they answer (here a 409, no game being
+     * drawn), past the threshold they are refused before reaching the game. The reads are
+     * not limited, nor do the guesses use up the login attempts.
+     */
+    @Test
+    void limitsTheGuessesOfTheGameApart() throws Exception {
+        String client = "203.0.113.20";
+        for (int i = 0; i < 2; i++) {
+            guessFrom(client).andExpect(status().isConflict());
+        }
+        guessFrom(client).andExpect(status().isTooManyRequests());
+
+        mockMvc.perform(get("/api/game/today").header("X-Forwarded-For", client)).andExpect(status().isOk());
+        mockMvc.perform(post("/api/auth/resend-verification")
+                        .header("X-Forwarded-For", client)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new EmailPayload("someone@x.com"))))
+                .andExpect(status().isAccepted());
+    }
+
+    private ResultActions guessFrom(String clientIp) throws Exception {
+        return mockMvc.perform(post("/api/game/2000-01-01/rounds/1/first-guess")
+                .header("X-Forwarded-For", clientIp)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"guess\":30,\"language\":\"EN\"}"));
     }
 
     private ResultActions resendVerificationFrom(String clientIp)
