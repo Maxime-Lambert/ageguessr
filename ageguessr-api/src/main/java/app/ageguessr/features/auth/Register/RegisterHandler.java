@@ -42,6 +42,7 @@ public class RegisterHandler {
                 .createdAt(now)
                 .termsVersion(TermsVersion.CURRENT)
                 .termsAcceptedAt(now)
+                .language(command.language())
                 .build();
         user = userRepository.save(user);
 

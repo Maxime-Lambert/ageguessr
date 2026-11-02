@@ -10,7 +10,8 @@ import app.ageguessr.features.game.DailyRound;
 import app.ageguessr.features.game.DailyRoundRepository;
 import app.ageguessr.features.game.GamePlay;
 import app.ageguessr.features.game.GamePlayRepository;
-import app.ageguessr.features.game.Language;
+import app.ageguessr.shared.i18n.Language;
+import app.ageguessr.features.game.HintPicker;
 import app.ageguessr.features.game.PlayerKey;
 import app.ageguessr.features.hints.Hint;
 import app.ageguessr.features.hints.HintAudience;
@@ -214,7 +215,7 @@ class GamePlaysIntegrationTest {
         saveHint(HintCategory.MUSIC, 1986, HintAudience.ALL, HintReviewStatus.REJECTED, null);
         saveHint(HintCategory.MUSIC, 1985, HintAudience.ALL, HintReviewStatus.APPROVED, null);
 
-        List<Hint> eligible = hints.findEligible(1986, Language.FR.audiences(), "Q42");
+        List<Hint> eligible = hints.findEligible(1986, HintPicker.audiences(Language.FR), "Q42");
 
         assertThat(eligible)
                 .extracting(Hint::getId)

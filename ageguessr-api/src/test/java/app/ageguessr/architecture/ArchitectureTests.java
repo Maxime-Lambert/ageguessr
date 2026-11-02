@@ -84,6 +84,19 @@ class ArchitectureTests {
             .dependOnClassesThat()
             .resideInAPackage("app.ageguessr.features..");
 
+    /**
+     * shared/ holds what several features use (the language of the site, errors, rate
+     * limiting): it must not reach back into any of them, or two features would end up
+     * depending on each other through it.
+     */
+    @ArchTest
+    static final ArchRule shared_does_not_depend_on_features = noClasses()
+            .that()
+            .resideInAPackage("app.ageguessr.shared..")
+            .should()
+            .dependOnClassesThat()
+            .resideInAPackage("app.ageguessr.features..");
+
     @ArchTest
     static final ArchRule handlers_do_not_depend_on_controllers = noClasses()
             .that()

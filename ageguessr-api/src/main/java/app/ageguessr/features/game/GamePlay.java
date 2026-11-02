@@ -1,5 +1,6 @@
 package app.ageguessr.features.game;
 
+import app.ageguessr.shared.i18n.Language;
 import app.ageguessr.features.hints.HintCategory;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

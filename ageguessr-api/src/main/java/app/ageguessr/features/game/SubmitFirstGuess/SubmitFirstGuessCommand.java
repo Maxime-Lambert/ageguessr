@@ -1,6 +1,6 @@
 package app.ageguessr.features.game.SubmitFirstGuess;
 
-import app.ageguessr.features.game.Language;
+import app.ageguessr.shared.i18n.Language;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
