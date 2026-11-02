@@ -52,12 +52,16 @@ ageguessr-api/src/test/java/app/ageguessr/features/persons/
         └── GetDailyPersonsHandlerTests.java
 ```
 
-**Dépendances entre features** : une feature n'importe pas une autre, avec une seule
-exception, `game → people` (décision du 2026-11-02). Le jeu repose sur les photos de
-`people` (âge, statut de curation, case, `publicId`), donc `game` peut lire et modifier
-ses entités. L'inverse est interdit : `people` ne sait rien du jeu. C'est pour ça qu'une
-décision de curation est lue par le jeu, et pas poussée vers lui (voir « Tirage
-quotidien »). Les deux règles sont vérifiées par ArchUnit (`ArchitectureTests`).
+**Dépendances entre features** : une feature n'importe pas une autre, avec deux
+exceptions, toutes deux depuis le jeu (décisions du 2026-11-02) :
+- `game → people` : le jeu repose sur les photos de `people` (âge, statut de curation,
+  case, `publicId`), donc `game` peut lire et modifier ses entités ;
+- `game → hints` : le jeu lit les indices d'une année (`HintRepository.findEligible`).
+
+L'inverse est interdit : ni `people` ni `hints` ne savent rien du jeu. C'est pour ça
+qu'une décision de curation (photo ou indice) est lue par le jeu, et pas poussée vers lui
+(voir « Tirage quotidien »). Ces règles sont vérifiées par ArchUnit
+(`ArchitectureTests`).
 
 ### Package racine
 **Décision** : package racine `app.ageguessr`, pas `app.ageguessr.api`.
@@ -643,9 +647,10 @@ sont tirées dans `daily_rounds` (V12), les mêmes pour tous les joueurs.
   retente au prochain appel.
 - **Paresseux et idempotent** : `DrawDailyGameHandler.drawIfMissing(date)` renvoie la
   partie si elle existe, sinon la tire. Il est appelé à 00:00:05 UTC et au démarrage
-  (rattrapage après une coupure à minuit), sauf si `app.game.daily.draw-enabled` est
-  faux (tests, commandes ponctuelles, et par défaut tant que le jeu n'est pas jouable :
-  un jour tiré sans joueur gaspille 3 photos pour 3 ans). Deux tirages concurrents : la clé primaire
+  (rattrapage après une coupure à minuit), et par `GET /api/game/today` si le tirage a
+  échoué. Tout cela est coupé si `app.game.daily.draw-enabled` est faux (tests,
+  commandes ponctuelles) ; il est vrai par défaut depuis que le jeu est jouable. Deux
+  tirages concurrents : la clé primaire
   `(game_date, position)` refuse le second, qui relit le premier.
 - **Nouveau `publicId`** pour chaque photo tirée (voir « Anti-triche sur l'image »).
 - **Photo retirée pendant son jour** : une manche est neutralisée pour tous si sa photo
@@ -686,6 +691,46 @@ de ses deux essais (/1 000) et la journée /3 000. Un 1er essai exact termine la
 **Raison** : le 1er essai compte vraiment, ce qui pousse à le tenter sérieusement, et
 le 2e rapporte en général plus, grâce au sens et à l'indice. Le « bonus premier coup »
 vient de la somme elle-même, sans règle à part.
+
+### État d'une partie
+**Décision** (2026-11-02) : l'état de chaque manche d'un joueur est en base, dans
+`game_plays` (V13), une ligne par joueur et par manche, créée au 1er essai. Jamais dans
+le navigateur : l'âge n'y arrive qu'avec le résultat, et le serveur fait foi pour les
+points.
+- **Le joueur** est un compte (`user_id`, avec le JWT, facultatif sur `/api/game/**`)
+  ou un invité (`guest_id`, l'UUID aléatoire du cookie `ageguessr_guest` : httpOnly,
+  `SameSite=Lax`, `Path=/api/game`, 30 jours, posé au 1er essai). Le compte gagne s'il y
+  a les deux ; les parties invitées ne sont pas fusionnées dans le compte à la connexion.
+  Un jeton envoyé mais invalide donne un 401, pas une partie invitée : le front
+  rafraîchit le jeton et le compte garde sa partie.
+- **Étapes** : `NOT_STARTED → AWAITING_HINT → AWAITING_SECOND_GUESS → FINISHED`,
+  dérivées des colonnes. Un 1er essai exact termine la manche. L'indice est obligatoire,
+  sauf si aucune catégorie n'a au moins `Hint.MINIMUM_PER_CATEGORY` (5) indices
+  éligibles (année de référence, public `ALL` + langue, jamais la personne à deviner) :
+  le joueur passe alors directement au 2e essai.
+- **Même indice pour tous** pour une même (jour, manche, catégorie, langue) : index
+  tiré d'un hash stable, id gardé dans `game_plays.hint_id`.
+- **Points stockés à l'essai** : régler la formule ne réécrit pas les parties passées.
+- **Minuit** : seule la date du jour se joue (`409 GAME_CLOSED`). Une manche commencée
+  à 23:59 se perd ; le front recharge la nouvelle partie.
+- **Concurrence** (double clic, deux onglets) : les uniques de V13 et un verrou
+  optimiste (`@Version`) donnent un `409 WRONG_STEP`, jamais un 500 ni une écriture
+  écrasée.
+- **Conservation** : parties invitées purgées 7 jours après le jour joué
+  (`app.game.guest.retention-days`, tâche quotidienne). Celles d'un compte partent avec
+  lui (`ON DELETE CASCADE`). Les deux sont décrites sur `/privacy`.
+- **Limite connue**, comme Wordle : rien n'empêche de rejouer en navigation privée. Une
+  limite par IP (`app.rate-limit.game.*`, 60 POST par minute) empêche seulement de créer
+  des milliers de parties invitées.
+
+**Endpoints** (publics, JWT facultatif) : `GET /api/game/today`, puis `POST
+/api/game/{date}/rounds/{position}/first-guess` (`{guess, language}`), `…/hint`
+(`{category}`) et `…/second-guess` (`{guess}`). Tous renvoient un `RoundView`, la seule
+forme sous laquelle une manche sort de l'API. **Rien de la réponse avant la fin** : ni
+âge, ni identité, ni crédit (la page Commons nomme la personne), ni id interne de
+photo, ni **année de l'indice** (année du jour − âge). Pendant la manche, l'indice ne
+sort qu'avec sa catégorie et son texte. `GameFunctionalTest` vérifie le JSON brut à
+chaque étape.
 
 ### Réinitialisation quotidienne
 **Décision** : minuit UTC, même partie (mêmes personnes) pour tous les joueurs ce

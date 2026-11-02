@@ -78,12 +78,14 @@ la suivante).
       Une photo rejetée ou une personne exclue neutralise la manche pour tous, et un
       simple signalement ne neutralise rien (voir `docs/decisions/architecture.md`,
       « Tirage quotidien ») — PR `feature/daily-draw`
-- [ ] Logique de guess en 2 étapes : 1er essai, puis « plus jeune / plus vieux » (le
+- [x] Logique de guess en 2 étapes : 1er essai, puis « plus jeune / plus vieux » (le
       chaud/froid donnait trop d'aide, voir « Déroulé d'une manche »), sélection d'une
-      catégorie d'indice, 2e essai. Saisie de 18 à 100 ans. Endpoint public de la partie
-      du jour, sans jamais révéler l'âge avant la réponse. Activer alors le tirage
-      (`app.game.daily.draw-enabled`, coupé par défaut pour ne pas consommer le pool)
-- [ ] Système de points : jusqu'à 500 points par essai selon l'écart (piste
+      catégorie d'indice, 2e essai. Saisie de 18 à 100 ans. Endpoints publics, JWT
+      facultatif, sans jamais révéler l'âge, l'identité, le crédit ni l'année de
+      l'indice avant la réponse. État en base (`game_plays`, V13), cookie invité
+      `ageguessr_guest`, purge des parties invitées après 7 jours, limite par IP. Tirage
+      activé par défaut (voir « État d'une partie ») — PR `feature/daily-guess`
+- [x] Système de points : jusqu'à 500 points par essai selon l'écart (piste
       `500 × e^(−écart/10)`, à régler par playtest), manche = somme des deux essais, un
       1er essai exact vaut 1 000. Manches neutralisées hors du score du jour
 - [ ] Cache HTTP des images (`Cache-Control` long sur `/api/images/{publicId}`, l'id
@@ -91,14 +93,16 @@ la suivante).
       `daily_rounds` évite déjà de recalculer
 
 ## Semaine 4 — Interface de jeu
-- [ ] Écran principal : photo, input d'âge, « plus jeune / plus vieux » après le 1er essai
-- [ ] Sélection de catégorie d'indice + affichage de l'indice
-- [ ] Écran de résultat (âge réel, identité révélée, points gagnés, **crédit de la photo :
+- [x] Écran principal : photo, input d'âge, « plus jeune / plus vieux » après le 1er
+      essai. Le jeu est à `/` — PR `feature/daily-guess`
+- [x] Sélection de catégorie d'indice + affichage de l'indice
+- [x] Écran de résultat (âge réel, identité révélée, points gagnés, **crédit de la photo :
       auteur + licence**, obligatoire avant de servir des photos CC BY / BY-SA aux joueurs ;
       indice réaffiché avec son année et sa source, pour l'attribution CC BY-SA)
   - Identité : nom (`name_fr`/`name_en`, déjà en base) + lien Wikipedia sans rien stocker,
-    via `https://<lang>.wikipedia.org/wiki/Special:GoToLinkedPage/<lang>wiki/<QID>`
-    (repli sur la page Wikidata si l'article n'existe pas dans la langue)
+    via `https://www.wikidata.org/wiki/Special:GoToLinkedPage/<lang>wiki/<QID>`
+    (vérifié le 2026-11-02 : 302 vers l'article ; sans article dans la langue, Wikidata
+    affiche sa propre page)
   - Fonction principale (optionnel) : P106 est lu à l'ingestion mais pas stocké. Il
     faudrait une colonne + le libellé fr/en, et un rattrapage des personnes existantes
     (une requête QLever par lot de QID). Choisir « la » fonction principale n'est pas
@@ -138,9 +142,9 @@ la suivante).
     garder ou corriger le texte
   - Aucun retrait automatique. Un indice rejeté n'est plus tiré ; sous 5 indices, la
     catégorie est masquée pour cette année
-- [ ] Enchaînement des 3 personnes du jour + récapitulatif final
+- [x] Enchaînement des 3 personnes du jour + récapitulatif final
 - [ ] Page d'accueil publique
-- [ ] Vocabulaire de jeu centralisé dans un seul fichier (essai du ton « enquête »,
+- [x] Vocabulaire de jeu centralisé dans un seul fichier (essai du ton « enquête »,
       critère de validation au premier playtest — voir `docs/decisions/design.md`)
 - [ ] Trancher le duotone des photos sur de vraies photos Commons
 

@@ -61,9 +61,21 @@ connexion → ajout d'ami).
 **Ne couvre pas** : les cas limites unitaires, qui doivent être testés plus bas dans la
 pyramide (plus rapide, plus précis sur la cause d'un échec).
 
+**Lancer les parcours** : API en profil `e2e` (emails enregistrés, `/test-support/*`,
+dont `seed-daily-game` qui pose une partie du jour connue), puis
+`cd frontend && pnpm test:e2e:journeys`. Deux précautions :
+- **une base jetable** (par exemple un Postgres et un Redis lancés avec `docker run
+  --rm` sur d'autres ports, via `DB_PORT` et `REDIS_PORT`) : les parcours créent des
+  comptes, des personnes et des indices de test, à ne pas mêler à la base de dev ;
+- **`AUTH_RATE_LIMIT_MAX_ATTEMPTS=1000`** : tous les parcours tournent en parallèle
+  derrière la même IP (le proxy de dev), et chaque chargement de page appelle
+  `/api/auth/refresh`. La limite de prod (20 par minute) les fait échouer à
+  l'inscription ou à la connexion, sans rapport avec le code testé.
+
 ### Architecture
 Vérifie automatiquement les règles définies dans `docs/decisions/architecture.md` (pas
-de dépendance croisée entre features sauf l'exception `game → people`, convention de
+de dépendance croisée entre features sauf les exceptions `game → people` et
+`game → hints`, convention de
 package, pas de couplage handler-à-handler). Empêche la dérive architecturale silencieuse au fil des features.
 
 ### Mutation
