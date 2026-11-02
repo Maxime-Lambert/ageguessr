@@ -17,15 +17,16 @@ public class RoundViews {
     /** @param play null when the player has not started the round */
     public RoundView of(GameRound round, GamePlay play) {
         RoundStep step = play == null ? RoundStep.NOT_STARTED : play.step();
+        RoundView.RoundViewBuilder view =
+                RoundView.builder().position(round.position()).status(round.status()).step(step);
         if (!round.playable()) {
-            return new RoundView(round.position(), round.status(), null, step, null, null, null, null, null);
+            return view.build();
         }
-        String imageUrl = IMAGE_PATH + round.photo().getPublicId();
+        view.imageUrl(IMAGE_PATH + round.photo().getPublicId());
         return switch (step) {
-            case NOT_STARTED -> new RoundView(round.position(), round.status(), imageUrl, step, null, null, null, null, null);
-            case FINISHED -> new RoundView(
-                    round.position(), round.status(), imageUrl, step, play.getFirstGuess(), null, null, null, reveal(round, play));
-            case AWAITING_HINT, AWAITING_SECOND_GUESS -> inProgress(round, play, imageUrl);
+            case NOT_STARTED -> view.build();
+            case FINISHED -> view.firstGuess(play.getFirstGuess()).result(reveal(round, play)).build();
+            case AWAITING_HINT, AWAITING_SECOND_GUESS -> inProgress(view, round, play);
         };
     }
 
@@ -38,27 +39,18 @@ public class RoundViews {
      * Without any category to offer, the round goes straight to the second guess: the
      * player is never stuck on a hint they cannot get.
      */
-    private RoundView inProgress(GameRound round, GamePlay play, String imageUrl) {
-        Direction direction = Direction.of(play.getFirstGuess(), round.age());
+    private RoundView inProgress(RoundView.RoundViewBuilder view, GameRound round, GamePlay play) {
+        view.firstGuess(play.getFirstGuess()).direction(Direction.of(play.getFirstGuess(), round.age()));
         if (play.step() == RoundStep.AWAITING_HINT) {
             List<HintCategory> categories = offer(round, play.getLanguage()).categories();
-            RoundStep step = categories.isEmpty() ? RoundStep.AWAITING_SECOND_GUESS : RoundStep.AWAITING_HINT;
-            return new RoundView(
-                    round.position(), round.status(), imageUrl, step, play.getFirstGuess(), direction, categories, null, null);
+            return view.step(categories.isEmpty() ? RoundStep.AWAITING_SECOND_GUESS : RoundStep.AWAITING_HINT)
+                    .categories(categories)
+                    .build();
         }
-        RoundView.ShownHint hint = hints.shown(play.getHintId(), play.getLanguage())
-                .map(shown -> new RoundView.ShownHint(shown.category(), shown.text()))
-                .orElse(null);
-        return new RoundView(
-                round.position(),
-                round.status(),
-                imageUrl,
-                RoundStep.AWAITING_SECOND_GUESS,
-                play.getFirstGuess(),
-                direction,
-                null,
-                hint,
-                null);
+        return view.hint(hints.shown(play.getHintId(), play.getLanguage())
+                        .map(shown -> new RoundView.ShownHint(shown.category(), shown.text()))
+                        .orElse(null))
+                .build();
     }
 
     private RoundReveal reveal(GameRound round, GamePlay play) {

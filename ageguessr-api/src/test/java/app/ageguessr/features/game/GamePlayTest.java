@@ -44,7 +44,7 @@ class GamePlayTest {
         assertThat(play.step()).isEqualTo(RoundStep.AWAITING_SECOND_GUESS);
         assertThat(play.getHintId()).isEqualTo(hintId);
 
-        play.secondGuess(38, AGE, END);
+        play.finishWithSecondGuess(38, AGE, END);
         assertThat(play.step()).isEqualTo(RoundStep.FINISHED);
         assertThat(play.firstGuessExact()).isFalse();
         assertThat(play.getSecondPoints()).isEqualTo(Scoring.points(38, AGE));
@@ -57,7 +57,7 @@ class GamePlayTest {
         GamePlay play = start(30);
         play.revealHint(HintCategory.MUSIC, UUID.randomUUID());
 
-        play.secondGuess(AGE, AGE, END);
+        play.finishWithSecondGuess(AGE, AGE, END);
 
         assertThat(play.points()).isEqualTo(Scoring.points(30, AGE) + 500);
     }
@@ -78,7 +78,7 @@ class GamePlayTest {
         GamePlay play = start(AGE);
 
         assertThat(play.acceptsSecondGuess(false)).isFalse();
-        assertThatThrownBy(() -> play.secondGuess(30, AGE, END)).isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(() -> play.finishWithSecondGuess(30, AGE, END)).isInstanceOf(IllegalStateException.class);
     }
 
     @Test

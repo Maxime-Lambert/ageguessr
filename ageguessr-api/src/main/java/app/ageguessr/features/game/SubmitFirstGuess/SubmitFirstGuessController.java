@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 /** Public, the JWT optional; a guest without a cookie gets one here. */
 @RestController
 @RequiredArgsConstructor
-class SubmitFirstGuessController {
+public class SubmitFirstGuessController {
 
     private final SubmitFirstGuessHandler handler;
     private final PlayerResolver players;

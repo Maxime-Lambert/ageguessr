@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 /** Public, the JWT optional (SecurityConfig). Never sets the guest cookie: reading plays nothing. */
 @RestController
 @RequiredArgsConstructor
-class GetTodayGameController {
+public class GetTodayGameController {
 
     private final GetTodayGameHandler handler;
     private final PlayerResolver players;

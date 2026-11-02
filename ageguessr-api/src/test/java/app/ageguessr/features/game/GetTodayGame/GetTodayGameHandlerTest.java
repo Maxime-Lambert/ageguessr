@@ -50,7 +50,7 @@ class GetTodayGameHandlerTest {
         GamePlay exact = started(guest, (short) 1, AGE);
         GamePlay finished = started(guest, (short) 2, 30);
         finished.revealHint(HintCategory.MUSIC, UUID.randomUUID());
-        finished.secondGuess(38, AGE, NOW);
+        finished.finishWithSecondGuess(38, AGE, NOW);
         GamePlay outOfTheScore = started(guest, (short) 3, AGE);
         when(plays.findOf(guest, TODAY)).thenReturn(List.of(exact, finished, outOfTheScore));
 

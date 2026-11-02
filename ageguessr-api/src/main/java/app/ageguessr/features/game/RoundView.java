@@ -2,6 +2,7 @@ package app.ageguessr.features.game;
 
 import app.ageguessr.features.hints.HintCategory;
 import java.util.List;
+import lombok.Builder;
 
 /**
  * A round as one player sees it, the only shape a round leaves the API in. Until the
@@ -16,6 +17,7 @@ import java.util.List;
  * @param hint the hint chosen, while awaiting the second guess
  * @param result once finished, and only then
  */
+@Builder
 public record RoundView(
         short position,
         DailyRoundStatus status,

@@ -87,7 +87,7 @@ class RoundViewsTest {
         when(hintRepository.findById(hint.getId())).thenReturn(Optional.of(hint));
         GamePlay play = started(guest, (short) 1, 30);
         play.revealHint(HintCategory.MUSIC, hint.getId());
-        play.secondGuess(AGE, AGE, NOW);
+        play.finishWithSecondGuess(AGE, AGE, NOW);
 
         RoundView view = views.of(playableRound((short) 1), play);
 

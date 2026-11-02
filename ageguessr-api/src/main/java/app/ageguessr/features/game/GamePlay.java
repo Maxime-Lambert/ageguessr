@@ -110,7 +110,7 @@ public class GamePlay {
         this.hintId = hintId;
     }
 
-    public void secondGuess(int guess, int age, Instant now) {
+    public void finishWithSecondGuess(int guess, int age, Instant now) {
         if (step() == RoundStep.FINISHED) {
             throw new IllegalStateException("The round is already finished");
         }

@@ -20,7 +20,7 @@ class RoundRevealTest {
     void revealsTheAnswerThePointsOfBothGuessesWhoItWasAndTheCredit() {
         GamePlay play = play(Language.EN, 30);
         play.revealHint(HintCategory.MUSIC, UUID.randomUUID());
-        play.secondGuess(38, 40, NOW);
+        play.finishWithSecondGuess(38, 40, NOW);
 
         RoundReveal reveal = RoundReveal.of(play, photo("Jane Photographer"), person("Jane Doe", "Jeanne Doe"), HINT);
 

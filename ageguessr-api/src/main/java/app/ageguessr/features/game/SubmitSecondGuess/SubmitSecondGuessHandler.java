@@ -36,7 +36,7 @@ public class SubmitSecondGuessHandler {
         if (!play.acceptsSecondGuess(anyCategoryAvailable)) {
             throw GameErrors.wrongStep();
         }
-        play.secondGuess(command.guess(), round.age(), clock.instant());
+        play.finishWithSecondGuess(command.guess(), round.age(), clock.instant());
         try {
             plays.saveAndFlush(play);
         } catch (ObjectOptimisticLockingFailureException e) {

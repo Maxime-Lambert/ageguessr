@@ -1,7 +1,5 @@
 package app.ageguessr.features.game.SubmitSecondGuess;
 
-import app.ageguessr.features.game.GameErrors;
-import app.ageguessr.features.game.PlayerKey;
 import app.ageguessr.features.game.PlayerResolver;
 import app.ageguessr.features.game.RoundView;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,10 +14,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-/** Public, the JWT optional. A guest without a cookie has no round started: no cookie is set. */
+/** Public, the JWT optional. A guest without a cookie is refused, see PlayerResolver.existingOrThrow. */
 @RestController
 @RequiredArgsConstructor
-class SubmitSecondGuessController {
+public class SubmitSecondGuessController {
 
     private final SubmitSecondGuessHandler handler;
     private final PlayerResolver players;
@@ -31,7 +29,6 @@ class SubmitSecondGuessController {
             @PathVariable short position,
             @Valid @RequestBody SubmitSecondGuessCommand command,
             HttpServletRequest request) {
-        PlayerKey player = players.existing(jwt, request).orElseThrow(GameErrors::wrongStep);
-        return handler.handle(player, date, position, command);
+        return handler.handle(players.existingOrThrow(jwt, request), date, position, command);
     }
 }

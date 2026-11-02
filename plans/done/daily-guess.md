@@ -420,21 +420,21 @@ Status: Complete
     qui visitent `/`, sans effet.
 
 ## Phase 4 : Parcours complet, documentation, reviews
-Status: Not started
+Status: Complete
 
-- [ ] `e2e/journeys/daily-game.spec.ts` (app complète, profil `e2e`) :
+- [x] `e2e/journeys/daily-game.spec.ts` (app complète, profil `e2e`) :
   - `seed-daily-game`, puis un invité joue les 3 manches jusqu'au récapitulatif ;
   - un rechargement en cours de manche reprend au bon endroit.
-- [ ] `docs/decisions/architecture.md` :
+- [x] `docs/decisions/architecture.md` :
   - exception `game → hints` ;
   - « État d'une partie » (table, cookie invité, purge, compte prioritaire, minuit) ;
   - endpoints et règle « rien avant la fin ».
-- [ ] `docs/decisions/design.md` : `hot`/`cold` libérés, voix enquête mise en œuvre
+- [x] `docs/decisions/design.md` : `hot`/`cold` libérés, voix enquête mise en œuvre
       (fichier de vocabulaire)
-- [ ] `docs/roadmap.md` : cocher guess, points, écran principal, indice, résultat avec
+- [x] `docs/roadmap.md` : cocher guess, points, écran principal, indice, résultat avec
       crédit, enchaînement + récapitulatif, vocabulaire centralisé. Garder ouverts le
       signalement, le duotone, la page d'accueil et le cache HTTP des images.
-- [ ] Agents `architecture-reviewer` et `code-reviewer` (endpoints publics, cookie,
+- [x] Agents `architecture-reviewer` et `code-reviewer` (endpoints publics, cookie,
       données de compte, RGPD), puis appliquer leurs retours
 
 ### Verification Plan
@@ -442,7 +442,38 @@ Status: Not started
 - `pnpm exec playwright test` (component + journeys, stack e2e lancée) → vert
 
 ### Phase Summary
-_(à écrire à la fin de la phase)_
+- **Parcours `e2e/journeys/daily-game.spec.ts`** : `seed-daily-game`, puis un invité
+  joue les 3 manches (erreur + indice + rechargement en cours de manche, 1er essai
+  exact, erreur + indice), jusqu'au récapitulatif : 2368 / 3000. Un rechargement final
+  réaffiche le récapitulatif.
+- **Lancement des parcours** : Postgres et Redis jetables (`docker run --rm`, ports
+  5499 et 6399), API en profil `e2e`. Les 5 parcours passent avec
+  `AUTH_RATE_LIMIT_MAX_ATTEMPTS=1000`. Avec la limite de prod (20 par minute), les 4
+  parcours d'auth échouent quand tout tourne en parallèle derrière une même IP. C'est
+  sans rapport avec cette PR : seuls, ils passent. Documenté dans
+  `testing-strategy.md`.
+- **Docs** : `architecture.md` (exceptions `game → hints`, « État d'une partie »,
+  endpoints, tirage activé), `design.md` (`hot`/`cold` libres, fichier de vocabulaire),
+  `testing-strategy.md`, `roadmap.md`.
+- **architecture-reviewer** : rien de bloquant sur le fond. Appliqué :
+  - les 4 contrôleurs passent en `public`, comme les 18 existants ;
+  - `PlayerResolver.existingOrThrow` ;
+  - `GamePlay.secondGuess` renommé `finishWithSecondGuess` ;
+  - `@Builder` sur `RoundView`, au lieu des listes de `null`.
+
+  Laissé :
+  - `@Value` dans `GuestCookie` : `app.cookie.secure` est partagé avec le cookie de
+    refresh ;
+  - `Hint.MINIMUM_PER_CATEGORY` côté `hints` : c'est la même règle que la page de
+    couverture, volontairement à une seule source ;
+  - `total` compte aussi les manches retirées (« Case 2 of 3 » reste vrai : la journée
+    a 3 manches).
+- **code-reviewer** : rien de bloquant ni d'important. Anti-triche, cookie, CSRF,
+  isolation compte/invité, JWT facultatif, concurrence, endpoint de test, XSS, liens
+  et RGPD vérifiés. Appliqué le point mineur : la base légale du jeu invité devient
+  l'intérêt légitime (art. 6.1.f) sur `/privacy`, faute de contrat pour un invité.
+- **Vérification finale** : `./mvnw test` 898 verts, `pnpm test` 226 verts, lint et
+  format OK, Playwright component 51 verts, journeys 5 verts.
 
 ## Tests : catégories retenues
 - **Unitaire backend** : oui. Formule de points, choix d'indice, étapes d'une manche,
@@ -477,7 +508,42 @@ _(à écrire à la fin de la phase)_
 - Photo sans auteur : « Unknown author », licence et lien toujours affichés.
 
 ## Final Recap
-_(à écrire quand toutes les phases sont terminées)_
+La partie du jour est jouable de bout en bout, avec ou sans compte, à `/`.
+- **Backend** :
+  - V13 `game_plays` ;
+  - 4 endpoints publics qui ne renvoient qu'un `RoundView`, sans rien de la réponse
+    avant la fin ;
+  - cookie invité, purge à 7 jours, limite par IP sur les essais, 409 métier ;
+  - verrou optimiste ;
+  - tirage activé par défaut.
+- **Front** : écran de manche, résultat avec crédit et identité, récapitulatif,
+  vocabulaire centralisé, `/privacy` à jour.
+- **Écarts au plan**, détaillés par phase :
+  - minimum d'indices en constante partagée ;
+  - `version` ajoutée à V13 ;
+  - purge sous son propre drapeau ;
+  - tirage depuis le GET seulement si le drapeau est vrai ;
+  - année de l'indice masquée pendant la manche ;
+  - base légale invité en intérêt légitime.
+- **Restent ouverts** (roadmap) : signalements, duotone, page d'accueil publique, cache
+  HTTP des images, fonction principale de la personne au résultat.
 
 ## Deployment Plan
-_(à écrire quand toutes les phases sont terminées)_
+1. Merger la PR dans `develop`, puis la release `develop → main` en **merge commit**.
+2. Au déploiement, Flyway applique **V13** (`game_plays`), une création de table sans
+   effet sur les données existantes.
+3. **Le tirage démarre seul** (`GAME_DAILY_DRAW_ENABLED` vrai par défaut) : au
+   démarrage, puis à 00:00:05 UTC. Il faut au moins 3 photos APPROVED dans des cases
+   différentes. Sinon, le jour a moins de manches (`log.error`) ou aucune. Vérifier dans
+   les logs « Game of <date> » et, avec l'accord de l'utilisateur pour requêter la
+   prod, `SELECT * FROM daily_rounds WHERE game_date = current_date`.
+4. Variables facultatives, toutes avec défaut : `GAME_GUEST_COOKIE_TTL_DAYS` (30),
+   `GAME_GUEST_RETENTION_DAYS` (7), `GAME_GUEST_PURGE_ENABLED` (true),
+   `GAME_RATE_LIMIT_MAX_ATTEMPTS` (60), `GAME_RATE_LIMIT_WINDOW_MINUTES` (1).
+   `COOKIE_SECURE=true` est déjà posé en prod.
+5. Vérification manuelle en prod : ouvrir `/` en navigation privée, jouer une manche,
+   vérifier le cookie `ageguessr_guest` (HttpOnly, Secure, Path=/api/game) et le
+   crédit au résultat ; recharger en cours de manche.
+6. Le lendemain : la purge de 00:30 UTC logue « Purged N guest game rows ».
+7. Retour arrière : `GAME_DAILY_DRAW_ENABLED=false` arrête de consommer le pool, sans
+   toucher au reste. Le jeu affiche alors « No case today » pour un jour non tiré.
