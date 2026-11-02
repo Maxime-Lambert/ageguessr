@@ -1,4 +1,4 @@
--- Partie du jour (plans/active-plan.md) : les photos tirees pour une date, les memes pour
+-- Partie du jour (plans/done/daily-draw.md) : les photos tirees pour une date, les memes pour
 -- tous les joueurs. La date est celle de minuit UTC.
 --
 -- photo_id en ON DELETE SET NULL, pas CASCADE : exclure une personne supprime ses photos

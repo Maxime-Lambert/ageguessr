@@ -4,7 +4,7 @@ import jakarta.validation.constraints.Positive;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
-/** Rules of the daily game. See plans/active-plan.md for the decisions behind the defaults. */
+/** Rules of the daily game. See plans/done/daily-draw.md for the decisions behind the defaults. */
 @Validated
 @ConfigurationProperties("app.game.daily")
 public record GameProperties(
