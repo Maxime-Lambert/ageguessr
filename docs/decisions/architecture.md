@@ -52,6 +52,13 @@ ageguessr-api/src/test/java/app/ageguessr/features/persons/
         └── GetDailyPersonsHandlerTests.java
 ```
 
+**Dépendances entre features** : une feature n'importe pas une autre, avec une seule
+exception, `game → people` (décision du 2026-11-02). Le jeu repose sur les photos de
+`people` (âge, statut de curation, case, `publicId`), donc `game` peut lire et modifier
+ses entités. L'inverse est interdit : `people` ne sait rien du jeu. C'est pour ça qu'une
+décision de curation est lue par le jeu, et pas poussée vers lui (voir « Tirage
+quotidien »). Les deux règles sont vérifiées par ArchUnit (`ArchitectureTests`).
+
 ### Package racine
 **Décision** : package racine `app.ageguessr`, pas `app.ageguessr.api`.
 
@@ -362,7 +369,8 @@ ponctuelle**, pas pendant les parties :
   préfère celle dont la tranche compte le moins de photos en jeu (base + run en
   cours), sans jamais renoncer à une photo que les règles d'écart permettent. Mesure
   du 2026-10-27 : la répartition est déjà assez plate de 18 à 73 ans, le manque est
-  au-delà de 74 ans. L'équilibre fin se fera au tirage quotidien (Semaine 3).
+  au-delà de 74 ans. Le tirage quotidien ne rééquilibre pas les âges (décision du
+  2026-11-02, voir « Tirage quotidien ») : seule la collecte y penche.
 - **Hauteur minimale de 600 px** (décision du 2026-10-28, à ajuster) : la hauteur
   compte plus que la largeur, le jeu affichant un portrait. Les miniatures sont
   demandées à Commons **en hauteur** (`app.people.ingest.thumbnail-height`, 1 000 px) :
@@ -611,18 +619,73 @@ l'âge, en quelques secondes. Ce serait contourner totalement le jeu.
 
 **Limites connues** :
 - La recherche d'image inversée (Google Lens…) reste possible sur les pixels eux-mêmes.
-- Le `publicId` est stable : une fois une partie terminée, le couple id → réponse peut
-  circuler. La sélection quotidienne (Semaine 3) devra régénérer le `publicId` d'une
-  photo resélectionnée.
+- Une fois une partie terminée, le couple `publicId` → réponse peut circuler. Le tirage
+  quotidien donne donc un nouveau `publicId` à chaque photo tirée : l'ancien couple ne
+  désigne plus rien quand la photo revient, au moins 3 ans plus tard. Un historique de
+  parties ne devra pas servir une ancienne image par son `publicId` actuel, sinon il
+  relierait l'id du jour à une réponse déjà connue.
+
+### Tirage quotidien
+**Décision** (2026-11-02) : chaque jour à minuit UTC, 3 photos (`app.game.daily.rounds`)
+sont tirées dans `daily_rounds` (V12), les mêmes pour tous les joueurs.
+- **Hasard uniforme sur les photos approuvées**, sans pondération par âge. Une règle
+  sur les âges renseignerait le joueur (« la première a 22 ans, donc les autres non »).
+  Une personne qui a 3 photos a 3 fois plus de chances d'être tirée.
+- **Jamais deux personnes de la même case** (continent × genre) le même jour, ce qui
+  exclut aussi deux photos d'une même personne. Un genre ou un continent inconnu compte
+  comme une case à part.
+- **Pas de rejeu d'une photo avant 3 ans** (`app.game.daily.replay-years`), borne
+  incluse. Il n'y a pas de délai entre deux apparitions d'une même personne : on devine
+  l'âge sur une photo donnée, et connaître la personne n'aide pas.
+- **Pool trop petit** : la règle des cases tient, celle des 3 ans cède, en commençant
+  par les photos jouées il y a le plus longtemps (`log.warn`). Sans assez de cases, le
+  jour a moins de manches (`log.error`). Un tirage vide n'est pas enregistré et se
+  retente au prochain appel.
+- **Paresseux et idempotent** : `DrawDailyGameHandler.drawIfMissing(date)` renvoie la
+  partie si elle existe, sinon la tire. Il est appelé à 00:00:05 UTC et au démarrage
+  (rattrapage après une coupure à minuit), sauf si `app.game.daily.draw-enabled` est
+  faux (tests, commandes ponctuelles, et par défaut tant que le jeu n'est pas jouable :
+  un jour tiré sans joueur gaspille 3 photos pour 3 ans). Deux tirages concurrents : la clé primaire
+  `(game_date, position)` refuse le second, qui relit le premier.
+- **Nouveau `publicId`** pour chaque photo tirée (voir « Anti-triche sur l'image »).
+- **Photo retirée pendant son jour** : une manche est neutralisée pour tous si sa photo
+  n'est plus `APPROVED` (rejet par un admin) ou a disparu (personne exclue,
+  `photo_id` en `ON DELETE SET NULL`). Le score du jour se calcule alors sur les manches
+  restantes. Un simple signalement ne neutralise rien, sinon un script pourrait vider
+  les parties. La neutralisation est **calculée à la lecture**
+  (`DailyRoundRepository.findStatesOf`), pas stockée : `people` n'a pas à prévenir
+  `game`, et un rejet annulé rétablit la manche. Effet de bord à traiter avec
+  l'historique : un rejet tardif neutralise aussi la manche dans les parties passées.
+- **Pas de cache Redis** : la table évite déjà de recalculer, et lire 3 lignes par clé
+  primaire ne coûte rien. Un cache devrait être invalidé par `people` (sens interdit),
+  ou expirer après un délai qui laisserait une photo rejetée en jeu. La lecture lourde
+  est celle des images : elle passera par un cache HTTP (`Cache-Control` long sur
+  `/api/images/{publicId}`, possible puisque l'id change à chaque tirage).
+
+### Déroulé d'une manche
+**Décision** (2026-11-02) : un 1er essai, puis le jeu dit seulement **« plus jeune »
+ou « plus vieux »**, puis le joueur choisit une catégorie d'indice et fait un 2e essai.
+Saisie de 18 à 100 ans.
+
+**Raison** : le chaud/froid prévu au départ donnait trop d'aide. Savoir qu'on est à
+15-20 ans de la réponse en ayant dit 40 laisse 20-25 ou 55-60 ans, et la photo tranche
+presque toujours entre les deux : un très mauvais 1er essai menait quand même à la
+bonne réponse. Le sens seul ne dit rien de la distance. Il n'y a pas de bonus de
+proximité (« brûlant ») : il redonnerait une distance.
 
 ### Système de points
-**Décision** : bonus plein si trouvé du premier coup ; sinon, l'essentiel des points est
-déterminé par la précision de la deuxième tentative (après indice), avec un plafond
-légèrement inférieur au bonus premier coup.
+**Décision** (2026-11-02, remplace « l'essentiel des points sur le 2e essai ») : chaque
+essai vaut jusqu'à **500 points** selon son écart à l'âge réel. Une manche vaut la somme
+de ses deux essais (/1 000) et la journée /3 000. Un 1er essai exact termine la manche
+à 1 000. Les points du 1er essai ne s'affichent qu'au résultat : les montrer avant le
+2e essai redonnerait l'écart.
 
-**Raison** : incite à essayer sérieusement dès la première tentative sans punir
-excessivement l'usage de l'indice, qui reste la mécanique centrale du jeu. Formule exacte
-à finaliser et affiner par playtest lors de l'implémentation (`plans/`), pas figée ici.
+**Formule** : piste `500 × e^(−écart/10)` (0 an → 500, 5 ans → 303, 10 ans → 184,
+20 ans → 68), à régler par playtest.
+
+**Raison** : le 1er essai compte vraiment, ce qui pousse à le tenter sérieusement, et
+le 2e rapporte en général plus, grâce au sens et à l'indice. Le « bonus premier coup »
+vient de la somme elle-même, sans règle à part.
 
 ### Réinitialisation quotidienne
 **Décision** : minuit UTC, même partie (mêmes personnes) pour tous les joueurs ce

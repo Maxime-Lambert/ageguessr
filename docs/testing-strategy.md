@@ -63,8 +63,8 @@ pyramide (plus rapide, plus précis sur la cause d'un échec).
 
 ### Architecture
 Vérifie automatiquement les règles définies dans `docs/decisions/architecture.md` (pas
-de dépendance croisée entre features, convention de package, pas de couplage
-handler-à-handler). Empêche la dérive architecturale silencieuse au fil des features.
+de dépendance croisée entre features sauf l'exception `game → people`, convention de
+package, pas de couplage handler-à-handler). Empêche la dérive architecturale silencieuse au fil des features.
 
 ### Mutation
 Modifie automatiquement le code de `ageguessr-api` (inverse une condition, change une

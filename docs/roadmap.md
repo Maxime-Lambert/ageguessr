@@ -71,21 +71,27 @@ la suivante).
       indices (V11, PR `feature/hint-ingestion`)
 
 ## Semaine 3 — Moteur de jeu
-- [ ] Algorithme de sélection quotidienne (3 personnes/jour, minuit UTC). Une même
-      photo n'est pas rejouée avant **3 ans** (le pool vise au moins 5 000 photos
-      approuvées, 3 ans en consomment 3 285). Les règles portent sur la personne, pas
-      sur la photo : jamais deux photos d'une même personne dans une partie, et un
-      délai minimal entre deux apparitions d'une même personne. Tirer les tranches d'âge
-      de 8 ans (18-25 … 82+) de façon équilibrée, la collecte n'y penchant que
-      faiblement (voir `docs/decisions/architecture.md`)
-- [ ] Logique de guess en 2 étapes : 1ère tentative → chaud/froid, sélection d'une
-      catégorie d'indice, 2e tentative
-- [ ] Système de points (bonus 1er coup, majorité des points sur la précision du 2e coup
-      — formule à finaliser par playtest)
-- [ ] Cache Redis des parties du jour déjà calculées
+- [x] Tirage quotidien : 3 photos par jour (configurable), minuit UTC et au démarrage,
+      table `daily_rounds` (V12). Hasard uniforme, jamais deux personnes de la même case
+      (continent × genre) le même jour, pas de rejeu d'une photo avant **3 ans**, pas de
+      pondération par âge ni de délai par personne. Nouveau `publicId` à chaque tirage.
+      Une photo rejetée ou une personne exclue neutralise la manche pour tous, et un
+      simple signalement ne neutralise rien (voir `docs/decisions/architecture.md`,
+      « Tirage quotidien ») — PR `feature/daily-draw`
+- [ ] Logique de guess en 2 étapes : 1er essai, puis « plus jeune / plus vieux » (le
+      chaud/froid donnait trop d'aide, voir « Déroulé d'une manche »), sélection d'une
+      catégorie d'indice, 2e essai. Saisie de 18 à 100 ans. Endpoint public de la partie
+      du jour, sans jamais révéler l'âge avant la réponse. Activer alors le tirage
+      (`app.game.daily.draw-enabled`, coupé par défaut pour ne pas consommer le pool)
+- [ ] Système de points : jusqu'à 500 points par essai selon l'écart (piste
+      `500 × e^(−écart/10)`, à régler par playtest), manche = somme des deux essais, un
+      1er essai exact vaut 1 000. Manches neutralisées hors du score du jour
+- [ ] Cache HTTP des images (`Cache-Control` long sur `/api/images/{publicId}`, l'id
+      changeant à chaque tirage). Remplace le cache Redis des parties : la table
+      `daily_rounds` évite déjà de recalculer
 
 ## Semaine 4 — Interface de jeu
-- [ ] Écran principal : photo, input d'âge, jauge chaud/froid
+- [ ] Écran principal : photo, input d'âge, « plus jeune / plus vieux » après le 1er essai
 - [ ] Sélection de catégorie d'indice + affichage de l'indice
 - [ ] Écran de résultat (âge réel, identité révélée, points gagnés, **crédit de la photo :
       auteur + licence**, obligatoire avant de servir des photos CC BY / BY-SA aux joueurs ;
@@ -115,8 +121,12 @@ la suivante).
     signalements sont classés) ou exclure la personne. Aucun moyen de retrouver une
     photo approuvée aujourd'hui
   - Aucun retrait automatique : un script anonyme pourrait vider le pool
-  - À trancher avec le tirage quotidien (Semaine 3) : que devient la partie du jour si
-    une de ses photos est rejetée (`/api/images` répond alors 404)
+  - Notification prononcée de l'admin (email par exemple) quand plusieurs joueurs
+    signalent une même photo, surtout si elle est dans la partie du jour, pour réagir
+    vite (seuil à fixer)
+  - Photo de la partie du jour rejetée : tranché avec le tirage quotidien. La manche
+    est neutralisée pour tous les joueurs et sort du score du jour (`/api/images`
+    répond alors 404)
 - [ ] Signalement d'un indice par les joueurs, depuis l'écran de résultat : c'est le
       filet de sécurité des indices, que personne ne relit (sauf les traductions)
   - Joueur : mêmes règles que pour les photos, avec les motifs mauvaise année,
