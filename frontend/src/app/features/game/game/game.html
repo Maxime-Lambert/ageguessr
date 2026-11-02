@@ -1,0 +1,53 @@
+<main class="mx-auto max-w-xl px-4 py-8">
+  <h1 class="font-display text-3xl">{{ text.dailyGame }}</h1>
+
+  @if (notice(); as notice) {
+    <p class="bg-surface border-border mt-4 rounded-md border p-3 text-sm" role="status">
+      {{ notice }}
+    </p>
+  }
+
+  <div class="mt-6">
+    @switch (status()) {
+      @case ('loading') {
+        @if (!game()) {
+          <p class="text-muted">{{ text.loading }}</p>
+        }
+      }
+      @case ('error') {
+        <p class="text-danger" role="alert">{{ text.genericError }}</p>
+        <button type="button" class="text-accent mt-2 underline" (click)="load()">
+          {{ text.retry }}
+        </button>
+      }
+    }
+
+    @if (status() !== 'error' && game(); as game) {
+      @if (game.rounds.length === 0) {
+        <p>{{ text.noGame }}</p>
+      } @else if (active(); as round) {
+        @if (round.step === 'FINISHED') {
+          <app-round-result [round]="round" [total]="total()" [last]="isLast()" (next)="next()" />
+        } @else {
+          <app-round
+            [round]="round"
+            [total]="total()"
+            [busy]="busy() || status() === 'loading'"
+            [error]="error()"
+            (guessed)="round.step === 'NOT_STARTED' ? firstGuess($event) : secondGuess($event)"
+            (hintPicked)="pickHint($event)"
+            (imageFailed)="onImageFailed()"
+          />
+          @if (imageFailed()) {
+            <p class="text-danger mt-2 text-sm" role="alert">{{ text.imageFailed }}</p>
+            <button type="button" class="text-accent mt-1 underline" (click)="load()">
+              {{ text.retry }}
+            </button>
+          }
+        }
+      } @else {
+        <app-day-summary [game]="game" />
+      }
+    }
+  </div>
+</main>

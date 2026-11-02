@@ -75,3 +75,9 @@ body {
   background-color: var(--color-background);
   color: var(--color-foreground);
 }
+
+/* Traitement "archive" de toute photo de personne (docs/decisions/design.md, « Traitement
+   des photos ») : jamais de photo affichee sans. Le duotone reste a trancher. */
+@utility archive-photo {
+  filter: grayscale(0.35) sepia(0.25) contrast(1.1);
+}

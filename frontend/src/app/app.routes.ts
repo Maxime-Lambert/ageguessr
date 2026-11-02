@@ -5,9 +5,10 @@ import { adminGuard } from './features/auth/admin-guard';
 
 export const routes: Routes = [
   {
+    // The game is the home page, as for a daily puzzle: one arrives and plays.
     path: '',
     pathMatch: 'full',
-    loadComponent: () => import('./features/home/home').then((m) => m.Home),
+    loadComponent: () => import('./features/game/game/game').then((m) => m.Game),
   },
   {
     path: 'register',

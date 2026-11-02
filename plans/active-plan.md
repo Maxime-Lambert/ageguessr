@@ -341,50 +341,83 @@ Status: Complete
   `./mvnw test` : **898 tests, 0 échec**.
 
 ## Phase 3 : Écran de jeu
-Status: Not started
+Status: Complete
 
-- [ ] `game-api.ts` + `models.ts` (les appels de jeu ; le cookie passe en same-origin
+- [x] `game-api.ts` + `models.ts` (les appels de jeu ; le cookie passe en same-origin
       via le proxy dev et Caddy)
-- [ ] `game-vocabulary.ts` : *case*, *today's file*, *lead*, *verdict*, *case report*,
+- [x] `game-vocabulary.ts` : *case*, *today's file*, *lead*, *verdict*, *case report*,
       « older / younger », messages d'erreur. Aucun texte de jeu en dur dans les
       templates.
-- [ ] `round` :
+- [x] `round` :
   - photo avec le filtre de vieillissement ;
   - saisie 18-100, au clavier, mobile-first ;
   - flèche + texte pour le sens ;
   - boutons de catégorie (seulement celles disponibles), puis indice et 2e essai ;
   - accessibilité : labels, `aria-live` sur le sens et l'indice, focus déplacé à
     chaque étape.
-- [ ] `round-result` :
+- [x] `round-result` :
   - âge réel, les deux essais et leurs points ;
   - nom + lien Wikipedia (nouvel onglet, `rel="noopener"`) ;
   - crédit : auteur, licence avec lien, page Commons ;
   - indice avec son année et sa source.
-- [ ] `day-summary` : score /3 000 (ou /1 000 × manches jouables), une ligne par manche,
+- [x] `day-summary` : score /3 000 (ou /1 000 × manches jouables), une ligne par manche,
       « photo removed » pour une manche neutralisée
-- [ ] `game` à `/` :
+- [x] `game` à `/` :
   - reprend l'état du jour au rechargement ;
   - enchaîne les manches ;
   - affiche une manche neutralisée comme retirée et passe à la suivante ;
   - gère le 409 `GAME_CLOSED` en rechargeant ;
   - gère une image en 404 (manche retirée) ;
   - suppression de `features/home`.
-- [ ] `/privacy` FR + EN : cookie `ageguessr_guest` (30 jours, strictement nécessaire),
+- [x] `/privacy` FR + EN : cookie `ageguessr_guest` (30 jours, strictement nécessaire),
       conservation des parties, date de mise à jour
-- [ ] Specs Vitest : service, vocabulaire (aucune clé vide), `round` (étapes,
+- [x] Specs Vitest : service, vocabulaire (aucune clé vide), `round` (étapes,
       validation, focus), `round-result`, `day-summary`, `game` (reprise d'état,
       neutralisée, `GAME_CLOSED`)
-- [ ] `e2e/component/game.spec.ts` (Playwright, réseau simulé) : rendu mobile et
+- [x] `e2e/component/game.spec.ts` (Playwright, réseau simulé) : rendu mobile et
       desktop, filtre photo, parcours d'une manche, manche retirée
 
 ### Verification Plan
 - `cd frontend && pnpm test` → vert ; `pnpm lint` et le format, comme la CI
 - `cd frontend && pnpm exec playwright test e2e/component/game.spec.ts` → vert
 - `pnpm start` + l'API locale : jouer les 3 manches à la main, en mobile (devtools) et
-  en desktop
+  en desktop. **Non fait** : la base locale n'a aucune photo APPROVED. Le parcours e2e
+  de la phase 4 joue les 3 manches sur l'app complète (backend en profil `e2e`).
 
 ### Phase Summary
-_(à écrire à la fin de la phase)_
+- **`features/game`** :
+  - `models.ts`, `game-api.ts` (+ `browserLanguage()` : `FR` si `navigator.language`
+    commence par `fr`) ;
+  - `game-vocabulary.ts` : `INVESTIGATION_VOICE` / `NEUTRAL_VOICE` (mêmes clés,
+    testé), `GAME_TEXT`, `CATEGORY_LABELS`, `directionText`, `roundTitle`. Passer au
+    vocabulaire neutre = changer la constante `VOICE` ;
+  - `testing.ts`, avec les fixtures des specs.
+- **Composants** :
+  - `round` : photo `archive-photo`, saisie 18-100 entière, flèche + texte du sens,
+    catégories, indice en `aria-live`, focus déplacé à chaque étape. Il émet les
+    actions, c'est `game` qui appelle l'API ;
+  - `round-result` : âge, essais et points, nom en lien (nouvel onglet,
+    `rel=noopener`), crédit avec repli « Unknown author », indice avec année et source.
+    Focus sur le titre ;
+  - `day-summary` : score / max, une ligne par manche, manche retirée comprise ;
+  - `game` à `/` : reprise d'état, enchaînement, 409 `GAME_CLOSED`, `ROUND_NEUTRALIZED`
+    et `WRONG_STEP` (rechargement + message), image en erreur (un rechargement, puis un
+    message avec « Try again »).
+- **Écarts** :
+  - `(submit)` au lieu de `(ngSubmit)` : un formulaire sans `[formGroup]` n'émet pas
+    `ngSubmit` ;
+  - utilitaire Tailwind `@utility archive-photo` dans `styles.css`
+    (`grayscale(.35) sepia(.25) contrast(1.1)`) ;
+  - `features/home` supprimé ;
+  - `/privacy` : sections 2, 3, 4 et 6 en FR et EN, mise à jour le 2026-11-02.
+- **Tests** :
+  - `pnpm test` : 226 verts. Nouveaux : api 6, vocabulaire 4, round 10, round-result
+    7, day-summary 1, game 11 ;
+  - `pnpm lint` et `format:check` OK ;
+  - Playwright component : `game.spec.ts` 4 verts, dont le filtre réellement appliqué
+    et pas de défilement horizontal à 375 px. Suite complète : 51 verts. Les
+    `ECONNREFUSED` du serveur de dev sont les appels non simulés des tests existants
+    qui visitent `/`, sans effet.
 
 ## Phase 4 : Parcours complet, documentation, reviews
 Status: Not started
