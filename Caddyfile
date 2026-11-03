@@ -54,11 +54,16 @@
 		default {browser_lang}
 	}
 
-	# Les anciennes pages legales en ?lang=fr gardent leur langue.
+	# Les anciennes pages legales en ?lang=fr gardent leur langue. lang est retire de la
+	# query, le reste est garde ({uri}) : un ?token= d'email ne doit pas se perdre.
+	# route : Caddy place sinon redir avant uri, et {uri} contiendrait encore lang.
 	@legacyFrench query lang=fr
 	handle @legacyFrench {
 		header Cache-Control "no-store"
-		redir * /fr{path} 302
+		route {
+			uri query -lang
+			redir * /fr{uri} 302
+		}
 	}
 
 	# 302 et no-store : la reponse depend du visiteur (cookie, navigateur), Cloudflare ne

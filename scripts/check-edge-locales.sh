@@ -54,6 +54,7 @@ expect_redirect "the French choice" / /fr/ -b 'theme=dark; ageguessr_lang=fr'
 expect_redirect "an unknown choice is ignored" / /fr/ -H 'Accept-Language: fr' -b 'ageguessr_lang=de'
 expect_redirect "an old email link keeps its token" '/reset-password?token=abc' '/en/reset-password?token=abc'
 expect_redirect "an old French legal link" '/privacy?lang=fr' /fr/privacy
+expect_redirect "lang=fr keeps the other parameters" '/confirm-email?token=abc&lang=fr' '/fr/confirm-email?token=abc'
 expect_page "the English site" /en/ en
 expect_page "a French route" /fr/account fr
 expect_page "an English route" /en/terms en
