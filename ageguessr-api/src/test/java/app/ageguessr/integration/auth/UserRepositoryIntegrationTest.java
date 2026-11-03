@@ -7,6 +7,7 @@ import app.ageguessr.TestcontainersConfiguration;
 import app.ageguessr.features.auth.User;
 import app.ageguessr.features.auth.UserRepository;
 import app.ageguessr.features.auth.UserRole;
+import app.ageguessr.shared.i18n.Language;
 import jakarta.persistence.EntityManager;
 import java.time.Instant;
 import org.junit.jupiter.api.Test;
@@ -96,6 +97,29 @@ class UserRepositoryIntegrationTest {
 
         User other = userRepository.saveAndFlush(newUser("other@x.com", "other"));
         assertThat(userRepository.existsByUsernameIgnoreCaseAndIdNot("MAX", other.getId())).isTrue();
+    }
+
+    @Test
+    void keepsTheLanguageOfAnAccountOrNoneUntilChosen() {
+        User none = userRepository.saveAndFlush(newUser("none@x.com", "None"));
+        User french = newUser("fr@x.com", "Francais");
+        french.setLanguage(Language.FR);
+        userRepository.saveAndFlush(french);
+        entityManager.clear();
+
+        assertThat(userRepository.findById(none.getId()).orElseThrow().getLanguage()).isNull();
+        assertThat(userRepository.findById(french.getId()).orElseThrow().getLanguage()).isEqualTo(Language.FR);
+    }
+
+    @Test
+    void theDatabaseRefusesAnUnknownLanguage() {
+        User user = userRepository.saveAndFlush(newUser("de@x.com", "Deutsch"));
+
+        assertThatThrownBy(() -> entityManager
+                        .createNativeQuery("UPDATE users SET language = 'DE' WHERE id = :id")
+                        .setParameter("id", user.getId())
+                        .executeUpdate())
+                .hasMessageContaining("users_language");
     }
 
     private User newUser(String email, String username) {

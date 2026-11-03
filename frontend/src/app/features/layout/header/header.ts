@@ -1,16 +1,21 @@
 import { Component, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { Auth } from '../../auth/auth';
+import { LanguageSwitch } from '../../i18n/language-switch/language-switch';
 import { ThemeToggle } from '../../theme/theme-toggle/theme-toggle';
 
 @Component({
-  imports: [RouterLink, ThemeToggle],
+  imports: [RouterLink, LanguageSwitch, ThemeToggle],
   selector: 'app-header',
   templateUrl: './header.html',
 })
 export class Header {
   private readonly router = inject(Router);
   protected readonly auth = inject(Auth);
+
+  accountLabel(username: string): string {
+    return $localize`:@@header.account:Account settings for ${username}:username:`;
+  }
 
   logout(): void {
     this.auth.logout().subscribe({

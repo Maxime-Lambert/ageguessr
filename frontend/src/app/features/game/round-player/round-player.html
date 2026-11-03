@@ -1,0 +1,19 @@
+@if (round().step === 'FINISHED') {
+  <app-round-result [round]="round()" [total]="total()" [last]="last()" (next)="next.emit()" />
+} @else {
+  <app-round
+    [round]="round()"
+    [total]="total()"
+    [busy]="busy()"
+    [error]="error()"
+    (guessed)="guessed($event)"
+    (hintPicked)="hintPicked.emit($event)"
+    (imageFailed)="imageError.emit()"
+  />
+  @if (imageFailed()) {
+    <p class="text-danger mt-2 text-sm" role="alert">{{ text.imageFailed }}</p>
+    <button type="button" class="text-accent mt-1 underline" (click)="retry.emit()">
+      {{ text.retry }}
+    </button>
+  }
+}

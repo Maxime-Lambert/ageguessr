@@ -23,15 +23,15 @@ export const NEW_PASSWORD_VALIDATORS = [
   maxUtf8Bytes(PASSWORD_MAX_BYTES),
 ];
 
-export const PASSWORD_TOO_LONG_MESSAGE =
-  'Too long: 72 characters at most (accented letters and emoji count for more).';
+export const PASSWORD_TOO_LONG_MESSAGE = $localize`:@@password.tooLong:Too long: 72 characters at most (accented letters and emoji count for more).`;
 
-export const PASSWORD_HINT = 'At least 12 characters. Avoid common passwords.';
+export const PASSWORD_HINT = $localize`:@@password.hint:At least 12 characters. Avoid common passwords.`;
+
+export const PASSWORDS_DIFFER_MESSAGE = $localize`:@@password.differ:Passwords don't match.`;
 
 const REFUSAL_MESSAGES: Record<string, string> = {
-  PASSWORD_TOO_COMMON:
-    'This password is too common. Try a short phrase, like three or four random words.',
-  PASSWORD_CONTAINS_PERSONAL_INFO: "Your password can't contain your username or email.",
+  PASSWORD_TOO_COMMON: $localize`:@@password.tooCommon:This password is too common. Try a short phrase, like three or four random words.`,
+  PASSWORD_CONTAINS_PERSONAL_INFO: $localize`:@@password.personalInfo:Your password can't contain your username or email.`,
 };
 
 /** The message for a new password refused by the backend's policy, or null for any other error. */

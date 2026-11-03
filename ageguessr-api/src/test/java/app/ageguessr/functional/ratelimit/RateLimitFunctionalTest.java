@@ -29,7 +29,9 @@ import tools.jackson.databind.ObjectMapper;
             "app.rate-limit.auth.max-attempts=3",
             "app.rate-limit.auth.window-minutes=1",
             "app.rate-limit.game.max-attempts=2",
-            "app.rate-limit.game.window-minutes=1"
+            "app.rate-limit.game.window-minutes=1",
+            "app.rate-limit.series.max-attempts=2",
+            "app.rate-limit.series.window-minutes=1"
         })
 class RateLimitFunctionalTest {
 
@@ -93,6 +95,35 @@ class RateLimitFunctionalTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new EmailPayload("someone@x.com"))))
                 .andExpect(status().isAccepted());
+    }
+
+    /**
+     * Creating series and joining challenges share a tighter counter of their own (each
+     * series reveals the ages of its photos), apart from the guesses.
+     */
+    @Test
+    void limitsTheSeriesAndTheChallengesApart() throws Exception {
+        String client = "203.0.113.30";
+        startSeriesFrom(client).andExpect(status().isBadRequest());
+        joinFrom(client).andExpect(status().isNotFound());
+        startSeriesFrom(client).andExpect(status().isTooManyRequests());
+        joinFrom(client).andExpect(status().isTooManyRequests());
+
+        guessFrom(client).andExpect(status().isConflict());
+    }
+
+    private ResultActions startSeriesFrom(String clientIp) throws Exception {
+        return mockMvc.perform(post("/api/game/series")
+                .header("X-Forwarded-For", clientIp)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"size\":7}"));
+    }
+
+    private ResultActions joinFrom(String clientIp) throws Exception {
+        return mockMvc.perform(post("/api/game/challenges/K7F2QX9M/join")
+                .header("X-Forwarded-For", clientIp)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"nickname\":\"Watson\"}"));
     }
 
     private ResultActions guessFrom(String clientIp) throws Exception {

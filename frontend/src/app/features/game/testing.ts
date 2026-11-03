@@ -1,4 +1,4 @@
-import { RoundReveal, RoundView, TodayGame } from './models';
+import { Challenge, GameScore, RoundReveal, RoundView, Series, TodayGame } from './models';
 
 /** A playable round of today's game, not started. */
 export function round(position: number, overrides: Partial<RoundView> = {}): RoundView {
@@ -49,15 +49,63 @@ export function finished(position: number, overrides: Partial<RoundReveal> = {})
 }
 
 export function today(rounds: RoundView[], overrides: Partial<TodayGame> = {}): TodayGame {
+  return { date: '2026-11-02', rounds, score: scoreOf(rounds), ...overrides };
+}
+
+function scoreOf(rounds: RoundView[]): GameScore {
   const playable = rounds.filter((r) => r.status === 'PLAYABLE');
   return {
-    date: '2026-11-02',
+    points: playable.reduce((sum, r) => sum + (r.result?.points ?? 0), 0),
+    max: playable.length * 1000,
+    complete: playable.every((r) => r.step === 'FINISHED'),
+  };
+}
+
+/** A free series of the given rounds, created by the player. */
+export function series(rounds: RoundView[], overrides: Partial<Series> = {}): Series {
+  return {
+    id: 'series-1',
+    size: rounds.length,
     rounds,
-    score: {
-      points: playable.reduce((sum, r) => sum + (r.result?.points ?? 0), 0),
-      max: playable.length * 1000,
-      complete: playable.every((r) => r.step === 'FINISHED'),
-    },
+    score: scoreOf(rounds),
+    shareCode: null,
+    creator: true,
     ...overrides,
+  };
+}
+
+/** A challenge the visitor has not joined yet. */
+export function challenge(overrides: Partial<Challenge> = {}): Challenge {
+  return {
+    code: 'K7F2QX9M',
+    size: 5,
+    rounds: 5,
+    creatorName: 'Sherlock',
+    creatorGuest: true,
+    status: 'NOT_JOINED',
+    seriesId: null,
+    score: null,
+    leaderboard: [],
+    ...overrides,
+  };
+}
+
+/** The share sheet and clipboard of a spec: records what the page handed over. */
+export function fakeShareTarget(canShare = false) {
+  const handed = { shared: [] as string[], copied: [] as string[] };
+  return {
+    handed,
+    target: {
+      canShare: () => canShare,
+      share: (text: string) => {
+        handed.shared.push(text);
+        return Promise.resolve();
+      },
+      copy: (text: string) => {
+        handed.copied.push(text);
+        return Promise.resolve();
+      },
+      origin: () => 'https://ageguessr.app',
+    },
   };
 }

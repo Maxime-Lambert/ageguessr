@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 test.describe('login form', () => {
   test('password input is masked', async ({ page }) => {
-    await page.goto('/login');
+    await page.goto('/en/login');
     await expect(page.locator('#password')).toHaveAttribute('type', 'password');
   });
 
@@ -11,7 +11,7 @@ test.describe('login form', () => {
       route.fulfill({ status: 401, contentType: 'application/json', body: '{}' }),
     );
 
-    await page.goto('/login');
+    await page.goto('/en/login');
     await page.locator('#email').fill('user@x.com');
     await page.locator('#password').fill('wrong-password');
     await page.getByRole('button', { name: 'Log in' }).click();
@@ -31,7 +31,7 @@ test.describe('login form', () => {
       route.fulfill({ status: 202, contentType: 'application/json', body: '{}' }),
     );
 
-    await page.goto('/login');
+    await page.goto('/en/login');
     await page.locator('#email').fill('unverified@x.com');
     await page.locator('#password').fill('tortoise-violin-42');
     await page.getByRole('button', { name: 'Log in' }).click();

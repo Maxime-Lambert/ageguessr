@@ -5,15 +5,15 @@ test.describe('account page', () => {
   test('a guest is sent to log in, and comes back after', async ({ page }) => {
     await asGuest(page);
 
-    await page.goto('/account');
+    await page.goto('/en/account');
 
-    await expect(page).toHaveURL(/\/login\?returnUrl=%2Faccount$/);
+    await expect(page).toHaveURL(/\/en\/login\?returnUrl=%2Faccount$/);
   });
 
   test('a hard reload while logged in stays on the account page', async ({ page }) => {
     await asLoggedIn(page);
 
-    await page.goto('/account');
+    await page.goto('/en/account');
 
     await expect(page.getByRole('heading', { name: 'Your account' })).toBeVisible();
     await expect(page.locator('#username')).toHaveValue('Player');
@@ -29,7 +29,7 @@ test.describe('account page', () => {
       }),
     );
 
-    await page.goto('/account');
+    await page.goto('/en/account');
     await page.locator('#username').fill('NewName');
     await page.getByRole('button', { name: 'Save username' }).click();
 
@@ -43,7 +43,7 @@ test.describe('account page', () => {
       route.fulfill({ status: 202, body: '' }),
     );
 
-    await page.goto('/account');
+    await page.goto('/en/account');
     await page.locator('#deletionPassword').fill('tortoise-violin-42');
     await page.getByRole('button', { name: 'Delete my account' }).click();
 

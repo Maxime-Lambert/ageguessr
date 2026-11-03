@@ -1,5 +1,6 @@
 package app.ageguessr.features.game;
 
+import app.ageguessr.shared.i18n.Language;
 import static app.ageguessr.features.game.GameFixtures.AGE;
 import static app.ageguessr.features.game.GameFixtures.HINT_YEAR;
 import static app.ageguessr.features.game.GameFixtures.NOW;
@@ -44,7 +45,7 @@ class RoundViewsTest {
 
     @Test
     void showsTheSideAndTheCategoriesAfterAWrongFirstGuessButNotTheAnswer() {
-        when(hintRepository.findEligible(HINT_YEAR, Language.EN.audiences(), QID))
+        when(hintRepository.findEligible(HINT_YEAR, HintPicker.audiences(Language.EN), QID))
                 .thenReturn(hints(HintCategory.FILM, 5));
 
         RoundView view = views.of(playableRound((short) 1), started(guest, (short) 1, 30));
@@ -110,7 +111,7 @@ class RoundViewsTest {
 
     @Test
     void offersTheHintsInTheLanguageOfTheRound() {
-        when(hintRepository.findEligible(HINT_YEAR, Language.FR.audiences(), QID))
+        when(hintRepository.findEligible(HINT_YEAR, HintPicker.audiences(Language.FR), QID))
                 .thenReturn(hints(HintCategory.SPORT, 6));
 
         assertThat(views.offer(playableRound((short) 1), Language.FR).categories())

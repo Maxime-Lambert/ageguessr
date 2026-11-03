@@ -1,0 +1,13 @@
+<a
+  [href]="language.urlIn(language.other)"
+  [attr.lang]="language.other"
+  [attr.hreflang]="language.other"
+  class="hover:text-accent text-sm font-medium"
+  (click)="switch($event)"
+  >{{ names[language.other] }}</a
+>
+@if (language.error()) {
+  <span class="text-danger ml-2 text-xs" role="alert" i18n="@@language.switchFailed"
+    >Could not save your language. Try again.</span
+  >
+}

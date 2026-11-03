@@ -1,9 +1,11 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { GAME_TEXT } from '../game-vocabulary';
 import { TodayGame } from '../models';
 import { finished, round, today } from '../testing';
+import { HintLanguage } from '../hint-language';
 import { Game } from './game';
 
 describe('Game', () => {
@@ -12,8 +14,9 @@ describe('Game', () => {
   let page: HTMLElement;
 
   beforeEach(() => {
+    localStorage.clear();
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
     });
     http = TestBed.inject(HttpTestingController);
     fixture = TestBed.createComponent(Game);
@@ -50,7 +53,7 @@ describe('Game', () => {
 
     guess('30');
     const first = http.expectOne('/api/game/2026-11-02/rounds/1/first-guess');
-    expect(first.request.body).toEqual({ guess: 30, language: expect.stringMatching(/^(EN|FR)$/) });
+    expect(first.request.body).toEqual({ guess: 30, language: 'EN' });
     first.flush(
       round(1, {
         step: 'AWAITING_HINT',
@@ -81,6 +84,17 @@ describe('Game', () => {
     button(GAME_TEXT.next).click();
     fixture.detectChanges();
     expect(page.querySelector('h2')?.textContent).toContain(`${GAME_TEXT.round} 2 of 3`);
+  });
+
+  it('sends the language of the hints the player chose with the first guess', () => {
+    TestBed.inject(HintLanguage).set('FR');
+    load(today([round(1)]));
+
+    guess('30');
+
+    const first = http.expectOne('/api/game/2026-11-02/rounds/1/first-guess');
+    expect(first.request.body).toEqual({ guess: 30, language: 'FR' });
+    first.flush(finished(1));
   });
 
   it('picks up where the player was, past the rounds finished or withdrawn', () => {
@@ -120,6 +134,15 @@ describe('Game', () => {
     load(today([finished(1)]));
 
     expect(page.textContent).toContain(GAME_TEXT.summary);
+  });
+
+  it('leads from the summary of the day to the free investigation', () => {
+    load(today([finished(1)]));
+
+    const link = Array.from(page.querySelectorAll('a')).find(
+      (a) => a.textContent?.trim() === GAME_TEXT.tryFree,
+    );
+    expect(link?.getAttribute('href')).toBe('/free');
   });
 
   it('says when there is no game today', () => {
@@ -167,6 +190,15 @@ describe('Game', () => {
     load(today([finished(1)]));
 
     expect(page.textContent).toContain(GAME_TEXT.summary);
+  });
+
+  it('leads from the summary of the day to the free investigation', () => {
+    load(today([finished(1)]));
+
+    const link = Array.from(page.querySelectorAll('a')).find(
+      (a) => a.textContent?.trim() === GAME_TEXT.tryFree,
+    );
+    expect(link?.getAttribute('href')).toBe('/free');
   });
 
   it('keeps the round on screen after any other error', () => {

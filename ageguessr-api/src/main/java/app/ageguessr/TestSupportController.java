@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Test-only: lets the QA/Playwright journeys retrieve the token of the last email sent to
- * an address (verification, password reset, account deletion) without a
- * real inbox, by reading it back out of what RecordingEmailSender captured.
+ * Test-only: lets the QA/Playwright journeys read the last email sent to an address
+ * (verification, password reset, account deletion) without a real inbox: its subject and
+ * the link it carries, read back out of what RecordingEmailSender captured. The journeys
+ * follow that link as is, so they also check its language prefix (/en/ or /fr/).
  * Gated by @Profile("e2e") - MUST NEVER be active in the prod deployment config. Its
  * path is also carved out as public only under that same profile, in
  * TestSupportSecurityConfig - never reachable at all otherwise.
@@ -24,22 +25,22 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class TestSupportController {
 
-    private static final Pattern TOKEN_PATTERN = Pattern.compile("token=([^\"&]+)");
+    private static final Pattern LINK_PATTERN = Pattern.compile("href=\"([^\"]+)\"");
 
     private final RecordingEmailSender emailSender;
 
-    @GetMapping("/test-support/last-email-token")
-    ResponseEntity<TokenResponse> lastEmailToken(@RequestParam String email) {
+    @GetMapping("/test-support/last-email")
+    ResponseEntity<LastEmailResponse> lastEmail(@RequestParam String email) {
         EmailMessage message = emailSender.lastMessageTo(email);
         if (message == null) {
             return ResponseEntity.notFound().build();
         }
-        Matcher matcher = TOKEN_PATTERN.matcher(message.htmlBody());
+        Matcher matcher = LINK_PATTERN.matcher(message.htmlBody());
         if (!matcher.find()) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(new TokenResponse(matcher.group(1)));
+        return ResponseEntity.ok(new LastEmailResponse(message.subject(), matcher.group(1)));
     }
 
-    record TokenResponse(String token) {}
+    record LastEmailResponse(String subject, String link) {}
 }

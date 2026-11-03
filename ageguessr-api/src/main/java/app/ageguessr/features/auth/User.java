@@ -1,5 +1,6 @@
 package app.ageguessr.features.auth;
 
+import app.ageguessr.shared.i18n.Language;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -58,4 +59,13 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private UserRole role = UserRole.USER;
+
+    /** Of the emails, and of the site once signed in. Null until chosen (V14): emails in English. */
+    @Enumerated(EnumType.STRING)
+    private Language language;
+
+    /** The language of the emails and their links: English while the account never chose one. */
+    public Language languageOrDefault() {
+        return Language.orDefault(language);
+    }
 }

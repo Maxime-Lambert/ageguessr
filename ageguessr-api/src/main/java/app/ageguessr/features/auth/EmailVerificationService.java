@@ -21,7 +21,7 @@ public class EmailVerificationService {
     private final EmailSender emailSender;
     private final Clock clock;
     private final long tokenTtlHours;
-    private final String frontendUrl;
+    private final AccountLinks links;
 
     public EmailVerificationService(
             OpaqueTokenGenerator tokenGenerator,
@@ -29,13 +29,13 @@ public class EmailVerificationService {
             EmailSender emailSender,
             Clock clock,
             @Value("${app.email.verification-token-ttl-hours}") long tokenTtlHours,
-            @Value("${app.frontend-url}") String frontendUrl) {
+            AccountLinks links) {
         this.tokenGenerator = tokenGenerator;
         this.verificationTokenRepository = verificationTokenRepository;
         this.emailSender = emailSender;
         this.clock = clock;
         this.tokenTtlHours = tokenTtlHours;
-        this.frontendUrl = frontendUrl;
+        this.links = links;
     }
 
     public void issueAndSend(User user) {
@@ -48,10 +48,8 @@ public class EmailVerificationService {
                 .createdAt(now)
                 .build());
 
-        String link = frontendUrl + "/confirm-email?token=" + token.rawValue();
-        emailSender.send(new EmailMessage(
-                user.getEmail(),
-                "Confirm your Ageguessr account",
-                "<p>Click <a href=\"%s\">here</a> to confirm your email address.</p>".formatted(link)));
+        String link = links.to(user, "/confirm-email", token.rawValue());
+        AccountEmailTexts.Text text = AccountEmailTexts.emailVerification(user.languageOrDefault(), link);
+        emailSender.send(new EmailMessage(user.getEmail(), text.subject(), text.html()));
     }
 }

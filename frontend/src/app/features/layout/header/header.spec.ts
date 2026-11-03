@@ -48,6 +48,7 @@ describe('Header', () => {
       username: 'Player',
       emailVerified: true,
       role: 'USER',
+      language: 'EN',
     });
 
     expect(links()).toEqual(expect.arrayContaining(['Player', 'Log out']));
@@ -62,6 +63,7 @@ describe('Header', () => {
       username: 'Player',
       emailVerified: true,
       role: 'USER',
+      language: 'EN',
     });
     expect(links()).not.toContain('Curation');
     expect(links()).not.toContain('Hints');
@@ -72,6 +74,7 @@ describe('Header', () => {
       username: 'Admin',
       emailVerified: true,
       role: 'ADMIN',
+      language: 'EN',
     });
     expect(links()).toContain('Curation');
     expect(links()).toContain('Hints');
@@ -86,6 +89,7 @@ describe('Header', () => {
       username: 'Player',
       emailVerified: true,
       role: 'USER',
+      language: 'EN',
     });
 
     fixture.componentInstance.logout();

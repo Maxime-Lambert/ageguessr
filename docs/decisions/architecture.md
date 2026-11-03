@@ -301,8 +301,10 @@ main en SQL**. Aucun endpoint ni écran ne la modifie.
 
 ### Pages légales et acceptation des CGU
 **Décision** : trois pages statiques côté Angular (`features/legal/`) : `/legal-notice`,
-`/terms` et `/privacy`. Chacune existe en anglais par défaut et en français avec
-`?lang=fr`.
+`/terms` et `/privacy`. Chacune existe en anglais et en français : le template contient
+les deux versions en blocs entiers (un texte juridique se relit en entier, hors du
+catalogue de traduction) et la build de la langue choisit la sienne (`/en/terms`,
+`/fr/terms`, voir « Internationalisation »).
 - **Éditeur** : particulier non professionnel, identité non publiée (LCEN) : seuls
   l'email `contact@ageguessr.app` et les coordonnées de l'hébergeur OVH apparaissent.
 - **Droit applicable** : le droit français, sans priver un consommateur étranger des
@@ -740,6 +742,57 @@ jour-là.
 simplifie aussi la comparaison de scores entre amis (même partie = comparaison
 équitable).
 
+### Enquête libre et Défi (séries hors partie du jour)
+**Décision** (2026-11-03, PR `feature/free-investigation`) : en plus de la partie du
+jour, un joueur joue des séries de 5, 10 ou 20 photos, avec les mêmes règles. À la fin
+d'une série, son créateur peut la partager en défi : d'autres joueurs la rejoignent par
+un code et jouent les mêmes photos avec les mêmes indices, une fois chacun, puis voient
+un classement.
+
+- **Pas de seed** : une série est enregistrée à sa création (V15 : `free_series`,
+  `free_series_rounds`, `free_series_players`, `free_series_plays`). Un seed appliqué au
+  pool donnerait d'autres photos dès qu'une photo est approuvée ou retirée en curation.
+- **Mêmes règles, écrites une fois** : `RoundProgress` (`@Embeddable`) porte une manche
+  (étapes, points, indice, 2e essai). `GamePlay` et `FreeSeriesPlay` l'embarquent avec
+  les mêmes colonnes. `PlayedRound` l'expose aux vues et aux handlers.
+- **Mêmes indices pour tous** : `GameRound.hintKey()` vaut `date|position` pour la
+  partie du jour (la clé d'avant, donc aucun indice n'a changé), et
+  `series:<id>|position` pour une série. Les indices visent l'année de création de la
+  série moins l'âge.
+- **Tirage** (`SeriesDraw`) :
+  - tout le pool approuvé, sauf les photos de la partie du jour en cours. Risque
+    accepté par l'utilisateur : un joueur assidu peut reconnaître une photo dans une
+    future partie du jour ;
+  - les photos jamais vues par le joueur d'abord ;
+  - une seule photo par personne ;
+  - rotation des cases continent × genre, puisque 20 photos dépassent le nombre de
+    cases.
+- **Accès** : une série n'est visible et jouable que par ses joueurs. Pour tous les
+  autres, c'est le même 404 qu'une série inexistante. Un défi se lit par son code (8
+  caractères en base32 Crockford, `SecureRandom`). Le classement n'est montré qu'à qui a
+  fini, et ne contient que le nom affiché, le score et le rang.
+- **Nom dans un défi** :
+  - pour un compte, son nom d'utilisateur, lu par une jointure SQL sur `users` (le
+    `game` du backend n'importe pas `auth`) ;
+  - pour un invité, un pseudo au format d'un nom d'utilisateur, propre à ce défi et
+    marqué « invité » dans le classement.
+- **Conservation** (`PurgeSeries`, tous les jours) : une série non partagée part
+  7 jours après sa création, un défi 30 jours après son partage. Un code expiré donne un
+  404, comme un code inconnu.
+- **Limite de débit** `series` : 30 par heure et par IP sur la création de séries et le
+  `join`. Chaque série révèle l'âge de ses photos, et un script ne doit pas moissonner
+  le pool.
+- **Front** :
+  - `RoundsScreen<T>` (classe de base) est partagée par la partie du jour (`/`), l'Enquête
+    libre (`/free`) et le défi (`/challenge/:code`) ;
+  - le lien partagé est sans préfixe de langue, pour que Caddy envoie chaque ami vers la
+    sienne ;
+  - exception front **`game → auth`** : le défi lit `Auth.isAuthenticated` pour savoir
+    s'il faut demander un pseudo (même raison que `layout → auth`).
+
+**Raison** : le jeu quotidien ne se joue qu'une fois par jour. Ce mode donne de quoi
+jouer plus, et de quoi comparer ses scores entre amis sans attendre la feature Amis.
+
 ### Système d'amis
 **Décision** : système complet avec demandes d'ami (envoi/acceptation/refus), liste
 d'amis persistante, comparaison des scores quotidiens et historique.
@@ -774,6 +827,62 @@ supplémentaire.
 
 **Raison** : une librairie de composants peut être ajoutée à tout moment si besoin de
 composants complexes. Partir sans évite une dépendance non nécessaire au MVP.
+
+### Internationalisation (i18n)
+**Décision** (2026-11-02, PR `feature/i18n`) : tout le site joueur existe en anglais et
+en français, avec l'i18n natif d'Angular (`@angular/localize`) et **une URL par
+langue** : `/en/…` et `/fr/…`, une build par langue. L'administration reste en anglais
+(sous `/en/admin/…` comme sous `/fr/admin/…`).
+- **Catalogue** : langue source `en`, traduction dans `src/locale/messages.fr.xlf`
+  (XLIFF, le format par défaut d'`ng extract-i18n`). Textes des templates marqués
+  `i18n="@@zone.nom"` avec un **id explicite** : retoucher l'anglais ne fait pas perdre la
+  traduction. Textes TS en `$localize`. `i18nMissingTranslation: error` : une traduction
+  manquante casse la build, donc la CI (étape « Build (EN + FR) »).
+- **Dev** : `pnpm start` sert `/en/` (port 4200), `pnpm start:fr` sert `/fr/` (port
+  4201) : `ng serve` ne sert qu'une langue à la fois.
+- **Prod (Caddy)** : `/en/*` et `/fr/*` servent chacune leur build. Toute autre URL hors
+  `/api/*` redirige en 302 vers `/<langue><chemin>`, la langue venant du cookie
+  `ageguessr_lang`, puis d'`Accept-Language`, sinon `en` (`?lang=fr` force `/fr/`). La
+  redirection porte `Cache-Control: no-store` et `Vary: Cookie, Accept-Language` pour que
+  Cloudflare ne serve pas la redirection d'un visiteur à tous. Les anciens liens (emails
+  déjà envoyés, `/terms`) continuent de marcher. Vérifié par
+  `scripts/check-edge-locales.sh`.
+- **Langue du site** (`features/i18n/`) : `SiteLanguageService` lit `LOCALE_ID`. Le
+  sélecteur de l'en-tête (avec `hreflang`) écrit le cookie `ageguessr_lang` (1 an,
+  `SameSite=Lax`, lisible par le script : un choix de l'utilisateur, sans consentement
+  requis) et recharge la même page dans l'autre préfixe.
+- **Langue du compte** : `users.language` (V14, nullable : NULL = jamais choisie),
+  envoyée à l'inscription et modifiée par `PUT /api/auth/me/language`. Elle gagne sur la
+  page : après connexion ou restauration de session, le front recharge la page dans la
+  langue du compte (et met le cookie à jour, d'où aucune boucle). Si l'enregistrement
+  échoue au changement de langue, la page ne change pas et un message s'affiche.
+- **Emails** dans la langue du compte (anglais si NULL), avec des liens préfixés
+  (`<frontend-url>/fr/reset-password?token=…`) : `AccountEmailTexts`, `AccountLinks`.
+- **Langue partagée** : `shared/i18n/Language` (`EN`, `FR`), utilisée par `auth` et
+  `game` sans qu'elles dépendent l'une de l'autre. Le lien avec `HintAudience` est dans
+  `HintPicker`.
+  Côté front, même logique : les types et conversions (`SiteLanguage`, `ApiLanguage`,
+  cookie) sont dans `shared/i18n/language.ts`, utilisés par `auth`, `game` et
+  `features/i18n`.
+- **Exception front `i18n ↔ auth`** : `SiteLanguageService` lit le compte (`Auth`) pour
+  enregistrer la langue choisie, et l'inscription lit la langue de la page. Les deux
+  features s'importent donc l'une l'autre. C'est accepté, comme `layout → auth` : il n'y
+  a pas de règle d'architecture outillée côté front, et une interface intermédiaire
+  ajouterait une abstraction pour un seul usage.
+- **Langue des indices**, indépendante du site : sélecteur sur l'écran de jeu, retenu
+  dans le stockage local (`ageguessr-hint-language`), par défaut la langue du site. Elle
+  s'applique au prochain 1er essai : une manche commencée garde sa langue
+  (`game_plays.language`).
+- **Erreurs** : le front n'affiche jamais le `message` de l'API, seulement ses propres
+  textes traduits, choisis par `errorCode`.
+
+**Raison** : une URL par langue est indexable par langue (référencement) et ne demande
+aucun chargement de traduction à l'exécution. Changer de langue recharge la page, ce
+qui est acceptable pour un choix rare.
+
+**Règle** : aucun texte visible par un joueur n'est écrit en dur dans une seule langue.
+Tout nouveau texte joueur est marqué (`i18n` ou `$localize`) et traduit dans
+`messages.fr.xlf` dans la même PR ; tout nouvel email existe dans les deux langues.
 
 ### Tests unitaires : Vitest
 **Décision** : Vitest, via le builder `@angular/build:unit-test` (défaut Angular CLI

@@ -1,7 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { GameApi, browserLanguage } from './game-api';
+import { GameApi } from './game-api';
 import { round, today } from './testing';
 
 describe('GameApi', () => {
@@ -51,19 +51,5 @@ describe('GameApi', () => {
     const req = http.expectOne('/api/game/2026-11-02/rounds/3/second-guess');
     expect(req.request.body).toEqual({ guess: 41 });
     req.flush(round(3));
-  });
-});
-
-describe('browserLanguage', () => {
-  it('plays in French in a French browser, whatever the region', () => {
-    expect(browserLanguage('fr')).toBe('FR');
-    expect(browserLanguage('fr-CA')).toBe('FR');
-    expect(browserLanguage('FR-fr')).toBe('FR');
-  });
-
-  it('plays in English otherwise', () => {
-    expect(browserLanguage('en-GB')).toBe('EN');
-    expect(browserLanguage('de')).toBe('EN');
-    expect(browserLanguage(undefined)).toBe('EN');
   });
 });

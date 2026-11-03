@@ -1,10 +1,10 @@
 <div class="mx-auto max-w-md px-6 py-16">
   <div class="bg-surface border-border rounded-lg border p-6">
-    <h1 class="font-display text-3xl">Welcome back</h1>
+    <h1 class="font-display text-3xl" i18n="@@login.title">Welcome back</h1>
 
     <form class="mt-6 space-y-4" [formGroup]="form" (ngSubmit)="submit()">
       <div>
-        <label for="email" class="text-sm font-medium">Email</label>
+        <label for="email" class="text-sm font-medium" i18n="@@common.email">Email</label>
         <input
           id="email"
           type="email"
@@ -15,8 +15,12 @@
 
       <div>
         <div class="flex items-baseline justify-between">
-          <label for="password" class="text-sm font-medium">Password</label>
-          <a routerLink="/forgot-password" class="text-accent text-sm">Forgot password?</a>
+          <label for="password" class="text-sm font-medium" i18n="@@common.password"
+            >Password</label
+          >
+          <a routerLink="/forgot-password" class="text-accent text-sm" i18n="@@login.forgot"
+            >Forgot password?</a
+          >
         </div>
         <input
           id="password"
@@ -32,11 +36,18 @@
 
       @if (needsVerification()) {
         <div class="border-border rounded-md border p-3 text-sm">
-          <p>Please verify your email before logging in.</p>
+          <p i18n="@@login.verify">Please verify your email before logging in.</p>
           @if (resendSent()) {
-            <p class="text-muted mt-1">Verification email sent — check your inbox.</p>
+            <p class="text-muted mt-1" i18n="@@login.resent">
+              Verification email sent — check your inbox.
+            </p>
           } @else {
-            <button type="button" (click)="resendVerification()" class="text-accent mt-1 underline">
+            <button
+              type="button"
+              (click)="resendVerification()"
+              class="text-accent mt-1 underline"
+              i18n="@@login.resend"
+            >
               Resend verification email
             </button>
           }
@@ -47,12 +58,13 @@
         type="submit"
         [disabled]="submitting()"
         class="bg-accent text-accent-foreground w-full rounded-md py-2 font-medium disabled:opacity-50"
+        i18n="@@login.submit"
       >
         Log in
       </button>
     </form>
 
-    <p class="text-muted mt-4 text-sm">
+    <p class="text-muted mt-4 text-sm" i18n="@@login.noAccount">
       No account yet? <a routerLink="/register" class="text-accent">Create one</a>
     </p>
   </div>

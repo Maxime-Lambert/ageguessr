@@ -52,6 +52,17 @@ navigateur (Playwright), pour attraper ce que jsdom ne peut pas (CSS réel, comp
 navigateur). **Ne couvre pas** : l'intégration avec un vrai backend — utilise des mocks
 réseau si besoin.
 
+**Deux langues** : Playwright lance les deux serveurs de dev, `/en/` sur 4200 et `/fr/`
+sur 4201. Le projet `component` teste la build anglaise, le projet `component-fr`
+(`frontend/e2e/component-fr/`) la build française : c'est le seul endroit qui voit les
+traductions et le rechargement au changement de langue. Les specs Vitest, elles, tournent
+dans la langue source (anglais). `pnpm test:e2e` lance les deux projets.
+
+**Pas de Playwright en local sous WSL** : deux serveurs de dev et Chromium épuisent la
+mémoire de WSL (7,7 Go) et font planter la VM, même avec 2 workers. Les specs
+Playwright s'écrivent en local, mais s'exécutent dans la CI (runner 16 Go), qui valide
+la PR.
+
 ### QA / parcours utilisateur
 Teste un parcours utilisateur complet (plusieurs pages, plusieurs actions) contre
 l'application réelle : API réelle, PostgreSQL réel, Redis réel, frontend réel. Le niveau
@@ -62,7 +73,10 @@ connexion → ajout d'ami).
 pyramide (plus rapide, plus précis sur la cause d'un échec).
 
 **Lancer les parcours** : API en profil `e2e` (emails enregistrés, `/test-support/*`,
-dont `seed-daily-game` qui pose une partie du jour connue), puis
+dont `seed-daily-game` qui pose une partie du jour connue, `seed-free-pool` qui ajoute
+5 photos hors partie du jour pour tirer une série, et `last-email`, qui rend le
+sujet et le lien du dernier email d'une adresse : les parcours suivent ce lien tel quel,
+ce qui vérifie aussi son préfixe de langue), puis
 `cd frontend && pnpm test:e2e:journeys`. Deux précautions :
 - **une base jetable** (par exemple un Postgres et un Redis lancés avec `docker run
   --rm` sur d'autres ports, via `DB_PORT` et `REDIS_PORT`) : les parcours créent des
@@ -70,7 +84,9 @@ dont `seed-daily-game` qui pose une partie du jour connue), puis
 - **`AUTH_RATE_LIMIT_MAX_ATTEMPTS=1000`** : tous les parcours tournent en parallèle
   derrière la même IP (le proxy de dev), et chaque chargement de page appelle
   `/api/auth/refresh`. La limite de prod (20 par minute) les fait échouer à
-  l'inscription ou à la connexion, sans rapport avec le code testé.
+  l'inscription ou à la connexion, sans rapport avec le code testé. Pour la même raison,
+  si les parcours tournent souvent dans l'heure, `SERIES_RATE_LIMIT_MAX_ATTEMPTS=1000`
+  (30 séries ou `join` par heure en prod).
 
 ### Architecture
 Vérifie automatiquement les règles définies dans `docs/decisions/architecture.md` (pas

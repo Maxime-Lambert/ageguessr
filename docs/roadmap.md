@@ -147,6 +147,12 @@ la suivante).
 - [x] Vocabulaire de jeu centralisé dans un seul fichier (essai du ton « enquête »,
       critère de validation au premier playtest — voir `docs/decisions/design.md`)
 - [ ] Trancher le duotone des photos sur de vraies photos Commons
+- [x] Site en anglais et en français (`/en/`, `/fr/`, sélecteur dans l'en-tête), langue
+      enregistrée sur le compte et emails dans cette langue, langue des indices choisie
+      sur l'écran de jeu, administration en anglais — PR `feature/i18n`
+- [x] Enquête libre : séries de 5, 10 ou 20 photos hors partie du jour, et Défi :
+      une série partagée par un lien, jouée une fois par chaque ami, avec un classement
+      — PR `feature/free-investigation`
 
 ## Semaine 5 — Compte utilisateur + historique
 - [x] Inscription/connexion (frontend) + navigation (en-tête invité/connecté) — PR

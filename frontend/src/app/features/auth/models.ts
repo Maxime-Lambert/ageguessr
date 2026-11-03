@@ -1,3 +1,5 @@
+import { ApiLanguage } from '../../shared/i18n/language';
+
 export type UserRole = 'USER' | 'ADMIN';
 
 export interface AuthUser {
@@ -7,6 +9,8 @@ export interface AuthUser {
   emailVerified: boolean;
   /** Only decides what the interface shows: the API checks the role on every admin request. */
   role: UserRole;
+  /** Of the emails and of the site once signed in; null until chosen (accounts before V14). */
+  language: ApiLanguage | null;
 }
 
 export interface LoginResponse {

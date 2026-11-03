@@ -2,24 +2,32 @@
   <div class="bg-surface border-border rounded-lg border p-6">
     @switch (status()) {
       @case ('deleted') {
-        <h1 class="font-display text-3xl">Account deleted</h1>
-        <p class="text-muted mt-2">
+        <h1 class="font-display text-3xl" i18n="@@deletion.doneTitle">Account deleted</h1>
+        <p class="text-muted mt-2" i18n="@@deletion.done">
           Your account and its data are gone. You can still play without an account.
         </p>
-        <a routerLink="/" class="text-accent mt-4 inline-block underline">Back to the game</a>
+        <a
+          routerLink="/"
+          class="text-accent mt-4 inline-block underline"
+          i18n="@@deletion.backToGame"
+          >Back to the game</a
+        >
       }
       @case ('invalid-link') {
-        <h1 class="font-display text-3xl">Link invalid or expired</h1>
-        <p class="text-danger mt-2">
+        <h1 class="font-display text-3xl" i18n="@@common.linkInvalid">Link invalid or expired</h1>
+        <p class="text-danger mt-2" i18n="@@deletion.invalid">
           This deletion link no longer works. Your account has not been deleted.
         </p>
-        <a routerLink="/account" class="text-accent mt-4 inline-block underline"
+        <a
+          routerLink="/account"
+          class="text-accent mt-4 inline-block underline"
+          i18n="@@deletion.toAccount"
           >Go to my account</a
         >
       }
       @default {
-        <h1 class="font-display text-3xl">Delete your account?</h1>
-        <p class="text-muted mt-2">
+        <h1 class="font-display text-3xl" i18n="@@deletion.title">Delete your account?</h1>
+        <p class="text-muted mt-2" i18n="@@deletion.warning">
           This permanently deletes your account, your history and your friends list. It cannot be
           undone.
         </p>
@@ -28,10 +36,13 @@
           (click)="confirm()"
           [disabled]="status() === 'deleting'"
           class="bg-danger text-danger-foreground mt-6 w-full rounded-md py-2 font-medium disabled:opacity-50"
+          i18n="@@deletion.confirm"
         >
           Delete my account permanently
         </button>
-        <a routerLink="/" class="text-muted mt-4 inline-block text-sm">Keep my account</a>
+        <a routerLink="/" class="text-muted mt-4 inline-block text-sm" i18n="@@deletion.keep"
+          >Keep my account</a
+        >
       }
     }
   </div>

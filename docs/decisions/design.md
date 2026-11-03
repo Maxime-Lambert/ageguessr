@@ -176,6 +176,8 @@ avec un ton un peu taquin et journalistique dans les textes de résultat. C'est 
 | Catégorie d'indice | *lead* | *hint* |
 | Révélation du résultat | *verdict* / *case closed* | *result* |
 | Récapitulatif final | *case report* | *summary* |
+| Mode hors partie du jour | *free investigation* | *series* |
+| Série partagée entre amis | *challenge* | *challenge* |
 
 **Raison** : cohérent avec l'ambiance visuelle archives. Mais un vocabulaire thématique
 peut gêner la compréhension d'un jeu qu'on découvre : d'où l'essai plutôt qu'un choix
@@ -197,9 +199,28 @@ constante `VOICE` choisit entre les deux.
 en vocabulaire neutre (*Sign in* reste *Sign in*) : ce sont des parcours standards où
 l'on cherche des repères familiers.
 
-### Anglais, ton direct
-**Décision** (déjà actée) : anglais comme langue principale, ton direct adapté à une
-audience internationale — voir `docs/decisions/architecture.md`.
+### Bilingue anglais / français, ton direct
+**Décision** (2026-11-02, remplace « anglais seul ») : le site joueur existe en anglais
+et en français (voir « Internationalisation » dans `docs/decisions/architecture.md`).
+Ton direct dans les deux langues. En français :
+- **vouvoiement** partout ;
+- la **voix enquête** est gardée, avec son repli neutre, dans `game-vocabulary.ts` :
+
+  | Notion | Enquête | Repli neutre |
+  |---|---|---|
+  | Une personne à deviner | *Affaire* | *Manche* |
+  | La partie du jour | *Le dossier du jour* | *La partie du jour* |
+  | Catégorie d'indice | *Piste* | *Indice* |
+  | Révélation du résultat | *Affaire classée* | *Résultat* |
+  | Récapitulatif final | *Rapport d'enquête* | *Récapitulatif* |
+
+- le sens de l'âge se dit **« Plus de 30 ans » / « Moins de 30 ans »** : neutre en genre
+  (on ne connaît pas celui de la personne) et sans distance ;
+- chaque langue est nommée dans sa propre langue dans les sélecteurs (*English*,
+  *Français*).
+
+Les traductions sont à relire au fil de l'usage et à corriger au cas par cas dans
+`messages.fr.xlf`.
 
 ---
 

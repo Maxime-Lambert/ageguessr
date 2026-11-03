@@ -10,7 +10,7 @@ import app.ageguessr.features.game.DailyRoundId;
 import app.ageguessr.features.game.DailyRoundRepository;
 import app.ageguessr.features.game.GamePlay;
 import app.ageguessr.features.game.GamePlayRepository;
-import app.ageguessr.features.game.Language;
+import app.ageguessr.shared.i18n.Language;
 import app.ageguessr.features.game.PlayerKey;
 import app.ageguessr.features.game.PurgeGuestPlays.PurgeGuestPlaysHandler;
 import java.time.Clock;

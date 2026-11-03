@@ -1,0 +1,31 @@
+<section aria-labelledby="leaderboard-title" class="mt-6">
+  <h3 id="leaderboard-title" class="font-display text-xl">{{ text.leaderboard }}</h3>
+  <table class="border-border mt-3 w-full border-collapse rounded-lg border text-sm">
+    <thead class="sr-only">
+      <tr>
+        <th scope="col">{{ text.rank }}</th>
+        <th scope="col">{{ text.player }}</th>
+        <th scope="col">{{ text.points }}</th>
+      </tr>
+    </thead>
+    <tbody class="divide-border divide-y">
+      @for (entry of entries(); track $index) {
+        <tr [class.bg-surface]="entry.you" [class.font-medium]="entry.you">
+          <td class="w-10 px-3 py-2 text-right">{{ entry.rank }}</td>
+          <td class="max-w-0 truncate px-3 py-2">
+            {{ entry.name }}
+            @if (entry.guest) {
+              <span class="text-muted ml-1 text-xs">({{ text.guestMark }})</span>
+            }
+            @if (entry.you) {
+              <span class="text-accent ml-1 text-xs">· {{ text.youMark }}</span>
+            }
+          </td>
+          <td class="px-3 py-2 text-right whitespace-nowrap">
+            {{ entry.points }} <span class="text-muted">/ {{ entry.max }}</span>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</section>

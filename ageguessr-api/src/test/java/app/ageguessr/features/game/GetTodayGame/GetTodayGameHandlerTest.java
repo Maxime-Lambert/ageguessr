@@ -21,6 +21,7 @@ import app.ageguessr.features.game.GamePlay;
 import app.ageguessr.features.game.GamePlayRepository;
 import app.ageguessr.features.game.GameProperties;
 import app.ageguessr.features.game.GameRounds;
+import app.ageguessr.features.game.GameScore;
 import app.ageguessr.features.game.HintPicker;
 import app.ageguessr.features.game.PlayerKey;
 import app.ageguessr.features.game.RoundStep;
@@ -59,7 +60,7 @@ class GetTodayGameHandlerTest {
         assertThat(response.date()).isEqualTo(TODAY);
         assertThat(response.rounds()).extracting(RoundView::position).containsExactly((short) 1, (short) 2, (short) 3);
         assertThat(response.score())
-                .isEqualTo(new TodayGameResponse.Score(
+                .isEqualTo(new GameScore(
                         1000 + Scoring.points(30, AGE) + Scoring.points(38, AGE), 2000, true));
     }
 
@@ -70,7 +71,7 @@ class GetTodayGameHandlerTest {
 
         TodayGameResponse response = handler(false).handle(Optional.of(guest));
 
-        assertThat(response.score()).isEqualTo(new TodayGameResponse.Score(1000, 2000, false));
+        assertThat(response.score()).isEqualTo(new GameScore(1000, 2000, false));
     }
 
     @Test
@@ -80,7 +81,7 @@ class GetTodayGameHandlerTest {
         TodayGameResponse response = handler(false).handle(Optional.empty());
 
         assertThat(response.rounds()).extracting(RoundView::step).containsExactly(RoundStep.NOT_STARTED);
-        assertThat(response.score()).isEqualTo(new TodayGameResponse.Score(0, 1000, false));
+        assertThat(response.score()).isEqualTo(new GameScore(0, 1000, false));
         verifyNoInteractions(plays);
     }
 

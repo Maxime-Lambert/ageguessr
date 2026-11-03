@@ -1,8 +1,8 @@
 package app.ageguessr.features.game;
 
+import app.ageguessr.shared.i18n.Language;
 import app.ageguessr.features.people.Person;
 import app.ageguessr.features.people.PersonPhoto;
-import java.util.Locale;
 
 /**
  * What a finished round reveals: the answer, the points, who it was and the photo's
@@ -36,7 +36,7 @@ public record RoundReveal(
     /** @param author null when Commons names none, the screen then says so */
     public record Credit(String author, String license, String licenseUrl, String sourceUrl) {}
 
-    public static RoundReveal of(GamePlay play, PersonPhoto photo, Person person, GameHint hint) {
+    public static RoundReveal of(PlayedRound play, PersonPhoto photo, Person person, GameHint hint) {
         Language language = play.getLanguage();
         return new RoundReveal(
                 photo.getAgeAtPhoto(),
@@ -45,7 +45,7 @@ public record RoundReveal(
                 play.getSecondGuess(),
                 play.getSecondPoints(),
                 play.points(),
-                new Identity(name(person, language), WIKIPEDIA_LINK.formatted(code(language), person.getWikidataId())),
+                new Identity(name(person, language), WIKIPEDIA_LINK.formatted(language.code(), person.getWikidataId())),
                 new Credit(photo.getAuthorText(), photo.getLicenseShortName(), photo.getLicenseUrl(), photo.getSourceUrl()),
                 hint);
     }
@@ -55,9 +55,5 @@ public record RoundReveal(
         String preferred = language == Language.FR ? person.getNameFr() : person.getNameEn();
         String other = language == Language.FR ? person.getNameEn() : person.getNameFr();
         return preferred != null ? preferred : other;
-    }
-
-    private static String code(Language language) {
-        return language.name().toLowerCase(Locale.ROOT);
     }
 }

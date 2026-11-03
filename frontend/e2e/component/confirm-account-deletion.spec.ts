@@ -10,7 +10,7 @@ test.describe('confirm-account-deletion page', () => {
       return route.fulfill({ status: 204, body: '' });
     });
 
-    await page.goto('/confirm-account-deletion?token=the-token');
+    await page.goto('/en/confirm-account-deletion?token=the-token');
     await expect(page.getByRole('heading', { name: 'Delete your account?' })).toBeVisible();
     await page.waitForLoadState('networkidle');
 
@@ -23,7 +23,7 @@ test.describe('confirm-account-deletion page', () => {
       route.fulfill({ status: 204, body: '' }),
     );
 
-    await page.goto('/confirm-account-deletion?token=the-token');
+    await page.goto('/en/confirm-account-deletion?token=the-token');
     await page.getByRole('button', { name: 'Delete my account permanently' }).click();
 
     await expect(page.getByRole('heading', { name: 'Account deleted' })).toBeVisible();

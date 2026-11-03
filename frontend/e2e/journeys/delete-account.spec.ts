@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { lastEmailToken, logIn, signUp, uniqueAccount } from './support';
+import { logIn, openLastEmailLink, signUp, uniqueAccount } from './support';
 
 test('request deletion, confirm through the emailed link, the account is gone', async ({
   page,
@@ -8,9 +8,9 @@ test('request deletion, confirm through the emailed link, the account is gone', 
   const account = uniqueAccount('delete');
   await signUp(page, request, account);
   await logIn(page, account.email, account.password);
-  await expect(page).toHaveURL('/');
+  await expect(page).toHaveURL('/en/');
 
-  await page.goto('/account');
+  await page.goto('/en/account');
   await page.locator('#deletionPassword').fill(account.password);
   await page.getByRole('button', { name: 'Delete my account' }).click();
   await expect(page.getByText('We sent a confirmation link to')).toBeVisible();
@@ -19,8 +19,8 @@ test('request deletion, confirm through the emailed link, the account is gone', 
   await page.reload();
   await expect(page.getByRole('heading', { name: 'Your account' })).toBeVisible();
 
-  await page.goto(
-    `/confirm-account-deletion?token=${await lastEmailToken(request, account.email)}`,
+  expect((await openLastEmailLink(page, request, account.email)).link.pathname).toBe(
+    '/en/confirm-account-deletion',
   );
   await page.getByRole('button', { name: 'Delete my account permanently' }).click();
   await expect(page.getByRole('heading', { name: 'Account deleted' })).toBeVisible();

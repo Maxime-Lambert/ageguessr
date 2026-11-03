@@ -10,7 +10,7 @@ test.describe('reset-password page', () => {
       return route.fulfill({ status: 204, body: '' });
     });
 
-    await page.goto('/reset-password?token=the-token');
+    await page.goto('/en/reset-password?token=the-token');
     await page.locator('#newPassword').fill('new-tortoise-violin');
     await page.locator('#confirmPassword').fill('new-tortoise-violin');
     await page.getByRole('button', { name: 'Set new password' }).click();
@@ -25,7 +25,7 @@ test.describe('reset-password page', () => {
       route.fulfill({ status: 404, contentType: 'application/json', body: '{}' }),
     );
 
-    await page.goto('/reset-password?token=expired');
+    await page.goto('/en/reset-password?token=expired');
     await page.locator('#newPassword').fill('new-tortoise-violin');
     await page.locator('#confirmPassword').fill('new-tortoise-violin');
     await page.getByRole('button', { name: 'Set new password' }).click();

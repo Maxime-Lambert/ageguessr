@@ -1,5 +1,6 @@
 package app.ageguessr.features.auth.Register;
 
+import app.ageguessr.shared.i18n.Language;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -57,7 +58,7 @@ class RegisterHandlerTest {
 
         RegisterHandler handler =
                 new RegisterHandler(userRepository, passwordPolicy, passwordEncoder, emailVerificationService, FIXED_CLOCK);
-        RegisterResponse response = handler.handle(new RegisterCommand("new@x.com", "NewPlayer", "tortoise-violin-42", true));
+        RegisterResponse response = handler.handle(new RegisterCommand("new@x.com", "NewPlayer", "tortoise-violin-42", true, Language.FR));
 
         ArgumentCaptor<User> savedUser = ArgumentCaptor.forClass(User.class);
         verify(userRepository).save(savedUser.capture());
@@ -68,6 +69,7 @@ class RegisterHandlerTest {
         assertThat(savedUser.getValue().getCreatedAt()).isEqualTo(FIXED_CLOCK.instant());
         assertThat(savedUser.getValue().getTermsVersion()).isEqualTo(TermsVersion.CURRENT);
         assertThat(savedUser.getValue().getTermsAcceptedAt()).isEqualTo(FIXED_CLOCK.instant());
+        assertThat(savedUser.getValue().getLanguage()).isEqualTo(Language.FR);
 
         assertThat(response.email()).isEqualTo("new@x.com");
         assertThat(response.username()).isEqualTo("NewPlayer");
@@ -81,7 +83,7 @@ class RegisterHandlerTest {
         RegisterHandler handler =
                 new RegisterHandler(userRepository, passwordPolicy, passwordEncoder, emailVerificationService, FIXED_CLOCK);
 
-        assertThatThrownBy(() -> handler.handle(new RegisterCommand("taken@x.com", "AnyName", "tortoise-violin-42", true)))
+        assertThatThrownBy(() -> handler.handle(new RegisterCommand("taken@x.com", "AnyName", "tortoise-violin-42", true, null)))
                 .isInstanceOf(ConflictException.class)
                 .extracting("errorCode")
                 .isEqualTo("EMAIL_TAKEN");
@@ -98,7 +100,7 @@ class RegisterHandlerTest {
         RegisterHandler handler =
                 new RegisterHandler(userRepository, passwordPolicy, passwordEncoder, emailVerificationService, FIXED_CLOCK);
 
-        assertThatThrownBy(() -> handler.handle(new RegisterCommand("new@x.com", "Taken", "tortoise-violin-42", true)))
+        assertThatThrownBy(() -> handler.handle(new RegisterCommand("new@x.com", "Taken", "tortoise-violin-42", true, null)))
                 .isInstanceOf(ConflictException.class)
                 .extracting("errorCode")
                 .isEqualTo("USERNAME_TAKEN");
@@ -114,7 +116,7 @@ class RegisterHandlerTest {
         RegisterHandler handler =
                 new RegisterHandler(userRepository, passwordPolicy, passwordEncoder, emailVerificationService, FIXED_CLOCK);
 
-        assertThatThrownBy(() -> handler.handle(new RegisterCommand("taken@x.com", "Taken", "tortoise-violin-42", true)))
+        assertThatThrownBy(() -> handler.handle(new RegisterCommand("taken@x.com", "Taken", "tortoise-violin-42", true, null)))
                 .extracting("errorCode")
                 .isEqualTo("EMAIL_TAKEN");
     }
@@ -129,7 +131,7 @@ class RegisterHandlerTest {
         RegisterHandler handler =
                 new RegisterHandler(userRepository, passwordPolicy, passwordEncoder, emailVerificationService, FIXED_CLOCK);
 
-        assertThatThrownBy(() -> handler.handle(new RegisterCommand("taken@x.com", "NewPlayer", "qwerty123456", true)))
+        assertThatThrownBy(() -> handler.handle(new RegisterCommand("taken@x.com", "NewPlayer", "qwerty123456", true, null)))
                 .extracting("errorCode")
                 .isEqualTo("PASSWORD_TOO_COMMON");
 

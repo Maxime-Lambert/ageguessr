@@ -1,5 +1,6 @@
 package app.ageguessr.features.game;
 
+import app.ageguessr.shared.i18n.Language;
 import app.ageguessr.features.hints.Hint;
 import app.ageguessr.features.hints.HintCategory;
 

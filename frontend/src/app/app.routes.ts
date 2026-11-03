@@ -11,6 +11,17 @@ export const routes: Routes = [
     loadComponent: () => import('./features/game/game/game').then((m) => m.Game),
   },
   {
+    path: 'free',
+    title: $localize`:@@title.free:Free investigation · Ageguessr`,
+    loadComponent: () => import('./features/game/free-game/free-game').then((m) => m.FreeGame),
+  },
+  {
+    path: 'challenge/:code',
+    title: $localize`:@@title.challenge:Challenge · Ageguessr`,
+    loadComponent: () =>
+      import('./features/game/challenge/challenge-page').then((m) => m.ChallengePage),
+  },
+  {
     path: 'register',
     canActivate: [guestGuard],
     loadComponent: () => import('./features/auth/register/register').then((m) => m.Register),
@@ -70,18 +81,18 @@ export const routes: Routes = [
   },
   {
     path: 'legal-notice',
-    title: 'Legal notice · Ageguessr',
+    title: $localize`:@@title.legalNotice:Legal notice · Ageguessr`,
     loadComponent: () =>
       import('./features/legal/legal-notice/legal-notice').then((m) => m.LegalNotice),
   },
   {
     path: 'terms',
-    title: 'Terms of Use · Ageguessr',
+    title: $localize`:@@title.terms:Terms of Use · Ageguessr`,
     loadComponent: () => import('./features/legal/terms/terms').then((m) => m.Terms),
   },
   {
     path: 'privacy',
-    title: 'Privacy Policy · Ageguessr',
+    title: $localize`:@@title.privacy:Privacy Policy · Ageguessr`,
     loadComponent: () => import('./features/legal/privacy/privacy').then((m) => m.Privacy),
   },
   { path: '**', redirectTo: '' },

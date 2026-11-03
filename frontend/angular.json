@@ -25,7 +25,9 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/styles.css"]
+            "styles": ["src/styles.css"],
+            "polyfills": ["@angular/localize/init"],
+            "i18nMissingTranslation": "error"
           },
           "configurations": {
             "production": {
@@ -41,12 +43,19 @@
                   "maximumError": "8kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "localize": true
             },
             "development": {
               "optimization": false,
               "extractLicenses": false,
-              "sourceMap": true
+              "sourceMap": true,
+              "localize": ["en"],
+              "baseHref": "/en/"
+            },
+            "fr": {
+              "localize": ["fr"],
+              "baseHref": "/fr/"
             }
           },
           "defaultConfiguration": "production"
@@ -60,6 +69,10 @@
             "development": {
               "buildTarget": "frontend:build:development",
               "proxyConfig": "proxy.conf.json"
+            },
+            "fr": {
+              "buildTarget": "frontend:build:development,fr",
+              "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"
@@ -71,6 +84,25 @@
           "builder": "@angular-eslint/builder:lint",
           "options": {
             "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular/build:extract-i18n",
+          "options": {
+            "buildTarget": "frontend:build:development",
+            "outputPath": "src/locale"
+          }
+        }
+      },
+      "i18n": {
+        "sourceLocale": {
+          "code": "en",
+          "subPath": "en"
+        },
+        "locales": {
+          "fr": {
+            "translation": "src/locale/messages.fr.xlf",
+            "subPath": "fr"
           }
         }
       }

@@ -38,6 +38,7 @@ describe('adminGuard', () => {
       username: 'Admin',
       emailVerified: true,
       role: 'ADMIN',
+      language: 'EN',
     });
     auth.sessionChecked.set(true);
 
@@ -51,6 +52,7 @@ describe('adminGuard', () => {
       username: 'Player',
       emailVerified: true,
       role: 'USER',
+      language: 'EN',
     });
     auth.sessionChecked.set(true);
 

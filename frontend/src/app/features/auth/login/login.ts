@@ -44,7 +44,7 @@ export class Login {
           this.needsVerification.set(true);
           return;
         }
-        this.errorMessage.set('Invalid email or password.');
+        this.errorMessage.set($localize`:@@login.invalid:Invalid email or password.`);
       },
     });
   }

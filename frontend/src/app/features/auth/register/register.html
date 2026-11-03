@@ -1,11 +1,13 @@
 <div class="mx-auto max-w-md px-6 py-16">
   <div class="bg-surface border-border rounded-lg border p-6">
-    <h1 class="font-display text-3xl">Create your account</h1>
-    <p class="text-muted mt-2">Track your streak and compare scores with friends.</p>
+    <h1 class="font-display text-3xl" i18n="@@register.title">Create your account</h1>
+    <p class="text-muted mt-2" i18n="@@register.intro">
+      Track your streak and compare scores with friends.
+    </p>
 
     <form class="mt-6 space-y-4" [formGroup]="form" (ngSubmit)="submit()">
       <div>
-        <label for="email" class="text-sm font-medium">Email</label>
+        <label for="email" class="text-sm font-medium" i18n="@@common.email">Email</label>
         <input
           id="email"
           type="email"
@@ -15,7 +17,7 @@
       </div>
 
       <div>
-        <label for="username" class="text-sm font-medium">Username</label>
+        <label for="username" class="text-sm font-medium" i18n="@@common.username">Username</label>
         <input
           id="username"
           type="text"
@@ -26,20 +28,22 @@
           class="border-input-border bg-background mt-1 w-full rounded-md border px-3 py-2"
         />
         @if (usernameTaken()) {
-          <p id="username-hint" class="text-danger mt-1 text-sm">This username is already taken.</p>
+          <p id="username-hint" class="text-danger mt-1 text-sm" i18n="@@account.usernameTaken">
+            This username is already taken.
+          </p>
         } @else if (form.controls.username.invalid && form.controls.username.touched) {
-          <p id="username-hint" class="text-danger mt-1 text-sm">
+          <p id="username-hint" class="text-danger mt-1 text-sm" i18n="@@common.usernameRule">
             3 to 20 characters: letters, digits, _ or -.
           </p>
         } @else {
-          <p id="username-hint" class="text-muted mt-1 text-sm">
+          <p id="username-hint" class="text-muted mt-1 text-sm" i18n="@@register.usernameHint">
             Shown to your friends. You can change it later.
           </p>
         }
       </div>
 
       <div>
-        <label for="password" class="text-sm font-medium">Password</label>
+        <label for="password" class="text-sm font-medium" i18n="@@common.password">Password</label>
         <input
           id="password"
           type="password"
@@ -62,7 +66,9 @@
       </div>
 
       <div>
-        <label for="confirmPassword" class="text-sm font-medium">Confirm password</label>
+        <label for="confirmPassword" class="text-sm font-medium" i18n="@@register.confirmPassword"
+          >Confirm password</label
+        >
         <input
           id="confirmPassword"
           type="password"
@@ -81,7 +87,7 @@
             class="accent-accent mt-1 size-4 shrink-0"
           />
           <!-- New tab: following a link must not lose what was typed in the form. -->
-          <label for="acceptTerms" class="text-sm">
+          <label for="acceptTerms" class="text-sm" i18n="@@register.acceptTerms">
             I'm at least 13 and I accept the
             <a routerLink="/terms" target="_blank" rel="noopener" class="text-accent underline"
               >Terms</a
@@ -93,7 +99,11 @@
           </label>
         </div>
         @if (form.controls.acceptTerms.invalid && form.controls.acceptTerms.touched) {
-          <p id="accept-terms-error" class="text-danger mt-1 text-sm">
+          <p
+            id="accept-terms-error"
+            class="text-danger mt-1 text-sm"
+            i18n="@@register.termsRequired"
+          >
             You need to accept the Terms to create an account.
           </p>
         }
@@ -107,12 +117,13 @@
         type="submit"
         [disabled]="submitting()"
         class="bg-accent text-accent-foreground w-full rounded-md py-2 font-medium disabled:opacity-50"
+        i18n="@@register.submit"
       >
         Create account
       </button>
     </form>
 
-    <p class="text-muted mt-4 text-sm">
+    <p class="text-muted mt-4 text-sm" i18n="@@register.haveAccount">
       Already have an account? <a routerLink="/login" class="text-accent">Log in</a>
     </p>
   </div>

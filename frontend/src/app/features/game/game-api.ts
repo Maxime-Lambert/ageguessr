@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Service, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { GameLanguage, HintCategory, RoundView, TodayGame } from './models';
+import { ApiLanguage } from '../../shared/i18n/language';
+import { HintCategory, RoundView, TodayGame } from './models';
 
 /**
  * The daily game. Public: the auth interceptor adds the bearer token when signed in, and a
@@ -20,7 +21,7 @@ export class GameApi {
     date: string,
     position: number,
     guess: number,
-    language: GameLanguage,
+    language: ApiLanguage,
   ): Observable<RoundView> {
     return this.http.post<RoundView>(roundUrl(date, position, 'first-guess'), { guess, language });
   }
@@ -36,11 +37,4 @@ export class GameApi {
 
 function roundUrl(date: string, position: number, step: string): string {
   return `/api/game/${encodeURIComponent(date)}/rounds/${position}/${step}`;
-}
-
-/** French hints for a French browser, English otherwise (the two languages hints exist in). */
-export function browserLanguage(
-  language: string | undefined = globalThis.navigator?.language,
-): GameLanguage {
-  return language?.toLowerCase().startsWith('fr') ? 'FR' : 'EN';
 }

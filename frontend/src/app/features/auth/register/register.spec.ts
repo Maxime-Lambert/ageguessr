@@ -55,6 +55,8 @@ describe('Register', () => {
       username: 'Player',
       password: 'tortoise-violin-42',
       acceptTerms: true,
+      // The specs run in the source language (English).
+      language: 'EN',
     });
     req.flush({ userId: '1', email: 'user@x.com', username: 'Player' });
 

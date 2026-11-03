@@ -20,7 +20,7 @@ import app.ageguessr.features.game.GamePlay;
 import app.ageguessr.features.game.GamePlayRepository;
 import app.ageguessr.features.game.GameRounds;
 import app.ageguessr.features.game.HintPicker;
-import app.ageguessr.features.game.Language;
+import app.ageguessr.shared.i18n.Language;
 import app.ageguessr.features.game.PlayerKey;
 import app.ageguessr.features.game.RoundStep;
 import app.ageguessr.features.game.RoundView;

@@ -54,6 +54,11 @@ jobs:
       - name: Unitaire (Vitest)
         run: pnpm test
 
+      # Les deux langues (/en/ et /fr/) : une traduction manquante fait echouer la build
+      # (i18nMissingTranslation: error), donc la PR, et pas seulement l'image sur main.
+      - name: Build (EN + FR)
+        run: pnpm build
+
       - name: Installer Playwright + navigateurs
         run: pnpm exec playwright install --with-deps chromium
 
