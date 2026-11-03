@@ -61,21 +61,21 @@ set its status to `Complete` and write its **Phase Summary**; run the phase's
   traitement, puis tant que la cible existe) ; pas de changement des CGU.
 
 ## Phase 1: Base et modèle
-Status: Not started
+Status: Complete
 
-- [ ] `V16__create_player_reports.sql` :
+- [x] `V16__create_player_reports.sql` :
   - `game_plays` et `free_series_plays` : `photo_reported BOOLEAN NOT NULL DEFAULT false`,
     `hint_reported BOOLEAN NOT NULL DEFAULT false` ;
   - `photo_reports` (id, `photo_id` FK `person_photos` `ON DELETE CASCADE`, `reason`
     CHECK, `status` CHECK `OPEN|RESOLVED|DISMISSED` défaut `OPEN`, `created_at`,
     `closed_at`), index partiel `(photo_id) WHERE status = 'OPEN'` ;
   - `hint_reports`, même forme sur `hints (id)`.
-- [ ] `features/people/PhotoReport.java`, `PhotoReportReason.java`, `ReportStatus`
+- [x] `features/people/PhotoReport.java`, `PhotoReportReason.java`, `ReportStatus`
   (people), `PhotoReportRepository.java` (compte des ouverts, clôture en masse par
   photo, file agrégée).
-- [ ] `features/hints/HintReport.java`, `HintReportReason.java`, `HintReportStatus`,
+- [x] `features/hints/HintReport.java`, `HintReportReason.java`, `HintReportStatus`,
   `HintReportRepository.java`, mêmes méthodes.
-- [ ] `RoundProgress` : champs `photoReported` / `hintReported` et méthodes
+- [x] `RoundProgress` : champs `photoReported` / `hintReported` et méthodes
   `reportPhoto()` / `reportHint()` qui renvoient `false` si déjà fait et refusent une
   manche non terminée.
 
@@ -88,27 +88,27 @@ Status: Not started
 - `cd ageguessr-api && ./mvnw test -Dtest='RoundProgressTest,*Report*IntegrationTest'` → vert.
 
 ### Phase Summary
-_(write when phase completes)_
+Migration V16, entités `PhotoReport` / `HintReport`, `ReportStatus` et `ReportTally` dans `shared/reports`, marques sur `RoundProgress`. Vérifié : `GamePlayTest`, `ReportTallyTest` ; les contraintes et la cascade sont couvertes par `ReportFunctionalTest` contre Postgres (pas de test d'intégration séparé : le fonctionnel passe par les mêmes requêtes).
 
 ## Phase 2: Signalement par le joueur (backend)
-Status: Not started
+Status: Complete
 
-- [ ] `features/game/ReportRound/` : `ReportRoundCommand` (`target` PHOTO|HINT, `reason`
+- [x] `features/game/ReportRound/` : `ReportRoundCommand` (`target` PHOTO|HINT, `reason`
   en chaîne validée contre l'enum de la cible), `ReportRoundController` (les deux
   routes), `ReportRoundHandler` (trouve la manche jouée du joueur via `PlayerResolver`,
   vérifie qu'elle est terminée et que la cible existe encore, pose la marque, insère le
   signalement, décide de l'alerte).
-- [ ] `GameErrors` : `roundNotFinished`, `nothingToReport` (manche neutralisée, pas
+- [x] `GameErrors` : `roundNotFinished`, `nothingToReport` (manche neutralisée, pas
   d'indice, indice rejeté depuis), `invalidReason`.
-- [ ] `RoundReveal` : `photoReported`, `hintReported`, pour que l'écran garde l'état
+- [x] `RoundReveal` : `photoReported`, `hintReported`, pour que l'écran garde l'état
   après un rechargement.
-- [ ] `features/game/ReportRound/ReportAlerts` : seuils (`app.reports.alert-threshold=3`),
+- [x] `features/game/ReportRound/ReportAlerts` : seuils (`app.reports.alert-threshold=3`),
   « dans la partie du jour » via `DailyRoundRepository`, envoi après commit
   (`TransactionSynchronization`) par `EmailSender` à `app.admin.email`. Texte anglais :
   cible, personne, motifs comptés, lien vers la page admin.
-- [ ] `RateLimitFilter` : limite `report` (`app.rate-limit.report.*`, 20 / 60 min), testée
+- [x] `RateLimitFilter` : limite `report` (`app.rate-limit.report.*`, 20 / 60 min), testée
   avant celle du jeu.
-- [ ] `application.properties` + `.env.example` + compose prod : `ADMIN_EMAIL`,
+- [x] `application.properties` + `.env.example` + compose prod : `ADMIN_EMAIL`,
   `REPORT_RATE_LIMIT_*`.
 
 ### Tests
@@ -126,20 +126,20 @@ Status: Not started
 - `cd ageguessr-api && ./mvnw test` → vert, ArchUnit compris.
 
 ### Phase Summary
-_(write when phase completes)_
+`ReportRound` (handler, contrôleur, `ReportAlerts`), `GameRounds.of(date|series, position)`, erreurs `ROUND_NOT_FINISHED` / `NOTHING_TO_REPORT` / `INVALID_REASON`, limite `report`, `ADMIN_EMAIL` dans compose et `.env.example`. **Non fait : `ci.yml`** (modification refusée par le mode auto) : l'étape de déploiement doit transmettre `vars.ADMIN_EMAIL`. Vérifié : `./mvnw test` vert (1062 tests).
 
 ## Phase 3: Files admin (backend)
-Status: Not started
+Status: Complete
 
-- [ ] `features/people/ListReportedPhotos/` : `GET /api/admin/photos/reported` — photo,
+- [x] `features/people/ListReportedPhotos/` : `GET /api/admin/photos/reported` — photo,
   personne, statut de revue, comptes ouverts par motif, total, premier signalement,
   drapeau « dans la partie du jour » (lu par une requête native sur `daily_rounds`,
   pour que `people` ne dépende pas de `game`).
-- [ ] `features/people/DismissPhotoReports/` : `POST /api/admin/photos/{photoId}/reports/dismiss`.
-- [ ] `ReviewPhotoHandler` : toute décision clôt les signalements ouverts en `RESOLVED`.
-- [ ] `features/hints/ListReportedHints/` et `DismissHintReports/`, mêmes formes
+- [x] `features/people/DismissPhotoReports/` : `POST /api/admin/photos/{photoId}/reports/dismiss`.
+- [x] `ReviewPhotoHandler` : toute décision clôt les signalements ouverts en `RESOLVED`.
+- [x] `features/hints/ListReportedHints/` et `DismissHintReports/`, mêmes formes
   (texte EN/FR, année, catégorie, source, personne).
-- [ ] `ReviewHintHandler` : idem `ReviewPhotoHandler`.
+- [x] `ReviewHintHandler` : idem `ReviewPhotoHandler`.
 
 ### Tests
 - Unitaire : handlers de clôture.
@@ -150,22 +150,22 @@ Status: Not started
 - `cd ageguessr-api && ./mvnw test` → vert.
 
 ### Phase Summary
-_(write when phase completes)_
+`ListReportedPhotos`, `DismissPhotoReports`, `ListReportedHints`, `DismissHintReports`, clôture `RESOLVED` dans `ReviewPhoto` / `ReviewHint`. Vérifié : `ReportFunctionalTest` (403/401, Keep, rejet, correction, exclusion).
 
 ## Phase 4: Frontend joueur
-Status: Not started
+Status: Complete
 
-- [ ] `features/game/report/report-button` : lien discret « Report the photo » / « Report
+- [x] `features/game/report/report-button` : lien discret « Report the photo » / « Report
   the hint », qui déplie la liste des motifs (radios) et « Send » ; puis « Thanks, we'll
   take a look » (`role="status"`), ou l'état « Reported » si déjà fait.
-- [ ] `round-result` : bouton photo sous le crédit, bouton indice dans l'encadré de
+- [x] `round-result` : bouton photo sous le crédit, bouton indice dans l'encadré de
   l'indice ; sortie `report` remontée par `round-player` jusqu'à `RoundsScreen`
   (méthode abstraite `sendReport`, implémentée dans `Game`, `FreeGame`, `ChallengePage`).
-- [ ] `game-api.ts`, `series-api.ts` : `report(...)` ; `models.ts` : motifs et
+- [x] `game-api.ts`, `series-api.ts` : `report(...)` ; `models.ts` : motifs et
   `photoReported` / `hintReported`.
-- [ ] Textes : `game-vocabulary.ts` (libellés des motifs) et traductions dans
+- [x] Textes : `game-vocabulary.ts` (libellés des motifs) et traductions dans
   `messages.fr.xlf`.
-- [ ] `privacy.html` : paragraphe sur les signalements.
+- [x] `privacy.html` : paragraphe sur les signalements.
 
 ### Tests
 - Unitaire (Vitest) : `report-button` (ouverture, envoi, état envoyé, erreur 429),
@@ -181,17 +181,17 @@ Status: Not started
   langues compilent sans message manquant.
 
 ### Phase Summary
-_(write when phase completes)_
+`report-button`, `reporter` de `RoundsScreen` passé par `RoundPlayer` et `RoundResult`, API `report`, vocabulaire et traductions, paragraphe de `/privacy`. Vérifié : `pnpm test` (289), lint, build des deux langues ; Playwright `report.spec.ts` (EN et FR) écrit, exécuté par la CI.
 
 ## Phase 5: Frontend admin
-Status: Not started
+Status: Complete
 
-- [ ] `features/curation` : section « Reported photos » en tête de la page, avec la
+- [x] `features/curation` : section « Reported photos » en tête de la page, avec la
   photo, les comptes par motif, le badge « In today's game », et Reject / Keep /
   Exclude person (formulaire d'exclusion existant).
-- [ ] `features/hint-curation` : section « Reported hints », avec Reject / Keep /
+- [x] `features/hint-curation` : section « Reported hints », avec Reject / Keep /
   correction du texte (édition déjà présente).
-- [ ] APIs admin (`curation-api.ts`, `hint-curation-api.ts`) et modèles.
+- [x] APIs admin (`curation-api.ts`, `hint-curation-api.ts`) et modèles.
 
 ### Tests
 - Unitaire (Vitest) : sections signalées (tri affiché, actions appellent la bonne route,
@@ -203,12 +203,12 @@ Status: Not started
 - `cd frontend && pnpm test && pnpm lint` → vert.
 
 ### Phase Summary
-_(write when phase completes)_
+Sections `reported-photos` (curation) et `reported-hints` (indices), stubbées dans les specs des pages existantes. Un cas Playwright « Keep » ajouté à `curation.spec.ts` (exécuté par la CI).
 
 ## Phase 6: Docs, revues, PR
 Status: Not started
 
-- [ ] `docs/decisions/architecture.md` (signalements : rangement, anonymat, seuils),
+- [x] `docs/decisions/architecture.md` (signalements : rangement, anonymat, seuils),
   `docs/roadmap.md` (deux cases cochées), `docs/testing-strategy.md` si besoin.
 - [ ] code-reviewer puis architecture-reviewer sur le diff ; corriger 🔴 et 🟠.
 - [ ] PR vers `develop`, CI verte (Playwright compris).
