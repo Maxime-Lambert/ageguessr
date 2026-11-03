@@ -39,15 +39,15 @@ set its status to `Complete` and write its **Phase Summary**; run the phase's
   colonnes existent depuis V3).
 
 ## Phase 1: Backend
-Status: Not started
+Status: Complete
 
-- [ ] `ProfileResponse` : `termsAccepted` (`TermsVersion.CURRENT.equals(user.getTermsVersion())`).
-- [ ] `User.acceptTerms(String version, Instant now)` : refuse une autre version que
+- [x] `ProfileResponse` : `termsAccepted` (`TermsVersion.CURRENT.equals(user.getTermsVersion())`).
+- [x] `User.acceptTerms(String version, Instant now)` : refuse une autre version que
   `CURRENT`, ne réécrit pas la date si déjà acceptée.
-- [ ] `features/auth/AcceptTerms/` : `AcceptTermsCommand(@NotBlank @Size(max = 20) version)`,
+- [x] `features/auth/AcceptTerms/` : `AcceptTermsCommand(@NotBlank @Size(max = 20) version)`,
   `AcceptTermsController` (`PUT /api/auth/me/terms`, authentifié), `AcceptTermsHandler`
   (409 `TERMS_VERSION_OUTDATED`).
-- [ ] `TermsVersion` : javadoc « bump à chaque modification importante, qui demande une
+- [x] `TermsVersion` : javadoc « bump à chaque modification importante, qui demande une
   ré-acceptation ».
 
 ### Tests
@@ -62,17 +62,17 @@ Status: Not started
 - `cd ageguessr-api && ./mvnw test` → vert.
 
 ### Phase Summary
-_(write when phase completes)_
+`User.hasAcceptedCurrentTerms` / `acceptTerms` (refuse une autre version que `CURRENT`, garde la première date), `ProfileResponse.termsAccepted`, slice `AcceptTerms`. Vérifié : `AcceptTermsHandlerTest`, `AcceptTermsFunctionalTest`, `./mvnw test` 1070 verts.
 
 ## Phase 2: Frontend
-Status: Not started
+Status: Complete
 
-- [ ] `AuthUser.termsAccepted` ; `Auth.acceptTerms(version)` qui met à jour `currentUser`.
-- [ ] `features/auth/terms-banner/` : visible si connecté, `termsAccepted` faux et pas
+- [x] `AuthUser.termsAccepted` ; `Auth.acceptTerms(version)` qui met à jour `currentUser`.
+- [x] `features/auth/terms-banner/` : visible si connecté, `termsAccepted` faux et pas
   masqué pour la session ; « Accepter » (envoie `TERMS_VERSION`), « Plus tard », lien
   `/terms`, lien `/account` ; 409 → recharge le profil, autre erreur → message.
-- [ ] `app.html` : le bandeau sous `<app-header />`.
-- [ ] Textes `$localize` + `messages.fr.xlf`.
+- [x] `app.html` : le bandeau sous `<app-header />`.
+- [x] Textes `$localize` + `messages.fr.xlf`.
 
 ### Tests
 - Unitaire (Vitest) : affiché ou non selon l'état, « Accepter » envoie la bonne version et
@@ -87,21 +87,21 @@ Status: Not started
 - `cd frontend && pnpm test && pnpm lint && pnpm build` → verts.
 
 ### Phase Summary
-_(write when phase completes)_
+`AuthUser.termsAccepted`, `Auth.acceptTerms`, `terms-banner` sous l'en-tête, traductions. Vérifié : `pnpm test` 295 verts, lint, build des deux langues ; Playwright `terms-banner.spec.ts` EN (dont téléphone) et FR, exécutés par la CI.
 
 ## Phase 3: Docs, revues, PR
-Status: Not started
+Status: Complete
 
-- [ ] `docs/decisions/architecture.md` (« Pages légales et acceptation des CGU »),
+- [x] `docs/decisions/architecture.md` (« Pages légales et acceptation des CGU »),
   `docs/roadmap.md`.
-- [ ] code-reviewer puis architecture-reviewer ; corriger 🔴 et 🟠.
-- [ ] PR vers `develop`, CI verte.
+- [x] code-reviewer puis architecture-reviewer ; corriger 🔴 et 🟠.
+- [x] PR vers `develop`, CI verte.
 
 ### Verification Plan
 - Tests backend et frontend verts ; CI de la PR verte.
 
 ### Phase Summary
-_(write when phase completes)_
+Docs `architecture.md` et `roadmap.md`. Revues : sécurité/RGPD sans 🔴 ni 🟠 (garde ajoutée dans `User.acceptTerms`) ; architecture, un 🟠 corrigé (javadoc déplacée dans `User`), `@Transactional` gardé (lecture + écriture groupées).
 
 ## Edge cases
 - Compte créé avant V3 (`terms_version` NULL) : bandeau.
@@ -114,7 +114,15 @@ _(write when phase completes)_
 - Invité : jamais de bandeau.
 
 ## Final Recap
-_(write when all phases complete)_
+Un compte dont les CGU acceptées ne sont pas celles en vigueur (ou aucune) voit un bandeau
+non bloquant : date du changement, lien vers les CGU, « Accept », « Later » (pour
+l'onglet), et le rappel qu'un refus passe par la suppression du compte. L'acceptation
+n'enregistre que la version en vigueur, avec la date de la première acceptation. L'API ne
+bloque rien d'autre. Pas d'écart au plan.
 
 ## Deployment Plan
-_(write when all phases complete)_
+1. Release `develop` → `main` (merge commit). Pas de migration : les colonnes existent
+   depuis V3.
+2. En prod, tous les comptes créés avant le 2026-11-03 verront le bandeau. Vérifier avec
+   un tel compte : bandeau visible, « Accept » le fait disparaître, il ne revient pas après
+   rechargement ; en base, `terms_version = '2026-11-03'` et `terms_accepted_at` renseigné.
