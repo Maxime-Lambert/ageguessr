@@ -6,6 +6,8 @@ export const USER = {
   username: 'Player',
   emailVerified: true,
   role: 'USER' as const,
+  // The language of the English pages the tests open: no reload to the other build.
+  language: 'EN' as const,
 };
 
 /** The app tries to restore a session on load: answer it deterministically. */

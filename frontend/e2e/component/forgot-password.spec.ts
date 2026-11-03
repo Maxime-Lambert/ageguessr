@@ -4,7 +4,7 @@ import { asGuest } from './session';
 test.describe('forgot-password page', () => {
   test('is reachable from the login page', async ({ page }) => {
     await asGuest(page);
-    await page.goto('/login');
+    await page.goto('/en/login');
 
     await page.getByRole('link', { name: 'Forgot password?' }).click();
 
@@ -17,7 +17,7 @@ test.describe('forgot-password page', () => {
       route.fulfill({ status: 204, body: '' }),
     );
 
-    await page.goto('/forgot-password');
+    await page.goto('/en/forgot-password');
     await page.locator('#email').fill('me@x.com');
     await page.getByRole('button', { name: 'Send reset link' }).click();
 

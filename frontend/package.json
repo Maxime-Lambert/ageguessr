@@ -12,7 +12,7 @@
     "lint": "ng lint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test:e2e": "playwright test --project=component",
+    "test:e2e": "playwright test --project=component --project=component-fr",
     "test:e2e:journeys": "playwright test --project=journeys"
   },
   "private": true,

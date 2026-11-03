@@ -50,10 +50,12 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true,
-              "localize": ["en"]
+              "localize": ["en"],
+              "baseHref": "/en/"
             },
             "fr": {
-              "localize": ["fr"]
+              "localize": ["fr"],
+              "baseHref": "/fr/"
             }
           },
           "defaultConfiguration": "production"
