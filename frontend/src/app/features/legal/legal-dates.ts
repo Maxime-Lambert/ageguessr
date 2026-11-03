@@ -3,7 +3,7 @@
  * TermsVersion.CURRENT in the API (ageguessr-api/.../features/auth/TermsVersion.java),
  * which is the version recorded on each new account: bump both together.
  */
-export const TERMS_VERSION = '2026-10-21';
+export const TERMS_VERSION = '2026-11-03';
 
 export const PRIVACY_UPDATED = '2026-11-03';
 export const LEGAL_NOTICE_UPDATED = '2026-10-21';

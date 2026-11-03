@@ -60,10 +60,10 @@ describe('Terms version', () => {
   }
 
   it('shows TERMS_VERSION as the last update date, in English', async () => {
-    expect(await updatedLine('en')).toContain('Last updated: 21 October 2026');
+    expect(await updatedLine('en')).toContain('Last updated: 3 November 2026');
   });
 
   it('shows TERMS_VERSION as the last update date, in French', async () => {
-    expect(await updatedLine('fr')).toContain('Dernière mise à jour : 21 octobre 2026');
+    expect(await updatedLine('fr')).toContain('Dernière mise à jour : 3 novembre 2026');
   });
 });

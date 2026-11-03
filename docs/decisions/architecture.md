@@ -742,6 +742,57 @@ jour-là.
 simplifie aussi la comparaison de scores entre amis (même partie = comparaison
 équitable).
 
+### Enquête libre et Défi (séries hors partie du jour)
+**Décision** (2026-11-03, PR `feature/free-investigation`) : en plus de la partie du
+jour, un joueur joue des séries de 5, 10 ou 20 photos, avec les mêmes règles. À la fin
+d'une série, son créateur peut la partager en défi : d'autres joueurs la rejoignent par
+un code et jouent les mêmes photos avec les mêmes indices, une fois chacun, puis voient
+un classement.
+
+- **Pas de seed** : une série est enregistrée à sa création (V15 : `free_series`,
+  `free_series_rounds`, `free_series_players`, `free_series_plays`). Un seed appliqué au
+  pool donnerait d'autres photos dès qu'une photo est approuvée ou retirée en curation.
+- **Mêmes règles, écrites une fois** : `RoundProgress` (`@Embeddable`) porte une manche
+  (étapes, points, indice, 2e essai). `GamePlay` et `FreeSeriesPlay` l'embarquent avec
+  les mêmes colonnes. `PlayedRound` l'expose aux vues et aux handlers.
+- **Mêmes indices pour tous** : `GameRound.hintKey()` vaut `date|position` pour la
+  partie du jour (la clé d'avant, donc aucun indice n'a changé), et
+  `series:<id>|position` pour une série. Les indices visent l'année de création de la
+  série moins l'âge.
+- **Tirage** (`SeriesDraw`) :
+  - tout le pool approuvé, sauf les photos de la partie du jour en cours. Risque
+    accepté par l'utilisateur : un joueur assidu peut reconnaître une photo dans une
+    future partie du jour ;
+  - les photos jamais vues par le joueur d'abord ;
+  - une seule photo par personne ;
+  - rotation des cases continent × genre, puisque 20 photos dépassent le nombre de
+    cases.
+- **Accès** : une série n'est visible et jouable que par ses joueurs. Pour tous les
+  autres, c'est le même 404 qu'une série inexistante. Un défi se lit par son code (8
+  caractères en base32 Crockford, `SecureRandom`). Le classement n'est montré qu'à qui a
+  fini, et ne contient que le nom affiché, le score et le rang.
+- **Nom dans un défi** :
+  - pour un compte, son nom d'utilisateur, lu par une jointure SQL sur `users` (le
+    `game` du backend n'importe pas `auth`) ;
+  - pour un invité, un pseudo au format d'un nom d'utilisateur, propre à ce défi et
+    marqué « invité » dans le classement.
+- **Conservation** (`PurgeSeries`, tous les jours) : une série non partagée part
+  7 jours après sa création, un défi 30 jours après son partage. Un code expiré donne un
+  404, comme un code inconnu.
+- **Limite de débit** `series` : 30 par heure et par IP sur la création de séries et le
+  `join`. Chaque série révèle l'âge de ses photos, et un script ne doit pas moissonner
+  le pool.
+- **Front** :
+  - `RoundsScreen<T>` (classe de base) est partagée par la partie du jour (`/`), l'Enquête
+    libre (`/free`) et le défi (`/challenge/:code`) ;
+  - le lien partagé est sans préfixe de langue, pour que Caddy envoie chaque ami vers la
+    sienne ;
+  - exception front **`game → auth`** : le défi lit `Auth.isAuthenticated` pour savoir
+    s'il faut demander un pseudo (même raison que `layout → auth`).
+
+**Raison** : le jeu quotidien ne se joue qu'une fois par jour. Ce mode donne de quoi
+jouer plus, et de quoi comparer ses scores entre amis sans attendre la feature Amis.
+
 ### Système d'amis
 **Décision** : système complet avec demandes d'ami (envoi/acceptation/refus), liste
 d'amis persistante, comparaison des scores quotidiens et historique.

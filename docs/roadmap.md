@@ -150,6 +150,9 @@ la suivante).
 - [x] Site en anglais et en français (`/en/`, `/fr/`, sélecteur dans l'en-tête), langue
       enregistrée sur le compte et emails dans cette langue, langue des indices choisie
       sur l'écran de jeu, administration en anglais — PR `feature/i18n`
+- [x] Enquête libre : séries de 5, 10 ou 20 photos hors partie du jour, et Défi :
+      une série partagée par un lien, jouée une fois par chaque ami, avec un classement
+      — PR `feature/free-investigation`
 
 ## Semaine 5 — Compte utilisateur + historique
 - [x] Inscription/connexion (frontend) + navigation (en-tête invité/connecté) — PR

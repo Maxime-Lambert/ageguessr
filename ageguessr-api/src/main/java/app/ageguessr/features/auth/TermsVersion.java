@@ -7,7 +7,7 @@ package app.ageguessr.features.auth;
  */
 public final class TermsVersion {
 
-    public static final String CURRENT = "2026-10-21";
+    public static final String CURRENT = "2026-11-03";
 
     private TermsVersion() {}
 }

@@ -73,7 +73,8 @@ connexion → ajout d'ami).
 pyramide (plus rapide, plus précis sur la cause d'un échec).
 
 **Lancer les parcours** : API en profil `e2e` (emails enregistrés, `/test-support/*`,
-dont `seed-daily-game` qui pose une partie du jour connue, et `last-email`, qui rend le
+dont `seed-daily-game` qui pose une partie du jour connue, `seed-free-pool` qui ajoute
+5 photos hors partie du jour pour tirer une série, et `last-email`, qui rend le
 sujet et le lien du dernier email d'une adresse : les parcours suivent ce lien tel quel,
 ce qui vérifie aussi son préfixe de langue), puis
 `cd frontend && pnpm test:e2e:journeys`. Deux précautions :
@@ -83,7 +84,9 @@ ce qui vérifie aussi son préfixe de langue), puis
 - **`AUTH_RATE_LIMIT_MAX_ATTEMPTS=1000`** : tous les parcours tournent en parallèle
   derrière la même IP (le proxy de dev), et chaque chargement de page appelle
   `/api/auth/refresh`. La limite de prod (20 par minute) les fait échouer à
-  l'inscription ou à la connexion, sans rapport avec le code testé.
+  l'inscription ou à la connexion, sans rapport avec le code testé. Pour la même raison,
+  si les parcours tournent souvent dans l'heure, `SERIES_RATE_LIMIT_MAX_ATTEMPTS=1000`
+  (30 séries ou `join` par heure en prod).
 
 ### Architecture
 Vérifie automatiquement les règles définies dans `docs/decisions/architecture.md` (pas
