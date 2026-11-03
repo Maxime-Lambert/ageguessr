@@ -10,7 +10,6 @@ import app.ageguessr.features.game.GameErrors;
 import app.ageguessr.features.game.PlayerKey;
 import app.ageguessr.features.game.SeriesViews;
 import app.ageguessr.features.game.ShareCodes;
-import app.ageguessr.shared.exceptions.ValidationException;
 import java.time.Clock;
 import java.util.Optional;
 import java.util.UUID;
@@ -48,7 +47,10 @@ public class ShareSeriesHandler {
             }
             if (player.guestId() != null) {
                 if (command.nickname() == null) {
-                    throw new ValidationException("NICKNAME_REQUIRED", "A guest names themselves to share");
+                    throw GameErrors.nicknameRequired();
+                }
+                if (players.isAccountUsername(command.nickname())) {
+                    throw GameErrors.nicknameTaken();
                 }
                 FreeSeriesPlayer creator = players.findOf(seriesId, player).orElseThrow();
                 creator.name(command.nickname());

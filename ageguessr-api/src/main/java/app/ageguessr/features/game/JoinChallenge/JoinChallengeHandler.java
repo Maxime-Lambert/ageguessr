@@ -5,8 +5,8 @@ import app.ageguessr.features.game.Challenges;
 import app.ageguessr.features.game.FreeSeries;
 import app.ageguessr.features.game.FreeSeriesPlayer;
 import app.ageguessr.features.game.FreeSeriesPlayerRepository;
+import app.ageguessr.features.game.GameErrors;
 import app.ageguessr.features.game.PlayerKey;
-import app.ageguessr.shared.exceptions.ValidationException;
 import java.time.Clock;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,10 @@ public class JoinChallengeHandler {
         if (players.findOf(shared.getId(), player).isEmpty()) {
             String nickname = player.guestId() != null ? command.nickname() : null;
             if (player.guestId() != null && nickname == null) {
-                throw new ValidationException("NICKNAME_REQUIRED", "A guest names themselves to join");
+                throw GameErrors.nicknameRequired();
+            }
+            if (nickname != null && players.isAccountUsername(nickname)) {
+                throw GameErrors.nicknameTaken();
             }
             try {
                 players.saveAndFlush(FreeSeriesPlayer.of(shared.getId(), player, nickname, clock.instant()));

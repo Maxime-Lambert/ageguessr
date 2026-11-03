@@ -3,15 +3,15 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
+import { ApiErrorResponse } from '../../../shared/api-error';
 import { ApiLanguage } from '../../../shared/i18n/language';
 import { Auth } from '../../auth/auth';
 import { DaySummary } from '../day-summary/day-summary';
-import { challengeIntro, shareText } from '../game-vocabulary';
+import { challengeIntro, nicknameError, shareText } from '../game-vocabulary';
 import { HintLanguagePicker } from '../hint-language-picker/hint-language-picker';
 import { Leaderboard } from '../leaderboard/leaderboard';
 import { Challenge, HintCategory, RoundView, Series } from '../models';
-import { Round } from '../round/round';
-import { RoundResult } from '../round-result/round-result';
+import { RoundPlayer } from '../round-player/round-player';
 import { RoundsScreen } from '../rounds-screen';
 import { SeriesApi } from '../series-api';
 import { NICKNAME_PATTERN, SHARE_TARGET, challengeUrl, squares } from '../share';
@@ -23,8 +23,7 @@ import { NICKNAME_PATTERN, SHARE_TARGET, challengeUrl, squares } from '../share'
  */
 @Component({
   imports: [
-    Round,
-    RoundResult,
+    RoundPlayer,
     DaySummary,
     HintLanguagePicker,
     Leaderboard,
@@ -93,7 +92,7 @@ export class ChallengePage extends RoundsScreen<Series> {
         this.joining.set(false);
         this.joinError.set(
           error.status === 400
-            ? this.text.nicknameInvalid
+            ? nicknameError((error.error as ApiErrorResponse | null)?.errorCode)
             : error.status === 429
               ? this.text.tooManySeries
               : error.status === 404

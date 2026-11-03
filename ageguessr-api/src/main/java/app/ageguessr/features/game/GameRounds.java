@@ -68,7 +68,7 @@ public class GameRounds {
     }
 
     /** A photo deleted between the two reads (person excluded meanwhile) neutralizes the round too. */
-    private GameRound load(LocalDate gameDate, UUID seriesId, DailyRoundRepository.RoundState state) {
+    private GameRound load(LocalDate gameDate, UUID seriesId, RoundState state) {
         GameRound neutralized =
                 new GameRound(gameDate, state.position(), DailyRoundStatus.NEUTRALIZED, null, null, seriesId);
         if (state.status() != DailyRoundStatus.PLAYABLE) {

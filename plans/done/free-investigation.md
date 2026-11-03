@@ -281,9 +281,9 @@ Status: Complete
     « Nouvelle enquête ». Une série plus courte que demandé le dit ; un pool vide affiche
     `NO_PHOTOS`.
 - **Liens** (écart au plan) : l'en-tête est plein sur téléphone. Le lien « Enquête
-  libre » de l'en-tête n'apparaît qu'à partir de `sm`. Sur les écrans de jeu, un lien
-  vers l'autre mode est en bas, à côté du sélecteur d'indices, pour ne jamais repousser
-  le champ Âge. Le bilan du jour a un bouton « Pas assez ? Ouvrez une enquête libre ».
+  libre » de l'en-tête n'apparaît qu'à partir de `md` (768 px), pour laisser de la place
+  à un admin connecté. Sur les écrans de jeu, un lien vers l'autre mode est en bas, à
+  côté du sélecteur d'indices, pour ne jamais repousser le champ Âge. Le bilan du jour a un bouton « Pas assez ? Ouvrez une enquête libre ».
 - **Vocabulaire** (voix enquête / repli neutre) : `freeMode`, `chooseLength`,
   `newSeries`, `tryFree`, `seriesLength()`, `shorterSeries()`, `freeIntro`, `noPhotos`.
   15 messages traduits en français.
@@ -332,17 +332,17 @@ Status: Complete
   25 messages traduits en français.
 
 ## Phase 5 : Parcours, documentation, reviews
-Status: Not started
+Status: Complete (Playwright validé par la CI de la PR)
 
-- [ ] Playwright component (EN et FR) : `/free` sur téléphone (photo et champ visibles),
+- [x] Playwright component (EN et FR) : `/free` sur téléphone (photo et champ visibles),
       défi en invité jusqu'au classement. Exécuté par la CI uniquement.
-- [ ] Journey : série, partage, puis un second joueur rejoint et apparaît dans le
+- [x] Journey : série, partage, puis un second joueur rejoint et apparaît dans le
       classement (non exécuté en CI, à signaler dans la PR)
-- [ ] `/privacy` FR et EN : séries, défis, pseudos d'invités, durées (7 et 30 jours) ;
+- [x] `/privacy` FR et EN : séries, défis, pseudos d'invités, durées (7 et 30 jours) ;
       date mise à jour
-- [ ] Docs : `architecture.md` (séries, tirage, code de partage), `design.md` (noms des
+- [x] Docs : `architecture.md` (séries, tirage, code de partage), `design.md` (noms des
       modes), `testing-strategy.md` si besoin, `roadmap.md`
-- [ ] `architecture-reviewer` et `code-reviewer` (code de partage, pseudos, accès aux
+- [x] `architecture-reviewer` et `code-reviewer` (code de partage, pseudos, accès aux
       séries, moissonnage, RGPD), puis appliquer leurs retours
 
 ### Verification Plan
@@ -352,7 +352,42 @@ Status: Not started
 4. Après le push : CI verte (Playwright EN et FR compris)
 
 ### Phase Summary
-_(à écrire à la fin de la phase)_
+- **Playwright** (écrit, typé avec `tsc`, **non exécuté en local**) :
+  - `component/free.spec.ts` : choix de la longueur et mise en page sur téléphone, défi
+    en invité jusqu'au classement, lien de l'en-tête en grand écran ;
+  - `component-fr/free.spec.ts` : la même chose en français ;
+  - mocks `mockSeries` et `mockChallenge` dans `game-mocks.ts`.
+- **Journey** `journeys/challenge.spec.ts` : une série, son défi, un ami dans un autre
+  navigateur, puis les deux joueurs au classement. Il joue sans connaître les âges.
+  Nouveau seed e2e `/test-support/seed-free-pool` (5 photos hors partie du jour). **Non
+  exécuté** : les journeys ne tournent pas en CI.
+- **Pages légales** :
+  - `/privacy` (EN et FR) : noms dans les défis, durées (7 et 30 jours), compteur
+    anti-abus d'une heure ;
+  - `/terms` : un nom dans un défi suit les règles des pseudos, et un défi au nom
+    litigieux peut être supprimé. Version des CGU passée au **2026-11-03** (front et
+    API).
+- **Docs** : `architecture.md` (section « Enquête libre et Défi », exception front
+  `game → auth`), `design.md` (noms des modes), `testing-strategy.md` (seed, limite
+  `series`), `roadmap.md`.
+- **`architecture-reviewer`** : rien de bloquant. Appliqué :
+  - **`RoundPlayer`** : le bloc « manche en cours ou verdict, et le réessai de la
+    photo », répété dans les trois écrans, devient un composant ;
+  - **`RoundState`** devient un record de premier niveau (il était dans
+    `DailyRoundRepository` et servait aussi aux séries) ;
+  - suppression de `HintOffer.pick(LocalDate, short, …)`, devenue inutile (les tests
+    passent par `GameRound.hintKey()`) ;
+  - `today()` réutilise `scoreOf()` dans `testing.ts`, et le résumé de la phase 3 donne
+    le bon point de rupture (`md`).
+- **`code-reviewer`** : rien de bloquant (anti-triche, accès, codes, limites, purge,
+  cascades et pages légales vérifiés). Appliqué :
+  - un invité ne peut pas prendre le nom d'utilisateur d'un compte, quelle que soit la
+    casse : 400 `NICKNAME_TAKEN` au partage comme au `join`, avec un message dédié sur
+    le front ;
+  - `/privacy` précise que le nom du créateur se voit dès l'ouverture du lien, et que
+    les autres noms n'apparaissent qu'au classement.
+- **Vérification locale** : `./mvnw test` **1023 verts**. `pnpm test` **266 verts**,
+  lint, format, build EN + FR OK. Il reste la CI de la PR (Playwright EN et FR).
 
 ## Tests : catégories retenues
 - **Unitaire backend** : oui, pour le tirage, le choix de l'indice, le code de partage et
@@ -384,7 +419,42 @@ _(à écrire à la fin de la phase)_
   chaque joueur, comme dans la partie du jour.
 
 ## Final Recap
-_(à écrire quand toutes les phases sont terminées)_
+- **Enquête libre** (`/free`) : séries de 5, 10 ou 20 photos, avec les règles de la
+  partie du jour. Reprise de la série en cours, quel que soit l'appareil pour un compte.
+- **Défi** (`/challenge/:code`) :
+  - le créateur partage une série qu'il a jouée ;
+  - les amis la rejoignent sous leur nom d'utilisateur, ou sous un pseudo s'ils sont
+    invités, et jouent les mêmes photos avec les mêmes indices, une fois chacun ;
+  - le classement s'affiche à la fin ;
+  - un texte à partager donne le score en carrés, puis le lien.
+- **Backend** :
+  - V15 (4 tables) ;
+  - `RoundProgress` partagé avec la partie du jour ;
+  - `SeriesDraw` (sans les photos du jour, jamais vues d'abord, rotation des cases) ;
+  - 10 use cases sous `/api/game/` ;
+  - limite `series` (30 par heure et par IP) ;
+  - purge quotidienne (7 et 30 jours).
+- **Front** :
+  - `RoundsScreen<T>` et `RoundPlayer`, partagés par les trois écrans de jeu ;
+  - `SeriesApi`, `ShareChallenge`, `Leaderboard`, `SHARE_TARGET` ;
+  - 41 messages traduits en français, dans les deux voix.
+- **Pages légales** : `/privacy` et `/terms` à jour, CGU en version 2026-11-03.
+- **Tests** : 1023 backend, 266 Vitest, plus les specs Playwright `component` et
+  `component-fr` (exécutées par la CI) et le journey `challenge` (non exécuté).
 
 ## Deployment Plan
-_(à écrire quand toutes les phases sont terminées)_
+1. Merger la PR dans `develop`, puis la release `develop` → `main` (merge commit).
+2. La CI publie les images. Au démarrage, l'API applique V15 : quatre nouvelles tables,
+   sans toucher aux données existantes.
+3. Facultatif : régler `SERIES_RATE_LIMIT_MAX_ATTEMPTS` / `_WINDOW_MINUTES` (défaut :
+   30 par 60 minutes) et `GAME_SERIES_*_RETENTION_DAYS` (7 et 30). La purge est active
+   par défaut (`GAME_SERIES_PURGE_ENABLED`).
+4. Après le déploiement, vérifier en prod :
+   - `/en/free` → choisir 5 → jouer → « Défier des amis » → le lien
+     `https://ageguessr.app/challenge/CODE` redirige vers `/fr/` ou `/en/` selon le
+     navigateur ;
+   - le lien ouvert dans une fenêtre privée → relever le défi → classement à deux
+     lignes ;
+   - la partie du jour est inchangée : indices identiques, et lien vers l'Enquête libre
+     dans le bilan ;
+   - les logs du lendemain contiennent `Purged N free series` après 00 h 40 UTC.

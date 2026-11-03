@@ -2,6 +2,7 @@ package app.ageguessr.features.game;
 
 import app.ageguessr.shared.exceptions.ConflictException;
 import app.ageguessr.shared.exceptions.NotFoundException;
+import app.ageguessr.shared.exceptions.ValidationException;
 
 /**
  * The business refusals of the game. Those of a guess are 409: the request is valid, the
@@ -52,5 +53,14 @@ public final class GameErrors {
 
     public static ConflictException seriesNotFinished() {
         return new ConflictException("SERIES_NOT_FINISHED", "A series is shared once played");
+    }
+
+    /** A guest's nickname is an account's username: they would pass for it. */
+    public static ValidationException nicknameTaken() {
+        return new ValidationException("NICKNAME_TAKEN", "This name belongs to an account");
+    }
+
+    public static ValidationException nicknameRequired() {
+        return new ValidationException("NICKNAME_REQUIRED", "A guest names themselves in a challenge");
     }
 }

@@ -49,17 +49,7 @@ export function finished(position: number, overrides: Partial<RoundReveal> = {})
 }
 
 export function today(rounds: RoundView[], overrides: Partial<TodayGame> = {}): TodayGame {
-  const playable = rounds.filter((r) => r.status === 'PLAYABLE');
-  return {
-    date: '2026-11-02',
-    rounds,
-    score: {
-      points: playable.reduce((sum, r) => sum + (r.result?.points ?? 0), 0),
-      max: playable.length * 1000,
-      complete: playable.every((r) => r.step === 'FINISHED'),
-    },
-    ...overrides,
-  };
+  return { date: '2026-11-02', rounds, score: scoreOf(rounds), ...overrides };
 }
 
 function scoreOf(rounds: RoundView[]): GameScore {

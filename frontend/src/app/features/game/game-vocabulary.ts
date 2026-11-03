@@ -83,6 +83,7 @@ export const GAME_TEXT = {
   nicknameLabel: $localize`:@@game.nicknameLabel:Your name in the challenge`,
   nicknameRules: $localize`:@@game.nicknameRules:3 to 20 letters, digits, "_" or "-". Everyone with the link sees it.`,
   nicknameInvalid: $localize`:@@game.nicknameInvalid:Use 3 to 20 letters, digits, "_" or "-".`,
+  nicknameTaken: $localize`:@@game.nicknameTaken:This name belongs to an account. Choose another one.`,
   createChallenge: $localize`:@@game.createChallenge:Create the link`,
   challengeLink: $localize`:@@game.challengeLink:Link to the challenge`,
   share: $localize`:@@game.share:Share`,
@@ -148,4 +149,9 @@ export function shareText(points: number, max: number, squares: string, url: str
     $localize`:@@game.shareText:Ageguessr · ${GAME_TEXT.challenge}:challenge: · ${points}:points: / ${max}:max:` +
     `\n${squares}\n${url}`
   );
+}
+
+/** Why a nickname was refused (400): taken by an account, or not in the format. */
+export function nicknameError(errorCode: string | undefined): string {
+  return errorCode === 'NICKNAME_TAKEN' ? GAME_TEXT.nicknameTaken : GAME_TEXT.nicknameInvalid;
 }

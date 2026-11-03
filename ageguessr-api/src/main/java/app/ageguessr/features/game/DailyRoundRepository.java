@@ -11,9 +11,6 @@ public interface DailyRoundRepository extends JpaRepository<DailyRound, DailyRou
 
     List<DailyRound> findByGameDateOrderByPosition(LocalDate gameDate);
 
-    /** A round of a day with whether it can still be played. */
-    record RoundState(short position, UUID photoId, DailyRoundStatus status) {}
-
     /**
      * The rounds of a day, in order. A round is neutralized when its photo is gone
      * (excluded person) or no longer approved; the excluded check guards the gap in case
@@ -21,7 +18,7 @@ public interface DailyRoundRepository extends JpaRepository<DailyRound, DailyRou
      */
     @Query(
             """
-            SELECT new app.ageguessr.features.game.DailyRoundRepository$RoundState(
+            SELECT new app.ageguessr.features.game.RoundState(
                 r.position, r.photoId,
                 CASE WHEN ph.reviewStatus = app.ageguessr.features.people.ReviewStatus.APPROVED
                           AND p.excluded = false

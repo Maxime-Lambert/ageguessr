@@ -772,6 +772,10 @@
         <source>Ageguessr · <x id="challenge" equiv-text="GAME_TEXT.challenge"/> · <x id="points" equiv-text="points"/> / <x id="max" equiv-text="max"/></source>
         <target>Ageguessr · <x id="challenge" equiv-text="GAME_TEXT.challenge"/> · <x id="points" equiv-text="points"/> / <x id="max" equiv-text="max"/></target>
       </trans-unit>
+      <trans-unit id="game.nicknameTaken" datatype="html">
+        <source>This name belongs to an account. Choose another one.</source>
+        <target>Ce nom appartient à un compte. Choisissez-en un autre.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

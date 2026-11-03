@@ -45,4 +45,13 @@ public interface FreeSeriesPlayerRepository extends JpaRepository<FreeSeriesPlay
                     """,
             nativeQuery = true)
     List<PlayerName> findNamesOf(@Param("seriesId") UUID seriesId);
+
+    /**
+     * Whether a nickname is an account's username, whatever its case: a guest may not take
+     * it, or they would pass for that account in a leaderboard. SQL, as findNamesOf.
+     */
+    @Query(
+            value = "SELECT EXISTS (SELECT 1 FROM users WHERE LOWER(username) = LOWER(:nickname))",
+            nativeQuery = true)
+    boolean isAccountUsername(@Param("nickname") String nickname);
 }

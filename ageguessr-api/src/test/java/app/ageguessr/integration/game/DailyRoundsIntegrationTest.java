@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import app.ageguessr.TestcontainersConfiguration;
 import app.ageguessr.features.game.DailyRound;
 import app.ageguessr.features.game.DailyRoundRepository;
-import app.ageguessr.features.game.DailyRoundRepository.RoundState;
+import app.ageguessr.features.game.RoundState;
 import app.ageguessr.features.game.DailyRoundStatus;
 import app.ageguessr.features.game.DrawDailyGame.DrawCandidate;
 import app.ageguessr.features.game.DrawDailyGame.DrawCandidateRepository;

@@ -6,8 +6,7 @@ import { DaySummary } from '../day-summary/day-summary';
 import { GameApi } from '../game-api';
 import { HintLanguagePicker } from '../hint-language-picker/hint-language-picker';
 import { HintCategory, RoundView, TodayGame } from '../models';
-import { Round } from '../round/round';
-import { RoundResult } from '../round-result/round-result';
+import { RoundPlayer } from '../round-player/round-player';
 import { RoundsScreen } from '../rounds-screen';
 
 /**
@@ -15,7 +14,7 @@ import { RoundsScreen } from '../rounds-screen';
  * from today's rounds (game_plays).
  */
 @Component({
-  imports: [Round, RoundResult, DaySummary, HintLanguagePicker, RouterLink],
+  imports: [RoundPlayer, DaySummary, HintLanguagePicker, RouterLink],
   selector: 'app-game',
   templateUrl: './game.html',
 })

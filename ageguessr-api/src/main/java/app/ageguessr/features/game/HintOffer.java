@@ -3,7 +3,6 @@ package app.ageguessr.features.game;
 import app.ageguessr.shared.i18n.Language;
 import app.ageguessr.features.hints.Hint;
 import app.ageguessr.features.hints.HintCategory;
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -36,14 +35,12 @@ public final class HintOffer {
 
     /**
      * The same hint for everyone who asks this category in this round and language: the
-     * index comes from a hash of the four (day or series, position, category, language). String.hashCode is defined by the language
-     * spec, so it does not change across restarts, unlike the hash of an enum.
+     * index comes from a hash of the four (day or series, position, category, language).
+     * String.hashCode is defined by the language spec, so it does not change across
+     * restarts, unlike the hash of an enum.
+     *
+     * @param roundKey {@link GameRound#hintKey()}: the day and position, or the series and position
      */
-    public Optional<Hint> pick(LocalDate gameDate, short position, HintCategory category, Language language) {
-        return pick(gameDate + "|" + position, category, language);
-    }
-
-    /** @param roundKey {@link GameRound#hintKey()}: the day and position, or the series and position */
     public Optional<Hint> pick(String roundKey, HintCategory category, Language language) {
         if (!offers(category)) {
             return Optional.empty();

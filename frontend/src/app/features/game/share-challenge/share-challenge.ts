@@ -1,8 +1,9 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, input, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ApiErrorResponse } from '../../../shared/api-error';
 import { Auth } from '../../auth/auth';
-import { GAME_TEXT, shareText } from '../game-vocabulary';
+import { GAME_TEXT, nicknameError, shareText } from '../game-vocabulary';
 import { Leaderboard } from '../leaderboard/leaderboard';
 import { Challenge, Series } from '../models';
 import { SeriesApi } from '../series-api';
@@ -72,8 +73,12 @@ export class ShareChallenge {
       },
       error: (error: HttpErrorResponse) => {
         this.busy.set(false);
-        // 400: a nickname missing or refused (NICKNAME_REQUIRED, VALIDATION_ERROR).
-        this.error.set(error.status === 400 ? this.text.nicknameInvalid : this.text.genericError);
+        // 400: a nickname missing, refused or taken by an account.
+        this.error.set(
+          error.status === 400
+            ? nicknameError((error.error as ApiErrorResponse | null)?.errorCode)
+            : this.text.genericError,
+        );
       },
     });
   }

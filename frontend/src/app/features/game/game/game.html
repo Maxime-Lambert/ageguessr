@@ -26,25 +26,20 @@
       @if (game.rounds.length === 0) {
         <p>{{ text.noGame }}</p>
       } @else if (active(); as round) {
-        @if (round.step === 'FINISHED') {
-          <app-round-result [round]="round" [total]="total()" [last]="isLast()" (next)="next()" />
-        } @else {
-          <app-round
-            [round]="round"
-            [total]="total()"
-            [busy]="busy() || status() === 'loading'"
-            [error]="error()"
-            (guessed)="round.step === 'NOT_STARTED' ? firstGuess($event) : secondGuess($event)"
-            (hintPicked)="pickHint($event)"
-            (imageFailed)="onImageFailed()"
-          />
-          @if (imageFailed()) {
-            <p class="text-danger mt-2 text-sm" role="alert">{{ text.imageFailed }}</p>
-            <button type="button" class="text-accent mt-1 underline" (click)="load()">
-              {{ text.retry }}
-            </button>
-          }
-        }
+        <app-round-player
+          [round]="round"
+          [total]="total()"
+          [last]="isLast()"
+          [busy]="busy() || status() === 'loading'"
+          [error]="error()"
+          [imageFailed]="imageFailed()"
+          (firstGuess)="firstGuess($event)"
+          (secondGuess)="secondGuess($event)"
+          (hintPicked)="pickHint($event)"
+          (imageError)="onImageFailed()"
+          (next)="next()"
+          (retry)="load()"
+        />
       } @else {
         <app-day-summary [game]="game">
           <p class="text-muted mt-4 text-sm">{{ text.comeBack }}</p>

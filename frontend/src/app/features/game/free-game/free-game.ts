@@ -8,8 +8,7 @@ import { DaySummary } from '../day-summary/day-summary';
 import { seriesLength, shorterSeries } from '../game-vocabulary';
 import { HintLanguagePicker } from '../hint-language-picker/hint-language-picker';
 import { HintCategory, RoundView, SERIES_SIZES, Series, SeriesSize } from '../models';
-import { Round } from '../round/round';
-import { RoundResult } from '../round-result/round-result';
+import { RoundPlayer } from '../round-player/round-player';
 import { RoundsScreen } from '../rounds-screen';
 import { SeriesApi } from '../series-api';
 import { ShareChallenge } from '../share-challenge/share-challenge';
@@ -20,7 +19,7 @@ import { ShareChallenge } from '../share-challenge/share-challenge';
  * is picked up again, from the server, on any device of an account.
  */
 @Component({
-  imports: [Round, RoundResult, DaySummary, HintLanguagePicker, RouterLink, ShareChallenge],
+  imports: [RoundPlayer, DaySummary, HintLanguagePicker, RouterLink, ShareChallenge],
   selector: 'app-free-game',
   templateUrl: './free-game.html',
 })

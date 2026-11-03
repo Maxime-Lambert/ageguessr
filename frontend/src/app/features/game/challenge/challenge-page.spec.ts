@@ -81,6 +81,24 @@ describe('ChallengePage', () => {
     expect(page.textContent).toContain(GAME_TEXT.nicknameInvalid);
   });
 
+  it('says when the name belongs to an account', () => {
+    opened(challenge());
+
+    const input = page.querySelector<HTMLInputElement>('#nickname')!;
+    input.value = 'holmes';
+    input.dispatchEvent(new Event('input'));
+    page.querySelector('form')!.dispatchEvent(new Event('submit'));
+    http
+      .expectOne('/api/game/challenges/K7F2QX9M/join')
+      .flush(
+        { errorCode: 'NICKNAME_TAKEN', message: 'x' },
+        { status: 400, statusText: 'Bad Request' },
+      );
+    fixture.detectChanges();
+
+    expect(page.textContent).toContain(GAME_TEXT.nicknameTaken);
+  });
+
   it('shows the leaderboard once the last round is played', () => {
     opened(challenge({ status: 'PLAYING', seriesId: 'series-1' }));
     http.expectOne('/api/game/series/series-1').flush(series([round(1)], { creator: false }));

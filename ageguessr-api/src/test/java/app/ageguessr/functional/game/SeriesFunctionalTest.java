@@ -303,6 +303,11 @@ class SeriesFunctionalTest {
         AuthFlows.registerAndVerify(mockMvc, objectMapper, emailSender, email, username, PASSWORD);
         String token = AuthFlows.login(mockMvc, objectMapper, email, PASSWORD).accessToken();
 
+        // A guest may not pass for this account, whatever the case.
+        join(code, "{\"nickname\":\"%s\"}".formatted(username.toUpperCase()), null)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorCode").value("NICKNAME_TAKEN"));
+
         MockHttpServletRequestBuilder join = post("/api/game/challenges/" + code + "/join")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token);
         perform(join, "{\"nickname\":\"Ignored\"}", null)

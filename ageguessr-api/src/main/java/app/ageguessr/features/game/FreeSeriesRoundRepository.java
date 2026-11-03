@@ -11,7 +11,7 @@ public interface FreeSeriesRoundRepository extends JpaRepository<FreeSeriesRound
     /** As {@link DailyRoundRepository#findStatesOf}: neutralized when the photo is gone or no longer approved. */
     @Query(
             """
-            SELECT new app.ageguessr.features.game.DailyRoundRepository$RoundState(
+            SELECT new app.ageguessr.features.game.RoundState(
                 r.position, r.photoId,
                 CASE WHEN ph.reviewStatus = app.ageguessr.features.people.ReviewStatus.APPROVED
                           AND p.excluded = false
@@ -23,5 +23,5 @@ public interface FreeSeriesRoundRepository extends JpaRepository<FreeSeriesRound
             WHERE r.seriesId = :seriesId
             ORDER BY r.position
             """)
-    List<DailyRoundRepository.RoundState> findStatesOf(@Param("seriesId") UUID seriesId);
+    List<RoundState> findStatesOf(@Param("seriesId") UUID seriesId);
 }
