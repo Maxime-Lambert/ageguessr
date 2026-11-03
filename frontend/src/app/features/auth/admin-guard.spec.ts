@@ -37,6 +37,7 @@ describe('adminGuard', () => {
       email: 'admin@x.com',
       username: 'Admin',
       emailVerified: true,
+      termsAccepted: true,
       role: 'ADMIN',
       language: 'EN',
     });
@@ -51,6 +52,7 @@ describe('adminGuard', () => {
       email: 'user@x.com',
       username: 'Player',
       emailVerified: true,
+      termsAccepted: true,
       role: 'USER',
       language: 'EN',
     });

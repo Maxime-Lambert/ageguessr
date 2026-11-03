@@ -10,6 +10,7 @@ const USER = {
   email: 'me@x.com',
   username: 'Player',
   emailVerified: true,
+  termsAccepted: true,
   role: 'USER' as const,
   language: 'EN' as const,
 };

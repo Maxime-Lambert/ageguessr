@@ -179,8 +179,8 @@ la suivante).
       cookies nécessaire tant qu'il n'y a que des traceurs strictement nécessaires)
 - [ ] Purge des comptes jamais vérifiés et des comptes inactifs (durées à fixer, puis à
       annoncer dans la politique de confidentialité)
-- [ ] Ré-acceptation des CGU à chaque nouvelle version (`users.terms_version` déjà
-      enregistré)
+- [x] Ré-acceptation des CGU à chaque nouvelle version (`users.terms_version` déjà
+      enregistré) — bandeau non bloquant, PR `feature/terms-reacceptance`
 - [ ] Double authentification (TOTP), seule protection si la boîte mail d'un joueur est
       compromise (voir `docs/decisions/architecture.md`, « Récupération du compte »)
 - [ ] Partage de résultat façon Wordle (grille/emoji, pas de compte requis)

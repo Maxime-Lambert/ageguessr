@@ -1,12 +1,13 @@
 import { Component, effect, inject, untracked } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Auth } from './features/auth/auth';
+import { TermsBanner } from './features/auth/terms-banner/terms-banner';
 import { SiteLanguageService } from './features/i18n/site-language';
 import { Footer } from './features/layout/footer/footer';
 import { Header } from './features/layout/header/header';
 
 @Component({
-  imports: [RouterOutlet, Header, Footer],
+  imports: [RouterOutlet, Header, TermsBanner, Footer],
   selector: 'app-root',
   styleUrl: './app.css',
   templateUrl: './app.html',

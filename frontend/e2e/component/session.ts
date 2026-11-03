@@ -5,6 +5,7 @@ export const USER = {
   email: 'me@x.com',
   username: 'Player',
   emailVerified: true,
+  termsAccepted: true,
   role: 'USER' as const,
   // The language of the English pages the tests open: no reload to the other build.
   language: 'EN' as const,

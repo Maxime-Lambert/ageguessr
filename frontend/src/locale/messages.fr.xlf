@@ -14,6 +14,22 @@
         <source>Privacy Policy · Ageguessr</source>
         <target>Politique de confidentialité · Ageguessr</target>
       </trans-unit>
+      <trans-unit id="termsBanner.title" datatype="html">
+        <source>Our Terms of Use changed on <x id="INTERPOLATION" equiv-text="{{ updated }}"/>.</source>
+        <target>Nos conditions d'utilisation ont changé le <x id="INTERPOLATION" equiv-text="{{ updated }}"/>.</target>
+      </trans-unit>
+      <trans-unit id="termsBanner.body" datatype="html">
+        <source>Please read <x id="START_LINK" ctype="x-a" equiv-text="&lt;a routerLink=&quot;/terms&quot; class=&quot;text-accent underline&quot;&gt;"/>the new Terms<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/> and accept them. If you do not, you can delete your account from <x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a routerLink=&quot;/account&quot; class=&quot;text-accent underline&quot;&gt;"/>your account page<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>.</source>
+        <target>Merci de lire <x id="START_LINK" ctype="x-a" equiv-text="&lt;a routerLink=&quot;/terms&quot; class=&quot;text-accent underline&quot;&gt;"/>les nouvelles conditions<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/> et de les accepter. Sinon, vous pouvez supprimer votre compte depuis <x id="START_LINK_1" ctype="x-a" equiv-text="&lt;a routerLink=&quot;/account&quot; class=&quot;text-accent underline&quot;&gt;"/>la page de votre compte<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>.</target>
+      </trans-unit>
+      <trans-unit id="termsBanner.accept" datatype="html">
+        <source>Accept</source>
+        <target>Accepter</target>
+      </trans-unit>
+      <trans-unit id="termsBanner.later" datatype="html">
+        <source>Later</source>
+        <target>Plus tard</target>
+      </trans-unit>
       <trans-unit id="account.title" datatype="html">
         <source>Your account</source>
         <target>Votre compte</target>
