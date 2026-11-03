@@ -1,5 +1,5 @@
 import { Service, inject, signal } from '@angular/core';
-import { ApiLanguage, toApi } from '../i18n/language';
+import { ApiLanguage, toApi } from '../../shared/i18n/language';
 import { SiteLanguageService } from '../i18n/site-language';
 
 const STORAGE_KEY = 'ageguessr-hint-language';

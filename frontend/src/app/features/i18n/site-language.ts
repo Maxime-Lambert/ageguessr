@@ -4,7 +4,13 @@ import { Router } from '@angular/router';
 import { Observable, map } from 'rxjs';
 import { Auth } from '../auth/auth';
 import { AuthUser } from '../auth/models';
-import { SiteLanguage, fromApi, languageCookie, siteLanguageOf, toApi } from './language';
+import {
+  SiteLanguage,
+  fromApi,
+  languageCookie,
+  siteLanguageOf,
+  toApi,
+} from '../../shared/i18n/language';
 
 /** The real page, behind a token so that the specs never leave theirs. */
 export interface BrowserPage {

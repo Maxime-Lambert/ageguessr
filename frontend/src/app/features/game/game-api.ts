@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Service, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ApiLanguage } from '../i18n/language';
+import { ApiLanguage } from '../../shared/i18n/language';
 import { HintCategory, RoundView, TodayGame } from './models';
 
 /**

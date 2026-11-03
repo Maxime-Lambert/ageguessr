@@ -2,7 +2,6 @@ package app.ageguessr.features.auth;
 
 import app.ageguessr.shared.email.EmailMessage;
 import app.ageguessr.shared.email.EmailSender;
-import app.ageguessr.shared.i18n.Language;
 import app.ageguessr.shared.security.OpaqueTokenGenerator;
 import java.time.Clock;
 import java.time.Duration;
@@ -50,8 +49,7 @@ public class EmailVerificationService {
                 .build());
 
         String link = links.to(user, "/confirm-email", token.rawValue());
-        AccountEmailTexts.Text text =
-                AccountEmailTexts.emailVerification(Language.orDefault(user.getLanguage()), link);
+        AccountEmailTexts.Text text = AccountEmailTexts.emailVerification(user.languageOrDefault(), link);
         emailSender.send(new EmailMessage(user.getEmail(), text.subject(), text.html()));
     }
 }

@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { ApiLanguage } from '../../i18n/language';
+import { ApiLanguage } from '../../../shared/i18n/language';
 import { GAME_TEXT } from '../game-vocabulary';
 import { HintLanguage } from '../hint-language';
 

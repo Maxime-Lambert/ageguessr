@@ -2,7 +2,6 @@ package app.ageguessr.features.auth;
 
 import app.ageguessr.shared.email.EmailMessage;
 import app.ageguessr.shared.email.EmailSender;
-import app.ageguessr.shared.i18n.Language;
 import java.time.Duration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -39,7 +38,7 @@ public class AccountEmails {
     public void sendPasswordReset(User user) {
         String link = links.to(user, "/reset-password", accountTokenService.issue(
                 user.getId(), AccountTokenPurpose.PASSWORD_RESET, passwordResetTtl));
-        send(user, AccountEmailTexts.passwordReset(language(user), link));
+        send(user, AccountEmailTexts.passwordReset(user.languageOrDefault(), link));
     }
 
     /**
@@ -51,21 +50,16 @@ public class AccountEmails {
     public void sendPasswordChanged(User user) {
         String link = links.to(user, "/reset-password", accountTokenService.issue(
                 user.getId(), AccountTokenPurpose.PASSWORD_RESET, secureAccountTtl));
-        send(user, AccountEmailTexts.passwordChanged(language(user), link));
+        send(user, AccountEmailTexts.passwordChanged(user.languageOrDefault(), link));
     }
 
     public void sendDeletionConfirmation(User user) {
         String link = links.to(user, "/confirm-account-deletion", accountTokenService.issue(
                 user.getId(), AccountTokenPurpose.ACCOUNT_DELETION, deletionTtl));
-        send(user, AccountEmailTexts.deletionConfirmation(language(user), link));
+        send(user, AccountEmailTexts.deletionConfirmation(user.languageOrDefault(), link));
     }
 
     private void send(User user, AccountEmailTexts.Text text) {
         emailSender.send(new EmailMessage(user.getEmail(), text.subject(), text.html()));
-    }
-
-    /** English for an account that never chose a language. */
-    private static Language language(User user) {
-        return Language.orDefault(user.getLanguage());
     }
 }

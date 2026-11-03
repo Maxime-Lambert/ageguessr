@@ -1,6 +1,5 @@
 package app.ageguessr.features.auth;
 
-import app.ageguessr.shared.i18n.Language;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +18,6 @@ public class AccountLinks {
     }
 
     public String to(User user, String path, String rawToken) {
-        return frontendUrl + "/" + Language.orDefault(user.getLanguage()).code() + path + "?token=" + rawToken;
+        return frontendUrl + "/" + user.languageOrDefault().code() + path + "?token=" + rawToken;
     }
 }

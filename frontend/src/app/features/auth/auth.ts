@@ -13,7 +13,7 @@ import {
   take,
   tap,
 } from 'rxjs';
-import { ApiLanguage } from '../i18n/language';
+import { ApiLanguage } from '../../shared/i18n/language';
 import { AuthUser, LoginResponse, RefreshResponse, RegisterResponse } from './models';
 
 @Service()

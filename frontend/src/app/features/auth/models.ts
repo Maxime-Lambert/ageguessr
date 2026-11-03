@@ -1,4 +1,4 @@
-import { ApiLanguage } from '../i18n/language';
+import { ApiLanguage } from '../../shared/i18n/language';
 
 export type UserRole = 'USER' | 'ADMIN';
 

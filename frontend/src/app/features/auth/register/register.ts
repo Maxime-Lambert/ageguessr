@@ -4,7 +4,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Auth } from '../auth';
-import { toApi } from '../../i18n/language';
+import { toApi } from '../../../shared/i18n/language';
 import { SiteLanguageService } from '../../i18n/site-language';
 import { USERNAME_PATTERN } from '../models';
 import {
