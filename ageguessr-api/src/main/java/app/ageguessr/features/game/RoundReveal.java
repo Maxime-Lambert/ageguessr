@@ -36,7 +36,7 @@ public record RoundReveal(
     /** @param author null when Commons names none, the screen then says so */
     public record Credit(String author, String license, String licenseUrl, String sourceUrl) {}
 
-    public static RoundReveal of(GamePlay play, PersonPhoto photo, Person person, GameHint hint) {
+    public static RoundReveal of(PlayedRound play, PersonPhoto photo, Person person, GameHint hint) {
         Language language = play.getLanguage();
         return new RoundReveal(
                 photo.getAgeAtPhoto(),

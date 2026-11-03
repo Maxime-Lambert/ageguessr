@@ -135,21 +135,21 @@ mais c'est la CI de la PR qui les exécute (`docs/testing-strategy.md`).
 - Une série commencée puis abandonnée reste reprenable tant qu'elle n'est pas purgée.
 
 ## Phase 1 : Backend, séries solo
-Status: Not started
+Status: Complete
 
-- [ ] Extraire la logique d'une manche de `GamePlay` dans un objet commun. Les tests
+- [x] Extraire la logique d'une manche de `GamePlay` dans un objet commun. Les tests
       existants doivent rester verts sans modification.
-- [ ] V15 : tables `free_series`, `free_series_rounds`, `free_series_players`,
+- [x] V15 : tables `free_series`, `free_series_rounds`, `free_series_players`,
       `free_series_plays` (contraintes, index uniques, cascades)
-- [ ] Entités et repositories
-- [ ] `SeriesDraw` : pool sans les photos du jour, photos jamais vues d'abord, rotation
+- [x] Entités et repositories
+- [x] `SeriesDraw` : pool sans les photos du jour, photos jamais vues d'abord, rotation
       des cases, série plus courte si le pool manque
-- [ ] `POST /api/series {size}` (5, 10 ou 20, sinon 400) → id et manches (sans âge)
-- [ ] `GET /api/series/{id}`, puis 1er essai, indice et 2e essai sur
+- [x] `POST /api/series {size}` (5, 10 ou 20, sinon 400) → id et manches (sans âge)
+- [x] `GET /api/series/{id}`, puis 1er essai, indice et 2e essai sur
       `/api/series/{id}/rounds/{position}/…`, réservés aux joueurs de la série (sinon 404)
-- [ ] Indices de série (année depuis `created_on`, hash avec `series_id`)
-- [ ] Limite de débit sur la création
-- [ ] Tests :
+- [x] Indices de série (année depuis `created_on`, hash avec `series_id`)
+- [x] Limite de débit sur la création
+- [x] Tests :
   - unitaires : `SeriesDraw` (seed fixe : exclusion du jour, jamais vues d'abord,
     rotation des cases, pool trop petit), choix de l'indice ;
   - intégration : contraintes de V15 et cascades ;
@@ -162,16 +162,45 @@ Status: Not started
 - `cd ageguessr-api && ./mvnw test` → vert
 
 ### Phase Summary
-_(à écrire à la fin de la phase)_
+- **`RoundProgress`** (`@Embeddable`) regroupe les règles d'une manche : étapes, points,
+  indice, 2e essai. `GamePlay` et `FreeSeriesPlay` l'embarquent avec les mêmes colonnes.
+  L'interface **`PlayedRound`** expose ses getters par des méthodes `default`, donc
+  `RoundViews`, `RoundReveal` et les tests existants n'ont pas changé.
+- **`GameRound.seriesId`** (null pour la partie du jour) et **`hintKey()`** : la clé de
+  l'indice du jour reste exactement `date|position`, donc aucun indice ne change le jour
+  de la mise en prod (test dédié). Une série utilise `series:<id>|position`.
+- **`GameScore`** remplace `TodayGameResponse.Score` (même JSON), et sert aussi aux
+  séries.
+- **V15** : `free_series`, `free_series_rounds`, `free_series_players`,
+  `free_series_plays`. Contraintes (taille 5/10/20, code base32 Crockford, un seul joueur
+  par ligne, pseudo d'invité seulement), index uniques (une tentative par joueur et par
+  manche, un `join` par joueur), cascades depuis `users` et `free_series`.
+- **`SeriesDraw`** : sans les photos du jour, jamais vues d'abord, une personne une seule
+  fois, rotation des cases. `SeriesCandidateRepository.findSeenBy` est en JPQL : l'autre
+  id du joueur est null, et une requête SQL native typerait mal ce paramètre.
+- **Endpoints**, tous sous `/api/game/` (déjà publics, JWT facultatif, comptés par la
+  limite du jeu) :
+  - `POST /api/game/series {size}` ;
+  - `GET /api/game/series/{id}` ;
+  - `GET /api/game/series/current` (204 sans série en cours) ;
+  - `POST …/series/{id}/rounds/{position}/first-guess|hint|second-guess`.
+  Une série inconnue, purgée ou d'un autre joueur donne le même 404.
+- **Limite `series`** : 30 par heure et par IP (`SERIES_RATE_LIMIT_*`), sur
+  `POST /api/game/series` et, en phase 2, sur le `join`.
+- **Écart au plan** : un défi expiré est purgé, donc son code donne un 404 comme un code
+  inconnu (pas de 410). Le front affichera « Défi introuvable ou expiré ».
+- **Tests** : `SeriesDrawTest` (6 cas, dont 4 répétés 20 fois avec des seeds
+  différents), `HintOfferTest` (+2), `FreeSeriesIntegrationTest` (13),
+  `SeriesFunctionalTest` (6). `./mvnw test` : **1012 verts**.
 
 ## Phase 2 : Backend, défis
 Status: Not started
 
-- [ ] `POST /api/series/{id}/share` : réservé au créateur, série terminée, renvoie le
+- [ ] `POST /api/game/series/{id}/share` : réservé au créateur, série terminée, renvoie le
       code (le même à chaque appel)
-- [ ] `GET /api/challenges/{code}` : présentation (créateur, taille), état du joueur,
-      classement s'il a fini, 410 si le défi a expiré
-- [ ] `POST /api/challenges/{code}/join` : pseudo obligatoire pour un invité, interdit
+- [ ] `GET /api/game/challenges/{code}` : présentation (créateur, taille), état du joueur,
+      classement s'il a fini, 404 si le défi est inconnu ou expiré (purgé)
+- [ ] `POST /api/game/challenges/{code}/join` : pseudo obligatoire pour un invité, interdit
       pour un compte ; un seul `join` par joueur
 - [ ] Classement : joueurs qui ont fini, tri par score puis par heure de fin, nom affiché
       seulement
@@ -183,7 +212,7 @@ Status: Not started
   - fonctionnels : partage puis `join` par un invité, puis un compte, puis classement ;
     partage refusé si la série n'est pas finie ou si on n'en est pas le créateur ;
     classement caché tant qu'on n'a pas fini ; pas de seconde tentative ; défi expiré en
-    410 ; pseudo invalide en 400 ;
+    404 ; pseudo invalide en 400 ;
   - intégration : purge (7 et 30 jours, bornes comprises), suppression de compte puis
     classement.
 

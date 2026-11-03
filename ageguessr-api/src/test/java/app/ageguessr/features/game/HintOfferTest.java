@@ -59,6 +59,28 @@ class HintOfferTest {
     }
 
     @Test
+    void picksForADailyRoundExactlyAsBeforeTheSeriesExisted() {
+        List<Hint> music = hints(HintCategory.MUSIC, 9);
+        HintOffer offer = new HintOffer(music);
+        GameRound daily = new GameRound(DAY, (short) 2, DailyRoundStatus.PLAYABLE, null, null);
+
+        assertThat(daily.hintKey()).isEqualTo("2026-11-02|2");
+        assertThat(offer.pick(daily.hintKey(), HintCategory.MUSIC, Language.FR))
+                .isEqualTo(offer.pick(DAY, (short) 2, HintCategory.MUSIC, Language.FR));
+    }
+
+    @Test
+    void picksTheSameHintForEveryPlayerOfASeriesRound() {
+        List<Hint> music = hints(HintCategory.MUSIC, 9);
+        UUID seriesId = UUID.fromString("00000000-0000-0000-0000-000000000042");
+        GameRound round = new GameRound(DAY, (short) 3, DailyRoundStatus.PLAYABLE, null, null, seriesId);
+
+        assertThat(round.hintKey()).isEqualTo("series:" + seriesId + "|3");
+        assertThat(new HintOffer(music).pick(round.hintKey(), HintCategory.MUSIC, Language.EN))
+                .isEqualTo(new HintOffer(List.copyOf(music)).pick(round.hintKey(), HintCategory.MUSIC, Language.EN));
+    }
+
+    @Test
     void spreadsThePicksAcrossTheHintsOfACategory() {
         List<Hint> music = hints(HintCategory.MUSIC, 6);
         HintOffer offer = new HintOffer(music);

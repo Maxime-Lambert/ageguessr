@@ -1,8 +1,12 @@
 package app.ageguessr.features.game;
 
 import app.ageguessr.shared.exceptions.ConflictException;
+import app.ageguessr.shared.exceptions.NotFoundException;
 
-/** The business refusals of a guess, all 409: the request is valid, the moment is not. */
+/**
+ * The business refusals of the game. Those of a guess are 409: the request is valid, the
+ * moment is not.
+ */
 public final class GameErrors {
 
     private GameErrors() {}
@@ -14,7 +18,7 @@ public final class GameErrors {
 
     /** The photo was rejected or its person excluded since the draw: out for everyone. */
     public static ConflictException roundNeutralized() {
-        return new ConflictException("ROUND_NEUTRALIZED", "This round was removed from today's game");
+        return new ConflictException("ROUND_NEUTRALIZED", "This round was removed from the game");
     }
 
     /** Already played, not yet allowed, or played at the same time from another tab. */
@@ -24,5 +28,15 @@ public final class GameErrors {
 
     public static ConflictException categoryUnavailable() {
         return new ConflictException("CATEGORY_UNAVAILABLE", "No hint of this category for this round");
+    }
+
+    /** Unknown, purged, or not one of the player's series: the same answer for all three. */
+    public static NotFoundException seriesNotFound() {
+        return new NotFoundException("No such series");
+    }
+
+    /** The pool has no photo left to draw (empty in a fresh environment). */
+    public static ConflictException noPhotos() {
+        return new ConflictException("NO_PHOTOS", "No photo can be drawn for a series");
     }
 }

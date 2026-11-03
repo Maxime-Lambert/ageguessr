@@ -32,7 +32,7 @@ public class RevealHintHandler {
                 .filter(found -> found.step() == RoundStep.AWAITING_HINT)
                 .orElseThrow(GameErrors::wrongStep);
         Hint hint = views.offer(round, play.getLanguage())
-                .pick(gameDate, position, command.category(), play.getLanguage())
+                .pick(round.hintKey(), command.category(), play.getLanguage())
                 .orElseThrow(GameErrors::categoryUnavailable);
         play.revealHint(command.category(), hint.getId());
         try {
