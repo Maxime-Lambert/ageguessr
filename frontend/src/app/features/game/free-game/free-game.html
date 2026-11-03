@@ -1,0 +1,82 @@
+<main class="mx-auto max-w-xl px-4 py-8">
+  <h1 class="font-display text-3xl">{{ text.freeMode }}</h1>
+
+  @if (notice(); as notice) {
+    <p class="bg-surface border-border mt-4 rounded-md border p-3 text-sm" role="status">
+      {{ notice }}
+    </p>
+  }
+
+  <div class="mt-6">
+    @if (status() === 'loading' && !game()) {
+      <p class="text-muted">{{ text.loading }}</p>
+    } @else if (status() === 'error') {
+      <p class="text-danger" role="alert">{{ text.genericError }}</p>
+      <button type="button" class="text-accent mt-2 underline" (click)="game() ? load() : choose()">
+        {{ text.retry }}
+      </button>
+    } @else if (choosing()) {
+      <p class="text-muted">{{ text.freeIntro }}</p>
+      <h2 id="length-title" class="font-display mt-6 text-xl">{{ text.chooseLength }}</h2>
+      <div role="group" aria-labelledby="length-title" class="mt-3 flex flex-wrap gap-3">
+        @for (size of sizes; track size) {
+          <button
+            type="button"
+            class="bg-accent text-accent-foreground rounded-md px-4 py-2 font-medium"
+            [disabled]="starting()"
+            (click)="start(size)"
+          >
+            {{ seriesLength(size) }}
+          </button>
+        }
+      </div>
+      @if (startError(); as startError) {
+        <p class="text-danger mt-3 text-sm" role="alert">{{ startError }}</p>
+      }
+    } @else if (game(); as series) {
+      @if (shorter(); as shorter) {
+        <p class="text-muted mb-4 text-sm" role="status">{{ shorter }}</p>
+      }
+      @if (active(); as round) {
+        @if (round.step === 'FINISHED') {
+          <app-round-result [round]="round" [total]="total()" [last]="isLast()" (next)="next()" />
+        } @else {
+          <app-round
+            [round]="round"
+            [total]="total()"
+            [busy]="busy() || status() === 'loading'"
+            [error]="error()"
+            (guessed)="round.step === 'NOT_STARTED' ? firstGuess($event) : secondGuess($event)"
+            (hintPicked)="pickHint($event)"
+            (imageFailed)="onImageFailed()"
+          />
+          @if (imageFailed()) {
+            <p class="text-danger mt-2 text-sm" role="alert">{{ text.imageFailed }}</p>
+            <button type="button" class="text-accent mt-1 underline" (click)="load()">
+              {{ text.retry }}
+            </button>
+          }
+        }
+      } @else {
+        <app-day-summary [game]="series">
+          <div class="mt-6 flex flex-wrap gap-3">
+            <button
+              type="button"
+              class="bg-accent text-accent-foreground rounded-md px-4 py-2 font-medium"
+              (click)="choose()"
+            >
+              {{ text.newSeries }}
+            </button>
+          </div>
+        </app-day-summary>
+      }
+    }
+  </div>
+
+  <!-- Below the round, as on the daily game: on a phone nothing may push the guess field
+       off the screen. -->
+  <div class="mt-6 flex flex-wrap items-center justify-between gap-3">
+    <a routerLink="/" class="text-accent text-sm font-medium underline">{{ text.dailyGame }}</a>
+    <app-hint-language-picker />
+  </div>
+</main>

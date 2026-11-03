@@ -1,6 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { GAME_TEXT } from '../game-vocabulary';
 import { TodayGame } from '../models';
 import { finished, round, today } from '../testing';
@@ -15,7 +16,7 @@ describe('Game', () => {
   beforeEach(() => {
     localStorage.clear();
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
     });
     http = TestBed.inject(HttpTestingController);
     fixture = TestBed.createComponent(Game);
@@ -135,6 +136,15 @@ describe('Game', () => {
     expect(page.textContent).toContain(GAME_TEXT.summary);
   });
 
+  it('leads from the summary of the day to the free investigation', () => {
+    load(today([finished(1)]));
+
+    const link = Array.from(page.querySelectorAll('a')).find(
+      (a) => a.textContent?.trim() === GAME_TEXT.tryFree,
+    );
+    expect(link?.getAttribute('href')).toBe('/free');
+  });
+
   it('says when there is no game today', () => {
     load(today([]));
 
@@ -180,6 +190,15 @@ describe('Game', () => {
     load(today([finished(1)]));
 
     expect(page.textContent).toContain(GAME_TEXT.summary);
+  });
+
+  it('leads from the summary of the day to the free investigation', () => {
+    load(today([finished(1)]));
+
+    const link = Array.from(page.querySelectorAll('a')).find(
+      (a) => a.textContent?.trim() === GAME_TEXT.tryFree,
+    );
+    expect(link?.getAttribute('href')).toBe('/free');
   });
 
   it('keeps the round on screen after any other error', () => {

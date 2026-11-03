@@ -19,6 +19,10 @@ export const INVESTIGATION_VOICE = {
   next: $localize`:@@game.voice.next:Next case`,
   seeSummary: $localize`:@@game.voice.seeSummary:See the case report`,
   removed: $localize`:@@game.voice.removed:Withdrawn from the file`,
+  freeMode: $localize`:@@game.voice.freeMode:Free investigation`,
+  chooseLength: $localize`:@@game.voice.chooseLength:How many cases?`,
+  newSeries: $localize`:@@game.voice.newSeries:New investigation`,
+  tryFree: $localize`:@@game.voice.tryFree:Not enough? Open a free investigation`,
 };
 
 export const NEUTRAL_VOICE: typeof INVESTIGATION_VOICE = {
@@ -32,6 +36,10 @@ export const NEUTRAL_VOICE: typeof INVESTIGATION_VOICE = {
   next: $localize`:@@game.neutral.next:Next round`,
   seeSummary: $localize`:@@game.neutral.seeSummary:See the summary`,
   removed: $localize`:@@game.neutral.removed:Photo removed`,
+  freeMode: $localize`:@@game.neutral.freeMode:Series`,
+  chooseLength: $localize`:@@game.neutral.chooseLength:How many rounds?`,
+  newSeries: $localize`:@@game.neutral.newSeries:New series`,
+  tryFree: $localize`:@@game.neutral.tryFree:Not enough? Play a series`,
 };
 
 const VOICE = INVESTIGATION_VOICE;
@@ -66,7 +74,21 @@ export const GAME_TEXT = {
   genericError: COMMON_MESSAGES.genericError,
   comeBack: $localize`:@@game.comeBack:A new file opens at midnight UTC.`,
   hintLanguage: $localize`:@@game.hintLanguage:Hints in`,
+  freeIntro: $localize`:@@game.freeIntro:Same rules as the daily game, as many as you like. Nothing here counts toward the daily game.`,
+  noPhotos: $localize`:@@game.noPhotos:No photo is available right now. Try again later.`,
 };
+
+/** A length of series to choose, in the voice of the game. */
+export function seriesLength(count: number): string {
+  return VOICE === INVESTIGATION_VOICE
+    ? $localize`:@@game.voice.length:${count}:count: cases`
+    : $localize`:@@game.neutral.length:${count}:count: rounds`;
+}
+
+/** A series drawn shorter than asked: the pool ran short. */
+export function shorterSeries(count: number): string {
+  return $localize`:@@game.shorterSeries:Only ${count}:count: photos could be drawn this time.`;
+}
 
 /** The side only, never how far: no "warm" or "cold" (« Déroulé d'une manche »). */
 export function directionText(direction: Direction, guess: number): string {

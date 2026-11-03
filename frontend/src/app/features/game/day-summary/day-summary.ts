@@ -1,14 +1,17 @@
 import { Component, ElementRef, afterNextRender, computed, input, viewChild } from '@angular/core';
 import { GAME_TEXT } from '../game-vocabulary';
-import { TodayGame } from '../models';
+import { PlayedRounds } from '../models';
 
-/** The end of the day: the score, then one line per round, a withdrawn one included. */
+/**
+ * The end of a game, daily or of a series: the score, then one line per round, a withdrawn
+ * one included. What follows (come back tomorrow, a new series) is projected by the screen.
+ */
 @Component({
   selector: 'app-day-summary',
   templateUrl: './day-summary.html',
 })
 export class DaySummary {
-  readonly game = input.required<TodayGame>();
+  readonly game = input.required<PlayedRounds>();
 
   protected readonly text = GAME_TEXT;
 

@@ -612,6 +612,66 @@
         <source>Too many attempts. Please wait a minute and try again.</source>
         <target>Trop de tentatives. Attendez une minute, puis réessayez.</target>
       </trans-unit>
+      <trans-unit id="title.free" datatype="html">
+        <source>Free investigation · Ageguessr</source>
+        <target>Enquête libre · Ageguessr</target>
+      </trans-unit>
+      <trans-unit id="game.voice.freeMode" datatype="html">
+        <source>Free investigation</source>
+        <target>Enquête libre</target>
+      </trans-unit>
+      <trans-unit id="game.voice.chooseLength" datatype="html">
+        <source>How many cases?</source>
+        <target>Combien d'affaires ?</target>
+      </trans-unit>
+      <trans-unit id="game.voice.newSeries" datatype="html">
+        <source>New investigation</source>
+        <target>Nouvelle enquête</target>
+      </trans-unit>
+      <trans-unit id="game.voice.tryFree" datatype="html">
+        <source>Not enough? Open a free investigation</source>
+        <target>Pas assez ? Ouvrez une enquête libre</target>
+      </trans-unit>
+      <trans-unit id="game.neutral.freeMode" datatype="html">
+        <source>Series</source>
+        <target>Série</target>
+      </trans-unit>
+      <trans-unit id="game.neutral.chooseLength" datatype="html">
+        <source>How many rounds?</source>
+        <target>Combien de manches ?</target>
+      </trans-unit>
+      <trans-unit id="game.neutral.newSeries" datatype="html">
+        <source>New series</source>
+        <target>Nouvelle série</target>
+      </trans-unit>
+      <trans-unit id="game.neutral.tryFree" datatype="html">
+        <source>Not enough? Play a series</source>
+        <target>Pas assez ? Jouez une série</target>
+      </trans-unit>
+      <trans-unit id="game.freeIntro" datatype="html">
+        <source>Same rules as the daily game, as many as you like. Nothing here counts toward the daily game.</source>
+        <target>Les mêmes règles que la partie du jour, autant de fois que vous le voulez. Rien ici ne compte pour la partie du jour.</target>
+      </trans-unit>
+      <trans-unit id="game.noPhotos" datatype="html">
+        <source>No photo is available right now. Try again later.</source>
+        <target>Aucune photo n'est disponible pour le moment. Réessayez plus tard.</target>
+      </trans-unit>
+      <trans-unit id="game.voice.length" datatype="html">
+        <source><x id="count" equiv-text="count"/> cases</source>
+        <target><x id="count" equiv-text="count"/> affaires</target>
+      </trans-unit>
+      <trans-unit id="game.neutral.length" datatype="html">
+        <source><x id="count" equiv-text="count"/> rounds</source>
+        <target><x id="count" equiv-text="count"/> manches</target>
+      </trans-unit>
+      <trans-unit id="game.shorterSeries" datatype="html">
+        <source>Only <x id="count" equiv-text="count"/> photos could be drawn this time.</source>
+        <target>Seulement <x id="count" equiv-text="count"/> photos ont pu être tirées cette fois.</target>
+      </trans-unit>
+      <trans-unit id="header.free" datatype="html">
+        <source>Free investigation</source>
+        <target>Enquête libre</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

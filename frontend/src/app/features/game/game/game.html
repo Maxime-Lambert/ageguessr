@@ -46,12 +46,22 @@
           }
         }
       } @else {
-        <app-day-summary [game]="game" />
+        <app-day-summary [game]="game">
+          <p class="text-muted mt-4 text-sm">{{ text.comeBack }}</p>
+          <a
+            routerLink="/free"
+            class="bg-accent text-accent-foreground mt-4 inline-block rounded-md px-4 py-2 font-medium"
+            >{{ text.tryFree }}</a
+          >
+        </app-day-summary>
       }
     }
   </div>
 
   <!-- Below the round, not beside the title: on a phone it would wrap and push the guess
        field off the screen. -->
-  <app-hint-language-picker class="mt-6 flex justify-end" />
+  <div class="mt-6 flex flex-wrap items-center justify-between gap-3">
+    <a routerLink="/free" class="text-accent text-sm font-medium underline">{{ text.freeMode }}</a>
+    <app-hint-language-picker />
+  </div>
 </main>

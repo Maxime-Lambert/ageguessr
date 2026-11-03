@@ -45,11 +45,64 @@ export interface RoundView {
   result: RoundReveal | null;
 }
 
-export interface TodayGame {
-  date: string;
+/** Finished playable rounds only, out of 1 000 per playable round. */
+export interface GameScore {
+  points: number;
+  max: number;
+  /** No playable round is left to play. */
+  complete: boolean;
+}
+
+/** What every game screen plays: rounds, one after the other, and their score. */
+export interface PlayedRounds {
   rounds: RoundView[];
-  /** Finished playable rounds only, out of 1 000 per playable round. */
-  score: { points: number; max: number; complete: boolean };
+  score: GameScore;
+}
+
+export interface TodayGame extends PlayedRounds {
+  date: string;
+}
+
+/** The lengths of a free series (FreeSeries.SIZES). */
+export const SERIES_SIZES = [5, 10, 20] as const;
+export type SeriesSize = (typeof SERIES_SIZES)[number];
+
+/** A free series as the player sees it (/api/game/series). */
+export interface Series extends PlayedRounds {
+  id: string;
+  /** Asked for: `rounds` may hold fewer when the pool ran short. */
+  size: number;
+  /** The code of the challenge once shared, else null. */
+  shareCode: string | null;
+  /** Only the creator shares the series. */
+  creator: boolean;
+}
+
+export type ChallengeStatus = 'NOT_JOINED' | 'PLAYING' | 'FINISHED';
+
+export interface LeaderboardEntry {
+  /** Equal points share a rank (1, 1, 3). */
+  rank: number;
+  name: string;
+  /** A nickname rather than an account's username. */
+  guest: boolean;
+  points: number;
+  max: number;
+  you: boolean;
+}
+
+/** A challenge (/api/game/challenges/{code}): the leaderboard only once finished. */
+export interface Challenge {
+  code: string;
+  size: number;
+  rounds: number;
+  creatorName: string | null;
+  creatorGuest: boolean;
+  status: ChallengeStatus;
+  /** To play it, once joined. */
+  seriesId: string | null;
+  score: GameScore | null;
+  leaderboard: LeaderboardEntry[];
 }
 
 /** The guesses an age can take, as the API validates them (no minor on a photo). */

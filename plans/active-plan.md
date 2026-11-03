@@ -251,15 +251,15 @@ Status: Complete
   inconnu), `RateLimitFunctionalTest` (+1). `./mvnw test` : **1023 verts**.
 
 ## Phase 3 : Front, Enquête libre
-Status: Not started
+Status: Complete
 
-- [ ] `game-api.ts` : base d'URL de manche (partie du jour ou série), appels des séries
-- [ ] Route `/free` : choix de la longueur, jeu (`round`, `round-result`), bilan
+- [x] `game-api.ts` : base d'URL de manche (partie du jour ou série), appels des séries
+- [x] Route `/free` : choix de la longueur, jeu (`round`, `round-result`), bilan
       (« Nouvelle série », « Défier des amis »), reprise d'une série en cours
-- [ ] Vocabulaire (`game-vocabulary.ts`, voix enquête et repli neutre) et
+- [x] Vocabulaire (`game-vocabulary.ts`, voix enquête et repli neutre) et
       `messages.fr.xlf`
-- [ ] Lien dans l'en-tête et depuis le bilan de la partie du jour
-- [ ] Specs Vitest : choix de la longueur, enchaînement des manches, nouvelle série,
+- [x] Lien dans l'en-tête et depuis le bilan de la partie du jour
+- [x] Specs Vitest : choix de la longueur, enchaînement des manches, nouvelle série,
       reprise
 
 ### Verification Plan
@@ -267,7 +267,28 @@ Status: Not started
   traduction manquante
 
 ### Phase Summary
-_(à écrire à la fin de la phase)_
+- **`RoundsScreen<T>`** (`features/game/rounds-screen.ts`, classe abstraite `@Directive`) :
+  ce que `Game` faisait de ses manches (charger, jouer une étape, passer à la suivante,
+  recharger sur un 409, réessayer une photo) est extrait. `Game` et `FreeGame` en
+  héritent et ne disent que comment lire leurs manches et où envoyer une étape. Le
+  template et la spec de `Game` sont inchangés (la spec fournit seulement le routeur).
+- **`SeriesApi`** (séries et défis), et dans `models.ts` : `GameScore`, `PlayedRounds`,
+  `Series`, `Challenge`, `LeaderboardEntry`, `SERIES_SIZES`.
+- **`/free`** (`FreeGame`) :
+  - au chargement, reprise de la série en cours (`/current`), sinon choix de la
+    longueur ;
+  - jeu, puis bilan (`DaySummary`, devenu générique avec `ng-content` pour la suite) et
+    « Nouvelle enquête ». Une série plus courte que demandé le dit ; un pool vide affiche
+    `NO_PHOTOS`.
+- **Liens** (écart au plan) : l'en-tête est plein sur téléphone. Le lien « Enquête
+  libre » de l'en-tête n'apparaît qu'à partir de `sm`. Sur les écrans de jeu, un lien
+  vers l'autre mode est en bas, à côté du sélecteur d'indices, pour ne jamais repousser
+  le champ Âge. Le bilan du jour a un bouton « Pas assez ? Ouvrez une enquête libre ».
+- **Vocabulaire** (voix enquête / repli neutre) : `freeMode`, `chooseLength`,
+  `newSeries`, `tryFree`, `seriesLength()`, `shorterSeries()`, `freeIntro`, `noPhotos`.
+  15 messages traduits en français.
+- **Specs** : `free-game.spec.ts` (5), `game.spec.ts` (+1). `pnpm test` **254 verts**,
+  lint, format, build EN + FR OK.
 
 ## Phase 4 : Front, Défi et partage
 Status: Not started
