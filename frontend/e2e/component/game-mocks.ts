@@ -100,3 +100,110 @@ export async function mockGame(
   });
   return sent;
 }
+
+const SERIES_ID = 'series-1';
+
+function finishedRound(position: number) {
+  return round(position, {
+    step: 'FINISHED',
+    firstGuess: 40,
+    result: {
+      ...RESULT,
+      firstGuess: 40,
+      firstPoints: 500,
+      secondGuess: null,
+      secondPoints: null,
+      points: 1000,
+    },
+  });
+}
+
+function seriesOf(rounds: ReturnType<typeof round>[], size = rounds.length) {
+  const playable = rounds.filter((r) => r.status === 'PLAYABLE');
+  return {
+    id: SERIES_ID,
+    size,
+    rounds,
+    score: {
+      points: playable.filter((r) => r.step === 'FINISHED').length * 1000,
+      max: playable.length * 1000,
+      complete: playable.every((r) => r.step === 'FINISHED'),
+    },
+    shareCode: null,
+    creator: true,
+  };
+}
+
+/**
+ * Mocks a free series of `count` rounds, none in progress: every guess is exact (40), so
+ * a round ends at its first guess. Returns the bodies sent to start a series.
+ */
+export async function mockSeries(page: Page, count = 5): Promise<unknown[]> {
+  const started: unknown[] = [];
+  let rounds = Array.from({ length: count }, (_, i) => round(i + 1));
+  await asGuest(page);
+  await page.route('**/api/images/*', (route) =>
+    route.fulfill({ status: 200, contentType: 'image/png', body: PIXEL }),
+  );
+  await page.route('**/api/game/series/current', (route) => route.fulfill({ status: 204 }));
+  await page.route('**/api/game/series', (route) => {
+    started.push(route.request().postDataJSON());
+    return route.fulfill(json(seriesOf(rounds, count)));
+  });
+  await page.route(`**/api/game/series/${SERIES_ID}`, (route) =>
+    route.fulfill(json(seriesOf(rounds))),
+  );
+  await page.route(`**/api/game/series/${SERIES_ID}/rounds/*/first-guess`, (route) => {
+    const position = Number(route.request().url().split('/').slice(-2)[0]);
+    rounds = rounds.map((r) => (r.position === position ? finishedRound(position) : r));
+    return route.fulfill(json(finishedRound(position)));
+  });
+  return started;
+}
+
+/**
+ * Mocks a challenge from "Sherlock" on a series of `count` rounds, for a guest who has not
+ * joined yet. Returns the bodies sent to join.
+ */
+export async function mockChallenge(page: Page, count = 5): Promise<unknown[]> {
+  const joined: unknown[] = [];
+  let status = 'NOT_JOINED';
+  await mockSeries(page, count);
+  const challenge = () => ({
+    code: 'K7F2QX9M',
+    size: count,
+    rounds: count,
+    creatorName: 'Sherlock',
+    creatorGuest: true,
+    status,
+    seriesId: status === 'NOT_JOINED' ? null : SERIES_ID,
+    score: null,
+    leaderboard:
+      status === 'FINISHED'
+        ? [
+            {
+              rank: 1,
+              name: 'Watson',
+              guest: true,
+              points: count * 1000,
+              max: count * 1000,
+              you: true,
+            },
+            { rank: 2, name: 'Sherlock', guest: true, points: 1200, max: count * 1000, you: false },
+          ]
+        : [],
+  });
+  await page.route('**/api/game/challenges/K7F2QX9M', (route) => {
+    // Asked again once the series is finished: the leaderboard comes with it.
+    if (status === 'PLAYING') {
+      status = 'FINISHED';
+    }
+    return route.fulfill(json(challenge()));
+  });
+  await page.route('**/api/game/challenges/K7F2QX9M/join', (route) => {
+    joined.push(route.request().postDataJSON());
+    status = 'PLAYING';
+    return route.fulfill(json(challenge()));
+  });
+  return joined;
+}

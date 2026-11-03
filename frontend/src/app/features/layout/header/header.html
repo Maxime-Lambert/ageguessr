@@ -8,6 +8,14 @@
     aria-label="Account"
     i18n-aria-label="@@header.nav"
   >
+    <!-- From md up only: below, the header is full, and the game screens link to the
+         free investigation themselves. -->
+    <a
+      routerLink="/free"
+      class="hover:text-accent hidden shrink-0 text-sm font-medium md:inline"
+      i18n="@@header.free"
+      >Free investigation</a
+    >
     @if (auth.currentUser(); as user) {
       @if (user.role === 'ADMIN') {
         <a routerLink="/admin/curation" class="hover:text-accent shrink-0 text-sm font-medium"

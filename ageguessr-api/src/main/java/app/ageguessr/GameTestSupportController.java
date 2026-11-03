@@ -35,7 +35,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Test-only: gives the Playwright journeys a known game today, without the random draw.
+ * Test-only: gives the Playwright journeys a known game today, without the random draw,
+ * and photos for the free series.
  * Replaces today's rounds (and the games played on them) with three new people, one per
  * box, each with an approved photo, an image and enough hints in two categories. Returns
  * the ages, so a journey can play an exact guess.
@@ -53,6 +54,8 @@ public class GameTestSupportController {
             new Seed(Gender.FEMALE, Continent.EUROPE, 40),
             new Seed(Gender.MALE, Continent.ASIA, 55),
             new Seed(Gender.FEMALE, Continent.AFRICA, 30));
+
+    private static final int FREE_POOL_SIZE = 5;
 
     private static final List<HintCategory> CATEGORIES = List.of(HintCategory.MUSIC, HintCategory.FILM);
 
@@ -84,6 +87,26 @@ public class GameTestSupportController {
         }
         return new SeededGame(today, SEEDS.stream().map(Seed::age).toList());
     }
+
+    /**
+     * Five more people, out of today's game, so that a free series can be drawn on a fresh
+     * database: today's photos never go into a series. All aged 40, with hints.
+     */
+    @PostMapping("/test-support/seed-free-pool")
+    @Transactional
+    public SeededPool seedFreePool() {
+        LocalDate today = LocalDate.now(clock);
+        byte[] jpeg = jpeg();
+        Continent[] continents = Continent.values();
+        for (int i = 0; i < FREE_POOL_SIZE; i++) {
+            Seed seed = new Seed(i % 2 == 0 ? Gender.MALE : Gender.FEMALE, continents[i % continents.length], 40);
+            savePhoto(savePerson(seed, 100 + i), seed.age(), today, jpeg);
+        }
+        saveHints(today.getYear() - 40);
+        return new SeededPool(FREE_POOL_SIZE);
+    }
+
+    public record SeededPool(int photos) {}
 
     public record SeededGame(LocalDate date, List<Integer> ages) {}
 

@@ -8,7 +8,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-import app.ageguessr.features.game.DailyRoundRepository.RoundState;
+import app.ageguessr.features.game.RoundState;
 import app.ageguessr.features.people.Person;
 import app.ageguessr.features.people.PersonPhoto;
 import app.ageguessr.features.people.PersonPhotoRepository;
@@ -24,8 +24,9 @@ class GameRoundsTest {
 
     private final DailyRoundRepository dailyRounds = mock(DailyRoundRepository.class);
     private final PersonPhotoRepository photos = mock(PersonPhotoRepository.class);
+    private final FreeSeriesRoundRepository seriesRounds = mock(FreeSeriesRoundRepository.class);
     private final PersonRepository people = mock(PersonRepository.class);
-    private final GameRounds rounds = new GameRounds(dailyRounds, photos, people, CLOCK);
+    private final GameRounds rounds = new GameRounds(dailyRounds, seriesRounds, photos, people, CLOCK);
 
     @Test
     void loadsAPlayableRoundWithItsPhotoAndPerson() {

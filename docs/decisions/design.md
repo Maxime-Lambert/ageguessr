@@ -176,6 +176,8 @@ avec un ton un peu taquin et journalistique dans les textes de résultat. C'est 
 | Catégorie d'indice | *lead* | *hint* |
 | Révélation du résultat | *verdict* / *case closed* | *result* |
 | Récapitulatif final | *case report* | *summary* |
+| Mode hors partie du jour | *free investigation* | *series* |
+| Série partagée entre amis | *challenge* | *challenge* |
 
 **Raison** : cohérent avec l'ambiance visuelle archives. Mais un vocabulaire thématique
 peut gêner la compréhension d'un jeu qu'on découvre : d'où l'essai plutôt qu'un choix

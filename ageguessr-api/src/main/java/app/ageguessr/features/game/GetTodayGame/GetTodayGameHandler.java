@@ -1,17 +1,15 @@
 package app.ageguessr.features.game.GetTodayGame;
 
-import app.ageguessr.features.game.DailyRoundStatus;
 import app.ageguessr.features.game.DrawDailyGame.DrawDailyGameHandler;
 import app.ageguessr.features.game.GamePlay;
 import app.ageguessr.features.game.GamePlayRepository;
 import app.ageguessr.features.game.GameProperties;
 import app.ageguessr.features.game.GameRound;
 import app.ageguessr.features.game.GameRounds;
+import app.ageguessr.features.game.GameScore;
 import app.ageguessr.features.game.PlayerKey;
-import app.ageguessr.features.game.RoundStep;
 import app.ageguessr.features.game.RoundView;
 import app.ageguessr.features.game.RoundViews;
-import app.ageguessr.features.game.Scoring;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.util.List;
@@ -51,18 +49,6 @@ public class GetTodayGameHandler {
         List<RoundView> roundViews = day.stream()
                 .map(round -> views.of(round, played.get(round.position())))
                 .toList();
-        return new TodayGameResponse(today, roundViews, score(roundViews));
-    }
-
-    private static TodayGameResponse.Score score(List<RoundView> rounds) {
-        List<RoundView> playable = rounds.stream()
-                .filter(round -> round.status() == DailyRoundStatus.PLAYABLE)
-                .toList();
-        int points = playable.stream()
-                .filter(round -> round.step() == RoundStep.FINISHED)
-                .mapToInt(round -> round.result().points())
-                .sum();
-        boolean complete = playable.stream().allMatch(round -> round.step() == RoundStep.FINISHED);
-        return new TodayGameResponse.Score(points, playable.size() * Scoring.EXACT_FIRST_GUESS_ROUND, complete);
+        return new TodayGameResponse(today, roundViews, GameScore.of(roundViews));
     }
 }

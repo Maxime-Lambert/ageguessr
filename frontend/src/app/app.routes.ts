@@ -11,6 +11,17 @@ export const routes: Routes = [
     loadComponent: () => import('./features/game/game/game').then((m) => m.Game),
   },
   {
+    path: 'free',
+    title: $localize`:@@title.free:Free investigation · Ageguessr`,
+    loadComponent: () => import('./features/game/free-game/free-game').then((m) => m.FreeGame),
+  },
+  {
+    path: 'challenge/:code',
+    title: $localize`:@@title.challenge:Challenge · Ageguessr`,
+    loadComponent: () =>
+      import('./features/game/challenge/challenge-page').then((m) => m.ChallengePage),
+  },
+  {
     path: 'register',
     canActivate: [guestGuard],
     loadComponent: () => import('./features/auth/register/register').then((m) => m.Register),

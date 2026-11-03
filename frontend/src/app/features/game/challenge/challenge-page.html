@@ -1,0 +1,122 @@
+<main class="mx-auto max-w-xl px-4 py-8">
+  <h1 class="font-display text-3xl">{{ text.challenge }}</h1>
+
+  @if (notice(); as notice) {
+    <p class="bg-surface border-border mt-4 rounded-md border p-3 text-sm" role="status">
+      {{ notice }}
+    </p>
+  }
+
+  <div class="mt-6">
+    @switch (lookup()) {
+      @case ('loading') {
+        @if (!challenge()) {
+          <p class="text-muted">{{ text.loading }}</p>
+        }
+      }
+      @case ('notFound') {
+        <p role="alert">{{ text.challengeNotFound }}</p>
+        <a routerLink="/free" class="text-accent mt-3 inline-block underline">{{
+          text.freeMode
+        }}</a>
+      }
+      @case ('error') {
+        <p class="text-danger" role="alert">{{ text.genericError }}</p>
+        <button type="button" class="text-accent mt-2 underline" (click)="refresh()">
+          {{ text.retry }}
+        </button>
+      }
+    }
+
+    @if (challenge(); as challenge) {
+      @if (challenge.status === 'NOT_JOINED') {
+        <p class="font-display text-xl">{{ intro() }}</p>
+        <p class="text-muted mt-2 text-sm">{{ text.onceOnly }}</p>
+        @if (auth.sessionChecked()) {
+          <form class="mt-6" (submit)="$event.preventDefault(); join()">
+            @if (!auth.isAuthenticated()) {
+              <label for="nickname" class="block text-sm font-medium">{{
+                text.nicknameLabel
+              }}</label>
+              <input
+                id="nickname"
+                [formControl]="nickname"
+                autocomplete="nickname"
+                maxlength="20"
+                class="border-input-border bg-background mt-1 w-full rounded-md border px-3 py-2"
+                [attr.aria-invalid]="nickname.invalid && nickname.touched"
+                aria-describedby="nickname-rules"
+              />
+              <p id="nickname-rules" class="text-muted mt-1 text-xs">{{ text.nicknameRules }}</p>
+              @if (nickname.invalid && nickname.touched) {
+                <p class="text-danger mt-1 text-sm" role="alert">{{ text.nicknameInvalid }}</p>
+              }
+            }
+            <button
+              type="submit"
+              class="bg-accent text-accent-foreground mt-3 rounded-md px-4 py-2 font-medium"
+              [disabled]="joining()"
+            >
+              {{ text.acceptChallenge }}
+            </button>
+          </form>
+          @if (joinError(); as joinError) {
+            <p class="text-danger mt-2 text-sm" role="alert">{{ joinError }}</p>
+          }
+        }
+      } @else if (status() === 'error') {
+        <p class="text-danger" role="alert">{{ text.genericError }}</p>
+        <button type="button" class="text-accent mt-2 underline" (click)="load()">
+          {{ text.retry }}
+        </button>
+      } @else if (game(); as series) {
+        @if (active(); as round) {
+          <app-round-player
+            [round]="round"
+            [total]="total()"
+            [last]="isLast()"
+            [busy]="busy() || status() === 'loading'"
+            [error]="error()"
+            [imageFailed]="imageFailed()"
+            (firstGuess)="firstGuess($event)"
+            (secondGuess)="secondGuess($event)"
+            (hintPicked)="pickHint($event)"
+            (imageError)="onImageFailed()"
+            (next)="next()"
+            (retry)="load()"
+          />
+        } @else {
+          <app-day-summary [game]="series">
+            @if (challenge.leaderboard.length > 0) {
+              <app-leaderboard [entries]="challenge.leaderboard" />
+            }
+            <div class="mt-6 flex flex-wrap gap-3">
+              <button
+                type="button"
+                class="bg-accent text-accent-foreground rounded-md px-4 py-2 font-medium"
+                (click)="shareResult()"
+              >
+                {{ text.shareResult }}
+              </button>
+              <a
+                routerLink="/free"
+                class="border-input-border rounded-md border px-4 py-2 font-medium"
+                >{{ text.freeMode }}</a
+              >
+            </div>
+            @if (copied()) {
+              <p class="text-muted mt-2 text-sm" role="status">{{ text.copied }}</p>
+            }
+          </app-day-summary>
+        }
+      } @else {
+        <p class="text-muted">{{ text.loading }}</p>
+      }
+    }
+  </div>
+
+  <div class="mt-6 flex flex-wrap items-center justify-between gap-3">
+    <a routerLink="/" class="text-accent text-sm font-medium underline">{{ text.dailyGame }}</a>
+    <app-hint-language-picker />
+  </div>
+</main>
