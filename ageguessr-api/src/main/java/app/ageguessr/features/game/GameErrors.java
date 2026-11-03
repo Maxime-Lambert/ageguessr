@@ -63,4 +63,19 @@ public final class GameErrors {
     public static ValidationException nicknameRequired() {
         return new ValidationException("NICKNAME_REQUIRED", "A guest names themselves in a challenge");
     }
+
+    /** A round is reported from its result: once finished by the player who reports it. */
+    public static ConflictException roundNotFinished() {
+        return new ConflictException("ROUND_NOT_FINISHED", "A round is reported once finished");
+    }
+
+    /** The round showed no hint, or the hint was rejected since: nothing left to report. */
+    public static ConflictException nothingToReport() {
+        return new ConflictException("NOTHING_TO_REPORT", "This round has nothing of this kind to report");
+    }
+
+    /** A reason of the other target, or none of the list. */
+    public static ValidationException invalidReason() {
+        return new ValidationException("INVALID_REASON", "This reason does not apply to this report");
+    }
 }

@@ -10,10 +10,12 @@ import static org.mockito.Mockito.when;
 
 import app.ageguessr.features.hints.Hint;
 import app.ageguessr.features.hints.HintAudience;
+import app.ageguessr.features.hints.HintReportRepository;
 import app.ageguessr.features.hints.HintRepository;
 import app.ageguessr.features.hints.HintReviewStatus;
 import app.ageguessr.shared.exceptions.NotFoundException;
 import app.ageguessr.shared.exceptions.ValidationException;
+import app.ageguessr.shared.reports.ReportStatus;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -27,7 +29,9 @@ class ReviewHintHandlerTest {
     private static final UUID ADMIN = UUID.randomUUID();
 
     private final HintRepository hints = mock(HintRepository.class);
-    private final ReviewHintHandler handler = new ReviewHintHandler(hints, Clock.fixed(NOW, ZoneOffset.UTC));
+    private final HintReportRepository reports = mock(HintReportRepository.class);
+    private final ReviewHintHandler handler =
+            new ReviewHintHandler(hints, reports, Clock.fixed(NOW, ZoneOffset.UTC));
 
     private Hint stored(HintAudience audience, String textEn, String textFr, HintReviewStatus status) {
         Hint hint = Hint.builder()
@@ -56,6 +60,15 @@ class ReviewHintHandlerTest {
         assertThat(hint.getReviewedAt()).isEqualTo(NOW);
         assertThat(hint.getReviewedBy()).isEqualTo(ADMIN);
         verify(hints).save(hint);
+    }
+
+    @Test
+    void aDecisionResolvesTheOpenReportsOfTheHint() {
+        Hint hint = stored(HintAudience.ALL, "A text.", "Un texte.", HintReviewStatus.APPROVED);
+
+        handler.handle(ADMIN, hint.getId(), new ReviewHintCommand(HintReviewStatus.APPROVED, "A fixed text.", null));
+
+        verify(reports).closeOpen(hint.getId(), ReportStatus.RESOLVED, NOW);
     }
 
     @Test

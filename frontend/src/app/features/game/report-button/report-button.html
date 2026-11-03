@@ -1,0 +1,51 @@
+@if (done()) {
+  <p class="text-muted text-xs" role="status">{{ text.reportSent }}</p>
+} @else {
+  <button
+    type="button"
+    class="text-muted hover:text-foreground text-xs underline"
+    [attr.aria-expanded]="open()"
+    [attr.aria-controls]="name()"
+    (click)="toggle()"
+  >
+    {{ label() }}
+  </button>
+  @if (open()) {
+    <form [id]="name()" class="mt-2 text-sm" (submit)="$event.preventDefault(); send()">
+      <fieldset>
+        <legend class="text-muted text-xs font-medium tracking-wide uppercase">
+          {{ text.reportWhy }}
+        </legend>
+        <div class="mt-1 space-y-1">
+          @for (reason of reasons(); track reason.code) {
+            <label class="flex items-center gap-2">
+              <input
+                type="radio"
+                [name]="name()"
+                [value]="reason.code"
+                [checked]="picked() === reason.code"
+                (change)="pick(reason.code)"
+              />
+              {{ reason.label }}
+            </label>
+          }
+        </div>
+      </fieldset>
+      @if (error(); as error) {
+        <p class="text-danger mt-2 text-xs" role="alert">{{ error }}</p>
+      }
+      <div class="mt-2 flex gap-3">
+        <button
+          type="submit"
+          class="bg-surface border-border rounded-md border px-3 py-1 font-medium disabled:opacity-50"
+          [disabled]="!picked() || sending()"
+        >
+          {{ text.reportSend }}
+        </button>
+        <button type="button" class="text-muted underline" (click)="toggle()">
+          {{ text.reportCancel }}
+        </button>
+      </div>
+    </form>
+  }
+}

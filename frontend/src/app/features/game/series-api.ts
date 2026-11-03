@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Service, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { ApiLanguage } from '../../shared/i18n/language';
-import { Challenge, HintCategory, RoundView, Series, SeriesSize } from './models';
+import { Challenge, HintCategory, RoundReport, RoundView, Series, SeriesSize } from './models';
 
 /**
  * The free series and the challenges. Public, as the daily game (GameApi): a guest is told
@@ -39,6 +39,11 @@ export class SeriesApi {
 
   hint(id: string, position: number, category: HintCategory): Observable<RoundView> {
     return this.http.post<RoundView>(roundUrl(id, position, 'hint'), { category });
+  }
+
+  /** 204, whether new or already sent from this round: nothing to read back. */
+  report(id: string, position: number, report: RoundReport): Observable<void> {
+    return this.http.post<void>(roundUrl(id, position, 'report'), report);
   }
 
   secondGuess(id: string, position: number, guess: number): Observable<RoundView> {

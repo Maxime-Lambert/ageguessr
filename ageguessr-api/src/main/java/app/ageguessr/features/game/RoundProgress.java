@@ -49,6 +49,12 @@ public class RoundProgress {
 
     private Instant finishedAt;
 
+    /** The player reported the photo of this round: once per round (V16). */
+    private boolean photoReported;
+
+    /** The player reported the hint of this round: once per round (V16). */
+    private boolean hintReported;
+
     /** Starts the round with its first guess; an exact one ends it at once. */
     public static RoundProgress start(Language language, int guess, int age, Instant now) {
         return RoundProgress.builder()
@@ -92,6 +98,37 @@ public class RoundProgress {
         this.secondGuess = guess;
         this.secondPoints = Scoring.points(guess, age);
         this.finishedAt = now;
+    }
+
+    /**
+     * Marks the photo as reported by this player, from the result screen only: the
+     * identity is known, and nothing about the answer is given away by a report form.
+     *
+     * @return false when it already was, so that a second report adds nothing
+     */
+    public boolean reportPhoto() {
+        requireFinished();
+        if (photoReported) {
+            return false;
+        }
+        photoReported = true;
+        return true;
+    }
+
+    /** As {@link #reportPhoto()}, for the hint shown during the round. */
+    public boolean reportHint() {
+        requireFinished();
+        if (hintReported) {
+            return false;
+        }
+        hintReported = true;
+        return true;
+    }
+
+    private void requireFinished() {
+        if (step() != RoundStep.FINISHED) {
+            throw new IllegalStateException("A round is reported once finished");
+        }
     }
 
     /** Ended by the first guess: exact, so there was no hint and no second guess. */

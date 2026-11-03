@@ -793,6 +793,47 @@ un classement.
 **Raison** : le jeu quotidien ne se joue qu'une fois par jour. Ce mode donne de quoi
 jouer plus, et de quoi comparer ses scores entre amis sans attendre la feature Amis.
 
+### Signalement des photos et des indices par les joueurs
+**Décision** (2026-11-03, PR `feature/player-reports`) : depuis le résultat d'une manche
+terminée (partie du jour ou série), un joueur signale la photo ou l'indice, avec un motif
+d'une liste fermée. L'admin traite deux files triées par nombre de signalements ouverts.
+
+- **On signale une manche, pas un id** :
+  `POST /api/game/{date}/rounds/{position}/report` et
+  `/api/game/series/{id}/rounds/{position}/report`. Le joueur n'a jamais l'id interne de
+  la photo ni de l'indice (`RoundView`) : le serveur les retrouve depuis *sa* manche. Il
+  faut donc l'avoir terminée (identité connue), et un script ne vise que des photos
+  qu'il a jouées.
+- **Anonymat** : `photo_reports` / `hint_reports` (V16) ne gardent que la cible, le motif,
+  le statut et les dates. Le « un signalement par manche » est une marque sur la manche
+  jouée (`RoundProgress.photoReported` / `hintReported`), déjà liée au joueur et purgée
+  avec elle. Un second envoi ne change rien (204, idempotent).
+- **Motifs** (enums de chaque feature) : photo `TOO_SMALL`, `NOT_IDENTIFIABLE`,
+  `WRONG_PERSON`, `LOOKS_MINOR`, `DISTURBING_PERSON`, `OTHER` ; indice `WRONG_YEAR`,
+  `FALSE`, `UNCLEAR`, `DISTURBING`, `OTHER`. Pas de texte libre : rien à modérer.
+- **Aucun retrait automatique** : un script pourrait vider le pool. L'admin décide.
+- **Alerte** (`ReportAlerts`) : un email à `ADMIN_EMAIL` quand les signalements ouverts
+  d'une cible *atteignent* le seuil (`app.reports.alert-threshold`, 3), donc une fois par
+  franchissement. Dès le premier pour une photo de la partie du jour, pour un premier
+  `LOOKS_MINOR`, et pour un indice signalé depuis la partie du jour. Envoyé après le
+  commit ; un échec d'envoi est loggé sans faire échouer le signalement. Sans adresse, un
+  log WARN.
+- **Traitement** : `OPEN`, puis `RESOLVED` (toute décision de `ReviewPhoto` /
+  `ReviewHint`, correction de texte comprise) ou `DISMISSED` (« Keep »). Exclure la
+  personne supprime ses photos, donc leurs signalements (`ON DELETE CASCADE`).
+- **Rangement** : chaque table appartient à la feature de sa cible (`people/PhotoReport`,
+  `hints/HintReport`), avec ses files et actions admin. `ReportStatus` et `ReportTally`
+  (regroupement par cible et tri de la file) sont dans `shared/reports`, pour que
+  `people` et `hints` les partagent sans dépendre l'une de l'autre. Le signalement par le
+  joueur est un use case de `game`, seule feature qui relie une manche à sa photo et à
+  son indice. Le badge « In today's game » de la file photo lit `daily_rounds` par une
+  requête native, pour que `people` ne dépende pas de `game`.
+- **Limite de débit** `report` : 20 par heure et par IP, à part des essais.
+
+**Raison** : avec l'Enquête libre, un joueur voit tout le pool. Une photo de la mauvaise
+personne, d'un mineur ou un indice faux doit pouvoir remonter vite, sans exposer de
+donnée sur le joueur ni donner à un script le moyen de retirer des photos.
+
 ### Système d'amis
 **Décision** : système complet avec demandes d'ami (envoi/acceptation/refus), liste
 d'amis persistante, comparaison des scores quotidiens et historique.
@@ -983,4 +1024,7 @@ instance unique à faible trafic.
 ### Variables d'environnement
 - **Local** : fichier `.env` (gitignored)
 - **Prod** : secrets GitHub Actions injectés dans le VPS au déploiement
+- `ADMIN_EMAIL` (destinataire des alertes de signalement) : optionnel, une variable
+  GitHub (`vars.ADMIN_EMAIL`) plutôt qu'un secret, à transmettre au `.env` du VPS par
+  l'étape de déploiement de `ci.yml`
 - Jamais de secrets dans le code ou dans un fichier versionné

@@ -1,3 +1,5 @@
+import { PhotoReportReason } from '../../shared/reports/report-reasons';
+
 /** Mirrors of the /api/admin/** responses (ageguessr-api features/people). */
 
 export type ReviewStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
@@ -60,6 +62,21 @@ export interface PersonSearchResult {
 export interface ExclusionResult {
   personId: string;
   deletedPhotos: number;
+}
+
+/** A photo players reported (GET /api/admin/photos/reported), most reported first. */
+export interface ReportedPhoto {
+  photoId: string;
+  reviewStatus: ReviewStatus;
+  ageAtPhoto: number;
+  sourceUrl: string;
+  person: { id: string; wikidataId: string; nameEn: string | null; nameFr: string | null };
+  /** The open reports, by reason. */
+  reasons: Partial<Record<PhotoReportReason, number>>;
+  total: number;
+  firstReportedAt: string;
+  /** Every player sees it today. */
+  inTodaysGame: boolean;
 }
 
 /** English name first, then French: the curation page is in English like the rest of the UI. */

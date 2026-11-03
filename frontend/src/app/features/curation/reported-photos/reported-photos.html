@@ -1,0 +1,104 @@
+<section aria-labelledby="reported-photos-title" class="space-y-3">
+  <h2 id="reported-photos-title" class="font-display text-2xl">Reported photos</h2>
+
+  @if (message()) {
+    <p class="text-danger text-sm" role="alert">{{ message() }}</p>
+  }
+
+  @switch (status()) {
+    @case ('loading') {
+      <p class="text-muted text-sm">Loading…</p>
+    }
+    @case ('error') {
+      <p class="text-danger text-sm" role="alert">The reported photos could not be loaded.</p>
+      <button type="button" class="text-accent text-sm underline" (click)="reload()">Retry</button>
+    }
+    @default {
+      @if (items().length === 0) {
+        <p class="text-muted text-sm">No photo reported.</p>
+      }
+      <ul class="space-y-3">
+        @for (item of items(); track item.photoId) {
+          <li
+            class="bg-surface border-border grid gap-4 rounded-lg border p-4 sm:grid-cols-[10rem_1fr]"
+          >
+            <div class="flex items-center justify-center">
+              @if (images()[item.photoId]; as url) {
+                @if (url === 'error') {
+                  <p class="text-danger text-xs">No image.</p>
+                } @else {
+                  <img
+                    [src]="url"
+                    [alt]="'Reported photo of ' + displayName(item.person)"
+                    class="max-h-40 w-auto rounded-md object-contain"
+                  />
+                }
+              }
+            </div>
+            <div class="space-y-2 text-sm">
+              <div class="flex flex-wrap items-baseline gap-2">
+                <h3 class="font-display text-lg">{{ displayName(item.person) }}</h3>
+                <a
+                  class="text-accent underline"
+                  [href]="'https://www.wikidata.org/wiki/' + item.person.wikidataId"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >{{ item.person.wikidataId }}</a
+                >
+                <span class="text-muted"
+                  >· age {{ item.ageAtPhoto }} · {{ item.reviewStatus }}</span
+                >
+                @if (item.inTodaysGame) {
+                  <span
+                    class="bg-danger text-danger-foreground rounded px-2 py-0.5 text-xs font-medium"
+                    >In today's game</span
+                  >
+                }
+              </div>
+              <p>
+                <strong>{{ item.total }}</strong> open report(s): {{ reasonsText(item) }}
+              </p>
+              <a
+                class="text-accent underline"
+                [href]="item.sourceUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Commons page</a
+              >
+              <div class="flex flex-wrap gap-2 pt-1">
+                <button
+                  type="button"
+                  class="bg-danger text-danger-foreground rounded-md px-3 py-1 font-medium disabled:opacity-50"
+                  [disabled]="busy() !== null"
+                  (click)="reject(item)"
+                >
+                  Reject
+                </button>
+                <button
+                  type="button"
+                  class="border-border rounded-md border px-3 py-1 font-medium disabled:opacity-50"
+                  [disabled]="busy() !== null"
+                  (click)="keep(item)"
+                >
+                  Keep
+                </button>
+                <button
+                  type="button"
+                  class="text-danger rounded-md px-3 py-1 font-medium underline disabled:opacity-50"
+                  [disabled]="busy() !== null"
+                  (click)="exclude(item)"
+                >
+                  {{
+                    confirmingExclusion() === item.photoId
+                      ? 'Confirm: exclude ' + displayName(item.person) + ' and all their photos'
+                      : 'Exclude the person'
+                  }}
+                </button>
+              </div>
+            </div>
+          </li>
+        }
+      </ul>
+    }
+  }
+</section>

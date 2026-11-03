@@ -59,6 +59,8 @@ services:
       CORS_ALLOWED_ORIGIN: "https://${DOMAIN}"
       FRONTEND_URL: "https://${DOMAIN}"
       RESEND_API_KEY: ${RESEND_API_KEY}
+      # Destinataire des alertes de signalement (vide : un log a la place).
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-}
 
   edge:
     image: ghcr.io/maxime-lambert/ageguessr-edge:${IMAGE_TAG:?IMAGE_TAG manquant}

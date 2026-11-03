@@ -108,9 +108,9 @@ la suivante).
     (une requête QLever par lot de QID). Choisir « la » fonction principale n'est pas
     évident (P106 n'a pas d'ordre fiable) : préférer la description courte Wikidata
     (`schema:description`), plus parlante (« actrice et chanteuse française »)
-- [ ] Signalement d'une photo par les joueurs, depuis l'écran de résultat (identité
+- [x] Signalement d'une photo par les joueurs, depuis l'écran de résultat (identité
       connue, donc « mauvaise personne » signalable, et aucun indice donné avant de
-      répondre)
+      répondre) — PR `feature/player-reports`
   - Joueur : petit bouton « Signaler l'image » puis motif dans une liste fermée (image
     trop petite, personne pas clairement identifiable sur la photo, ce n'est pas la
     bonne personne, la personne paraît mineure, cette personne me dérange, autre), sans
@@ -131,8 +131,9 @@ la suivante).
   - Photo de la partie du jour rejetée : tranché avec le tirage quotidien. La manche
     est neutralisée pour tous les joueurs et sort du score du jour (`/api/images`
     répond alors 404)
-- [ ] Signalement d'un indice par les joueurs, depuis l'écran de résultat : c'est le
-      filet de sécurité des indices, que personne ne relit (sauf les traductions)
+- [x] Signalement d'un indice par les joueurs, depuis l'écran de résultat : c'est le
+      filet de sécurité des indices, que personne ne relit (sauf les traductions) — PR
+      `feature/player-reports`
   - Joueur : mêmes règles que pour les photos, avec les motifs mauvaise année,
     information fausse, incompréhensible, cet indice me dérange, autre. Sans texte
     libre ni compte, rien de personnel en base, limite par IP

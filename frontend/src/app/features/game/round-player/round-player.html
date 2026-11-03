@@ -1,5 +1,11 @@
 @if (round().step === 'FINISHED') {
-  <app-round-result [round]="round()" [total]="total()" [last]="last()" (next)="next.emit()" />
+  <app-round-result
+    [round]="round()"
+    [total]="total()"
+    [last]="last()"
+    [reporter]="reporter()"
+    (next)="next.emit()"
+  />
 } @else {
   <app-round
     [round]="round()"

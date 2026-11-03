@@ -2,6 +2,7 @@ import { ApiErrorResponse } from '../../../shared/api-error';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, linkedSignal, signal } from '@angular/core';
 import { HintCurationApi } from '../hint-curation-api';
+import { ReportedHints } from '../reported-hints/reported-hints';
 import {
   CoverageCell,
   HintCategory,
@@ -39,6 +40,7 @@ const ERROR_MESSAGES: Record<string, string> = {
  * category is hidden for lack of approved hints.
  */
 @Component({
+  imports: [ReportedHints],
   selector: 'app-hint-curation',
   templateUrl: './hint-curation.html',
   host: { '(document:keydown)': 'onKeydown($event)' },

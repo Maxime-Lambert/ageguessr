@@ -5,7 +5,7 @@ import { ApiLanguage } from '../../../shared/i18n/language';
 import { DaySummary } from '../day-summary/day-summary';
 import { GameApi } from '../game-api';
 import { HintLanguagePicker } from '../hint-language-picker/hint-language-picker';
-import { HintCategory, RoundView, TodayGame } from '../models';
+import { HintCategory, RoundReport, RoundView, TodayGame } from '../models';
 import { RoundPlayer } from '../round-player/round-player';
 import { RoundsScreen } from '../rounds-screen';
 
@@ -45,6 +45,10 @@ export class Game extends RoundsScreen<TodayGame> {
     category: HintCategory,
   ): Observable<RoundView> {
     return this.api.hint(game.date, round.position, category);
+  }
+
+  protected sendReport(game: TodayGame, round: RoundView, report: RoundReport): Observable<void> {
+    return this.api.report(game.date, round.position, report);
   }
 
   protected sendSecondGuess(

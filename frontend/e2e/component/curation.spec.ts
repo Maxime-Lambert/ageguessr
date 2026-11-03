@@ -34,6 +34,19 @@ function pending(id: string, alive: boolean) {
   };
 }
 
+/** A photo players reported, in today's game: shown above the pending queue. */
+const REPORTED = {
+  photoId: 'r1',
+  reviewStatus: 'APPROVED',
+  ageAtPhoto: 40,
+  sourceUrl: 'https://commons.wikimedia.org/wiki/File:r1.jpg',
+  person: { id: 'person-r1', wikidataId: 'Q7', nameEn: 'Reported r1', nameFr: null },
+  reasons: { WRONG_PERSON: 2 },
+  total: 2,
+  firstReportedAt: '2026-11-03T08:00:00Z',
+  inTodaysGame: true,
+};
+
 /** Mocks the admin API; returns the review decisions sent, in order. */
 async function mockAdminApi(page: Page): Promise<{ photoId: string; decision: string }[]> {
   const reviews: { photoId: string; decision: string }[] = [];
@@ -49,6 +62,16 @@ async function mockAdminApi(page: Page): Promise<{ photoId: string; decision: st
       body: JSON.stringify(body),
     });
   });
+  await page.route('**/api/admin/photos/reported', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ items: [REPORTED] }),
+    }),
+  );
+  await page.route('**/api/admin/photos/*/reports/dismiss', (route) =>
+    route.fulfill({ status: 204 }),
+  );
   await page.route('**/api/admin/photos/*/image', (route) =>
     route.fulfill({ status: 200, contentType: 'image/png', body: PIXEL }),
   );
@@ -90,6 +113,25 @@ test.describe('photo curation', () => {
     await page.keyboard.press('u');
     await expect(page.getByRole('heading', { name: 'Person p2' })).toBeVisible();
     await expect.poll(() => reviews.at(-1)).toEqual({ photoId: 'p2', decision: 'PENDING' });
+  });
+
+  test('an admin keeps a reported photo, apart from the pending queue', async ({ page }) => {
+    await asLoggedIn(page, ADMIN);
+    const reviews = await mockAdminApi(page);
+    await page.goto('/en/admin/curation');
+
+    const reported = page.getByRole('region', { name: 'Reported photos' });
+    await expect(reported.getByText("In today's game")).toBeVisible();
+    await expect(reported.getByText('Wrong person (2)')).toBeVisible();
+    await expect(
+      reported.getByRole('img', { name: 'Reported photo of Reported r1' }),
+    ).toBeVisible();
+
+    await reported.getByRole('button', { name: 'Keep' }).click();
+
+    await expect(reported.getByText('No photo reported.')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Person p1' })).toBeVisible();
+    expect(reviews).toEqual([]);
   });
 
   test('typing in the exclusion search never reviews a photo', async ({ page }) => {

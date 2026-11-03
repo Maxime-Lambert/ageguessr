@@ -40,6 +40,8 @@ export function reveal(overrides: Partial<RoundReveal> = {}): RoundReveal {
       year: 1986,
       sourceUrl: 'https://en.wikipedia.org/wiki/Hit',
     },
+    photoReported: false,
+    hintReported: false,
     ...overrides,
   };
 }

@@ -9,13 +9,16 @@ import {
 } from '@angular/core';
 import { CATEGORY_LABELS, GAME_TEXT, roundTitle } from '../game-vocabulary';
 import { RoundReveal, RoundView } from '../models';
+import { ReportButton, RoundReporter } from '../report-button/report-button';
 
 /**
  * The verdict of a finished round: the real age, both guesses with their points (the
  * first guess's points appear here for the first time), who it was, the photo's credit
- * and the hint with its year and source (CC BY-SA attribution).
+ * and the hint with its year and source (CC BY-SA attribution). The photo and the hint
+ * can be reported from here, once the identity is known.
  */
 @Component({
+  imports: [ReportButton],
   selector: 'app-round-result',
   templateUrl: './round-result.html',
 })
@@ -24,6 +27,7 @@ export class RoundResult {
   readonly total = input.required<number>();
   /** Whether another round follows, or the summary. */
   readonly last = input(false);
+  readonly reporter = input.required<RoundReporter>();
 
   readonly next = output<void>();
 

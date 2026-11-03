@@ -3,6 +3,7 @@ import { GAME_TEXT } from '../game-vocabulary';
 import { HintCategory, RoundView } from '../models';
 import { Round } from '../round/round';
 import { RoundResult } from '../round-result/round-result';
+import { RoundReporter } from '../report-button/report-button';
 
 /**
  * The round on screen, in every game (daily, free series, challenge): being played, or
@@ -21,6 +22,7 @@ export class RoundPlayer {
   readonly busy = input(false);
   readonly error = input<string | null>(null);
   readonly imageFailed = input(false);
+  readonly reporter = input.required<RoundReporter>();
 
   readonly firstGuess = output<number>();
   readonly secondGuess = output<number>();

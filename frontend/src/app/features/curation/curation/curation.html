@@ -21,6 +21,10 @@
     bottom of the page.
   </p>
 
+  <app-reported-photos (excluded)="onExcluded()" />
+
+  <h2 class="font-display pt-2 text-2xl">Pending photos</h2>
+
   @if (message()) {
     <p class="text-danger text-sm" role="alert">{{ message() }}</p>
   }

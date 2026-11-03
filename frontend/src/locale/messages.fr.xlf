@@ -760,6 +760,86 @@
         <source>Player</source>
         <target>Joueur</target>
       </trans-unit>
+      <trans-unit id="game.voice.reportHint" datatype="html">
+        <source>Report this lead</source>
+        <target>Signaler cette piste</target>
+      </trans-unit>
+      <trans-unit id="game.neutral.reportHint" datatype="html">
+        <source>Report this hint</source>
+        <target>Signaler cet indice</target>
+      </trans-unit>
+      <trans-unit id="game.reportPhoto" datatype="html">
+        <source>Report this photo</source>
+        <target>Signaler cette photo</target>
+      </trans-unit>
+      <trans-unit id="game.reportWhy" datatype="html">
+        <source>What is wrong?</source>
+        <target>Qu'est-ce qui ne va pas ?</target>
+      </trans-unit>
+      <trans-unit id="game.reportSend" datatype="html">
+        <source>Send</source>
+        <target>Envoyer</target>
+      </trans-unit>
+      <trans-unit id="game.reportCancel" datatype="html">
+        <source>Cancel</source>
+        <target>Annuler</target>
+      </trans-unit>
+      <trans-unit id="game.reportSent" datatype="html">
+        <source>Reported, thank you. We will take a look.</source>
+        <target>Signalé, merci. Nous allons regarder.</target>
+      </trans-unit>
+      <trans-unit id="game.reportTooMany" datatype="html">
+        <source>Too many reports from your connection. Try again later.</source>
+        <target>Trop de signalements depuis votre connexion. Réessayez plus tard.</target>
+      </trans-unit>
+      <trans-unit id="game.reportUnavailable" datatype="html">
+        <source>This can no longer be reported.</source>
+        <target>Il n'est plus possible de signaler ceci.</target>
+      </trans-unit>
+      <trans-unit id="game.report.photo.tooSmall" datatype="html">
+        <source>The image is too small</source>
+        <target>L'image est trop petite</target>
+      </trans-unit>
+      <trans-unit id="game.report.photo.notIdentifiable" datatype="html">
+        <source>The person cannot be made out</source>
+        <target>On ne distingue pas bien la personne</target>
+      </trans-unit>
+      <trans-unit id="game.report.photo.wrongPerson" datatype="html">
+        <source>It is not the right person</source>
+        <target>Ce n'est pas la bonne personne</target>
+      </trans-unit>
+      <trans-unit id="game.report.photo.looksMinor" datatype="html">
+        <source>The person looks under 18</source>
+        <target>La personne paraît mineure</target>
+      </trans-unit>
+      <trans-unit id="game.report.photo.disturbing" datatype="html">
+        <source>This person bothers me</source>
+        <target>Cette personne me dérange</target>
+      </trans-unit>
+      <trans-unit id="game.report.photo.other" datatype="html">
+        <source>Something else</source>
+        <target>Autre chose</target>
+      </trans-unit>
+      <trans-unit id="game.report.hint.wrongYear" datatype="html">
+        <source>The year is wrong</source>
+        <target>L'année est fausse</target>
+      </trans-unit>
+      <trans-unit id="game.report.hint.false" datatype="html">
+        <source>The information is false</source>
+        <target>L'information est fausse</target>
+      </trans-unit>
+      <trans-unit id="game.report.hint.unclear" datatype="html">
+        <source>I do not understand it</source>
+        <target>Je ne le comprends pas</target>
+      </trans-unit>
+      <trans-unit id="game.report.hint.disturbing" datatype="html">
+        <source>It bothers me</source>
+        <target>Il me dérange</target>
+      </trans-unit>
+      <trans-unit id="game.report.hint.other" datatype="html">
+        <source>Something else</source>
+        <target>Autre chose</target>
+      </trans-unit>
       <trans-unit id="game.challengeIntro" datatype="html">
         <source><x id="creator" equiv-text="creator"/> challenges you on <x id="length" equiv-text="seriesLength(rounds)"/>.</source>
         <target><x id="creator" equiv-text="creator"/> vous défie sur <x id="length" equiv-text="seriesLength(rounds)"/>.</target>

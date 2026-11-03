@@ -112,4 +112,24 @@ describe('FreeGame', () => {
     fixture.detectChanges();
     expect(page.textContent).toContain(GAME_TEXT.chooseLength);
   });
+
+  it('reports the hint of a round of the series on its own URL', () => {
+    current(series([round(1)]));
+    guess('30');
+    http.expectOne('/api/game/series/series-1/rounds/1/first-guess').flush(finished(1));
+    fixture.detectChanges();
+
+    button(GAME_TEXT.reportHint).click();
+    fixture.detectChanges();
+    const radio = page.querySelector<HTMLInputElement>('input[value=UNCLEAR]')!;
+    radio.dispatchEvent(new Event('change'));
+    fixture.detectChanges();
+    page.querySelector('form')!.dispatchEvent(new Event('submit'));
+    const report = http.expectOne('/api/game/series/series-1/rounds/1/report');
+    expect(report.request.body).toEqual({ target: 'HINT', reason: 'UNCLEAR' });
+    report.flush(null, { status: 204, statusText: 'No Content' });
+    fixture.detectChanges();
+
+    expect(page.textContent).toContain(GAME_TEXT.reportSent);
+  });
 });

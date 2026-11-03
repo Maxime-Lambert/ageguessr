@@ -70,6 +70,14 @@ public interface PlayedRound {
         return progress().firstGuessExact();
     }
 
+    default boolean isPhotoReported() {
+        return progress().isPhotoReported();
+    }
+
+    default boolean isHintReported() {
+        return progress().isHintReported();
+    }
+
     default int points() {
         return progress().points();
     }
