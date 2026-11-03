@@ -62,6 +62,24 @@ export interface ExclusionResult {
   deletedPhotos: number;
 }
 
+export type PhotoReportReason =
+  'TOO_SMALL' | 'NOT_IDENTIFIABLE' | 'WRONG_PERSON' | 'LOOKS_MINOR' | 'DISTURBING_PERSON' | 'OTHER';
+
+/** A photo players reported (GET /api/admin/photos/reported), most reported first. */
+export interface ReportedPhoto {
+  photoId: string;
+  reviewStatus: ReviewStatus;
+  ageAtPhoto: number;
+  sourceUrl: string;
+  person: { id: string; wikidataId: string; nameEn: string | null; nameFr: string | null };
+  /** The open reports, by reason. */
+  reasons: Partial<Record<PhotoReportReason, number>>;
+  total: number;
+  firstReportedAt: string;
+  /** Every player sees it today. */
+  inTodaysGame: boolean;
+}
+
 /** English name first, then French: the curation page is in English like the rest of the UI. */
 export function displayName(person: { nameEn: string | null; nameFr: string | null }): string {
   return person.nameEn ?? person.nameFr ?? '(no name)';

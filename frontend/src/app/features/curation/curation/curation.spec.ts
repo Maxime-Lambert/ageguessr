@@ -1,9 +1,17 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { Component, output } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PendingPhoto } from '../models';
 import { pendingPhoto } from '../testing';
+import { ReportedPhotos } from '../reported-photos/reported-photos';
 import { Curation, MIN_IMAGE_HEIGHT } from './curation';
+
+/** The reported photos have their own spec: here, only the pending queue talks to the API. */
+@Component({ selector: 'app-reported-photos', template: '' })
+class ReportedPhotosStub {
+  readonly excluded = output<void>();
+}
 
 describe('Curation', () => {
   let fixture: ComponentFixture<Curation>;
@@ -26,6 +34,10 @@ describe('Curation', () => {
 
     TestBed.configureTestingModule({
       providers: [provideHttpClient(), provideHttpClientTesting()],
+    });
+    TestBed.overrideComponent(Curation, {
+      remove: { imports: [ReportedPhotos] },
+      add: { imports: [ReportedPhotosStub] },
     });
     http = TestBed.inject(HttpTestingController);
     fixture = TestBed.createComponent(Curation);

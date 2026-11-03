@@ -51,3 +51,21 @@ export interface HintCoverage {
   gaps: number;
   rows: CoverageRow[];
 }
+
+export type HintReportReason = 'WRONG_YEAR' | 'FALSE' | 'UNCLEAR' | 'DISTURBING' | 'OTHER';
+
+/** A hint players reported (GET /api/admin/hints/reported), most reported first. */
+export interface ReportedHint {
+  hintId: string;
+  reviewStatus: HintReviewStatus;
+  category: HintCategory;
+  year: number;
+  audience: HintAudience;
+  textEn: string | null;
+  textFr: string | null;
+  sourceUrl: string;
+  /** The open reports, by reason. */
+  reasons: Partial<Record<HintReportReason, number>>;
+  total: number;
+  firstReportedAt: string;
+}
