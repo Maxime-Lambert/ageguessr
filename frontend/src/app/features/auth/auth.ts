@@ -13,6 +13,7 @@ import {
   take,
   tap,
 } from 'rxjs';
+import { ApiLanguage } from '../../shared/i18n/language';
 import { AuthUser, LoginResponse, RefreshResponse, RegisterResponse } from './models';
 
 @Service()
@@ -36,17 +37,20 @@ export class Auth {
   // concurrent callers share one refresh avoids that race.
   private refreshInFlight: Observable<string> | null = null;
 
+  /** language: the page's, so the account's emails come in the language it was created in. */
   register(
     email: string,
     username: string,
     password: string,
     acceptTerms: boolean,
+    language: ApiLanguage,
   ): Observable<RegisterResponse> {
     return this.http.post<RegisterResponse>('/api/auth/register', {
       email,
       username,
       password,
       acceptTerms,
+      language,
     });
   }
 
@@ -92,6 +96,12 @@ export class Auth {
   changeUsername(username: string): Observable<AuthUser> {
     return this.http
       .patch<AuthUser>('/api/auth/me/username', { username })
+      .pipe(tap((user) => this.currentUser.set(user)));
+  }
+
+  changeLanguage(language: ApiLanguage): Observable<AuthUser> {
+    return this.http
+      .put<AuthUser>('/api/auth/me/language', { language })
       .pipe(tap((user) => this.currentUser.set(user)));
   }
 

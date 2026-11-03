@@ -9,4 +9,6 @@ import { Theme } from '../theme';
 })
 export class ThemeToggle {
   protected readonly themeService = inject(Theme);
+  protected readonly toLight = $localize`:@@theme.toLight:Switch to light theme`;
+  protected readonly toDark = $localize`:@@theme.toDark:Switch to dark theme`;
 }

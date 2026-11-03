@@ -1,11 +1,9 @@
 <!-- Every statement here must match what the code does (retention periods, cookies,
      processors). Changing one of them in the code means updating this page. -->
-@if (language() === 'en') {
+@if (language === 'en') {
   <article>
     <h1>Privacy Policy</h1>
-    <p class="meta">
-      Last updated: {{ updated() }} · <app-language-switch [language]="language()" />
-    </p>
+    <p class="meta">Last updated: {{ updated }} · <app-language-switch /></p>
 
     <h2>1. Who is responsible</h2>
     <p>
@@ -18,8 +16,9 @@
     <p>
       We do not ask for anything. Like any website, your IP address and the technical details of
       your requests pass through our network provider and our server to deliver the pages; our
-      server does not keep access logs. Your theme choice (dark or light) is stored on your device
-      only and never sent to us.
+      server does not keep access logs. Your theme choice (dark or light) and the language of the
+      hints are stored on your device only and never sent to us. The language of the site you choose
+      is kept in a cookie, so that our server opens the site in that language.
     </p>
     <p>
       When you play, your first guess gives your browser a random identifier, in the
@@ -35,7 +34,8 @@
       <li>
         <strong>To provide your account</strong> (performance of the contract, GDPR art. 6(1)(b)):
         your email address, your username, your password (stored only as a bcrypt hash: we never see
-        it), whether your email is confirmed, your account's creation date, and session and security
+        it), whether your email is confirmed, your account's creation date, your language (English
+        or French: the site opens in it and our emails are written in it), and session and security
         tokens (stored hashed).
       </li>
       <li>
@@ -114,7 +114,15 @@
         <code>ageguessr_guest</code> (cookie, 30 days): the random identifier of your games when you
         play without an account. Not readable by scripts, sent only to the game.
       </li>
+      <li>
+        <code>ageguessr_lang</code> (cookie, 1 year): remembers the language of the site you chose,
+        so that our server opens the site in it.
+      </li>
       <li><code>ageguessr-theme</code> (local storage): remembers your theme choice.</li>
+      <li>
+        <code>ageguessr-hint-language</code> (local storage): remembers the language of the hints
+        you chose.
+      </li>
       <li>
         Cloudflare may set security cookies (such as <code>__cf_bm</code>) to tell humans from bots.
       </li>
@@ -194,16 +202,13 @@
 } @else {
   <article lang="fr">
     <h1>Politique de confidentialité</h1>
-    <p class="meta">
-      Dernière mise à jour : {{ updated() }} · <app-language-switch [language]="language()" />
-    </p>
+    <p class="meta">Dernière mise à jour : {{ updated }} · <app-language-switch /></p>
 
     <h2>1. Responsable du traitement</h2>
     <p>
       Le responsable du traitement est l'éditeur d'Ageguessr, une personne physique (voir les
-      <a routerLink="/legal-notice" [queryParams]="{ lang: 'fr' }">mentions légales</a>). Pour toute
-      question ou demande sur vos données :
-      <a href="mailto:contact@ageguessr.app">contact&#64;ageguessr.app</a>.
+      <a routerLink="/legal-notice">mentions légales</a>). Pour toute question ou demande sur vos
+      données : <a href="mailto:contact@ageguessr.app">contact&#64;ageguessr.app</a>.
     </p>
 
     <h2>2. Jouer sans compte</h2>
@@ -211,7 +216,9 @@
       Nous ne vous demandons rien. Comme pour tout site, votre adresse IP et les informations
       techniques de vos requêtes transitent par notre prestataire réseau et notre serveur pour
       afficher les pages ; notre serveur ne conserve pas de journal des accès. Votre choix de thème
-      (sombre ou clair) est enregistré sur votre appareil uniquement et ne nous est jamais envoyé.
+      (sombre ou clair) et la langue des indices sont enregistrés sur votre appareil uniquement et
+      ne nous sont jamais envoyés. La langue du site que vous choisissez est gardée dans un cookie,
+      pour que notre serveur vous ouvre le site dans cette langue.
     </p>
     <p>
       Quand vous jouez, votre premier essai donne à votre navigateur un identifiant aléatoire, dans
@@ -228,7 +235,9 @@
         <strong>Fournir votre compte</strong> (exécution du contrat, RGPD art. 6.1.b) : votre
         adresse email, votre pseudo, votre mot de passe (conservé uniquement sous forme de hash
         bcrypt : nous ne le voyons jamais), la confirmation ou non de votre email, la date de
-        création du compte, et des jetons de session et de sécurité (conservés hachés).
+        création du compte, votre langue (français ou anglais : le site s'ouvre dans cette langue et
+        nos emails sont écrits dans cette langue), et des jetons de session et de sécurité
+        (conservés hachés).
       </li>
       <li>
         <strong>Vous envoyer les emails du service</strong> (même base) : confirmation de votre
@@ -312,7 +321,15 @@
         <code>ageguessr_guest</code> (cookie, 30 jours) : l'identifiant aléatoire de vos parties
         quand vous jouez sans compte. Illisible par les scripts, envoyé seulement au jeu.
       </li>
+      <li>
+        <code>ageguessr_lang</code> (cookie, 1 an) : retient la langue du site que vous avez
+        choisie, pour que notre serveur vous ouvre le site dans cette langue.
+      </li>
       <li><code>ageguessr-theme</code> (stockage local) : retient votre choix de thème.</li>
+      <li>
+        <code>ageguessr-hint-language</code> (stockage local) : retient la langue des indices que
+        vous avez choisie.
+      </li>
       <li>
         Cloudflare peut déposer des cookies de sécurité (comme <code>__cf_bm</code>) pour distinguer
         les humains des robots.

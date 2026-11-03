@@ -3,6 +3,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Auth } from '../auth';
+import { COMMON_MESSAGES } from '../../../shared/common-messages';
 
 @Component({
   imports: [ReactiveFormsModule, RouterLink],
@@ -40,9 +41,7 @@ export class ForgotPassword {
       error: (error: HttpErrorResponse) => {
         this.submitting.set(false);
         this.errorMessage.set(
-          error.status === 429
-            ? 'Too many attempts. Please wait a minute and try again.'
-            : 'Something went wrong. Please try again.',
+          error.status === 429 ? COMMON_MESSAGES.tooManyAttempts : COMMON_MESSAGES.genericError,
         );
       },
     });

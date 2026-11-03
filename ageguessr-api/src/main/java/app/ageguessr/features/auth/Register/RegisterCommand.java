@@ -2,6 +2,7 @@ package app.ageguessr.features.auth.Register;
 
 import app.ageguessr.shared.validation.Password;
 import app.ageguessr.shared.validation.Username;
+import app.ageguessr.shared.i18n.Language;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -14,4 +15,6 @@ public record RegisterCommand(
         @NotBlank @Email String email,
         @Username String username,
         @Password String password,
-        @AssertTrue boolean acceptTerms) {}
+        @AssertTrue boolean acceptTerms,
+        // The language of the page the account is created from; optional, for an older client.
+        Language language) {}

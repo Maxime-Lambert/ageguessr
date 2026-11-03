@@ -1,15 +1,25 @@
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { LOCALE_ID } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { Terms } from './terms';
 
 describe('Terms', () => {
+  /** "?lang=fr" stands for the French build: the language comes from LOCALE_ID. */
   async function render(url: string): Promise<HTMLElement> {
+    const [path, query] = url.split('?');
     TestBed.configureTestingModule({
-      providers: [provideRouter([{ path: 'terms', component: Terms }])],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([{ path: 'terms', component: Terms }]),
+        { provide: LOCALE_ID, useValue: query === 'lang=fr' ? 'fr' : 'en' },
+      ],
     });
     const harness = await RouterTestingHarness.create();
-    await harness.navigateByUrl(url);
+    await harness.navigateByUrl(path);
     return harness.routeNativeElement as HTMLElement;
   }
 
@@ -20,7 +30,7 @@ describe('Terms', () => {
     expect(page.querySelector('article')?.hasAttribute('lang')).toBe(false);
   });
 
-  it('is in French with ?lang=fr, marked as such for screen readers', async () => {
+  it('is in French in the French build, marked as such for screen readers', async () => {
     const page = await render('/terms?lang=fr');
 
     expect(page.querySelector('h1')?.textContent).toBe("Conditions générales d'utilisation");
@@ -35,18 +45,25 @@ describe('Terms', () => {
 });
 
 describe('Terms version', () => {
-  it('shows TERMS_VERSION as the last update date, in both languages', async () => {
+  async function updatedLine(locale: string): Promise<string | undefined> {
     TestBed.configureTestingModule({
-      providers: [provideRouter([{ path: 'terms', component: Terms }])],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([{ path: 'terms', component: Terms }]),
+        { provide: LOCALE_ID, useValue: locale },
+      ],
     });
     const harness = await RouterTestingHarness.create();
-
     await harness.navigateByUrl('/terms');
-    expect(harness.routeNativeElement?.textContent).toContain('Last updated: 21 October 2026');
+    return harness.routeNativeElement?.textContent ?? undefined;
+  }
 
-    await harness.navigateByUrl('/terms?lang=fr');
-    expect(harness.routeNativeElement?.textContent).toContain(
-      'Dernière mise à jour : 21 octobre 2026',
-    );
+  it('shows TERMS_VERSION as the last update date, in English', async () => {
+    expect(await updatedLine('en')).toContain('Last updated: 21 October 2026');
+  });
+
+  it('shows TERMS_VERSION as the last update date, in French', async () => {
+    expect(await updatedLine('fr')).toContain('Dernière mise à jour : 21 octobre 2026');
   });
 });

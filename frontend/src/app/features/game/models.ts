@@ -5,8 +5,6 @@ export type RoundStatus = 'PLAYABLE' | 'NEUTRALIZED';
 /** OLDER: the person is older than the guess. */
 export type Direction = 'OLDER' | 'YOUNGER';
 export type HintCategory = 'MUSIC' | 'FILM' | 'SPORT' | 'SCIENCE' | 'WORLD' | 'CELEBRITIES';
-/** Language of the hint and of the name revealed; the rest of the interface stays in English. */
-export type GameLanguage = 'EN' | 'FR';
 
 /** The hint during the round: no year, it would give the answer away. */
 export interface ShownHint {

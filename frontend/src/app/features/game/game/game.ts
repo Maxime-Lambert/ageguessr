@@ -2,7 +2,9 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiErrorResponse } from '../../../shared/api-error';
-import { GameApi, browserLanguage } from '../game-api';
+import { GameApi } from '../game-api';
+import { HintLanguage } from '../hint-language';
+import { HintLanguagePicker } from '../hint-language-picker/hint-language-picker';
 import { GAME_TEXT } from '../game-vocabulary';
 import { DaySummary } from '../day-summary/day-summary';
 import { HintCategory, RoundView, TodayGame } from '../models';
@@ -14,13 +16,13 @@ import { RoundResult } from '../round-result/round-result';
  * on the server (game_plays), so a reload picks up where the player was.
  */
 @Component({
-  imports: [Round, RoundResult, DaySummary],
+  imports: [Round, RoundResult, DaySummary, HintLanguagePicker],
   selector: 'app-game',
   templateUrl: './game.html',
 })
 export class Game {
   private readonly api = inject(GameApi);
-  private readonly language = browserLanguage();
+  private readonly hintLanguage = inject(HintLanguage);
   /** A photo that failed to load is retried once with a fresh state, then reported. */
   private readonly imageRetried = new Set<number>();
 
@@ -64,7 +66,7 @@ export class Game {
 
   firstGuess(guess: number): void {
     this.play((game, round) =>
-      this.api.firstGuess(game.date, round.position, guess, this.language),
+      this.api.firstGuess(game.date, round.position, guess, this.hintLanguage.value()),
     );
   }
 

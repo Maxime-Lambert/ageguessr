@@ -4,13 +4,17 @@ import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Auth } from '../auth';
+import { toApi } from '../../../shared/i18n/language';
+import { SiteLanguageService } from '../../i18n/site-language';
 import { USERNAME_PATTERN } from '../models';
 import {
   NEW_PASSWORD_VALIDATORS,
+  PASSWORDS_DIFFER_MESSAGE,
   PASSWORD_HINT,
   PASSWORD_TOO_LONG_MESSAGE,
   passwordRefusalMessage,
 } from '../password-rules';
+import { COMMON_MESSAGES } from '../../../shared/common-messages';
 
 @Component({
   imports: [ReactiveFormsModule, RouterLink],
@@ -19,6 +23,7 @@ import {
 })
 export class Register {
   private readonly auth = inject(Auth);
+  private readonly language = inject(SiteLanguageService);
   private readonly router = inject(Router);
 
   readonly form = new FormGroup({
@@ -54,7 +59,7 @@ export class Register {
 
     const { email, username, password, confirmPassword, acceptTerms } = this.form.getRawValue();
     if (password !== confirmPassword) {
-      this.errorMessage.set("Passwords don't match.");
+      this.errorMessage.set(PASSWORDS_DIFFER_MESSAGE);
       return;
     }
 
@@ -62,26 +67,28 @@ export class Register {
     this.errorMessage.set(null);
     this.usernameTaken.set(false);
     this.passwordRefusal.set(null);
-    this.auth.register(email, username, password, acceptTerms).subscribe({
-      next: () => this.router.navigate(['/check-email'], { queryParams: { email } }),
-      error: (error: HttpErrorResponse) => {
-        this.submitting.set(false);
-        const body = error.error as ApiErrorResponse | null;
-        if (error.status === 409 && body?.errorCode === 'USERNAME_TAKEN') {
-          this.usernameTaken.set(true);
-          return;
-        }
-        const refusal = passwordRefusalMessage(error);
-        if (refusal) {
-          this.passwordRefusal.set(refusal);
-          return;
-        }
-        this.errorMessage.set(
-          error.status === 409
-            ? 'An account with this email already exists.'
-            : 'Something went wrong. Please try again.',
-        );
-      },
-    });
+    this.auth
+      .register(email, username, password, acceptTerms, toApi(this.language.current))
+      .subscribe({
+        next: () => this.router.navigate(['/check-email'], { queryParams: { email } }),
+        error: (error: HttpErrorResponse) => {
+          this.submitting.set(false);
+          const body = error.error as ApiErrorResponse | null;
+          if (error.status === 409 && body?.errorCode === 'USERNAME_TAKEN') {
+            this.usernameTaken.set(true);
+            return;
+          }
+          const refusal = passwordRefusalMessage(error);
+          if (refusal) {
+            this.passwordRefusal.set(refusal);
+            return;
+          }
+          this.errorMessage.set(
+            error.status === 409
+              ? $localize`:@@register.emailTaken:An account with this email already exists.`
+              : COMMON_MESSAGES.genericError,
+          );
+        },
+      });
   }
 }

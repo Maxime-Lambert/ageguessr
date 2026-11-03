@@ -5,10 +5,12 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Auth } from '../auth';
 import {
   NEW_PASSWORD_VALIDATORS,
+  PASSWORDS_DIFFER_MESSAGE,
   PASSWORD_HINT,
   PASSWORD_TOO_LONG_MESSAGE,
   passwordRefusalMessage,
 } from '../password-rules';
+import { COMMON_MESSAGES } from '../../../shared/common-messages';
 
 type ResetStatus = 'form' | 'success' | 'invalid-link';
 
@@ -41,7 +43,7 @@ export class ResetPassword {
 
     const { newPassword, confirmPassword } = this.form.getRawValue();
     if (newPassword !== confirmPassword) {
-      this.errorMessage.set("Passwords don't match.");
+      this.errorMessage.set(PASSWORDS_DIFFER_MESSAGE);
       return;
     }
 
@@ -61,7 +63,7 @@ export class ResetPassword {
           this.passwordRefusal.set(refusal);
           return;
         }
-        this.errorMessage.set('Something went wrong. Please try again.');
+        this.errorMessage.set(COMMON_MESSAGES.genericError);
       },
     });
   }

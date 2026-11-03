@@ -6,7 +6,7 @@ test.describe('confirm-email page', () => {
       route.fulfill({ status: 204, body: '' }),
     );
 
-    await page.goto('/confirm-email?token=valid-token');
+    await page.goto('/en/confirm-email?token=valid-token');
 
     await expect(page.getByRole('heading', { name: 'Email confirmed' })).toBeVisible();
   });
@@ -16,13 +16,13 @@ test.describe('confirm-email page', () => {
       route.fulfill({ status: 404, contentType: 'application/json', body: '{}' }),
     );
 
-    await page.goto('/confirm-email?token=expired-token');
+    await page.goto('/en/confirm-email?token=expired-token');
 
     await expect(page.getByRole('heading', { name: 'Link invalid or expired' })).toBeVisible();
   });
 
   test('shows an error immediately when there is no token in the URL', async ({ page }) => {
-    await page.goto('/confirm-email');
+    await page.goto('/en/confirm-email');
 
     await expect(page.getByRole('heading', { name: 'Link invalid or expired' })).toBeVisible();
   });

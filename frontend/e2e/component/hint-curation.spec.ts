@@ -77,7 +77,7 @@ test.describe('hint curation', () => {
   test('an admin corrects a hint, approves from the keyboard and can undo', async ({ page }) => {
     await asLoggedIn(page, ADMIN);
     const reviews = await mockAdminApi(page);
-    await page.goto('/admin/hints');
+    await page.goto('/en/admin/hints');
 
     const text = page.getByLabel('French text');
     await expect(text).toHaveValue('Découverte h1.');
@@ -98,7 +98,7 @@ test.describe('hint curation', () => {
   test('shows the coverage and its gaps', async ({ page }) => {
     await asLoggedIn(page, ADMIN);
     await mockAdminApi(page);
-    await page.goto('/admin/hints');
+    await page.goto('/en/admin/hints');
 
     await expect(page.getByRole('heading', { name: 'Coverage' })).toBeVisible();
     await expect(page.getByText('10 gaps')).toBeVisible();
@@ -108,18 +108,18 @@ test.describe('hint curation', () => {
   test('an admin finds the page from the header', async ({ page }) => {
     await asLoggedIn(page, ADMIN);
     await mockAdminApi(page);
-    await page.goto('/');
+    await page.goto('/en/');
 
     await page.getByRole('link', { name: 'Hints' }).click();
 
-    await expect(page).toHaveURL(/\/admin\/hints$/);
+    await expect(page).toHaveURL(/\/en\/admin\/hints$/);
   });
 
   test('a regular user is sent home and never sees the hints link', async ({ page }) => {
     await asLoggedIn(page, USER);
-    await page.goto('/admin/hints');
+    await page.goto('/en/admin/hints');
 
-    await expect(page).toHaveURL(/\/$/);
+    await expect(page).toHaveURL(/\/en\/$/);
     await expect(page.getByRole('link', { name: 'Hints' })).toHaveCount(0);
   });
 
@@ -127,7 +127,7 @@ test.describe('hint curation', () => {
     await page.setViewportSize({ width: 360, height: 740 });
     await asLoggedIn(page, ADMIN);
     await mockAdminApi(page);
-    await page.goto('/admin/hints');
+    await page.goto('/en/admin/hints');
     await expect(page.getByText('10 gaps')).toBeVisible();
 
     const overflow = await page.evaluate(

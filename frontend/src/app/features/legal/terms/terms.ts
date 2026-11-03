@@ -1,8 +1,8 @@
-import { Component, computed } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { LanguageSwitch } from '../language-switch/language-switch';
+import { LanguageSwitch } from '../../i18n/language-switch/language-switch';
+import { SiteLanguageService } from '../../i18n/site-language';
 import { TERMS_VERSION, displayDate } from '../legal-dates';
-import { legalLanguage } from '../legal-language';
 
 @Component({
   imports: [LanguageSwitch, RouterLink],
@@ -11,6 +11,7 @@ import { legalLanguage } from '../legal-language';
   templateUrl: './terms.html',
 })
 export class Terms {
-  protected readonly language = legalLanguage();
-  protected readonly updated = computed(() => displayDate(TERMS_VERSION, this.language()));
+  /** Both versions live in the template; the build (/en/ or /fr/) picks one. */
+  protected readonly language = inject(SiteLanguageService).current;
+  protected readonly updated = displayDate(TERMS_VERSION, this.language);
 }

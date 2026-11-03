@@ -13,7 +13,7 @@ test('a guest plays the three rounds of the day, through a reload, to the case r
   expect(seeded.ok()).toBe(true);
   expect((await seeded.json()).ages).toEqual([40, 55, 30]);
 
-  await page.goto('/');
+  await page.goto('/en/');
   const age = page.getByLabel('Age');
 
   // Round 1: a wrong guess, a hint, then a reload in the middle of the round.

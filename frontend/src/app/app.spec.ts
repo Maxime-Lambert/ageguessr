@@ -3,14 +3,23 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { App } from './app';
+import { BROWSER_PAGE } from './features/i18n/site-language';
+import { fakePage } from './features/i18n/testing';
 
 describe('App', () => {
   let httpMock: HttpTestingController;
+  let page: ReturnType<typeof fakePage>;
 
   beforeEach(async () => {
+    page = fakePage();
     await TestBed.configureTestingModule({
       imports: [App],
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        { provide: BROWSER_PAGE, useValue: page },
+      ],
     }).compileComponents();
     httpMock = TestBed.inject(HttpTestingController);
   });
@@ -35,5 +44,22 @@ describe('App', () => {
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('header a')?.textContent).toContain('Ageguessr');
+  });
+
+  it('loads the site in the language of the restored account', async () => {
+    const fixture = TestBed.createComponent(App);
+    httpMock.expectOne('/api/auth/refresh').flush({ accessToken: 'token' });
+    httpMock.expectOne('/api/auth/me').flush({
+      id: '1',
+      email: 'me@x.com',
+      username: 'Player',
+      emailVerified: true,
+      role: 'USER',
+      language: 'FR',
+    });
+    await fixture.whenStable();
+
+    // The specs run in the source language, English.
+    expect(page.loaded).toEqual(['/fr/']);
   });
 });

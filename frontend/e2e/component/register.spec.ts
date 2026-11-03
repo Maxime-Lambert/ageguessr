@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 test.describe('register form', () => {
   test('shows an error when the passwords do not match', async ({ page }) => {
-    await page.goto('/register');
+    await page.goto('/en/register');
     await page.locator('#email').fill('user@x.com');
     await page.locator('#username').fill('Player');
     await page.locator('#password').fill('tortoise-violin-42');
@@ -18,7 +18,7 @@ test.describe('register form', () => {
       route.fulfill({ status: 409, contentType: 'application/json', body: '{}' }),
     );
 
-    await page.goto('/register');
+    await page.goto('/en/register');
     await page.locator('#email').fill('taken@x.com');
     await page.locator('#username').fill('Player');
     await page.locator('#password').fill('tortoise-violin-42');
@@ -38,7 +38,7 @@ test.describe('register form', () => {
       }),
     );
 
-    await page.goto('/register');
+    await page.goto('/en/register');
     await page.locator('#email').fill('user@x.com');
     await page.locator('#username').fill('Player');
     await page.locator('#password').fill('tortoise-violin-42');
@@ -46,12 +46,12 @@ test.describe('register form', () => {
     await page.locator('#acceptTerms').check();
     await page.getByRole('button', { name: 'Create account' }).click();
 
-    await expect(page).toHaveURL(/\/check-email/);
+    await expect(page).toHaveURL(/\/en\/check-email/);
     await expect(page.getByText('user@x.com')).toBeVisible();
   });
 
   test('shows the username format right under the field', async ({ page }) => {
-    await page.goto('/register');
+    await page.goto('/en/register');
     await page.locator('#username').fill('no spaces');
     await page.locator('#password').click();
 
@@ -67,7 +67,7 @@ test.describe('register form', () => {
       }),
     );
 
-    await page.goto('/register');
+    await page.goto('/en/register');
     await page.locator('#email').fill('user@x.com');
     await page.locator('#username').fill('Taken');
     await page.locator('#password').fill('tortoise-violin-42');
@@ -87,7 +87,7 @@ test.describe('register form', () => {
       }),
     );
 
-    await page.goto('/register');
+    await page.goto('/en/register');
     await page.locator('#email').fill('user@x.com');
     await page.locator('#username').fill('Player');
     await page.locator('#password').fill('qwerty123456');
@@ -102,7 +102,7 @@ test.describe('register form', () => {
   });
 
   test('flags a password shorter than 12 characters once the field is left', async ({ page }) => {
-    await page.goto('/register');
+    await page.goto('/en/register');
     await page.locator('#password').fill('elevenchars');
     await page.locator('#confirmPassword').click();
 
@@ -120,7 +120,7 @@ test.describe('register form', () => {
       }),
     );
 
-    await page.goto('/register');
+    await page.goto('/en/register');
     const submit = page.getByRole('button', { name: 'Create account' });
     await expect(submit).toHaveCSS('cursor', 'pointer');
 
@@ -142,7 +142,7 @@ test.describe('register form', () => {
       return route.fulfill({ status: 201, contentType: 'application/json', body: '{}' });
     });
 
-    await page.goto('/register');
+    await page.goto('/en/register');
     await expect(page.locator('#acceptTerms')).not.toBeChecked();
     await page.locator('#email').fill('user@x.com');
     await page.locator('#username').fill('Player');
@@ -157,7 +157,7 @@ test.describe('register form', () => {
   });
 
   test('opens the Terms in a new tab, keeping what was typed', async ({ page }) => {
-    await page.goto('/register');
+    await page.goto('/en/register');
     await page.locator('#email').fill('user@x.com');
 
     const [terms] = await Promise.all([
@@ -165,7 +165,7 @@ test.describe('register form', () => {
       page.locator('form').getByRole('link', { name: 'Terms', exact: true }).click(),
     ]);
 
-    await expect(terms).toHaveURL(/\/terms$/);
+    await expect(terms).toHaveURL(/\/en\/terms$/);
     await expect(page.locator('#email')).toHaveValue('user@x.com');
   });
 });

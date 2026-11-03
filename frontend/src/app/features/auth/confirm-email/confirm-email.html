@@ -2,22 +2,30 @@
   <div class="bg-surface border-border rounded-lg border p-6">
     @switch (status()) {
       @case ('loading') {
-        <p class="text-muted">Confirming your email…</p>
+        <p class="text-muted" i18n="@@confirmEmail.loading">Confirming your email…</p>
       }
       @case ('success') {
-        <h1 class="font-display text-3xl">Email confirmed</h1>
-        <p class="text-muted mt-2">Your account is ready.</p>
+        <h1 class="font-display text-3xl" i18n="@@confirmEmail.title">Email confirmed</h1>
+        <p class="text-muted mt-2" i18n="@@confirmEmail.ready">Your account is ready.</p>
         <a
           routerLink="/login"
           class="bg-accent text-accent-foreground mt-4 inline-block rounded-md px-4 py-2"
+          i18n="@@confirmEmail.login"
         >
           Log in
         </a>
       }
       @case ('error') {
-        <h1 class="font-display text-3xl">Link invalid or expired</h1>
-        <p class="text-danger mt-2">This confirmation link no longer works.</p>
-        <a routerLink="/login" class="text-accent mt-4 inline-block underline">Back to login</a>
+        <h1 class="font-display text-3xl" i18n="@@common.linkInvalid">Link invalid or expired</h1>
+        <p class="text-danger mt-2" i18n="@@confirmEmail.invalid">
+          This confirmation link no longer works.
+        </p>
+        <a
+          routerLink="/login"
+          class="text-accent mt-4 inline-block underline"
+          i18n="@@common.backToLogin"
+          >Back to login</a
+        >
       }
     }
   </div>

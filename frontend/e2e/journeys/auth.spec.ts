@@ -6,7 +6,7 @@ test('sign up, confirm, log in, rename, log out', async ({ page, request }) => {
   await signUp(page, request, account);
 
   await logIn(page, account.email, account.password);
-  await expect(page).toHaveURL('/');
+  await expect(page).toHaveURL('/en/');
   const header = page.getByRole('banner');
   await expect(
     header.getByRole('link', { name: `Account settings for ${account.username}` }),
@@ -14,7 +14,7 @@ test('sign up, confirm, log in, rename, log out', async ({ page, request }) => {
 
   // The session survives a hard reload (HttpOnly refresh cookie), even on an
   // account-only page.
-  await page.goto('/account');
+  await page.goto('/en/account');
   await expect(page.getByRole('heading', { name: 'Your account' })).toBeVisible();
 
   const newUsername = `${account.username.slice(0, 17)}new`;
@@ -27,6 +27,6 @@ test('sign up, confirm, log in, rename, log out', async ({ page, request }) => {
 
   await header.getByRole('button', { name: 'Log out' }).click();
   await expect(header.getByRole('link', { name: 'Log in' })).toBeVisible();
-  await page.goto('/account');
-  await expect(page).toHaveURL(/\/login\?returnUrl=%2Faccount$/);
+  await page.goto('/en/account');
+  await expect(page).toHaveURL(/\/en\/login\?returnUrl=%2Faccount$/);
 });

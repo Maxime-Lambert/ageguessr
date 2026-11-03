@@ -9,6 +9,7 @@ const USER = {
   username: 'Player',
   emailVerified: true,
   role: 'USER' as const,
+  language: 'EN' as const,
 };
 
 describe('Auth', () => {
@@ -44,6 +45,7 @@ describe('Auth', () => {
       username: 'Player',
       emailVerified: true,
       role: 'USER',
+      language: 'EN',
     });
 
     expect(service.currentUser()).toEqual({
@@ -52,6 +54,7 @@ describe('Auth', () => {
       username: 'Player',
       emailVerified: true,
       role: 'USER',
+      language: 'EN',
     });
     expect(service.isAuthenticated()).toBe(true);
     expect(result).toEqual({
@@ -60,7 +63,18 @@ describe('Auth', () => {
       username: 'Player',
       emailVerified: true,
       role: 'USER',
+      language: 'EN',
     });
+  });
+
+  it('saves the language on the account and keeps the profile returned', () => {
+    service.changeLanguage('FR').subscribe();
+
+    const req = httpMock.expectOne('/api/auth/me/language');
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual({ language: 'FR' });
+    req.flush({ ...USER, language: 'FR' });
+    expect(service.currentUser()?.language).toBe('FR');
   });
 
   it('logout clears the session state', () => {
@@ -71,6 +85,7 @@ describe('Auth', () => {
       username: 'Player',
       emailVerified: true,
       role: 'USER',
+      language: 'EN',
     });
 
     service.logout().subscribe();
@@ -118,8 +133,8 @@ describe('Auth', () => {
     expect(restored).toBe(false);
   });
 
-  it('register sends the username and the Terms acceptance', () => {
-    service.register('user@x.com', 'Player', 'tortoise-violin-42', true).subscribe();
+  it('register sends the username, the Terms acceptance and the language of the page', () => {
+    service.register('user@x.com', 'Player', 'tortoise-violin-42', true, 'FR').subscribe();
 
     const req = httpMock.expectOne('/api/auth/register');
     expect(req.request.body).toEqual({
@@ -127,6 +142,7 @@ describe('Auth', () => {
       username: 'Player',
       password: 'tortoise-violin-42',
       acceptTerms: true,
+      language: 'FR',
     });
     req.flush({ userId: '1', email: 'user@x.com', username: 'Player' });
   });

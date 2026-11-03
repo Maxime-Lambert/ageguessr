@@ -1,9 +1,7 @@
-@if (language() === 'en') {
+@if (language === 'en') {
   <article>
     <h1>Terms of Use</h1>
-    <p class="meta">
-      Last updated: {{ updated() }} · <app-language-switch [language]="language()" />
-    </p>
+    <p class="meta">Last updated: {{ updated }} · <app-language-switch /></p>
 
     <h2>1. About these Terms</h2>
     <p>
@@ -98,16 +96,14 @@
 } @else {
   <article lang="fr">
     <h1>Conditions générales d'utilisation</h1>
-    <p class="meta">
-      Dernière mise à jour : {{ updated() }} · <app-language-switch [language]="language()" />
-    </p>
+    <p class="meta">Dernière mise à jour : {{ updated }} · <app-language-switch /></p>
 
     <h2>1. Objet</h2>
     <p>
       Les présentes conditions encadrent l'utilisation d'Ageguessr, accessible sur ageguessr.app (le
       « Service »), édité par la personne désignée dans les
-      <a routerLink="/legal-notice" [queryParams]="{ lang: 'fr' }">mentions légales</a>. Utiliser le
-      Service vaut acceptation. La création d'un compte exige une acceptation expresse.
+      <a routerLink="/legal-notice">mentions légales</a>. Utiliser le Service vaut acceptation. La
+      création d'un compte exige une acceptation expresse.
     </p>
 
     <h2>2. Le Service</h2>
@@ -175,7 +171,7 @@
     <h2>8. Données personnelles</h2>
     <p>
       Le traitement de vos données est décrit dans la
-      <a routerLink="/privacy" [queryParams]="{ lang: 'fr' }">politique de confidentialité</a>.
+      <a routerLink="/privacy">politique de confidentialité</a>.
     </p>
 
     <h2>9. Modification des conditions</h2>

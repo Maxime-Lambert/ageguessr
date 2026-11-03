@@ -43,6 +43,10 @@
 - Erreurs métier : exceptions custom (`NotFoundException`, `ValidationException`...) catchées par
   un `@RestControllerAdvice` global
 - Erreurs infrastructure : exceptions standard propagées et loguées
+- i18n : aucun texte visible par un joueur n'est écrit en dur dans une seule langue —
+  marquer `i18n="@@zone.nom"` (templates) ou `$localize` (TS) et traduire dans
+  `frontend/src/locale/messages.fr.xlf` dans la même PR ; emails en FR et EN
+  (`AccountEmailTexts`). L'administration reste en anglais
 - Voir `docs/decisions/architecture.md` pour le détail des choix
 
 ## Règles absolues

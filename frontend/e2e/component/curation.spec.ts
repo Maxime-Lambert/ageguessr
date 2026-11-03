@@ -69,7 +69,7 @@ test.describe('photo curation', () => {
   test('an admin reviews photos from the keyboard and can undo', async ({ page }) => {
     await asLoggedIn(page, ADMIN);
     const reviews = await mockAdminApi(page);
-    await page.goto('/admin/curation');
+    await page.goto('/en/admin/curation');
 
     await expect(page.getByRole('heading', { name: 'Person p1' })).toBeVisible();
     const image = page.getByRole('img', { name: 'Photo of Person p1 under review' });
@@ -95,7 +95,7 @@ test.describe('photo curation', () => {
   test('typing in the exclusion search never reviews a photo', async ({ page }) => {
     await asLoggedIn(page, ADMIN);
     const reviews = await mockAdminApi(page);
-    await page.goto('/admin/curation');
+    await page.goto('/en/admin/curation');
     await expect(page.getByRole('heading', { name: 'Person p1' })).toBeVisible();
 
     await page.getByLabel('Name or Wikidata ID').fill('ar');
@@ -106,9 +106,9 @@ test.describe('photo curation', () => {
 
   test('a regular user is sent home and never sees the curation link', async ({ page }) => {
     await asLoggedIn(page, USER);
-    await page.goto('/admin/curation');
+    await page.goto('/en/admin/curation');
 
-    await expect(page).toHaveURL(/\/$/);
+    await expect(page).toHaveURL(/\/en\/$/);
     await expect(page.getByRole('link', { name: 'Curation' })).toHaveCount(0);
   });
 
@@ -116,7 +116,7 @@ test.describe('photo curation', () => {
     await page.setViewportSize({ width: 360, height: 740 });
     await asLoggedIn(page, ADMIN);
     await mockAdminApi(page);
-    await page.goto('/admin/curation');
+    await page.goto('/en/admin/curation');
     await expect(page.getByRole('heading', { name: 'Person p1' })).toBeVisible();
 
     const overflow = await page.evaluate(
