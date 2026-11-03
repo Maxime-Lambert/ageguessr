@@ -1,8 +1,10 @@
 package app.ageguessr.functional.game;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.matchesPattern;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -23,7 +25,9 @@ import app.ageguessr.features.people.PersonPhotoRepository;
 import app.ageguessr.features.people.PersonRepository;
 import app.ageguessr.features.people.PhotoDateSource;
 import app.ageguessr.features.people.ReviewStatus;
+import app.ageguessr.functional.auth.AuthFlows;
 import app.ageguessr.functional.auth.AuthFunctionalTestConfig;
+import app.ageguessr.shared.email.RecordingEmailSender;
 import jakarta.servlet.http.Cookie;
 import java.time.Clock;
 import java.time.Instant;
@@ -59,12 +63,16 @@ import tools.jackson.databind.ObjectMapper;
 class SeriesFunctionalTest {
 
     private static final int AGE = 40;
+    private static final String PASSWORD = "tortoise-violin-42";
 
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private RecordingEmailSender emailSender;
 
     @Autowired
     private PersonRepository people;
@@ -110,6 +118,7 @@ class SeriesFunctionalTest {
     @AfterEach
     void cleanUp() {
         jdbc.update("DELETE FROM free_series");
+        jdbc.update("DELETE FROM users WHERE email LIKE 'series-%'");
         jdbc.update("DELETE FROM game_plays");
         jdbc.update("DELETE FROM daily_rounds");
         jdbc.update("DELETE FROM hints WHERE source_kind = 'functional-test'");
@@ -223,12 +232,155 @@ class SeriesFunctionalTest {
         start(5, null).andExpect(status().isConflict()).andExpect(jsonPath("$.errorCode").value("NO_PHOTOS"));
     }
 
+    @Test
+    void aChallengeComparesTheScoresOfThoseWhoFinishedIt() throws Exception {
+        MvcResult started = start(5, null).andReturn();
+        Cookie creator = cookieFrom(started);
+        String seriesId = idOf(started);
+        playAll(seriesId, creator, 40);
+
+        share(seriesId, "{}", creator)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorCode").value("NICKNAME_REQUIRED"));
+        String code = codeOf(share(seriesId, "{\"nickname\":\"Sherlock\"}", creator)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(matchesPattern("^[0-9A-HJKMNP-TV-Z]{8}$")))
+                .andExpect(jsonPath("$.status").value("FINISHED"))
+                .andExpect(jsonPath("$.leaderboard[0].name").value("Sherlock"))
+                .andExpect(jsonPath("$.leaderboard[0].points").value(5000))
+                .andExpect(jsonPath("$.leaderboard[0].you").value(true))
+                .andReturn());
+        share(seriesId, "{\"nickname\":\"Other\"}", creator).andExpect(jsonPath("$.code").value(code));
+
+        // A friend opens the link: who sent it, nothing else, and no cookie for reading.
+        mockMvc.perform(get("/api/game/challenges/" + code.toLowerCase()))
+                .andExpect(status().isOk())
+                .andExpect(header().doesNotExist(HttpHeaders.SET_COOKIE))
+                .andExpect(jsonPath("$.status").value("NOT_JOINED"))
+                .andExpect(jsonPath("$.creatorName").value("Sherlock"))
+                .andExpect(jsonPath("$.creatorGuest").value(true))
+                .andExpect(jsonPath("$.rounds").value(5))
+                .andExpect(jsonPath("$.seriesId").isEmpty())
+                .andExpect(jsonPath("$.leaderboard").isEmpty());
+        join(code, "{}", null).andExpect(jsonPath("$.errorCode").value("NICKNAME_REQUIRED"));
+        join(code, "{\"nickname\":\"a b\"}", null).andExpect(status().isBadRequest());
+        MvcResult joined = join(code, "{\"nickname\":\"Watson\"}", null)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("PLAYING"))
+                .andExpect(jsonPath("$.seriesId").value(seriesId))
+                .andExpect(jsonPath("$.leaderboard").isEmpty())
+                .andReturn();
+        Cookie friend = cookieFrom(joined);
+        mockMvc.perform(get("/api/game/series/" + seriesId).cookie(friend))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.creator").value(false))
+                .andExpect(jsonPath("$.rounds[0].step").value("NOT_STARTED"));
+
+        playAll(seriesId, friend, 30);
+        mockMvc.perform(get("/api/game/challenges/" + code).cookie(friend))
+                .andExpect(jsonPath("$.status").value("FINISHED"))
+                .andExpect(jsonPath("$.leaderboard.length()").value(2))
+                .andExpect(jsonPath("$.leaderboard[0].name").value("Sherlock"))
+                .andExpect(jsonPath("$.leaderboard[1].name").value("Watson"))
+                .andExpect(jsonPath("$.leaderboard[1].rank").value(2))
+                .andExpect(jsonPath("$.leaderboard[1].you").value(true));
+
+        // Joining again starts nothing over.
+        join(code, "{\"nickname\":\"Moriarty\"}", friend)
+                .andExpect(jsonPath("$.status").value("FINISHED"))
+                .andExpect(jsonPath("$.leaderboard[1].name").value("Watson"));
+    }
+
+    @Test
+    void anAccountJoinsUnderItsUsername() throws Exception {
+        MvcResult started = start(5, null).andReturn();
+        Cookie creator = cookieFrom(started);
+        String seriesId = idOf(started);
+        playAll(seriesId, creator, 40);
+        String code = codeOf(share(seriesId, "{\"nickname\":\"Sherlock\"}", creator).andReturn());
+        String email = "series-" + UUID.randomUUID() + "@x.com";
+        String username = AuthFlows.randomUsername();
+        AuthFlows.registerAndVerify(mockMvc, objectMapper, emailSender, email, username, PASSWORD);
+        String token = AuthFlows.login(mockMvc, objectMapper, email, PASSWORD).accessToken();
+
+        MockHttpServletRequestBuilder join = post("/api/game/challenges/" + code + "/join")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token);
+        perform(join, "{\"nickname\":\"Ignored\"}", null)
+                .andExpect(status().isOk())
+                .andExpect(header().doesNotExist(HttpHeaders.SET_COOKIE));
+        for (int position = 1; position <= 5; position++) {
+            perform(post(round(seriesId, position, "first-guess"))
+                            .header(HttpHeaders.AUTHORIZATION, "Bearer " + token),
+                    "{\"guess\":40,\"language\":\"EN\"}",
+                    null)
+                    .andExpect(status().isOk());
+        }
+        mockMvc.perform(get("/api/game/challenges/" + code).header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(jsonPath("$.leaderboard[1].name").value(username))
+                .andExpect(jsonPath("$.leaderboard[1].guest").value(false))
+                .andExpect(jsonPath("$.leaderboard[1].rank").value(1));
+    }
+
+    @Test
+    void onlyTheCreatorSharesASeriesAndOnceItIsPlayed() throws Exception {
+        MvcResult started = start(5, null).andReturn();
+        Cookie creator = cookieFrom(started);
+        String seriesId = idOf(started);
+
+        share(seriesId, "{\"nickname\":\"Sherlock\"}", creator)
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.errorCode").value("SERIES_NOT_FINISHED"));
+        share(seriesId, "{\"nickname\":\"Sherlock\"}", new Cookie(GuestCookie.NAME, UUID.randomUUID().toString()))
+                .andExpect(status().isNotFound());
+
+        playAll(seriesId, creator, 40);
+        String code = codeOf(share(seriesId, "{\"nickname\":\"Sherlock\"}", creator).andReturn());
+        Cookie friend = cookieFrom(join(code, "{\"nickname\":\"Watson\"}", null).andReturn());
+        share(seriesId, "{\"nickname\":\"Watson\"}", friend)
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.errorCode").value("NOT_CREATOR"));
+    }
+
+    @Test
+    void anUnknownCodeIsNotFound() throws Exception {
+        mockMvc.perform(get("/api/game/challenges/K7F2QX9M")).andExpect(status().isNotFound());
+        join("K7F2QX9M", "{\"nickname\":\"Watson\"}", null).andExpect(status().isNotFound());
+    }
+
     /** Neither the age, nor the identity, nor the credit, nor the internal photo id. */
     private void assertNoAnswerIn(String json) {
         assertThat(json)
                 .doesNotContain("\"age\"", "\"year\"", "\"result\":{")
                 .doesNotContain("Person ", "Jane Photographer", "commons.wikimedia.org");
         seeded.forEach(photo -> assertThat(json).doesNotContain(photo.getId().toString()));
+    }
+
+    /** Each round to the end: exact ({@code AGE}) in one guess, otherwise a hint then {@code AGE}. */
+    private void playAll(String seriesId, Cookie player, int firstGuess) throws Exception {
+        for (int position = 1; position <= 5; position++) {
+            perform(post(round(seriesId, position, "first-guess")),
+                            "{\"guess\":%d,\"language\":\"EN\"}".formatted(firstGuess),
+                            player)
+                    .andExpect(status().isOk());
+            if (firstGuess != AGE) {
+                perform(post(round(seriesId, position, "hint")), "{\"category\":\"MUSIC\"}", player)
+                        .andExpect(status().isOk());
+                perform(post(round(seriesId, position, "second-guess")), "{\"guess\":40}", player)
+                        .andExpect(jsonPath("$.step").value("FINISHED"));
+            }
+        }
+    }
+
+    private ResultActions share(String seriesId, String body, Cookie player) throws Exception {
+        return perform(post("/api/game/series/" + seriesId + "/share"), body, player);
+    }
+
+    private ResultActions join(String code, String body, Cookie player) throws Exception {
+        return perform(post("/api/game/challenges/" + code + "/join"), body, player);
+    }
+
+    private String codeOf(MvcResult result) throws Exception {
+        return objectMapper.readTree(result.getResponse().getContentAsString()).get("code").asString();
     }
 
     private ResultActions start(int size, Cookie guest) throws Exception {

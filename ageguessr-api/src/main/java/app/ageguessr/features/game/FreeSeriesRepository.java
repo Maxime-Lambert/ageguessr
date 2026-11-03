@@ -28,7 +28,7 @@ public interface FreeSeriesRepository extends JpaRepository<FreeSeries, UUID> {
      * a challenge 30 days after it was shared. Its rounds, players and plays go with it
      * (V15 cascades).
      */
-    @Modifying
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query(
             """
             DELETE FROM FreeSeries s

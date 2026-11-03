@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@EnableConfigurationProperties({GameProperties.class, GuestProperties.class})
+@EnableConfigurationProperties({GameProperties.class, GuestProperties.class, SeriesProperties.class})
 class GameConfig {
 
     /**

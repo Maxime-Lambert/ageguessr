@@ -194,20 +194,20 @@ Status: Complete
   `SeriesFunctionalTest` (6). `./mvnw test` : **1012 verts**.
 
 ## Phase 2 : Backend, défis
-Status: Not started
+Status: Complete
 
-- [ ] `POST /api/game/series/{id}/share` : réservé au créateur, série terminée, renvoie le
+- [x] `POST /api/game/series/{id}/share` : réservé au créateur, série terminée, renvoie le
       code (le même à chaque appel)
-- [ ] `GET /api/game/challenges/{code}` : présentation (créateur, taille), état du joueur,
+- [x] `GET /api/game/challenges/{code}` : présentation (créateur, taille), état du joueur,
       classement s'il a fini, 404 si le défi est inconnu ou expiré (purgé)
-- [ ] `POST /api/game/challenges/{code}/join` : pseudo obligatoire pour un invité, interdit
+- [x] `POST /api/game/challenges/{code}/join` : pseudo obligatoire pour un invité, interdit
       pour un compte ; un seul `join` par joueur
-- [ ] Classement : joueurs qui ont fini, tri par score puis par heure de fin, nom affiché
+- [x] Classement : joueurs qui ont fini, tri par score puis par heure de fin, nom affiché
       seulement
-- [ ] `PurgeSeries` (tâche planifiée) : série non partagée après 7 jours, défi 30 jours
+- [x] `PurgeSeries` (tâche planifiée) : série non partagée après 7 jours, défi 30 jours
       après son partage
-- [ ] Limite de débit sur `join`
-- [ ] Tests :
+- [x] Limite de débit sur `join`
+- [x] Tests :
   - unitaires : génération du code, tri du classement ;
   - fonctionnels : partage puis `join` par un invité, puis un compte, puis classement ;
     partage refusé si la série n'est pas finie ou si on n'en est pas le créateur ;
@@ -220,7 +220,35 @@ Status: Not started
 - `cd ageguessr-api && ./mvnw test` → vert
 
 ### Phase Summary
-_(à écrire à la fin de la phase)_
+- **`POST /api/game/series/{id}/share`** `{nickname?}` :
+  - réservé au créateur (sinon 409 `NOT_CREATOR`, ou 404 pour qui n'est pas joueur) ;
+  - la série doit être terminée (sinon 409 `SERIES_NOT_FINISHED`) ;
+  - un créateur invité donne un pseudo (sinon 400 `NICKNAME_REQUIRED`), qui est posé
+    sur sa ligne de joueur ;
+  - partager de nouveau renvoie le même code. `ShareCodes` : 8 caractères Crockford tirés
+    avec `SecureRandom`, et jusqu'à 5 essais en cas de collision.
+- **`GET /api/game/challenges/{code}`** : public, sans cookie. Il renvoie le nom et le
+  type du créateur, la taille, le nombre de manches et l'état du visiteur
+  (`NOT_JOINED`, `PLAYING`, `FINISHED`). `seriesId`, le score et le classement ne sont
+  donnés qu'au joueur ; le classement, seulement une fois qu'il a fini. Le code est lu
+  sans tenir compte de la casse ni des espaces.
+- **`POST /api/game/challenges/{code}/join`** `{nickname?}` : pose le cookie invité. Le
+  pseudo est obligatoire pour un invité et ignoré pour un compte. Rejoindre de nouveau ne
+  change rien, pas même le pseudo, et ne fait jamais repartir de zéro.
+- **Classement** (`Challenges.leaderboard`) : seuls les joueurs qui ont fini toutes les
+  manches jouables apparaissent. Tri par points puis par heure de fin ; à points égaux,
+  même rang (1, 1, 3). Chaque ligne donne le nom, `guest`, les points, le max et `you`.
+  Le nom d'un compte vient de `users.username` par une jointure SQL native, car `game` ne
+  peut pas importer `auth` (ArchUnit). Il est donc toujours à jour, et disparaît avec le
+  compte.
+- **`PurgeSeries`** : tâche planifiée tous les jours à 00 h 40 UTC, `SeriesProperties`
+  (`app.game.series.*`, 7 et 30 jours), désactivée dans les profils ponctuels. Le
+  `DELETE` de masse vide le cache JPA (`clearAutomatically`).
+- **Limite `series`** aussi sur `join` (regex sur le chemin).
+- **Tests** : `ShareCodesTest` (2), `ChallengesLeaderboardTest` (2),
+  `PurgeSeriesIntegrationTest` (2, bornes à ±1 minute), `SeriesFunctionalTest` (+4 :
+  défi à deux invités, compte sous son nom d'utilisateur, refus du partage, code
+  inconnu), `RateLimitFunctionalTest` (+1). `./mvnw test` : **1023 verts**.
 
 ## Phase 3 : Front, Enquête libre
 Status: Not started

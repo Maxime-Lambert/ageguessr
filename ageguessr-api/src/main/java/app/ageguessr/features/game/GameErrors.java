@@ -39,4 +39,18 @@ public final class GameErrors {
     public static ConflictException noPhotos() {
         return new ConflictException("NO_PHOTOS", "No photo can be drawn for a series");
     }
+
+    /** Unknown or expired (purged): the same answer for both. */
+    public static NotFoundException challengeNotFound() {
+        return new NotFoundException("No such challenge");
+    }
+
+    /** Only the creator shares a series, and once it is played. */
+    public static ConflictException notCreator() {
+        return new ConflictException("NOT_CREATOR", "Only the creator of a series shares it");
+    }
+
+    public static ConflictException seriesNotFinished() {
+        return new ConflictException("SERIES_NOT_FINISHED", "A series is shared once played");
+    }
 }
