@@ -1,7 +1,9 @@
 import { Component, OnDestroy, inject, output, signal } from '@angular/core';
 import { Observable } from 'rxjs';
+import { reasonsText } from '../../../shared/reports/report-reasons';
 import { CurationApi } from '../curation-api';
-import { PhotoReportReason, ReportedPhoto, displayName } from '../models';
+import { PhotoReportReason } from '../../../shared/reports/report-reasons';
+import { ReportedPhoto, displayName } from '../models';
 
 /** The reasons as the player picked them (game-vocabulary), in English like the admin. */
 export const PHOTO_REASON_LABELS: Record<PhotoReportReason, string> = {
@@ -58,12 +60,8 @@ export class ReportedPhotos implements OnDestroy {
     });
   }
 
-  /** "Wrong person (2), Other (1)", in the order of the list the player picks from. */
   reasonsText(item: ReportedPhoto): string {
-    return (Object.keys(PHOTO_REASON_LABELS) as PhotoReportReason[])
-      .filter((reason) => item.reasons[reason])
-      .map((reason) => `${PHOTO_REASON_LABELS[reason]} (${item.reasons[reason]})`)
-      .join(', ');
+    return reasonsText(PHOTO_REASON_LABELS, item.reasons);
   }
 
   reject(item: ReportedPhoto): void {

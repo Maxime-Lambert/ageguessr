@@ -1,3 +1,5 @@
+import { PhotoReportReason } from '../../shared/reports/report-reasons';
+
 /** Mirrors of the /api/admin/** responses (ageguessr-api features/people). */
 
 export type ReviewStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
@@ -61,9 +63,6 @@ export interface ExclusionResult {
   personId: string;
   deletedPhotos: number;
 }
-
-export type PhotoReportReason =
-  'TOO_SMALL' | 'NOT_IDENTIFIABLE' | 'WRONG_PERSON' | 'LOOKS_MINOR' | 'DISTURBING_PERSON' | 'OTHER';
 
 /** A photo players reported (GET /api/admin/photos/reported), most reported first. */
 export interface ReportedPhoto {

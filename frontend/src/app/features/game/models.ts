@@ -1,3 +1,6 @@
+import { HintReportReason, PhotoReportReason } from '../../shared/reports/report-reasons';
+
+export type { HintReportReason, PhotoReportReason };
 /** Mirrors of the /api/game responses (ageguessr-api features/game). */
 
 export type RoundStep = 'NOT_STARTED' | 'AWAITING_HINT' | 'AWAITING_SECOND_GUESS' | 'FINISHED';
@@ -110,9 +113,6 @@ export interface Challenge {
 
 /** What of a round a player reports (POST …/rounds/{position}/report). */
 export type ReportTarget = 'PHOTO' | 'HINT';
-export type PhotoReportReason =
-  'TOO_SMALL' | 'NOT_IDENTIFIABLE' | 'WRONG_PERSON' | 'LOOKS_MINOR' | 'DISTURBING_PERSON' | 'OTHER';
-export type HintReportReason = 'WRONG_YEAR' | 'FALSE' | 'UNCLEAR' | 'DISTURBING' | 'OTHER';
 
 /** The reason comes from the list of its target. */
 export type RoundReport =

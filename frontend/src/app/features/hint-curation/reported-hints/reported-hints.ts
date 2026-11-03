@@ -1,9 +1,11 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, signal } from '@angular/core';
 import { Observable } from 'rxjs';
+import { reasonsText } from '../../../shared/reports/report-reasons';
 import { ApiErrorResponse } from '../../../shared/api-error';
 import { HintCurationApi } from '../hint-curation-api';
-import { HintReportReason, ReportedHint } from '../models';
+import { HintReportReason } from '../../../shared/reports/report-reasons';
+import { ReportedHint } from '../models';
 
 /** The reasons as the player picked them (game-vocabulary), in English like the admin. */
 export const HINT_REASON_LABELS: Record<HintReportReason, string> = {
@@ -58,12 +60,8 @@ export class ReportedHints {
     });
   }
 
-  /** "Wrong person (2), Other (1)", in the order of the list the player picks from. */
   reasonsText(item: ReportedHint): string {
-    return (Object.keys(HINT_REASON_LABELS) as HintReportReason[])
-      .filter((reason) => item.reasons[reason])
-      .map((reason) => `${HINT_REASON_LABELS[reason]} (${item.reasons[reason]})`)
-      .join(', ');
+    return reasonsText(HINT_REASON_LABELS, item.reasons);
   }
 
   edit(hintId: string, language: 'en' | 'fr', text: string): void {

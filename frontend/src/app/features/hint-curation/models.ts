@@ -1,3 +1,5 @@
+import { HintReportReason } from '../../shared/reports/report-reasons';
+
 /** Mirrors of the /api/admin/hints responses (ageguessr-api features/hints). */
 
 export type HintReviewStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
@@ -51,8 +53,6 @@ export interface HintCoverage {
   gaps: number;
   rows: CoverageRow[];
 }
-
-export type HintReportReason = 'WRONG_YEAR' | 'FALSE' | 'UNCLEAR' | 'DISTURBING' | 'OTHER';
 
 /** A hint players reported (GET /api/admin/hints/reported), most reported first. */
 export interface ReportedHint {

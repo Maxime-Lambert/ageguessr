@@ -206,18 +206,21 @@ Status: Complete
 Sections `reported-photos` (curation) et `reported-hints` (indices), stubbées dans les specs des pages existantes. Un cas Playwright « Keep » ajouté à `curation.spec.ts` (exécuté par la CI).
 
 ## Phase 6: Docs, revues, PR
-Status: Not started
+Status: Complete
 
 - [x] `docs/decisions/architecture.md` (signalements : rangement, anonymat, seuils),
   `docs/roadmap.md` (deux cases cochées), `docs/testing-strategy.md` si besoin.
-- [ ] code-reviewer puis architecture-reviewer sur le diff ; corriger 🔴 et 🟠.
-- [ ] PR vers `develop`, CI verte (Playwright compris).
+- [x] code-reviewer puis architecture-reviewer sur le diff ; corriger 🔴 et 🟠.
+- [x] PR vers `develop`, CI verte (Playwright compris).
 
 ### Verification Plan
 - `./mvnw test` + `pnpm test` verts ; CI de la PR verte.
 
 ### Phase Summary
-_(write when phase completes)_
+Revues : code-reviewer sans 🔴 ni 🟠 (Y1 appliqué : sujet d'email sur une ligne) ;
+architecture-reviewer, deux 🟠 corrigés (types de motifs et `reasonsText` partagés dans
+`frontend/src/app/shared/reports/`), commentaire ajouté sur l'urgence d'une photo.
+Vérifié : `./mvnw test` 1063 verts, `pnpm test` 289 verts, lint, build des deux langues.
 
 ## Edge cases
 - Manche non terminée, d'un autre joueur, d'une série inconnue, d'une date sans partie.
@@ -233,7 +236,25 @@ _(write when phase completes)_
 - Échec de Resend : loggé, le signalement reste enregistré.
 
 ## Final Recap
-_(write when all phases complete)_
+Un joueur signale la photo ou l'indice d'une manche qu'il a terminée (partie du jour ou
+série), avec un motif d'une liste fermée. Le signalement est anonyme ; une marque sur la
+manche jouée empêche de signaler deux fois. L'admin reçoit un email au seuil (3, ou dès
+le premier pour une photo du jour, un premier « paraît mineure » ou un indice du jour) et
+traite deux files : photos dans la curation (Reject / Keep / Exclude), indices dans
+`/admin/hints` (corriger et approuver / Reject / Keep). Toute décision clôt les
+signalements. Limite `report` de 20 par heure et par IP.
+
+Écart au plan : pas de test d'intégration séparé pour V16, le fonctionnel couvrant les
+mêmes requêtes contre Postgres. `ci.yml` n'est pas modifié (refusé en mode auto) :
+`ADMIN_EMAIL` reste à transmettre par l'étape de déploiement.
 
 ## Deployment Plan
-_(write when all phases complete)_
+1. Ajouter la variable GitHub `ADMIN_EMAIL` (Settings → Variables) et, dans `ci.yml`
+   (étape « Écrire le .env de prod »), `ADMIN_EMAIL: ${{ vars.ADMIN_EMAIL }}` dans `env`,
+   `ADMIN_EMAIL` dans `envs`, et `ADMIN_EMAIL=$ADMIN_EMAIL` dans le heredoc du `.env`.
+   Sans ça, les alertes deviennent des logs WARN (le reste fonctionne).
+2. Release `develop` → `main` (merge commit). Flyway applique V16 : deux colonnes par
+   table de manches (défaut false) et deux tables, sans toucher aux données.
+3. Vérifier en prod : terminer une manche, « Report this photo », un motif, « Reported » ;
+   recharger, l'état reste ; `/admin/curation` montre la photo avec « In today's game »,
+   « Keep » la retire ; l'email d'alerte arrive à `ADMIN_EMAIL`.

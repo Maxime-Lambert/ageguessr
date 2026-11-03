@@ -60,6 +60,16 @@ class ReportAlertsTest {
     }
 
     @Test
+    void keepsTheSubjectOnOneLine() {
+        alerts.photo(Person.builder().wikidataId("Q1").nameEn("Jane\r\nBcc: x@y.z").build(),
+                PhotoReportReason.OTHER, 3, false);
+
+        ArgumentCaptor<EmailMessage> sent = ArgumentCaptor.forClass(EmailMessage.class);
+        verify(emails).send(sent.capture());
+        assertThat(sent.getValue().subject()).doesNotContain("\r", "\n");
+    }
+
+    @Test
     void sendsNothingWithoutAnAdminAddress() {
         ReportAlerts silent = new ReportAlerts(emails, "", "https://ageguessr.app", 3);
 

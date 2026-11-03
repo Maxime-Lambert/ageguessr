@@ -77,7 +77,9 @@ class ReportAlerts {
         send(subject, body);
     }
 
-    private void send(String subject, String body) {
+    /** A subject is one line: a name from Wikidata never adds a header. */
+    private void send(String rawSubject, String body) {
+        String subject = rawSubject.replaceAll("[\\r\\n]", " ");
         if (adminEmail.isBlank()) {
             log.warn("{} (no ADMIN_EMAIL, nothing sent)", subject);
             return;

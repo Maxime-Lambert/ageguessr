@@ -74,6 +74,7 @@ public class ReportRoundHandler {
             throw GameErrors.roundNotFinished();
         }
         if (reason.photo() != null) {
+            // A photo is urgent when it is in today's game, wherever it was seen: checked there.
             reportPhoto(round, play, reason.photo(), save);
         } else {
             reportHint(play, reason.hint(), fromTodaysGame, save);
