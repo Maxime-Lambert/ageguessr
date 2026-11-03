@@ -25,7 +25,7 @@ describe('LanguageSwitch', () => {
     await TestBed.inject(Router).navigateByUrl('/privacy');
     const fixture = TestBed.createComponent(LanguageSwitch);
     fixture.detectChanges();
-    return { page, link: (fixture.nativeElement as HTMLElement).querySelector('a')! };
+    return { page, fixture, link: (fixture.nativeElement as HTMLElement).querySelector('a')! };
   }
 
   it('offers the French version, named in French, from the English site', async () => {
@@ -42,6 +42,15 @@ describe('LanguageSwitch', () => {
 
     expect(link.textContent?.trim()).toBe('English');
     expect(link.getAttribute('href')).toBe('/en/privacy');
+  });
+
+  it('follows the navigation after the first render', async () => {
+    const { link, fixture } = await render('en');
+
+    await TestBed.inject(Router).navigateByUrl('/terms');
+    await fixture.whenStable();
+
+    expect(link.getAttribute('href')).toBe('/fr/terms');
   });
 
   it('switches on click', async () => {

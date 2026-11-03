@@ -1,7 +1,8 @@
 import { DOCUMENT } from '@angular/common';
 import { InjectionToken, LOCALE_ID, Service, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
-import { Observable, map } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router } from '@angular/router';
+import { Observable, filter, map } from 'rxjs';
 import { Auth } from '../auth/auth';
 import { AuthUser } from '../auth/models';
 import {
@@ -48,11 +49,23 @@ export class SiteLanguageService {
   readonly error = signal(false);
 
   /**
+   * Router.url as a signal: Router.url alone is not one, so a template reading it (the
+   * link of the switch) would keep the URL of its first render.
+   */
+  private readonly url = toSignal(
+    this.router.events.pipe(
+      filter((event) => event instanceof NavigationEnd),
+      map(() => this.router.url),
+    ),
+    { initialValue: this.router.url },
+  );
+
+  /**
    * The page being shown, in a language: same path, query and fragment. Router.url
    * leaves the prefix out (it is the base href of the build).
    */
   urlIn(language: SiteLanguage): string {
-    return `/${language}${this.router.url}`;
+    return `/${language}${this.url()}`;
   }
 
   /**
