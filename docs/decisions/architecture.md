@@ -301,8 +301,10 @@ main en SQL**. Aucun endpoint ni écran ne la modifie.
 
 ### Pages légales et acceptation des CGU
 **Décision** : trois pages statiques côté Angular (`features/legal/`) : `/legal-notice`,
-`/terms` et `/privacy`. Chacune existe en anglais par défaut et en français avec
-`?lang=fr`.
+`/terms` et `/privacy`. Chacune existe en anglais et en français : le template contient
+les deux versions en blocs entiers (un texte juridique se relit en entier, hors du
+catalogue de traduction) et la build de la langue choisit la sienne (`/en/terms`,
+`/fr/terms`, voir « Internationalisation »).
 - **Éditeur** : particulier non professionnel, identité non publiée (LCEN) : seuls
   l'email `contact@ageguessr.app` et les coordonnées de l'hébergeur OVH apparaissent.
 - **Droit applicable** : le droit français, sans priver un consommateur étranger des
@@ -774,6 +776,62 @@ supplémentaire.
 
 **Raison** : une librairie de composants peut être ajoutée à tout moment si besoin de
 composants complexes. Partir sans évite une dépendance non nécessaire au MVP.
+
+### Internationalisation (i18n)
+**Décision** (2026-11-02, PR `feature/i18n`) : tout le site joueur existe en anglais et
+en français, avec l'i18n natif d'Angular (`@angular/localize`) et **une URL par
+langue** : `/en/…` et `/fr/…`, une build par langue. L'administration reste en anglais
+(sous `/en/admin/…` comme sous `/fr/admin/…`).
+- **Catalogue** : langue source `en`, traduction dans `src/locale/messages.fr.xlf`
+  (XLIFF, le format par défaut d'`ng extract-i18n`). Textes des templates marqués
+  `i18n="@@zone.nom"` avec un **id explicite** : retoucher l'anglais ne fait pas perdre la
+  traduction. Textes TS en `$localize`. `i18nMissingTranslation: error` : une traduction
+  manquante casse la build, donc la CI (étape « Build (EN + FR) »).
+- **Dev** : `pnpm start` sert `/en/` (port 4200), `pnpm start:fr` sert `/fr/` (port
+  4201) : `ng serve` ne sert qu'une langue à la fois.
+- **Prod (Caddy)** : `/en/*` et `/fr/*` servent chacune leur build. Toute autre URL hors
+  `/api/*` redirige en 302 vers `/<langue><chemin>`, la langue venant du cookie
+  `ageguessr_lang`, puis d'`Accept-Language`, sinon `en` (`?lang=fr` force `/fr/`). La
+  redirection porte `Cache-Control: no-store` et `Vary: Cookie, Accept-Language` pour que
+  Cloudflare ne serve pas la redirection d'un visiteur à tous. Les anciens liens (emails
+  déjà envoyés, `/terms`) continuent de marcher. Vérifié par
+  `scripts/check-edge-locales.sh`.
+- **Langue du site** (`features/i18n/`) : `SiteLanguageService` lit `LOCALE_ID`. Le
+  sélecteur de l'en-tête (avec `hreflang`) écrit le cookie `ageguessr_lang` (1 an,
+  `SameSite=Lax`, lisible par le script : un choix de l'utilisateur, sans consentement
+  requis) et recharge la même page dans l'autre préfixe.
+- **Langue du compte** : `users.language` (V14, nullable : NULL = jamais choisie),
+  envoyée à l'inscription et modifiée par `PUT /api/auth/me/language`. Elle gagne sur la
+  page : après connexion ou restauration de session, le front recharge la page dans la
+  langue du compte (et met le cookie à jour, d'où aucune boucle). Si l'enregistrement
+  échoue au changement de langue, la page ne change pas et un message s'affiche.
+- **Emails** dans la langue du compte (anglais si NULL), avec des liens préfixés
+  (`<frontend-url>/fr/reset-password?token=…`) : `AccountEmailTexts`, `AccountLinks`.
+- **Langue partagée** : `shared/i18n/Language` (`EN`, `FR`), utilisée par `auth` et
+  `game` sans qu'elles dépendent l'une de l'autre. Le lien avec `HintAudience` est dans
+  `HintPicker`.
+  Côté front, même logique : les types et conversions (`SiteLanguage`, `ApiLanguage`,
+  cookie) sont dans `shared/i18n/language.ts`, utilisés par `auth`, `game` et
+  `features/i18n`.
+- **Exception front `i18n ↔ auth`** : `SiteLanguageService` lit le compte (`Auth`) pour
+  enregistrer la langue choisie, et l'inscription lit la langue de la page. Les deux
+  features s'importent donc l'une l'autre. C'est accepté, comme `layout → auth` : il n'y
+  a pas de règle d'architecture outillée côté front, et une interface intermédiaire
+  ajouterait une abstraction pour un seul usage.
+- **Langue des indices**, indépendante du site : sélecteur sur l'écran de jeu, retenu
+  dans le stockage local (`ageguessr-hint-language`), par défaut la langue du site. Elle
+  s'applique au prochain 1er essai : une manche commencée garde sa langue
+  (`game_plays.language`).
+- **Erreurs** : le front n'affiche jamais le `message` de l'API, seulement ses propres
+  textes traduits, choisis par `errorCode`.
+
+**Raison** : une URL par langue est indexable par langue (référencement) et ne demande
+aucun chargement de traduction à l'exécution. Changer de langue recharge la page, ce
+qui est acceptable pour un choix rare.
+
+**Règle** : aucun texte visible par un joueur n'est écrit en dur dans une seule langue.
+Tout nouveau texte joueur est marqué (`i18n` ou `$localize`) et traduit dans
+`messages.fr.xlf` dans la même PR ; tout nouvel email existe dans les deux langues.
 
 ### Tests unitaires : Vitest
 **Décision** : Vitest, via le builder `@angular/build:unit-test` (défaut Angular CLI

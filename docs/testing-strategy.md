@@ -52,6 +52,17 @@ navigateur (Playwright), pour attraper ce que jsdom ne peut pas (CSS réel, comp
 navigateur). **Ne couvre pas** : l'intégration avec un vrai backend — utilise des mocks
 réseau si besoin.
 
+**Deux langues** : Playwright lance les deux serveurs de dev, `/en/` sur 4200 et `/fr/`
+sur 4201. Le projet `component` teste la build anglaise, le projet `component-fr`
+(`frontend/e2e/component-fr/`) la build française : c'est le seul endroit qui voit les
+traductions et le rechargement au changement de langue. Les specs Vitest, elles, tournent
+dans la langue source (anglais). `pnpm test:e2e` lance les deux projets.
+
+**Pas de Playwright en local sous WSL** : deux serveurs de dev et Chromium épuisent la
+mémoire de WSL (7,7 Go) et font planter la VM, même avec 2 workers. Les specs
+Playwright s'écrivent en local, mais s'exécutent dans la CI (runner 16 Go), qui valide
+la PR.
+
 ### QA / parcours utilisateur
 Teste un parcours utilisateur complet (plusieurs pages, plusieurs actions) contre
 l'application réelle : API réelle, PostgreSQL réel, Redis réel, frontend réel. Le niveau
@@ -62,7 +73,9 @@ connexion → ajout d'ami).
 pyramide (plus rapide, plus précis sur la cause d'un échec).
 
 **Lancer les parcours** : API en profil `e2e` (emails enregistrés, `/test-support/*`,
-dont `seed-daily-game` qui pose une partie du jour connue), puis
+dont `seed-daily-game` qui pose une partie du jour connue, et `last-email`, qui rend le
+sujet et le lien du dernier email d'une adresse : les parcours suivent ce lien tel quel,
+ce qui vérifie aussi son préfixe de langue), puis
 `cd frontend && pnpm test:e2e:journeys`. Deux précautions :
 - **une base jetable** (par exemple un Postgres et un Redis lancés avec `docker run
   --rm` sur d'autres ports, via `DB_PORT` et `REDIS_PORT`) : les parcours créent des
