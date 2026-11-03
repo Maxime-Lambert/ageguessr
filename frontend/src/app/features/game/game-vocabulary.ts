@@ -1,5 +1,12 @@
 import { COMMON_MESSAGES } from '../../shared/common-messages';
-import { Direction, HintCategory, MAX_AGE, MIN_AGE } from './models';
+import {
+  Direction,
+  HintCategory,
+  HintReportReason,
+  MAX_AGE,
+  MIN_AGE,
+  PhotoReportReason,
+} from './models';
 
 /**
  * Every word of the game screens comes from here, never from a template
@@ -23,6 +30,7 @@ export const INVESTIGATION_VOICE = {
   chooseLength: $localize`:@@game.voice.chooseLength:How many cases?`,
   newSeries: $localize`:@@game.voice.newSeries:New investigation`,
   tryFree: $localize`:@@game.voice.tryFree:Not enough? Open a free investigation`,
+  reportHint: $localize`:@@game.voice.reportHint:Report this lead`,
 };
 
 export const NEUTRAL_VOICE: typeof INVESTIGATION_VOICE = {
@@ -40,6 +48,7 @@ export const NEUTRAL_VOICE: typeof INVESTIGATION_VOICE = {
   chooseLength: $localize`:@@game.neutral.chooseLength:How many rounds?`,
   newSeries: $localize`:@@game.neutral.newSeries:New series`,
   tryFree: $localize`:@@game.neutral.tryFree:Not enough? Play a series`,
+  reportHint: $localize`:@@game.neutral.reportHint:Report this hint`,
 };
 
 const VOICE = INVESTIGATION_VOICE;
@@ -98,6 +107,32 @@ export const GAME_TEXT = {
   youMark: $localize`:@@game.youMark:you`,
   rank: $localize`:@@game.rank:Rank`,
   player: $localize`:@@game.player:Player`,
+  reportPhoto: $localize`:@@game.reportPhoto:Report this photo`,
+  reportWhy: $localize`:@@game.reportWhy:What is wrong?`,
+  reportSend: $localize`:@@game.reportSend:Send`,
+  reportCancel: $localize`:@@game.reportCancel:Cancel`,
+  reportSent: $localize`:@@game.reportSent:Reported, thank you. We will take a look.`,
+  reportTooMany: $localize`:@@game.reportTooMany:Too many reports from your connection. Try again later.`,
+  reportUnavailable: $localize`:@@game.reportUnavailable:This can no longer be reported.`,
+};
+
+/** The reasons to report a photo, in the order shown (PhotoReportReason, ageguessr-api). */
+export const PHOTO_REPORT_REASONS: Record<PhotoReportReason, string> = {
+  TOO_SMALL: $localize`:@@game.report.photo.tooSmall:The image is too small`,
+  NOT_IDENTIFIABLE: $localize`:@@game.report.photo.notIdentifiable:The person cannot be made out`,
+  WRONG_PERSON: $localize`:@@game.report.photo.wrongPerson:It is not the right person`,
+  LOOKS_MINOR: $localize`:@@game.report.photo.looksMinor:The person looks under 18`,
+  DISTURBING_PERSON: $localize`:@@game.report.photo.disturbing:This person bothers me`,
+  OTHER: $localize`:@@game.report.photo.other:Something else`,
+};
+
+/** The reasons to report a hint, in the order shown (HintReportReason, ageguessr-api). */
+export const HINT_REPORT_REASONS: Record<HintReportReason, string> = {
+  WRONG_YEAR: $localize`:@@game.report.hint.wrongYear:The year is wrong`,
+  FALSE: $localize`:@@game.report.hint.false:The information is false`,
+  UNCLEAR: $localize`:@@game.report.hint.unclear:I do not understand it`,
+  DISTURBING: $localize`:@@game.report.hint.disturbing:It bothers me`,
+  OTHER: $localize`:@@game.report.hint.other:Something else`,
 };
 
 /** A length of series to choose, in the voice of the game. */

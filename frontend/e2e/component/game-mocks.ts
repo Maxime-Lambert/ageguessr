@@ -48,6 +48,8 @@ export const RESULT = {
     year: 1986,
     sourceUrl: 'https://en.wikipedia.org/wiki/Hit',
   },
+  photoReported: false,
+  hintReported: false,
 };
 
 function json(body: unknown) {
@@ -72,6 +74,9 @@ export async function mockGame(
     const [position, step] = request.url().split('/').slice(-2);
     sent.push(request.postDataJSON());
     const n = Number(position);
+    if (step === 'report') {
+      return route.fulfill({ status: 204 });
+    }
     if (step === 'first-guess') {
       return route.fulfill(
         json(

@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
 import { GAME_TEXT } from '../game-vocabulary';
 import { RoundView } from '../models';
 import { finished } from '../testing';
@@ -12,6 +13,7 @@ describe('RoundResult', () => {
     fixture.componentRef.setInput('round', view);
     fixture.componentRef.setInput('total', 3);
     fixture.componentRef.setInput('last', last);
+    fixture.componentRef.setInput('reporter', () => of(undefined));
     fixture.detectChanges();
   }
 
@@ -91,13 +93,30 @@ describe('RoundResult', () => {
   it('leads to the next round, or to the summary after the last', () => {
     let next = 0;
     fixture.componentInstance.next.subscribe(() => next++);
+    // The last button of the verdict, after the reports.
+    const proceed = () => page.querySelector<HTMLButtonElement>('section > button:last-of-type')!;
     show(finished(1));
-    expect(page.querySelector('button')?.textContent?.trim()).toBe(GAME_TEXT.next);
+    expect(proceed().textContent?.trim()).toBe(GAME_TEXT.next);
 
     show(finished(3), true);
-    page.querySelector('button')!.click();
+    proceed().click();
 
-    expect(page.querySelector('button')?.textContent?.trim()).toBe(GAME_TEXT.seeSummary);
+    expect(proceed().textContent?.trim()).toBe(GAME_TEXT.seeSummary);
     expect(next).toBe(1);
+  });
+
+  it('offers to report the photo, and the hint when one was shown', () => {
+    show(finished(1));
+    const buttons = Array.from(page.querySelectorAll('button')).map((b) => b.textContent?.trim());
+    expect(buttons).toContain(GAME_TEXT.reportPhoto);
+    expect(buttons).toContain(GAME_TEXT.reportHint);
+  });
+
+  it('offers no hint report without a hint, and says what was already reported', () => {
+    show(finished(1, { hint: null, photoReported: true }));
+    const buttons = Array.from(page.querySelectorAll('button')).map((b) => b.textContent?.trim());
+    expect(buttons).not.toContain(GAME_TEXT.reportPhoto);
+    expect(buttons).not.toContain(GAME_TEXT.reportHint);
+    expect(page.textContent).toContain(GAME_TEXT.reportSent);
   });
 });

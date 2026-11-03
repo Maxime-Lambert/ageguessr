@@ -58,6 +58,13 @@
         }}</a>
         ({{ text.hintLicense }})
       </p>
+      <div class="mt-2">
+        <app-report-button
+          target="HINT"
+          [reported]="result().hintReported"
+          [reporter]="reporter()"
+        />
+      </div>
     </div>
   }
 
@@ -75,6 +82,13 @@
       text.source
     }}</a>
   </p>
+  <div class="mt-1">
+    <app-report-button
+      target="PHOTO"
+      [reported]="result().photoReported"
+      [reporter]="reporter()"
+    />
+  </div>
 
   <button
     type="button"
