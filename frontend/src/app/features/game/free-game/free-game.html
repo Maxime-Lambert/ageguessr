@@ -67,6 +67,9 @@
             >
               {{ text.newSeries }}
             </button>
+            @if (series.creator) {
+              <app-share-challenge [series]="series" />
+            }
           </div>
         </app-day-summary>
       }

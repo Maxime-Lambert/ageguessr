@@ -291,19 +291,45 @@ Status: Complete
   lint, format, build EN + FR OK.
 
 ## Phase 4 : Front, Défi et partage
-Status: Not started
+Status: Complete
 
-- [ ] « Défier des amis » : partage (`navigator.share`, sinon copie), texte de résultat
-- [ ] Route `/challenge/:code` : présentation, pseudo pour un invité, jeu, classement,
+- [x] « Défier des amis » : partage (`navigator.share`, sinon copie), texte de résultat
+- [x] Route `/challenge/:code` : présentation, pseudo pour un invité, jeu, classement,
       états « déjà joué » et « expiré »
-- [ ] Textes FR et EN
-- [ ] Specs Vitest : texte de partage, pseudo, classement, expiré, déjà joué
+- [x] Textes FR et EN
+- [x] Specs Vitest : texte de partage, pseudo, classement, expiré, déjà joué
 
 ### Verification Plan
 - `cd frontend && pnpm test && pnpm lint && pnpm format:check && pnpm build` → vert
 
 ### Phase Summary
-_(à écrire à la fin de la phase)_
+- **`ShareChallenge`**, dans le bilan d'une série, pour son créateur seulement :
+  - un invité donne un pseudo, contrôlé avec le même format que l'API ; un compte partage
+    directement ;
+  - une série déjà partagée redonne le même lien sans rien demander ;
+  - lien affiché dans un champ en lecture seule, « Partager » (`navigator.share`, si le
+    navigateur l'a) et « Copier le lien » (presse-papiers).
+- **Lien sans préfixe de langue** (`https://ageguessr.app/challenge/CODE`) : Caddy envoie
+  chaque ami vers sa langue. En dev (`ng serve`), ce lien ne mène nulle part, comme les
+  autres URL sans préfixe.
+- **Texte partagé** (`shareText`, `squares`) : « Ageguessr · Défi · 3840 / 5000 », un
+  carré par manche (🟩 dès 900 points, 🟨 dès 500, 🟥 en dessous, ⬛ pour une photo
+  retirée), puis le lien. Rien des réponses.
+- **`/challenge/:code`** (`ChallengePage`, qui hérite de `RoundsScreen`) :
+  - présentation (« Sherlock vous défie sur 5 affaires. », « Un seul essai chacun… ») ;
+  - pseudo pour un invité, affiché seulement une fois la session connue, pour qu'un
+    compte ne voie pas le champ apparaître puis disparaître ;
+  - jeu, puis bilan avec le classement (`Leaderboard`), « Partager mon résultat » et un
+    lien vers l'Enquête libre ;
+  - « Défi introuvable ou expiré » sur un 404, un message dédié sur un 429.
+- **`SHARE_TARGET`** : jeton injectable devant `navigator.share` et le presse-papiers,
+  comme `BROWSER_PAGE`, pour que les specs ne touchent jamais au vrai navigateur.
+- **Dépendance front `game → auth`** : `ShareChallenge` et `ChallengePage` lisent
+  `Auth.isAuthenticated` pour savoir s'il faut demander un pseudo. C'est une exception
+  acceptée, comme `layout → auth` (à documenter en phase 5).
+- **Specs** : `share.spec.ts` (3), `share-challenge.spec.ts` (3),
+  `challenge-page.spec.ts` (5). `pnpm test` **265 verts**, lint, format, build EN + FR OK.
+  25 messages traduits en français.
 
 ## Phase 5 : Parcours, documentation, reviews
 Status: Not started

@@ -12,6 +12,7 @@ import { Round } from '../round/round';
 import { RoundResult } from '../round-result/round-result';
 import { RoundsScreen } from '../rounds-screen';
 import { SeriesApi } from '../series-api';
+import { ShareChallenge } from '../share-challenge/share-challenge';
 
 /**
  * The free investigation, at /free: the player picks a length, plays the series with the
@@ -19,7 +20,7 @@ import { SeriesApi } from '../series-api';
  * is picked up again, from the server, on any device of an account.
  */
 @Component({
-  imports: [Round, RoundResult, DaySummary, HintLanguagePicker, RouterLink],
+  imports: [Round, RoundResult, DaySummary, HintLanguagePicker, RouterLink, ShareChallenge],
   selector: 'app-free-game',
   templateUrl: './free-game.html',
 })
@@ -77,7 +78,13 @@ export class FreeGame extends RoundsScreen<Series> {
       error: (error: HttpErrorResponse) => {
         this.starting.set(false);
         const code = (error.error as ApiErrorResponse | null)?.errorCode;
-        this.startError.set(code === 'NO_PHOTOS' ? this.text.noPhotos : this.text.genericError);
+        this.startError.set(
+          code === 'NO_PHOTOS'
+            ? this.text.noPhotos
+            : error.status === 429
+              ? this.text.tooManySeries
+              : this.text.genericError,
+        );
       },
     });
   }

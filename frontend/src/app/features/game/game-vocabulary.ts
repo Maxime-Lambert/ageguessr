@@ -76,6 +76,27 @@ export const GAME_TEXT = {
   hintLanguage: $localize`:@@game.hintLanguage:Hints in`,
   freeIntro: $localize`:@@game.freeIntro:Same rules as the daily game, as many as you like. Nothing here counts toward the daily game.`,
   noPhotos: $localize`:@@game.noPhotos:No photo is available right now. Try again later.`,
+  tooManySeries: $localize`:@@game.tooManySeries:Too many games started from your connection. Try again in a while.`,
+  challenge: $localize`:@@game.challenge:Challenge`,
+  challengeFriends: $localize`:@@game.challengeFriends:Challenge friends`,
+  challengeExplained: $localize`:@@game.challengeExplained:Your friends play the same photos with the same hints, once each. Everyone sees the leaderboard after playing.`,
+  nicknameLabel: $localize`:@@game.nicknameLabel:Your name in the challenge`,
+  nicknameRules: $localize`:@@game.nicknameRules:3 to 20 letters, digits, "_" or "-". Everyone with the link sees it.`,
+  nicknameInvalid: $localize`:@@game.nicknameInvalid:Use 3 to 20 letters, digits, "_" or "-".`,
+  createChallenge: $localize`:@@game.createChallenge:Create the link`,
+  challengeLink: $localize`:@@game.challengeLink:Link to the challenge`,
+  share: $localize`:@@game.share:Share`,
+  copyLink: $localize`:@@game.copyLink:Copy the link`,
+  copied: $localize`:@@game.copied:Copied.`,
+  shareResult: $localize`:@@game.shareResult:Share my result`,
+  acceptChallenge: $localize`:@@game.acceptChallenge:Take up the challenge`,
+  onceOnly: $localize`:@@game.onceOnly:One try each. The leaderboard shows once you have played.`,
+  challengeNotFound: $localize`:@@game.challengeNotFound:This challenge does not exist or has expired. A challenge lasts 30 days.`,
+  leaderboard: $localize`:@@game.leaderboard:Leaderboard`,
+  guestMark: $localize`:@@game.guestMark:guest`,
+  youMark: $localize`:@@game.youMark:you`,
+  rank: $localize`:@@game.rank:Rank`,
+  player: $localize`:@@game.player:Player`,
 };
 
 /** A length of series to choose, in the voice of the game. */
@@ -108,4 +129,23 @@ export const CATEGORY_LABELS: Record<HintCategory, string> = {
 
 export function roundTitle(position: number, total: number): string {
   return $localize`:@@game.roundTitle:${GAME_TEXT.round}:round: ${position}:position: of ${total}:total:`;
+}
+
+/** Who sent the challenge, and how long it is. */
+export function challengeIntro(creator: string | null, rounds: number): string {
+  return creator
+    ? $localize`:@@game.challengeIntro:${creator}:creator: challenges you on ${seriesLength(rounds)}:length:.`
+    : $localize`:@@game.challengeIntroAnonymous:A friend challenges you on ${seriesLength(rounds)}:length:.`;
+}
+
+/**
+ * The text a player shares: the score, one square per round (green from 900 points,
+ * yellow from 500, red below, black for a withdrawn photo), then the link. Nothing of
+ * the answers: the friends have yet to play.
+ */
+export function shareText(points: number, max: number, squares: string, url: string): string {
+  return (
+    $localize`:@@game.shareText:Ageguessr · ${GAME_TEXT.challenge}:challenge: · ${points}:points: / ${max}:max:` +
+    `\n${squares}\n${url}`
+  );
 }

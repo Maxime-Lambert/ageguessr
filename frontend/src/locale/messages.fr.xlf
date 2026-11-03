@@ -672,6 +672,106 @@
         <source>Free investigation</source>
         <target>Enquête libre</target>
       </trans-unit>
+      <trans-unit id="title.challenge" datatype="html">
+        <source>Challenge · Ageguessr</source>
+        <target>Défi · Ageguessr</target>
+      </trans-unit>
+      <trans-unit id="game.tooManySeries" datatype="html">
+        <source>Too many games started from your connection. Try again in a while.</source>
+        <target>Trop de parties lancées depuis votre connexion. Réessayez dans un moment.</target>
+      </trans-unit>
+      <trans-unit id="game.challenge" datatype="html">
+        <source>Challenge</source>
+        <target>Défi</target>
+      </trans-unit>
+      <trans-unit id="game.challengeFriends" datatype="html">
+        <source>Challenge friends</source>
+        <target>Défier des amis</target>
+      </trans-unit>
+      <trans-unit id="game.challengeExplained" datatype="html">
+        <source>Your friends play the same photos with the same hints, once each. Everyone sees the leaderboard after playing.</source>
+        <target>Vos amis jouent les mêmes photos avec les mêmes indices, une fois chacun. Chacun voit le classement après avoir joué.</target>
+      </trans-unit>
+      <trans-unit id="game.nicknameLabel" datatype="html">
+        <source>Your name in the challenge</source>
+        <target>Votre nom dans le défi</target>
+      </trans-unit>
+      <trans-unit id="game.nicknameRules" datatype="html">
+        <source>3 to 20 letters, digits, &quot;_&quot; or &quot;-&quot;. Everyone with the link sees it.</source>
+        <target>3 à 20 lettres, chiffres, &quot;_&quot; ou &quot;-&quot;. Toute personne qui a le lien le voit.</target>
+      </trans-unit>
+      <trans-unit id="game.nicknameInvalid" datatype="html">
+        <source>Use 3 to 20 letters, digits, &quot;_&quot; or &quot;-&quot;.</source>
+        <target>Utilisez 3 à 20 lettres, chiffres, &quot;_&quot; ou &quot;-&quot;.</target>
+      </trans-unit>
+      <trans-unit id="game.createChallenge" datatype="html">
+        <source>Create the link</source>
+        <target>Créer le lien</target>
+      </trans-unit>
+      <trans-unit id="game.challengeLink" datatype="html">
+        <source>Link to the challenge</source>
+        <target>Lien du défi</target>
+      </trans-unit>
+      <trans-unit id="game.share" datatype="html">
+        <source>Share</source>
+        <target>Partager</target>
+      </trans-unit>
+      <trans-unit id="game.copyLink" datatype="html">
+        <source>Copy the link</source>
+        <target>Copier le lien</target>
+      </trans-unit>
+      <trans-unit id="game.copied" datatype="html">
+        <source>Copied.</source>
+        <target>Copié.</target>
+      </trans-unit>
+      <trans-unit id="game.shareResult" datatype="html">
+        <source>Share my result</source>
+        <target>Partager mon résultat</target>
+      </trans-unit>
+      <trans-unit id="game.acceptChallenge" datatype="html">
+        <source>Take up the challenge</source>
+        <target>Relever le défi</target>
+      </trans-unit>
+      <trans-unit id="game.onceOnly" datatype="html">
+        <source>One try each. The leaderboard shows once you have played.</source>
+        <target>Un seul essai chacun. Le classement s'affiche une fois que vous avez joué.</target>
+      </trans-unit>
+      <trans-unit id="game.challengeNotFound" datatype="html">
+        <source>This challenge does not exist or has expired. A challenge lasts 30 days.</source>
+        <target>Ce défi n'existe pas ou a expiré. Un défi dure 30 jours.</target>
+      </trans-unit>
+      <trans-unit id="game.leaderboard" datatype="html">
+        <source>Leaderboard</source>
+        <target>Classement</target>
+      </trans-unit>
+      <trans-unit id="game.guestMark" datatype="html">
+        <source>guest</source>
+        <target>invité</target>
+      </trans-unit>
+      <trans-unit id="game.youMark" datatype="html">
+        <source>you</source>
+        <target>vous</target>
+      </trans-unit>
+      <trans-unit id="game.rank" datatype="html">
+        <source>Rank</source>
+        <target>Rang</target>
+      </trans-unit>
+      <trans-unit id="game.player" datatype="html">
+        <source>Player</source>
+        <target>Joueur</target>
+      </trans-unit>
+      <trans-unit id="game.challengeIntro" datatype="html">
+        <source><x id="creator" equiv-text="creator"/> challenges you on <x id="length" equiv-text="seriesLength(rounds)"/>.</source>
+        <target><x id="creator" equiv-text="creator"/> vous défie sur <x id="length" equiv-text="seriesLength(rounds)"/>.</target>
+      </trans-unit>
+      <trans-unit id="game.challengeIntroAnonymous" datatype="html">
+        <source>A friend challenges you on <x id="length" equiv-text="seriesLength(rounds)"/>.</source>
+        <target>Un ami vous défie sur <x id="length" equiv-text="seriesLength(rounds)"/>.</target>
+      </trans-unit>
+      <trans-unit id="game.shareText" datatype="html">
+        <source>Ageguessr · <x id="challenge" equiv-text="GAME_TEXT.challenge"/> · <x id="points" equiv-text="points"/> / <x id="max" equiv-text="max"/></source>
+        <target>Ageguessr · <x id="challenge" equiv-text="GAME_TEXT.challenge"/> · <x id="points" equiv-text="points"/> / <x id="max" equiv-text="max"/></target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

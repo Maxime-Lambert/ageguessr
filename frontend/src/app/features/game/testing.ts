@@ -99,3 +99,23 @@ export function challenge(overrides: Partial<Challenge> = {}): Challenge {
     ...overrides,
   };
 }
+
+/** The share sheet and clipboard of a spec: records what the page handed over. */
+export function fakeShareTarget(canShare = false) {
+  const handed = { shared: [] as string[], copied: [] as string[] };
+  return {
+    handed,
+    target: {
+      canShare: () => canShare,
+      share: (text: string) => {
+        handed.shared.push(text);
+        return Promise.resolve();
+      },
+      copy: (text: string) => {
+        handed.copied.push(text);
+        return Promise.resolve();
+      },
+      origin: () => 'https://ageguessr.app',
+    },
+  };
+}

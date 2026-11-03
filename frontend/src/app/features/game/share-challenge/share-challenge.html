@@ -1,0 +1,81 @@
+@if (!open()) {
+  <button
+    type="button"
+    class="border-accent text-accent rounded-md border px-4 py-2 font-medium"
+    (click)="start()"
+  >
+    {{ text.challengeFriends }}
+  </button>
+} @else {
+  <section
+    aria-labelledby="share-title"
+    class="bg-surface border-border mt-2 w-full rounded-lg border p-4"
+  >
+    <h3 id="share-title" class="font-display text-xl">{{ text.challengeFriends }}</h3>
+    <p class="text-muted mt-1 text-sm">{{ text.challengeExplained }}</p>
+
+    @if (challenge(); as challenge) {
+      <label for="challenge-link" class="mt-4 block text-sm font-medium">{{
+        text.challengeLink
+      }}</label>
+      <input
+        id="challenge-link"
+        readonly
+        [value]="url()"
+        class="border-input-border bg-background mt-1 w-full rounded-md border px-3 py-2 text-sm"
+        (focus)="$any($event.target).select()"
+      />
+      <div class="mt-3 flex flex-wrap gap-3">
+        @if (canShare) {
+          <button
+            type="button"
+            class="bg-accent text-accent-foreground rounded-md px-4 py-2 font-medium"
+            (click)="share()"
+          >
+            {{ text.share }}
+          </button>
+        }
+        <button
+          type="button"
+          class="border-input-border rounded-md border px-4 py-2 font-medium"
+          (click)="copy()"
+        >
+          {{ text.copyLink }}
+        </button>
+      </div>
+      @if (copied()) {
+        <p class="text-muted mt-2 text-sm" role="status">{{ text.copied }}</p>
+      }
+      @if (challenge.leaderboard.length > 1) {
+        <app-leaderboard [entries]="challenge.leaderboard" />
+      }
+    } @else if (needsNickname() && !series().shareCode) {
+      <form class="mt-4" (submit)="$event.preventDefault(); create()">
+        <label for="nickname" class="block text-sm font-medium">{{ text.nicknameLabel }}</label>
+        <input
+          id="nickname"
+          [formControl]="nickname"
+          autocomplete="nickname"
+          maxlength="20"
+          class="border-input-border bg-background mt-1 w-full rounded-md border px-3 py-2"
+          [attr.aria-invalid]="nickname.invalid && nickname.touched"
+          aria-describedby="nickname-rules"
+        />
+        <p id="nickname-rules" class="text-muted mt-1 text-xs">{{ text.nicknameRules }}</p>
+        @if (nickname.invalid && nickname.touched) {
+          <p class="text-danger mt-1 text-sm" role="alert">{{ text.nicknameInvalid }}</p>
+        }
+        <button
+          type="submit"
+          class="bg-accent text-accent-foreground mt-3 rounded-md px-4 py-2 font-medium"
+          [disabled]="busy()"
+        >
+          {{ text.createChallenge }}
+        </button>
+      </form>
+    }
+    @if (error(); as error) {
+      <p class="text-danger mt-2 text-sm" role="alert">{{ error }}</p>
+    }
+  </section>
+}
