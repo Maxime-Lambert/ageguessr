@@ -105,6 +105,13 @@ export class Auth {
       .pipe(tap((user) => this.currentUser.set(user)));
   }
 
+  /** @param version the version shown (TERMS_VERSION): 409 if the Terms changed since */
+  acceptTerms(version: string): Observable<AuthUser> {
+    return this.http
+      .put<AuthUser>('/api/auth/me/terms', { version })
+      .pipe(tap((user) => this.currentUser.set(user)));
+  }
+
   /** withCredentials: the refresh cookie tells the backend which session to keep alive. */
   changePassword(currentPassword: string, newPassword: string): Observable<void> {
     return this.http.post<void>(

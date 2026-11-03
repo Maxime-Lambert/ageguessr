@@ -317,6 +317,16 @@ catalogue de traduction) et la build de la langue choisit la sienne (`/en/terms`
   `users.terms_version` (la valeur de `TermsVersion.CURRENT`) et
   `users.terms_accepted_at`. Le frontend affiche la même date (`TERMS_VERSION` dans
   `features/legal/legal-dates.ts`) : les deux constantes changent ensemble.
+- **Ré-acceptation** (PR `feature/terms-reacceptance`) : `TermsVersion` ne change que
+  pour une modification importante. Un compte dont `terms_version` est différent (ou
+  NULL) reçoit `termsAccepted: false` dans `/api/auth/me`, et le site affiche un bandeau
+  non bloquant (`features/auth/terms-banner`) : lien vers les CGU, « Accept », « Later »
+  (masqué pour l'onglet, `sessionStorage`), et le rappel qu'un refus passe par la
+  suppression du compte (CGU, article 9). `PUT /api/auth/me/terms` n'accepte que la
+  version en vigueur (409 `TERMS_VERSION_OUTDATED` sinon) et garde la date de la première
+  acceptation. L'API ne bloque rien d'autre : choix de l'utilisateur, le site étant le
+  seul client. Exception front **`auth → legal`** : le bandeau lit la date des CGU dans
+  `legal-dates.ts`.
 
 **Raison** : le contenu change rarement et chaque modification doit être relue en PR. Un
 CMS ou une table n'apporterait rien. Stocker la version acceptée est la seule manière de

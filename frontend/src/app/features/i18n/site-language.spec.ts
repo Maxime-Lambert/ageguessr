@@ -16,6 +16,7 @@ const USER: AuthUser = {
   email: 'me@x.com',
   username: 'Player',
   emailVerified: true,
+  termsAccepted: true,
   role: 'USER',
   language: 'EN',
 };

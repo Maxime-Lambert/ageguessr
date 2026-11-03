@@ -8,6 +8,7 @@ const USER = {
   email: 'user@x.com',
   username: 'Player',
   emailVerified: true,
+  termsAccepted: true,
   role: 'USER' as const,
   language: 'EN' as const,
 };
@@ -44,6 +45,7 @@ describe('Auth', () => {
       email: 'user@x.com',
       username: 'Player',
       emailVerified: true,
+      termsAccepted: true,
       role: 'USER',
       language: 'EN',
     });
@@ -53,6 +55,7 @@ describe('Auth', () => {
       email: 'user@x.com',
       username: 'Player',
       emailVerified: true,
+      termsAccepted: true,
       role: 'USER',
       language: 'EN',
     });
@@ -62,6 +65,7 @@ describe('Auth', () => {
       email: 'user@x.com',
       username: 'Player',
       emailVerified: true,
+      termsAccepted: true,
       role: 'USER',
       language: 'EN',
     });
@@ -84,6 +88,7 @@ describe('Auth', () => {
       email: 'user@x.com',
       username: 'Player',
       emailVerified: true,
+      termsAccepted: true,
       role: 'USER',
       language: 'EN',
     });
