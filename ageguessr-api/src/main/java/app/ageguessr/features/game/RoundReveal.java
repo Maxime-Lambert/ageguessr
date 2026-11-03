@@ -11,6 +11,8 @@ import app.ageguessr.features.people.PersonPhoto;
  *
  * @param secondGuess null after an exact first guess, as {@code secondPoints}
  * @param hint null without a hint, or when it was rejected since
+ * @param photoReported the player already reported the photo, as {@code hintReported} the
+ *     hint: the screen shows it as sent rather than offering it again
  */
 public record RoundReveal(
         int age,
@@ -21,7 +23,9 @@ public record RoundReveal(
         int points,
         Identity person,
         Credit credit,
-        GameHint hint) {
+        GameHint hint,
+        boolean photoReported,
+        boolean hintReported) {
 
     /**
      * The Wikipedia article in the player's language, without storing its title: Wikidata
@@ -47,7 +51,9 @@ public record RoundReveal(
                 play.points(),
                 new Identity(name(person, language), WIKIPEDIA_LINK.formatted(language.code(), person.getWikidataId())),
                 new Credit(photo.getAuthorText(), photo.getLicenseShortName(), photo.getLicenseUrl(), photo.getSourceUrl()),
-                hint);
+                hint,
+                play.isPhotoReported(),
+                play.isHintReported());
     }
 
     /** In the round's language, else the other one: ingestion keeps a person with either. */

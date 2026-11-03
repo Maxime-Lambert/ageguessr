@@ -2,10 +2,12 @@ package app.ageguessr.features.hints.ReviewHint;
 
 import app.ageguessr.features.hints.Hint;
 import app.ageguessr.features.hints.HintAudience;
+import app.ageguessr.features.hints.HintReportRepository;
 import app.ageguessr.features.hints.HintRepository;
 import app.ageguessr.features.hints.HintText;
 import app.ageguessr.shared.exceptions.NotFoundException;
 import app.ageguessr.shared.exceptions.ValidationException;
+import app.ageguessr.shared.reports.ReportStatus;
 import java.time.Clock;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,7 @@ public class ReviewHintHandler {
     static final String HINT_TEXT_WRONG_AUDIENCE = "HINT_TEXT_WRONG_AUDIENCE";
 
     private final HintRepository hints;
+    private final HintReportRepository reports;
     private final Clock clock;
 
     @Transactional
@@ -44,6 +47,8 @@ public class ReviewHintHandler {
         hint.setReviewedAt(clock.instant());
         hint.setReviewedBy(adminId);
         hints.save(hint);
+        // A decision, a correction included, deals with what players reported.
+        reports.closeOpen(hint.getId(), ReportStatus.RESOLVED, clock.instant());
         return new ReviewHintResponse(hint.getId(), hint.getReviewStatus(), hint.getTextEn(), hint.getTextFr());
     }
 

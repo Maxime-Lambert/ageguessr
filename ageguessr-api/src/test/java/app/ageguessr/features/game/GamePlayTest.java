@@ -100,6 +100,29 @@ class GamePlayTest {
     }
 
     @Test
+    void isReportedOnceFinishedAndOnlyOncePerTarget() {
+        GamePlay play = start(AGE);
+
+        assertThat(play.progress().reportPhoto()).isTrue();
+        assertThat(play.progress().reportPhoto()).isFalse();
+        assertThat(play.isPhotoReported()).isTrue();
+        assertThat(play.isHintReported()).isFalse();
+        assertThat(play.progress().reportHint()).isTrue();
+        assertThat(play.progress().reportHint()).isFalse();
+        assertThat(play.isHintReported()).isTrue();
+    }
+
+    @Test
+    void isNotReportedBeforeTheEnd() {
+        GamePlay play = start(30);
+
+        assertThatThrownBy(() -> play.progress().reportPhoto()).isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(() -> play.progress().reportHint()).isInstanceOf(IllegalStateException.class);
+        assertThat(play.isPhotoReported()).isFalse();
+        assertThat(play.isHintReported()).isFalse();
+    }
+
+    @Test
     void hasNoPointsBeforeTheEnd() {
         GamePlay play = start(30);
 
