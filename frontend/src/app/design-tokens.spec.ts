@@ -36,10 +36,19 @@ function contrast(a: string, b: string): number {
 
 // [foreground token, background token, minimum ratio]
 const PAIRS: [string, string, number][] = [
-  ...['foreground', 'muted', 'accent', 'danger'].flatMap((fg) =>
+  ...['foreground', 'muted', 'accent', 'danger', 'score'].flatMap((fg) =>
     ['background', 'surface'].map((bg): [string, string, number] => [fg, bg, TEXT]),
   ),
+  // surface-2 (hover, selected item) carries text but never a field nor an error.
+  ...['foreground', 'muted', 'accent', 'score'].map((fg): [string, string, number] => [
+    fg,
+    'surface-2',
+    TEXT,
+  ]),
   ['accent-foreground', 'accent', TEXT],
+  ['primary-foreground', 'primary', TEXT],
+  ['clip-foreground', 'clip', TEXT],
+  ['clip-muted', 'clip', TEXT],
   ['danger-foreground', 'danger', TEXT],
   ['hot-foreground', 'hot', TEXT],
   ['cold-foreground', 'cold', TEXT],

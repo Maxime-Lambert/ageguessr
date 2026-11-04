@@ -11,10 +11,14 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
     <script>
-      // Applique le theme stocke avant le rendu Angular pour eviter un flash
-      // (voir docs/decisions/design.md : sombre par defaut, classe .light en override).
+      // Applique le theme avant le rendu Angular pour eviter un flash. Le choix enregistre
+      // l'emporte, sinon la preference du systeme (voir src/app/features/theme/theme.ts).
       try {
-        if (window.localStorage.getItem('ageguessr-theme') === 'light') {
+        var stored = window.localStorage.getItem('ageguessr-theme');
+        var light =
+          stored === 'light' ||
+          (stored !== 'dark' && window.matchMedia('(prefers-color-scheme: light)').matches);
+        if (light) {
           document.documentElement.classList.add('light');
         }
       } catch (e) {}

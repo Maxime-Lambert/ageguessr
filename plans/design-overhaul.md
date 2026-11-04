@@ -91,30 +91,51 @@ remplacée. Prochaine étape : Phase 2 sur `feature/ui-foundation`, depuis `deve
 fois cette PR mergée.
 
 ## Phase 2 : Socle de composants (branche `feature/ui-foundation`)
-Status: Not started
+Status: Complete
 
-- [ ] Ajouter `@angular/cdk` (même version majeure qu'Angular), version exacte dans le
-      lockfile
-- [ ] Tokens de la direction A dans `styles.css` (`surface-2`, `score`, `clip*`, valeurs
-      sombres de `design.md`) et thème clair équivalent à définir. Paires ajoutées à
-      `design-tokens.spec.ts`. Espacements, rayons et ombres. Le thème clair suit `prefers-color-scheme` tant que l'utilisateur n'a rien choisi
-- [ ] `shared/ui` : `Button` (primary, secondary, ghost, danger, avec états disabled et
-      busy), `Card`, `Field` (label, aide, erreur, `aria-describedby`), `TextInput`,
-      `AgeInput` (sans flèches natives, clavier numérique), `SegmentedControl`, `Page`
-      (largeur et rythme vertical), `Menu` (sur CDK Menu), `Sheet` mobile (sur CDK Dialog)
-- [ ] Tests Vitest de chaque composant (rendu, variantes, aria, clavier)
-- [ ] Specs Playwright de composant écrites et exécutées par la CI uniquement
+- [x] Ajouter `@angular/cdk` (même plage `^22.1.0` qu'Angular, 22.1.6 dans le lockfile) et
+      son `overlay-prebuilt.css`
+- [x] Tokens de la direction A dans `styles.css` (`surface-2`, `primary*`, `score`,
+      `clip*`, ombres `overlay` et `print`), thème clair équivalent, paires ajoutées à
+      `design-tokens.spec.ts`. Utilitaires `card` et `eyebrow`, filtre `archive-photo` de
+      la maquette
+- [x] Thème : préférence `dark` / `light` / `system`, `system` par défaut, qui suit
+      `prefers-color-scheme` et ses changements (`Theme`, `LIGHT_SCHEME_QUERY`).
+      `index.html` applique la même règle avant le démarrage d'Angular
+- [x] `shared/ui` : directive `Button` (`button[appButton]`, `a[appButton]` : primary,
+      secondary, ghost, danger ; md, sm ; block), `Field` + directive `TextInput`
+      (`[appInput]`), `AgeInput` (ControlValueAccessor, spinbutton, − / +, flèches),
+      `Segmented` (radiogroup au clavier), `Page` (narrow, default, wide)
+- [x] Tests Vitest de chaque composant (rendu, variantes, aria, clavier)
+- Déplacé en Phase 3 : `Menu` (CDK Menu) et `Sheet` mobile (CDK Dialog), construits avec
+  l'en-tête, leur premier usage, plutôt qu'en abstraction sans utilisateur
 
 ### Verification Plan
 - `cd frontend && pnpm test && pnpm lint && pnpm build` passent
 - CI `frontend-test` verte sur la PR
 
 ### Phase Summary
-_(write when phase completes)_
+Fait le 2026-11-04 sur `feature/ui-foundation`. `pnpm test` : 333 tests verts (dont 78
+pour les tokens, le thème et `shared/ui`). Lint, format et build OK. Choix notables :
+- Le bouton est une directive sur l'élément natif, pas un composant qui l'enveloppe : il
+  garde `type`, `disabled`, `routerLink` et la soumission de formulaire sans rien
+  réexposer. ESLint impose le préfixe `app`, donc des sélecteurs `appButton` et `appInput`.
+- `Field` possède les ids, et le contrôle à l'intérieur les lit par injection
+  (`TextInput`, `AgeInput`) : label, aide et erreur toujours reliés, sans id écrit à la main.
+- `AgeInput` est un champ texte `inputmode="numeric"` avec `role="spinbutton"`, pas un
+  `type="number"` (flèches natives minuscules, molette qui change la valeur). La plage
+  reste aux validateurs du formulaire.
+- Les écrans existants ne sont pas encore migrés : ils prennent les nouvelles couleurs
+  automatiquement (mêmes noms de tokens), et les composants arrivent écran par écran à
+  partir de la Phase 3.
 
-## Phase 3 : En-tête et navigation (même branche ou `feature/navigation`)
+## Phase 3 : En-tête et navigation (même branche, `feature/ui-foundation`)
 Status: Not started
 
+- [ ] `Menu` de compte sur CDK Menu (`cdkMenuTriggerFor`, `cdkMenu`, `cdkMenuItem`) :
+      navigation clavier, Échap, retour du focus au déclencheur
+- [ ] `Sheet` mobile sur CDK Dialog : focus piégé, Échap, fermeture au clic sur le fond
+      et à la navigation
 - [ ] En-tête desktop : wordmark, navigation de jeu (Dossier du jour, Enquête libre),
       menu de compte (pseudo → compte, admin, déconnexion) ou Se connecter / S'inscrire
 - [ ] Mobile : wordmark et bouton menu qui ouvre une `Sheet`, sans aucun chevauchement à

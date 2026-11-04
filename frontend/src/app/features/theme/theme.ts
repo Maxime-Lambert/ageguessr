@@ -1,33 +1,77 @@
-import { Service, signal } from '@angular/core';
+import { DestroyRef, InjectionToken, Service, computed, inject, signal } from '@angular/core';
 
 export type ThemeName = 'dark' | 'light';
+/** What the player chose: a theme, or « system », which follows the device. */
+export type ThemePreference = ThemeName | 'system';
 
 const STORAGE_KEY = 'ageguessr-theme';
 
-function readStoredTheme(): ThemeName {
-  const stored = window.localStorage.getItem(STORAGE_KEY);
-  return stored === 'light' ? 'light' : 'dark';
+/** The part of a MediaQueryList the theme reads, behind a token so the specs can fake it. */
+export interface LightSchemeQuery {
+  readonly matches: boolean;
+  addEventListener(type: 'change', listener: (event: { matches: boolean }) => void): void;
+  removeEventListener(type: 'change', listener: (event: { matches: boolean }) => void): void;
 }
 
-function applyTheme(theme: ThemeName) {
-  document.documentElement.classList.toggle('light', theme === 'light');
+export const LIGHT_SCHEME_QUERY = new InjectionToken<LightSchemeQuery | null>(
+  'LightSchemeQuery',
+  // null where matchMedia does not exist (jsdom, very old browsers): « system » is dark.
+  { factory: () => window.matchMedia?.('(prefers-color-scheme: light)') ?? null },
+);
+
+function readStoredPreference(): ThemePreference {
+  try {
+    const stored = window.localStorage.getItem(STORAGE_KEY);
+    return stored === 'light' || stored === 'dark' ? stored : 'system';
+  } catch {
+    return 'system';
+  }
 }
 
+/**
+ * The theme of the site. Follows the device until the player picks dark or light, which
+ * is then remembered on this device. index.html applies the same rule before Angular
+ * starts, so the page never flashes the wrong theme.
+ */
 @Service()
 export class Theme {
-  readonly theme = signal<ThemeName>(readStoredTheme());
+  private readonly query = inject(LIGHT_SCHEME_QUERY);
+  private readonly systemLight = signal(this.query?.matches ?? false);
+
+  readonly preference = signal<ThemePreference>(readStoredPreference());
+  readonly theme = computed<ThemeName>(() => {
+    const preference = this.preference();
+    if (preference !== 'system') return preference;
+    return this.systemLight() ? 'light' : 'dark';
+  });
 
   constructor() {
-    applyTheme(this.theme());
+    const onChange = (event: { matches: boolean }) => {
+      this.systemLight.set(event.matches);
+      this.apply();
+    };
+    this.query?.addEventListener('change', onChange);
+    inject(DestroyRef).onDestroy(() => this.query?.removeEventListener('change', onChange));
+    this.apply();
   }
 
-  setTheme(theme: ThemeName): void {
-    window.localStorage.setItem(STORAGE_KEY, theme);
-    applyTheme(theme);
-    this.theme.set(theme);
+  setPreference(preference: ThemePreference): void {
+    try {
+      if (preference === 'system') window.localStorage.removeItem(STORAGE_KEY);
+      else window.localStorage.setItem(STORAGE_KEY, preference);
+    } catch {
+      // Storage refused (private mode, full): the choice still holds for this visit.
+    }
+    this.preference.set(preference);
+    this.apply();
   }
 
+  /** Switches to the other theme, as an explicit choice. */
   toggle(): void {
-    this.setTheme(this.theme() === 'dark' ? 'light' : 'dark');
+    this.setPreference(this.theme() === 'dark' ? 'light' : 'dark');
+  }
+
+  private apply(): void {
+    document.documentElement.classList.toggle('light', this.theme() === 'light');
   }
 }

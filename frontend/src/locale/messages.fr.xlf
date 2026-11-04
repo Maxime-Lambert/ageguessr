@@ -872,6 +872,18 @@
         <source>This name belongs to an account. Choose another one.</source>
         <target>Ce nom appartient à un compte. Choisissez-en un autre.</target>
       </trans-unit>
+      <trans-unit id="ui.ageInput.unit" datatype="html">
+        <source>years</source>
+        <target>ans</target>
+      </trans-unit>
+      <trans-unit id="ui.ageInput.less" datatype="html">
+        <source>One year younger</source>
+        <target>Un an de moins</target>
+      </trans-unit>
+      <trans-unit id="ui.ageInput.more" datatype="html">
+        <source>One year older</source>
+        <target>Un an de plus</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
