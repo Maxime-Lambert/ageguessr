@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { Router, provideRouter } from '@angular/router';
 import { Dropdown } from './dropdown';
 
 @Component({
@@ -74,6 +75,17 @@ describe('Dropdown', () => {
     click(link);
 
     expect(panel.hidden).toBe(false);
+  });
+
+  it('closes on a router navigation', async () => {
+    TestBed.configureTestingModule({ providers: [provideRouter([{ path: '**', children: [] }])] });
+    const { fixture, trigger, panel, click } = render();
+    click(trigger);
+
+    await TestBed.inject(Router).navigateByUrl('/account');
+    fixture.detectChanges();
+
+    expect(panel.hidden).toBe(true);
   });
 
   it('closes on Escape and gives the focus back to its button', () => {
