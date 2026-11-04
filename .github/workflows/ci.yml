@@ -142,6 +142,7 @@ jobs:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           DOMAIN: ${{ vars.DOMAIN }}
+          ADMIN_EMAIL: ${{ vars.ADMIN_EMAIL }}
           IMAGE_TAG: ${{ github.sha }}
           GHCR_USER: ${{ github.actor }}
           GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -150,7 +151,7 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 2222
-          envs: POSTGRES_PASSWORD,JWT_SECRET,RESEND_API_KEY,DOMAIN,IMAGE_TAG,GHCR_USER,GHCR_TOKEN
+          envs: POSTGRES_PASSWORD,JWT_SECRET,RESEND_API_KEY,DOMAIN,ADMIN_EMAIL,IMAGE_TAG,GHCR_USER,GHCR_TOKEN
           script: |
             set -euo pipefail
             cd /opt/ageguessr
@@ -166,6 +167,7 @@ jobs:
             JWT_SECRET=$JWT_SECRET
             RESEND_API_KEY=$RESEND_API_KEY
             DOMAIN=$DOMAIN
+            ADMIN_EMAIL=$ADMIN_EMAIL
             IMAGE_TAG=$IMAGE_TAG
             ENVEOF
             chmod 600 .env
