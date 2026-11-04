@@ -904,6 +904,10 @@
         <source>Auto</source>
         <target>Auto</target>
       </trans-unit>
+      <trans-unit id="game.pickHintHelp" datatype="html">
+        <source>A fact from the year the photo was taken.</source>
+        <target>Un fait marquant de l'année où la photo a été prise.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

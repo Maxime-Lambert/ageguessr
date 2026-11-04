@@ -147,7 +147,8 @@ la suivante).
 - [ ] Page d'accueil publique
 - [x] Vocabulaire de jeu centralisé dans un seul fichier (essai du ton « enquête »,
       critère de validation au premier playtest — voir `docs/decisions/design.md`)
-- [ ] Trancher le duotone des photos sur de vraies photos Commons
+- [x] Trancher le duotone des photos sur de vraies photos Commons : pas de duotone, un
+      filtre léger et le carton crème du tirage (`design.md`, « Traitement des photos »)
 - [x] Site en anglais et en français (`/en/`, `/fr/`, sélecteur dans l'en-tête), langue
       enregistrée sur le compte et emails dans cette langue, langue des indices choisie
       sur l'écran de jeu, administration en anglais — PR `feature/i18n`

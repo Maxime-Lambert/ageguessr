@@ -10,7 +10,14 @@ import {
   viewChildren,
 } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { LucideArrowDown, LucideArrowUp } from '@lucide/angular';
+import { Button } from '../../../shared/ui/button/button';
+import { AgeInput } from '../../../shared/ui/age-input/age-input';
+import { Field } from '../../../shared/ui/field/field';
+import { CasePhoto } from '../case-photo/case-photo';
+import { CaseSteps } from '../case-steps/case-steps';
 import { CATEGORY_LABELS, GAME_TEXT, directionText, roundTitle } from '../game-vocabulary';
+import { LeadIcon } from '../lead-icon/lead-icon';
 import { HintCategory, MAX_AGE, MIN_AGE, RoundView } from '../models';
 
 /**
@@ -19,7 +26,17 @@ import { HintCategory, MAX_AGE, MIN_AGE, RoundView } from '../models';
  * game page talks to the API.
  */
 @Component({
-  imports: [ReactiveFormsModule],
+  imports: [
+    ReactiveFormsModule,
+    AgeInput,
+    Button,
+    CasePhoto,
+    CaseSteps,
+    Field,
+    LeadIcon,
+    LucideArrowDown,
+    LucideArrowUp,
+  ],
   selector: 'app-round',
   templateUrl: './round.html',
 })
@@ -52,7 +69,14 @@ export class Round {
     return direction && firstGuess !== null ? directionText(direction, firstGuess) : null;
   });
 
-  private readonly guessInput = viewChild<ElementRef<HTMLInputElement>>('guessInput');
+  /** Large while the player reads it and picks a lead, compact above the final guess. */
+  protected readonly directionStyle = computed(() =>
+    this.step() === 'AWAITING_HINT'
+      ? { box: 'p-4', arrow: 'size-11', text: 'text-2xl' }
+      : { box: 'px-3.5 py-2.5', arrow: 'size-8', text: 'text-lg' },
+  );
+
+  private readonly guessInput = viewChild(AgeInput);
   private readonly categoryButtons = viewChildren<ElementRef<HTMLButtonElement>>('category');
 
   constructor() {
@@ -60,12 +84,13 @@ export class Round {
     // user never has to look for it; the field is emptied for the final guess.
     effect(() => {
       const step = this.step();
-      const target = step === 'AWAITING_HINT' ? this.categoryButtons().at(0) : this.guessInput();
+      const target =
+        step === 'AWAITING_HINT' ? this.categoryButtons().at(0)?.nativeElement : this.guessInput();
       untracked(() => {
         if (step === 'AWAITING_SECOND_GUESS') {
           this.guess.reset();
         }
-        target?.nativeElement.focus();
+        target?.focus();
       });
     });
   }

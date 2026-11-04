@@ -21,7 +21,7 @@ pour mémoire. Plan : `plans/design-overhaul.md`.
 - **La photo est un tirage monté** : un carton crème autour, une légende en Fraunces
   italique, avec le crédit (auteur, licence, Commons) en bas à droite du carton. Le
   carton est légèrement incliné sur desktop, droit sur mobile.
-- **L'indice est une coupure de journal** : un fond papier (`--color-clip*`) avec un
+- **L'indice est une coupure de journal** : un fond papier (`--color-paper*`) avec un
   morceau de ruban adhésif, et le choix FR/EN de la langue des pistes dans son coin.
 - **Desktop en deux colonnes** (photo à gauche, dossier à droite), largeur maximale de
   1 120 px. **Mobile en une colonne**, avec le menu en panneau latéral.
@@ -45,7 +45,7 @@ pour mémoire. Plan : `plans/design-overhaul.md`.
 | `--color-input-border` | `#75695A` | bord des champs |
 | `--color-accent` | `#A3A5F2` | accent indigo, plus doux |
 | `--color-score` | `#E0AD4F` | score, onglet actif, tampon |
-| `--color-clip` / `-foreground` / `-muted` | `#E9DFC9` / `#2A2116` / `#6E604A` | coupure, carton photo |
+| `--color-paper` / `-foreground` / `-muted` | `#E9DFC9` / `#2A2116` / `#6E604A` | coupure, carton photo |
 
 **Règle de contraste** : `input-border` (2.86:1) et `danger` (4.13:1) ne passent pas sur
 `surface-2`. Ce fond ne porte donc jamais un champ ni un message d'erreur. Le thème
@@ -168,6 +168,13 @@ traitement photo de `--color-accent`. Il est faisable en CSS, avec des limites :
 grayscale() sepia() hue-rotate()` n'en donne qu'une approximation, un vrai duotone
 demande un filtre SVG. On ne tranche que sur de vraies photos Commons, donc une fois la
 Semaine 2 livrée. D'ici là, le filtre de vieillissement ci-dessus fait foi.
+
+**Tranché le 2026-11-04 : pas de duotone.** Sur les vraies photos de la maquette, le
+filtre léger (`sepia(0.18) contrast(1.06) saturate(0.85)`, utilitaire `archive-photo`)
+suffit : c'est le carton crème du tirage qui porte l'ambiance archives, et un duotone
+indigo rendrait les visages moins lisibles, alors que le joueur doit justement les
+juger. La photo n'est jamais recadrée (`CasePhoto`), pour ne rien cacher de ce qu'il
+faut évaluer.
 
 ### Typographie
 **Décision** : Fraunces (variable) pour les titres, le wordmark et les moments

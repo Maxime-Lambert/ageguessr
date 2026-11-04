@@ -1,45 +1,27 @@
 @if (!open()) {
-  <button
-    type="button"
-    class="border-accent text-accent rounded-md border px-4 py-2 font-medium"
-    (click)="start()"
-  >
-    {{ text.challengeFriends }}
+  <button appButton variant="secondary" type="button" (click)="start()">
+    <svg lucideUsers [size]="18" aria-hidden="true"></svg>{{ text.challengeFriends }}
   </button>
 } @else {
-  <section
-    aria-labelledby="share-title"
-    class="bg-surface border-border mt-2 w-full rounded-lg border p-4"
-  >
+  <section aria-labelledby="share-title" class="card mt-2 w-full p-5">
     <h3 id="share-title" class="font-display text-xl">{{ text.challengeFriends }}</h3>
     <p class="text-muted mt-1 text-sm">{{ text.challengeExplained }}</p>
 
     @if (challenge(); as challenge) {
-      <label for="challenge-link" class="mt-4 block text-sm font-medium">{{
-        text.challengeLink
-      }}</label>
-      <input
-        id="challenge-link"
-        readonly
-        [value]="url()"
-        class="border-input-border bg-background mt-1 w-full rounded-md border px-3 py-2 text-sm"
-        (focus)="$any($event.target).select()"
-      />
+      <app-field class="mt-4" [label]="text.challengeLink">
+        <input
+          appInput
+          readonly
+          [value]="url()"
+          class="text-sm"
+          (focus)="$any($event.target).select()"
+        />
+      </app-field>
       <div class="mt-3 flex flex-wrap gap-3">
         @if (canShare) {
-          <button
-            type="button"
-            class="bg-accent text-accent-foreground rounded-md px-4 py-2 font-medium"
-            (click)="share()"
-          >
-            {{ text.share }}
-          </button>
+          <button appButton type="button" (click)="share()">{{ text.share }}</button>
         }
-        <button
-          type="button"
-          class="border-input-border rounded-md border px-4 py-2 font-medium"
-          (click)="copy()"
-        >
+        <button appButton variant="secondary" type="button" (click)="copy()">
           {{ text.copyLink }}
         </button>
       </div>
@@ -51,25 +33,15 @@
       }
     } @else if (needsNickname() && !series().shareCode) {
       <form class="mt-4" (submit)="$event.preventDefault(); create()">
-        <label for="nickname" class="block text-sm font-medium">{{ text.nicknameLabel }}</label>
-        <input
-          id="nickname"
-          [formControl]="nickname"
-          autocomplete="nickname"
-          maxlength="20"
-          class="border-input-border bg-background mt-1 w-full rounded-md border px-3 py-2"
-          [attr.aria-invalid]="nickname.invalid && nickname.touched"
-          aria-describedby="nickname-rules"
-        />
-        <p id="nickname-rules" class="text-muted mt-1 text-xs">{{ text.nicknameRules }}</p>
-        @if (nickname.invalid && nickname.touched) {
-          <p class="text-danger mt-1 text-sm" role="alert">{{ text.nicknameInvalid }}</p>
-        }
-        <button
-          type="submit"
-          class="bg-accent text-accent-foreground mt-3 rounded-md px-4 py-2 font-medium"
-          [disabled]="busy()"
+        <app-field
+          class="max-w-[420px]"
+          [label]="text.nicknameLabel"
+          [hint]="text.nicknameRules"
+          [error]="nickname.invalid && nickname.touched ? text.nicknameInvalid : null"
         >
+          <input appInput [formControl]="nickname" autocomplete="nickname" maxlength="20" />
+        </app-field>
+        <button appButton type="submit" class="mt-4" [disabled]="busy()">
           {{ text.createChallenge }}
         </button>
       </form>

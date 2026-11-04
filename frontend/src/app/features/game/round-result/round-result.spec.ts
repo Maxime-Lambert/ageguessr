@@ -94,7 +94,10 @@ describe('RoundResult', () => {
     let next = 0;
     fixture.componentInstance.next.subscribe(() => next++);
     // The last button of the verdict, after the reports.
-    const proceed = () => page.querySelector<HTMLButtonElement>('section > button:last-of-type')!;
+    const proceed = () =>
+      Array.from(page.querySelectorAll<HTMLButtonElement>('button')).find((button) =>
+        [GAME_TEXT.next, GAME_TEXT.seeSummary].includes(button.textContent?.trim() ?? ''),
+      )!;
     show(finished(1));
     expect(proceed().textContent?.trim()).toBe(GAME_TEXT.next);
 

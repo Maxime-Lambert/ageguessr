@@ -1,26 +1,28 @@
 @if (done()) {
-  <p class="text-muted text-xs" role="status">{{ text.reportSent }}</p>
+  <p class="text-xs" [class]="tones().muted" role="status">{{ text.reportSent }}</p>
 } @else {
   <button
     type="button"
-    class="text-muted hover:text-foreground text-xs underline"
+    class="inline-flex items-center gap-1.5 text-[13px] font-medium"
+    [class]="tones().trigger"
     [attr.aria-expanded]="open()"
     [attr.aria-controls]="name()"
     (click)="toggle()"
   >
-    {{ label() }}
+    <svg lucideFlag [size]="14" aria-hidden="true"></svg>{{ label() }}
   </button>
   @if (open()) {
-    <form [id]="name()" class="mt-2 text-sm" (submit)="$event.preventDefault(); send()">
+    <form [id]="name()" class="mt-3 text-sm" (submit)="$event.preventDefault(); send()">
       <fieldset>
-        <legend class="text-muted text-xs font-medium tracking-wide uppercase">
+        <legend class="text-xs font-bold tracking-[0.08em] uppercase" [class]="tones().muted">
           {{ text.reportWhy }}
         </legend>
-        <div class="mt-1 space-y-1">
+        <div class="mt-2 grid gap-1.5">
           @for (reason of reasons(); track reason.code) {
-            <label class="flex items-center gap-2">
+            <label class="flex items-center gap-2.5">
               <input
                 type="radio"
+                class="accent-accent size-4"
                 [name]="name()"
                 [value]="reason.code"
                 [checked]="picked() === reason.code"
@@ -34,15 +36,17 @@
       @if (error(); as error) {
         <p class="text-danger mt-2 text-xs" role="alert">{{ error }}</p>
       }
-      <div class="mt-2 flex gap-3">
+      <div class="mt-3 flex gap-2">
         <button
+          appButton
+          variant="secondary"
+          size="sm"
           type="submit"
-          class="bg-surface border-border rounded-md border px-3 py-1 font-medium disabled:opacity-50"
           [disabled]="!picked() || sending()"
         >
           {{ text.reportSend }}
         </button>
-        <button type="button" class="text-muted underline" (click)="toggle()">
+        <button appButton variant="ghost" size="sm" type="button" (click)="toggle()">
           {{ text.reportCancel }}
         </button>
       </div>

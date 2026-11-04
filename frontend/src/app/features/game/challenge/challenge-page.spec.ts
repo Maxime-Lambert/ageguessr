@@ -53,7 +53,7 @@ describe('ChallengePage', () => {
     expect(page.textContent).toContain('Sherlock challenges you on 5 cases.');
     expect(page.textContent).toContain(GAME_TEXT.onceOnly);
 
-    const input = page.querySelector<HTMLInputElement>('#nickname')!;
+    const input = page.querySelector<HTMLInputElement>('input[autocomplete="nickname"]')!;
     input.value = 'Watson';
     input.dispatchEvent(new Event('input'));
     page.querySelector('form')!.dispatchEvent(new Event('submit'));
@@ -71,7 +71,7 @@ describe('ChallengePage', () => {
   it('refuses a name the API would refuse, before sending it', () => {
     opened(challenge());
 
-    const input = page.querySelector<HTMLInputElement>('#nickname')!;
+    const input = page.querySelector<HTMLInputElement>('input[autocomplete="nickname"]')!;
     input.value = 'a b';
     input.dispatchEvent(new Event('input'));
     page.querySelector('form')!.dispatchEvent(new Event('submit'));
@@ -84,7 +84,7 @@ describe('ChallengePage', () => {
   it('says when the name belongs to an account', () => {
     opened(challenge());
 
-    const input = page.querySelector<HTMLInputElement>('#nickname')!;
+    const input = page.querySelector<HTMLInputElement>('input[autocomplete="nickname"]')!;
     input.value = 'holmes';
     input.dispatchEvent(new Event('input'));
     page.querySelector('form')!.dispatchEvent(new Event('submit'));
@@ -104,7 +104,7 @@ describe('ChallengePage', () => {
     http.expectOne('/api/game/series/series-1').flush(series([round(1)], { creator: false }));
     fixture.detectChanges();
 
-    const guess = page.querySelector<HTMLInputElement>('#guess')!;
+    const guess = page.querySelector<HTMLInputElement>('app-age-input input')!;
     guess.value = '40';
     guess.dispatchEvent(new Event('input'));
     page.querySelector('form')!.dispatchEvent(new Event('submit'));
