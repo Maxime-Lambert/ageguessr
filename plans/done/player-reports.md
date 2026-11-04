@@ -253,6 +253,8 @@ mêmes requêtes contre Postgres. `ci.yml` n'est pas modifié (refusé en mode a
    (étape « Écrire le .env de prod »), `ADMIN_EMAIL: ${{ vars.ADMIN_EMAIL }}` dans `env`,
    `ADMIN_EMAIL` dans `envs`, et `ADMIN_EMAIL=$ADMIN_EMAIL` dans le heredoc du `.env`.
    Sans ça, les alertes deviennent des logs WARN (le reste fonctionne).
+   **Fait le 2026-11-04** : variable créée dans l'environnement `production`, `ci.yml`
+   modifié par la PR `chore/admin-email-deploy`.
 2. Release `develop` → `main` (merge commit). Flyway applique V16 : deux colonnes par
    table de manches (défaut false) et deux tables, sans toucher aux données.
 3. Vérifier en prod : terminer une manche, « Report this photo », un motif, « Reported » ;
