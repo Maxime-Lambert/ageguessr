@@ -24,7 +24,7 @@ describe('Dropdown', () => {
     const trigger = page.querySelector<HTMLButtonElement>('app-dropdown > button')!;
     const panel = page.querySelector<HTMLElement>(`#${trigger.getAttribute('aria-controls')}`)!;
     const click = (el: Element) => {
-      el.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
       fixture.detectChanges();
     };
     return { fixture, page, trigger, panel, click };
@@ -63,6 +63,17 @@ describe('Dropdown', () => {
     click(panel.querySelector('a')!);
 
     expect(panel.hidden).toBe(true);
+  });
+
+  it('stays open when a link cancels its own navigation', () => {
+    const { trigger, panel, click } = render();
+    click(trigger);
+    const link = panel.querySelector('a')!;
+    link.addEventListener('click', (event) => event.preventDefault());
+
+    click(link);
+
+    expect(panel.hidden).toBe(false);
   });
 
   it('closes on Escape and gives the focus back to its button', () => {

@@ -57,8 +57,12 @@ export class Dropdown {
   }
 
   protected clickedInside(event: MouseEvent): void {
+    // A link whose click was cancelled is not followed (the language switch saves the
+    // account first, and may show an error here): the panel stays open for it.
     const link = (event.target as Element).closest('a');
-    if (link && this.host.nativeElement.contains(link)) this.open.set(false);
+    if (link && !event.defaultPrevented && this.host.nativeElement.contains(link)) {
+      this.open.set(false);
+    }
   }
 
   protected escape(): void {
