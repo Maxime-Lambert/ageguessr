@@ -11,6 +11,8 @@ export interface AuthUser {
   role: UserRole;
   /** Of the emails and of the site once signed in; null until chosen (accounts before V14). */
   language: ApiLanguage | null;
+  /** False when the account accepted an older version of the Terms, or none: it is asked again. */
+  termsAccepted: boolean;
 }
 
 export interface LoginResponse {

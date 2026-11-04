@@ -1,9 +1,15 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PendingHint } from '../models';
 import { coverage, pendingHint } from '../testing';
+import { ReportedHints } from '../reported-hints/reported-hints';
 import { HintCuration } from './hint-curation';
+
+/** The reported hints have their own spec: here, only the translation queue talks to the API. */
+@Component({ selector: 'app-reported-hints', template: '' })
+class ReportedHintsStub {}
 
 describe('HintCuration', () => {
   let fixture: ComponentFixture<HintCuration>;
@@ -13,6 +19,10 @@ describe('HintCuration', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [provideHttpClient(), provideHttpClientTesting()],
+    });
+    TestBed.overrideComponent(HintCuration, {
+      remove: { imports: [ReportedHints] },
+      add: { imports: [ReportedHintsStub] },
     });
     http = TestBed.inject(HttpTestingController);
     fixture = TestBed.createComponent(HintCuration);

@@ -1,7 +1,8 @@
 /**
  * Version of the Terms, shown as "Last updated" on /terms. Must equal
  * TermsVersion.CURRENT in the API (ageguessr-api/.../features/auth/TermsVersion.java),
- * which is the version recorded on each new account: bump both together.
+ * which is the version recorded on each new account: bump both together, for a
+ * significant change only, since every account is then asked to accept it again.
  */
 export const TERMS_VERSION = '2026-11-03';
 

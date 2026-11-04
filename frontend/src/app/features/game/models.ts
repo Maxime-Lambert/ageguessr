@@ -1,3 +1,6 @@
+import { HintReportReason, PhotoReportReason } from '../../shared/reports/report-reasons';
+
+export type { HintReportReason, PhotoReportReason };
 /** Mirrors of the /api/game responses (ageguessr-api features/game). */
 
 export type RoundStep = 'NOT_STARTED' | 'AWAITING_HINT' | 'AWAITING_SECOND_GUESS' | 'FINISHED';
@@ -29,6 +32,9 @@ export interface RoundReveal {
   /** author null when Commons names none. */
   credit: { author: string | null; license: string; licenseUrl: string | null; sourceUrl: string };
   hint: RevealedHint | null;
+  /** Already reported by this player from this round: shown as sent, not offered again. */
+  photoReported: boolean;
+  hintReported: boolean;
 }
 
 /** A round as the player sees it: nothing of the answer before `result`. */
@@ -104,6 +110,13 @@ export interface Challenge {
   score: GameScore | null;
   leaderboard: LeaderboardEntry[];
 }
+
+/** What of a round a player reports (POST …/rounds/{position}/report). */
+export type ReportTarget = 'PHOTO' | 'HINT';
+
+/** The reason comes from the list of its target. */
+export type RoundReport =
+  { target: 'PHOTO'; reason: PhotoReportReason } | { target: 'HINT'; reason: HintReportReason };
 
 /** The guesses an age can take, as the API validates them (no minor on a photo). */
 export const MIN_AGE = 18;

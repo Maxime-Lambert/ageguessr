@@ -7,10 +7,11 @@ import java.util.UUID;
  * Public view of the current user, returned by /me and by every use case that changes the
  * profile. {@code role} only lets the front end show admin pages; the API checks the role
  * from the token on every /api/admin/** request. {@code language} is null until chosen:
- * the front end then saves the language of the page.
+ * the front end then saves the language of the page. {@code termsAccepted} is false when
+ * the account accepted an older version of the Terms, or none: the site then asks again.
  */
 public record ProfileResponse(
-        UUID id, String email, String username, boolean emailVerified, UserRole role, Language language) {
+        UUID id, String email, String username, boolean emailVerified, UserRole role, Language language, boolean termsAccepted) {
     public static ProfileResponse from(User user) {
         return new ProfileResponse(
                 user.getId(),
@@ -18,6 +19,7 @@ public record ProfileResponse(
                 user.getUsername(),
                 user.isEmailVerified(),
                 user.getRole(),
-                user.getLanguage());
+                user.getLanguage(),
+                user.hasAcceptedCurrentTerms());
     }
 }

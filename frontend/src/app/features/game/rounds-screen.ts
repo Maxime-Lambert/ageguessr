@@ -1,11 +1,12 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Directive, computed, inject, signal } from '@angular/core';
-import { Observable } from 'rxjs';
+import { EMPTY, Observable, tap } from 'rxjs';
 import { ApiErrorResponse } from '../../shared/api-error';
 import { ApiLanguage } from '../../shared/i18n/language';
 import { GAME_TEXT } from './game-vocabulary';
 import { HintLanguage } from './hint-language';
-import { HintCategory, PlayedRounds, RoundView } from './models';
+import { HintCategory, PlayedRounds, RoundReport, RoundView } from './models';
+import { RoundReporter } from './report-button/report-button';
 
 /**
  * What every game screen does with its rounds, daily or of a series: load them, play the
@@ -57,6 +58,30 @@ export abstract class RoundsScreen<T extends PlayedRounds> {
     round: RoundView,
     guess: number,
   ): Observable<RoundView>;
+  protected abstract sendReport(game: T, round: RoundView, report: RoundReport): Observable<void>;
+
+  /**
+   * Reports the round on screen, its result being what the player reports from. Once
+   * sent, the round says so, so that coming back to it does not offer it again.
+   */
+  readonly reporter: RoundReporter = (report) => {
+    const game = this.game();
+    const round = this.active();
+    if (!game || !round?.result) {
+      return EMPTY;
+    }
+    return this.sendReport(game, round, report).pipe(
+      tap(() =>
+        this.replace({
+          ...round,
+          result: {
+            ...round.result!,
+            ...(report.target === 'PHOTO' ? { photoReported: true } : { hintReported: true }),
+          },
+        }),
+      ),
+    );
+  };
 
   load(): void {
     this.status.set('loading');

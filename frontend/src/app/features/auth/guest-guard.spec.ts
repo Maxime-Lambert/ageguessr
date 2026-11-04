@@ -40,6 +40,7 @@ describe('guestGuard', () => {
       email: 'user@x.com',
       username: 'Player',
       emailVerified: true,
+      termsAccepted: true,
       role: 'USER',
       language: 'EN',
     });

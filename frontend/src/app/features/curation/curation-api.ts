@@ -5,6 +5,7 @@ import {
   ExclusionResult,
   PendingPhotos,
   PersonSearchResult,
+  ReportedPhoto,
   ReviewDecision,
   ReviewResult,
 } from './models';
@@ -32,6 +33,20 @@ export class CurationApi {
     return this.http.put<ReviewResult>(`/api/admin/photos/${encodeURIComponent(photoId)}/review`, {
       decision,
     });
+  }
+
+  reported(): Observable<ReportedPhoto[]> {
+    return this.http
+      .get<{ items: ReportedPhoto[] }>('/api/admin/photos/reported')
+      .pipe(map((response) => response.items));
+  }
+
+  /** Keep the photo as it is: its open reports are closed. */
+  dismissReports(photoId: string): Observable<void> {
+    return this.http.post<void>(
+      `/api/admin/photos/${encodeURIComponent(photoId)}/reports/dismiss`,
+      null,
+    );
   }
 
   searchPeople(query: string): Observable<PersonSearchResult[]> {

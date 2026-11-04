@@ -12,9 +12,11 @@ import app.ageguessr.features.people.Person;
 import app.ageguessr.features.people.PersonPhoto;
 import app.ageguessr.features.people.PersonPhotoRepository;
 import app.ageguessr.features.people.PersonRepository;
+import app.ageguessr.features.people.PhotoReportRepository;
 import app.ageguessr.features.people.ReviewStatus;
 import app.ageguessr.shared.exceptions.ConflictException;
 import app.ageguessr.shared.exceptions.NotFoundException;
+import app.ageguessr.shared.reports.ReportStatus;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -31,6 +33,16 @@ class ReviewPhotoHandlerTest {
 
     private final PersonPhotoRepository photos = mock(PersonPhotoRepository.class);
     private final PersonRepository people = mock(PersonRepository.class);
+    private final PhotoReportRepository reports = mock(PhotoReportRepository.class);
+
+    @Test
+    void aDecisionResolvesTheOpenReportsOfThePhoto() {
+        PersonPhoto photo = stored(person(LocalDate.of(1990, 1, 1), false));
+
+        handler().handle(ADMIN, photo.getId(), new ReviewPhotoCommand(ReviewStatus.REJECTED));
+
+        verify(reports).closeOpen(photo.getId(), ReportStatus.RESOLVED, NOW);
+    }
 
     @Test
     void approvesAPhotoAndRecordsWhoAndWhen() {
@@ -103,7 +115,7 @@ class ReviewPhotoHandlerTest {
     }
 
     private ReviewPhotoHandler handler() {
-        return new ReviewPhotoHandler(photos, people, Clock.fixed(NOW, ZoneOffset.UTC));
+        return new ReviewPhotoHandler(photos, people, reports, Clock.fixed(NOW, ZoneOffset.UTC));
     }
 
     private Person person(LocalDate death, boolean excluded) {

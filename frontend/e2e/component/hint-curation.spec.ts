@@ -48,6 +48,9 @@ async function mockAdminApi(page: Page): Promise<Review[]> {
       body: JSON.stringify(body),
     });
   });
+  await page.route('**/api/admin/hints/reported', (route) =>
+    route.fulfill({ status: 200, contentType: 'application/json', body: '{"items":[]}' }),
+  );
   await page.route('**/api/admin/hints/coverage', (route) =>
     route.fulfill({
       status: 200,

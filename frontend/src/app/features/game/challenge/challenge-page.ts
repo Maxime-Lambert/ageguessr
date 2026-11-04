@@ -10,7 +10,7 @@ import { DaySummary } from '../day-summary/day-summary';
 import { challengeIntro, nicknameError, shareText } from '../game-vocabulary';
 import { HintLanguagePicker } from '../hint-language-picker/hint-language-picker';
 import { Leaderboard } from '../leaderboard/leaderboard';
-import { Challenge, HintCategory, RoundView, Series } from '../models';
+import { Challenge, HintCategory, RoundReport, RoundView, Series } from '../models';
 import { RoundPlayer } from '../round-player/round-player';
 import { RoundsScreen } from '../rounds-screen';
 import { SeriesApi } from '../series-api';
@@ -152,6 +152,10 @@ export class ChallengePage extends RoundsScreen<Series> {
     category: HintCategory,
   ): Observable<RoundView> {
     return this.api.hint(series.id, round.position, category);
+  }
+
+  protected sendReport(series: Series, round: RoundView, report: RoundReport): Observable<void> {
+    return this.api.report(series.id, round.position, report);
   }
 
   protected sendSecondGuess(

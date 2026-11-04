@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Service, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiLanguage } from '../../shared/i18n/language';
-import { HintCategory, RoundView, TodayGame } from './models';
+import { HintCategory, RoundReport, RoundView, TodayGame } from './models';
 
 /**
  * The daily game. Public: the auth interceptor adds the bearer token when signed in, and a
@@ -28,6 +28,11 @@ export class GameApi {
 
   hint(date: string, position: number, category: HintCategory): Observable<RoundView> {
     return this.http.post<RoundView>(roundUrl(date, position, 'hint'), { category });
+  }
+
+  /** 204, whether new or already sent from this round: nothing to read back. */
+  report(date: string, position: number, report: RoundReport): Observable<void> {
+    return this.http.post<void>(roundUrl(date, position, 'report'), report);
   }
 
   secondGuess(date: string, position: number, guess: number): Observable<RoundView> {

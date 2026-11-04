@@ -11,6 +11,9 @@ public interface DailyRoundRepository extends JpaRepository<DailyRound, DailyRou
 
     List<DailyRound> findByGameDateOrderByPosition(LocalDate gameDate);
 
+    /** Whether a photo is played today: a report of it then reaches the admin at once. */
+    boolean existsByGameDateAndPhotoId(LocalDate gameDate, UUID photoId);
+
     /**
      * The rounds of a day, in order. A round is neutralized when its photo is gone
      * (excluded person) or no longer approved; the excluded check guards the gap in case

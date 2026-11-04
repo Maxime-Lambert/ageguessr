@@ -45,6 +45,7 @@
           [busy]="busy() || status() === 'loading'"
           [error]="error()"
           [imageFailed]="imageFailed()"
+          [reporter]="reporter"
           (firstGuess)="firstGuess($event)"
           (secondGuess)="secondGuess($event)"
           (hintPicked)="pickHint($event)"

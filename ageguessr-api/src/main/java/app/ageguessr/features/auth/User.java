@@ -64,6 +64,26 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Language language;
 
+    /** Whether the account accepted the Terms in force: otherwise the site asks again. */
+    public boolean hasAcceptedCurrentTerms() {
+        return TermsVersion.CURRENT.equals(termsVersion);
+    }
+
+    /**
+     * Records the acceptance of a version of the Terms. Accepting the same version again
+     * keeps the first date: it is the proof of when the player agreed.
+     */
+    public void acceptTerms(String version, Instant now) {
+        if (!TermsVersion.CURRENT.equals(version)) {
+            throw new IllegalArgumentException("Only the Terms in force can be accepted");
+        }
+        if (version.equals(termsVersion)) {
+            return;
+        }
+        termsVersion = version;
+        termsAcceptedAt = now;
+    }
+
     /** The language of the emails and their links: English while the account never chose one. */
     public Language languageOrDefault() {
         return Language.orDefault(language);

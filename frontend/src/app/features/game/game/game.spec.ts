@@ -234,4 +234,27 @@ describe('Game', () => {
 
     expect(page.querySelector('#guess')).not.toBeNull();
   });
+
+  it('reports the photo of the round on screen and keeps it reported', () => {
+    load(today([round(1), round(2)]));
+    guess('40');
+    http.expectOne('/api/game/2026-11-02/rounds/1/first-guess').flush(finished(1));
+    fixture.detectChanges();
+
+    button(GAME_TEXT.reportPhoto).click();
+    fixture.detectChanges();
+    const radio = page.querySelector<HTMLInputElement>('input[value=WRONG_PERSON]')!;
+    radio.dispatchEvent(new Event('change'));
+    fixture.detectChanges();
+    page.querySelector('form')!.dispatchEvent(new Event('submit'));
+    const report = http.expectOne('/api/game/2026-11-02/rounds/1/report');
+    expect(report.request.method).toBe('POST');
+    expect(report.request.body).toEqual({ target: 'PHOTO', reason: 'WRONG_PERSON' });
+    report.flush(null, { status: 204, statusText: 'No Content' });
+    fixture.detectChanges();
+
+    expect(page.textContent).toContain(GAME_TEXT.reportSent);
+    expect(fixture.componentInstance.active()?.result?.photoReported).toBe(true);
+    expect(fixture.componentInstance.active()?.result?.hintReported).toBe(false);
+  });
 });

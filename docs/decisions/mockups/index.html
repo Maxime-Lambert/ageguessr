@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ageguessr — maquettes de refonte</title>
+<!-- Maquette de décision (docs/decisions), pas du code de production : polices via Google
+     Fonts et icônes Lucide via CDN pour rester autonome. L'app, elle, auto-héberge. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..800;1,9..144,400&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<style>
+/* ---------- Planche ---------- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: #0b0a09; color: #ddd; font-family: Inter, system-ui, sans-serif; }
+.board { padding: 32px; display: flex; flex-direction: column; gap: 40px; }
+.board > header { display: flex; align-items: center; gap: 16px; }
+.board > header h1 { font-size: 18px; font-weight: 600; }
+.board > header a { color: #aaa; font-size: 14px; padding: 6px 12px; border: 1px solid #333; border-radius: 999px; text-decoration: none; }
+.board > header a.on { background: #eee; color: #111; }
+.label { font-size: 12px; color: #888; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 8px; }
+.row { display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start; }
+.frame { container-type: inline-size; overflow: hidden; position: relative; }
+.frame.desktop { width: 1280px; min-height: 800px; }
+.frame.mobile { width: 390px; min-height: 844px; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+svg.lucide { width: 1.1em; height: 1.1em; stroke-width: 1.75; flex-shrink: 0; }
+
+/* ---------- Structure commune (les deux directions) ---------- */
+.app { min-height: inherit; display: flex; flex-direction: column; background: var(--bg); color: var(--fg); font-family: var(--font-ui); }
+.top { display: flex; align-items: center; gap: 24px; height: 64px; padding: 0 32px; border-bottom: 1px solid var(--border); background: var(--bg); position: relative; z-index: 2; }
+.wordmark { font-family: var(--font-brand); font-size: 26px; font-weight: 600; letter-spacing: -.01em; }
+.nav { display: flex; gap: 4px; margin-left: 16px; }
+.nav a { padding: 8px 12px; color: var(--muted); font-size: 14px; font-weight: 500; border-radius: var(--r-sm); }
+.nav a.active { color: var(--fg); }
+.top .spacer { flex: 1; }
+.top .actions { display: flex; align-items: center; gap: 8px; }
+.icon-btn { width: 40px; height: 40px; display: inline-grid; place-items: center; border-radius: var(--r-sm); color: var(--muted); }
+.icon-btn:hover { background: var(--surface); color: var(--fg); }
+.avatar-btn { display: inline-flex; align-items: center; gap: 8px; padding: 4px 8px 4px 4px; border-radius: 999px; border: 1px solid var(--border); font-size: 14px; font-weight: 500; }
+.avatar { width: 30px; height: 30px; border-radius: 999px; display: grid; place-items: center; background: var(--surface-2); font-weight: 700; font-size: 13px; }
+.menu-btn { display: none; }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 20px; border-radius: var(--r-md); font-weight: 600; font-size: 15px; white-space: nowrap; }
+.btn.sm { height: 36px; padding: 0 14px; font-size: 14px; }
+.btn.primary { background: var(--primary); color: var(--primary-fg); }
+.btn.secondary { border: 1px solid var(--input-border); color: var(--fg); }
+.btn.ghost { color: var(--muted); }
+.btn.block { width: 100%; }
+
+main { flex: 1; width: 100%; max-width: 1120px; margin: 0 auto; padding: 48px 32px 64px; }
+.foot { display: flex; gap: 20px; padding: 20px 32px; border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; }
+
+/* Jeu : photo + dossier */
+.case { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 56px; align-items: start; }
+.photo img { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
+.photo figcaption { font-size: 13px; }
+.progress { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 13px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+.steps { display: flex; gap: 6px; }
+.steps i { display: block; width: 28px; height: 4px; border-radius: 2px; background: var(--border); }
+.steps i.done { background: var(--fg); }
+.steps i.now { background: var(--accent); }
+.question { font-family: var(--font-display); font-size: 40px; line-height: 1.12; font-weight: var(--display-weight); margin-top: 20px; letter-spacing: -.01em; }
+.guess { margin-top: 32px; }
+.guess label { display: block; font-size: 14px; font-weight: 500; color: var(--muted); margin-bottom: 8px; }
+.age { display: flex; align-items: stretch; height: 72px; border: 1.5px solid var(--input-border); border-radius: var(--r-md); background: var(--field); max-width: 320px; }
+.age button { width: 64px; display: grid; place-items: center; color: var(--muted); font-size: 22px; }
+.age .value { flex: 1; display: flex; align-items: baseline; justify-content: center; gap: 6px; border-inline: 1px solid var(--border); }
+.age .value b { font-family: var(--font-num); font-size: 40px; font-weight: 600; line-height: 72px; }
+.age .value span { color: var(--muted); font-size: 15px; }
+.age .value b.placeholder { color: var(--border); }
+.guess .row-actions { display: flex; gap: 12px; margin-top: 16px; align-items: center; }
+.hint-range { font-size: 13px; color: var(--muted); }
+.direction { margin-top: 24px; display: flex; align-items: center; gap: 16px; padding: 16px 20px; border-radius: var(--r-md); background: var(--surface); border-left: 3px solid var(--accent); }
+.direction .arrow { width: 44px; height: 44px; border-radius: 999px; display: grid; place-items: center; background: var(--surface-2); font-size: 22px; color: var(--accent); }
+.direction strong { display: block; font-family: var(--font-display); font-size: 24px; font-weight: var(--display-weight); }
+.direction span { color: var(--muted); font-size: 14px; }
+.direction.compact { padding: 10px 14px; }
+.direction.compact strong { font-size: 17px; display: inline; }
+.direction.compact .arrow { width: 32px; height: 32px; font-size: 16px; }
+.leads-title { margin-top: 32px; font-weight: 600; }
+.leads-sub { color: var(--muted); font-size: 14px; margin-top: 2px; }
+.leads { margin-top: 16px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.lead { display: flex; flex-direction: column; gap: 10px; padding: 16px; border: 1px solid var(--border); border-radius: var(--r-md); background: var(--surface); text-align: left; font-weight: 600; font-size: 15px; }
+.lead svg.lucide { width: 22px; height: 22px; color: var(--accent); }
+.clip { margin-top: 24px; padding: 20px 22px; border-radius: var(--r-md); background: var(--clip-bg); color: var(--clip-fg); position: relative; }
+.clip .meta { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--clip-muted); }
+.clip p { font-family: var(--font-display); font-size: 21px; line-height: 1.35; margin-top: 8px; }
+.clip .src { font-size: 12px; color: var(--clip-muted); margin-top: 10px; }
+.clip .src u { text-underline-offset: 2px; }
+.lang-toggle { margin-left: auto; display: inline-flex; border: 1px solid var(--clip-border); border-radius: 999px; padding: 2px; font-size: 11px; letter-spacing: .04em; }
+.lang-toggle b, .lang-toggle span { padding: 2px 8px; border-radius: 999px; }
+.lang-toggle b { background: var(--clip-fg); color: var(--clip-bg); }
+
+/* Verdict */
+.stamp { display: none; }
+.identity { font-family: var(--font-display); font-size: 40px; font-weight: var(--display-weight); line-height: 1.1; margin-top: 12px; }
+.real-age { color: var(--muted); margin-top: 6px; font-size: 16px; }
+.real-age b { color: var(--fg); }
+.score { margin-top: 28px; padding: 20px 22px; border-radius: var(--r-md); background: var(--surface); border: 1px solid var(--border); }
+.score .total { display: flex; align-items: baseline; gap: 8px; }
+.score .total b { font-family: var(--font-num); font-size: 48px; font-weight: 700; color: var(--score); line-height: 1; }
+.score .total span { color: var(--muted); }
+.tries { margin-top: 16px; display: grid; gap: 12px; }
+.try { display: grid; grid-template-columns: 110px 70px 1fr 56px; align-items: center; gap: 12px; font-size: 14px; }
+.try .k { color: var(--muted); }
+.try .v { font-weight: 600; }
+.bar { height: 6px; border-radius: 3px; background: var(--surface-2); overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--score); }
+.try .pts { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+.verdict-actions { display: flex; gap: 12px; margin-top: 28px; align-items: center; }
+.verdict-actions .btn.ghost { margin-left: auto; }
+
+/* Rapport */
+.report { max-width: 640px; margin: 0 auto; }
+.report .kicker { color: var(--muted); font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+.report h1 { font-family: var(--font-display); font-size: 44px; font-weight: var(--display-weight); margin-top: 8px; }
+.report .big { margin-top: 24px; display: flex; align-items: baseline; gap: 10px; }
+.report .big b { font-family: var(--font-num); font-size: 72px; font-weight: 700; color: var(--score); line-height: 1; }
+.report .big span { color: var(--muted); font-size: 20px; }
+.cases { margin-top: 28px; border: 1px solid var(--border); border-radius: var(--r-md); overflow: hidden; }
+.cases li { list-style: none; display: grid; grid-template-columns: 56px 1fr auto; gap: 16px; align-items: center; padding: 12px 16px; background: var(--surface); }
+.cases li + li { border-top: 1px solid var(--border); }
+.cases img { width: 56px; height: 56px; object-fit: cover; border-radius: var(--r-sm); }
+.cases .thumb-ph { width: 56px; height: 56px; border-radius: var(--r-sm); background: var(--surface-2); display: grid; place-items: center; color: var(--muted); }
+.cases .n { font-weight: 600; }
+.cases .d { color: var(--muted); font-size: 13px; margin-top: 2px; }
+.cases .p { font-family: var(--font-num); font-weight: 700; font-size: 20px; }
+.report .cta { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
+.next-file { margin-top: 20px; color: var(--muted); font-size: 14px; display: flex; gap: 8px; align-items: center; }
+.nudge { margin-top: 32px; padding: 18px 20px; border-radius: var(--r-md); border: 1px dashed var(--input-border); display: flex; gap: 16px; align-items: center; }
+.nudge p { flex: 1; font-size: 14px; color: var(--muted); }
+.nudge p b { color: var(--fg); display: block; font-size: 15px; margin-bottom: 2px; }
+
+/* Jeu libre */
+.free { max-width: 760px; }
+.free h1, .auth h1 { font-family: var(--font-display); font-size: 44px; font-weight: var(--display-weight); }
+.free .intro { color: var(--muted); margin-top: 10px; font-size: 17px; line-height: 1.5; max-width: 560px; }
+.sizes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 32px; }
+.size { padding: 24px; border-radius: var(--r-lg); border: 1px solid var(--border); background: var(--surface); text-align: left; display: flex; flex-direction: column; gap: 6px; }
+.size b { font-family: var(--font-num); font-size: 44px; line-height: 1; font-weight: 700; }
+.size .u { font-weight: 600; }
+.size .t { color: var(--muted); font-size: 13px; }
+.size.featured { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.challenge-note { margin-top: 24px; color: var(--muted); font-size: 14px; display: flex; gap: 8px; align-items: center; }
+
+/* Inscription */
+.auth { max-width: 420px; margin: 0 auto; }
+.auth h1 { font-size: 36px; }
+.auth .sub { color: var(--muted); margin-top: 8px; line-height: 1.5; }
+.field { margin-top: 20px; }
+.field label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+.field .input { height: 46px; border: 1px solid var(--input-border); border-radius: var(--r-sm); background: var(--field); }
+.field .input.focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--focus-ring); }
+.field .help { font-size: 13px; color: var(--muted); margin-top: 6px; }
+.check { display: flex; gap: 10px; margin-top: 20px; font-size: 14px; line-height: 1.5; color: var(--muted); }
+.check i { width: 18px; height: 18px; border: 1.5px solid var(--input-border); border-radius: 4px; flex-shrink: 0; margin-top: 2px; }
+.check a, .auth .alt a { color: var(--link); text-decoration: underline; text-underline-offset: 2px; }
+.auth .btn { margin-top: 24px; }
+.auth .alt { margin-top: 20px; text-align: center; color: var(--muted); font-size: 14px; }
+
+/* Menus */
+.dropdown { position: absolute; right: 32px; top: 60px; width: 300px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); box-shadow: var(--shadow); padding: 6px; z-index: 5; }
+.dropdown .who { padding: 10px 12px; }
+.dropdown .who b { display: block; }
+.dropdown .who span { color: var(--muted); font-size: 13px; }
+.dropdown hr { border: 0; border-top: 1px solid var(--border); margin: 6px 0; }
+.dropdown .item { display: flex; align-items: center; gap: 12px; padding: 9px 12px; border-radius: var(--r-sm); font-size: 14px; }
+.dropdown .item.hl { background: var(--surface-2); }
+.dropdown .item svg.lucide { color: var(--muted); }
+.dropdown .tag { margin-left: auto; font-size: 11px; color: var(--muted); border: 1px solid var(--border); border-radius: 4px; padding: 1px 6px; }
+.pref { display: flex; align-items: center; justify-content: space-between; padding: 7px 12px; font-size: 14px; }
+.seg { display: inline-flex; border: 1px solid var(--border); border-radius: var(--r-sm); padding: 2px; }
+.seg span { padding: 3px 10px; font-size: 13px; border-radius: 4px; color: var(--muted); }
+.seg span.on { background: var(--surface-2); color: var(--fg); font-weight: 600; }
+.sheet-backdrop { position: absolute; inset: 0; background: rgb(0 0 0 / .55); z-index: 4; }
+.sheet { position: absolute; top: 0; right: 0; bottom: 0; width: 86%; background: var(--surface); z-index: 5; padding: 16px 20px; display: flex; flex-direction: column; gap: 4px; }
+.sheet .close { align-self: flex-end; }
+.sheet .big-link { display: flex; align-items: center; gap: 12px; font-family: var(--font-display); font-size: 24px; padding: 10px 0; font-weight: var(--display-weight); }
+.sheet .big-link.active { color: var(--accent); }
+.sheet hr { border: 0; border-top: 1px solid var(--border); margin: 12px 0; }
+.sheet .pref { padding: 8px 0; }
+.sheet .btn { margin-top: 8px; }
+
+/* ---------- Mobile (container query : même balisage) ---------- */
+@container (max-width: 600px) {
+  .top { padding: 0 16px; height: 56px; }
+  .nav, .top .actions > :not(.menu-btn) { display: none; }
+  .menu-btn { display: inline-grid; }
+  .wordmark { font-size: 22px; }
+  main { padding: 20px 16px 40px; }
+  .case { grid-template-columns: 1fr; gap: 20px; }
+  .question { font-size: 28px; margin-top: 12px; }
+  .guess { margin-top: 20px; }
+  .age { max-width: none; }
+  .guess .row-actions .btn { flex: 1; }
+  .leads { grid-template-columns: repeat(2, 1fr); }
+  .identity { font-size: 30px; }
+  .try { grid-template-columns: 96px 54px 1fr 44px; font-size: 13px; }
+  .verdict-actions { flex-wrap: wrap; }
+  .verdict-actions .btn.primary { flex: 1; }
+  .report h1 { font-size: 32px; }
+  .report .big b { font-size: 56px; }
+  .foot { flex-wrap: wrap; padding: 16px; gap: 8px 16px; }
+  .clip p { font-size: 18px; }
+}
+
+/* ================= Direction A — Archives soignées ================= */
+.dir-a {
+  --bg: #15120e; --surface: #1f1a14; --surface-2: #2b241b; --border: #3a3021; --input-border: #75695a;
+  --fg: #efe6d4; --muted: #a3967f; --field: #120f0b;
+  --accent: #a3a5f2; --link: #a9abf5; --focus-ring: rgb(163 165 242 / .3);
+  --primary: #efe6d4; --primary-fg: #15120e;
+  --score: #e0ad4f;
+  --clip-bg: #e9dfc9; --clip-fg: #2a2116; --clip-muted: #6e604a; --clip-border: #bfae8c;
+  --font-ui: Inter, system-ui, sans-serif; --font-display: Fraunces, serif; --font-brand: Fraunces, serif; --font-num: Fraunces, serif;
+  --display-weight: 500;
+  --r-sm: 4px; --r-md: 6px; --r-lg: 8px;
+  --shadow: 0 18px 40px rgb(0 0 0 / .5);
+}
+.dir-a .nav a.active { box-shadow: inset 0 -2px 0 var(--score); border-radius: 0; }
+/* La photo devient un tirage monté sur un carton, avec sa légende manuscrite. */
+.dir-a .photo { background: #e9dfc9; padding: 14px 14px 0; box-shadow: 0 20px 50px rgb(0 0 0 / .55), 0 0 0 1px rgb(0 0 0 / .4); transform: rotate(-.6deg); }
+.dir-a .photo img { filter: sepia(.18) contrast(1.06) saturate(.85); box-shadow: inset 0 0 0 1px rgb(0 0 0 / .2); }
+.dir-a .photo figcaption { color: #4b3f2e; font-family: Fraunces, serif; font-style: italic; font-size: 15px; padding: 12px 2px 14px; display: flex; justify-content: space-between; gap: 12px; }
+.dir-a .photo figcaption small { font-family: Inter, sans-serif; font-style: normal; font-size: 11px; color: #6e604a; align-self: center; text-align: right; }
+.dir-a .photo figcaption small u { text-underline-offset: 2px; }
+.dir-a .stamp { display: inline-flex; align-items: center; gap: 8px; color: var(--score); border: 2px solid var(--score); border-radius: 4px; padding: 4px 10px; font-weight: 800; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; transform: rotate(-3deg); opacity: .9; }
+.dir-a .clip { box-shadow: 0 8px 24px rgb(0 0 0 / .35); }
+.dir-a .clip::before { content: ""; position: absolute; top: -7px; left: 40px; width: 70px; height: 16px; background: rgb(239 230 212 / .35); transform: rotate(-4deg); }
+.dir-a .lead:hover { border-color: var(--accent); }
+.dir-a .size b { font-family: Fraunces, serif; }
+.dir-a .btn.primary { box-shadow: 0 1px 0 rgb(255 255 255 / .4) inset; }
+@container (max-width: 600px) { .dir-a .photo { transform: none; padding: 10px 10px 0; } }
+
+/* ================= Direction B — Contemporain épuré ================= */
+.dir-b {
+  --bg: #0f1012; --surface: #181a1e; --surface-2: #23262c; --border: #2a2d33; --input-border: #4a4f58;
+  --fg: #f3f4f6; --muted: #9aa0aa; --field: #0f1012;
+  --accent: #f5b841; --link: #f5c66a; --focus-ring: rgb(245 184 65 / .3);
+  --primary: #f5b841; --primary-fg: #17130a;
+  --score: #f5b841;
+  --clip-bg: #181a1e; --clip-fg: #f3f4f6; --clip-muted: #9aa0aa; --clip-border: #3a3e46;
+  --font-ui: Inter, system-ui, sans-serif; --font-display: Inter, system-ui, sans-serif; --font-brand: Fraunces, serif; --font-num: Inter, system-ui, sans-serif;
+  --display-weight: 750;
+  --r-sm: 8px; --r-md: 12px; --r-lg: 16px;
+  --shadow: 0 18px 40px rgb(0 0 0 / .55);
+}
+.dir-b .question, .dir-b .identity, .dir-b .report h1, .dir-b .free h1, .dir-b .auth h1 { letter-spacing: -.025em; }
+.dir-b .nav a.active { background: var(--surface-2); }
+.dir-b .photo { position: relative; }
+.dir-b .photo img { border-radius: var(--r-lg); }
+.dir-b .photo figcaption { color: var(--muted); padding-top: 10px; display: flex; justify-content: space-between; gap: 12px; font-size: 12px; }
+.dir-b .photo figcaption > span:first-child { color: var(--fg); font-weight: 600; font-size: 14px; }
+.dir-b .photo figcaption small { text-align: right; }
+.dir-b .clip { border: 1px solid var(--border); }
+.dir-b .direction { border-left: 0; }
+.dir-b .direction .arrow { background: var(--accent); color: var(--primary-fg); }
+.dir-b .steps i.done { background: var(--accent); opacity: .5; }
+.dir-b .cases img { border-radius: 8px; }
+.dir-b .btn { border-radius: 999px; }
+.dir-b .age { border-radius: 999px; overflow: hidden; }
+</style>
+</head>
+<body>
+<div class="board" id="board"></div>
+<script>
+const P1 = 'photos/raikkonen.jpg', P3 = 'photos/lavigne.jpg';
+const icon = (n) => `<i data-lucide="${n}"></i>`;
+
+function topBar({ user = false, active = 'daily' } = {}) {
+  const right = user
+    ? `<button class="avatar-btn"><span class="avatar">M</span>maxime ${icon('chevron-down')}</button>`
+    : `<button class="btn ghost sm">Se connecter</button><button class="btn primary sm">S'inscrire</button>
+       <button class="icon-btn" aria-label="Préférences">${icon('settings-2')}</button>`;
+  return `<div class="top">
+    <span class="wordmark">Ageguessr</span>
+    <nav class="nav"><a class="${active === 'daily' ? 'active' : ''}">Dossier du jour</a><a class="${active === 'free' ? 'active' : ''}">Enquête libre</a></nav>
+    <span class="spacer"></span>
+    <div class="actions">${right}<button class="icon-btn menu-btn" aria-label="Menu">${icon('menu')}</button></div>
+  </div>`;
+}
+const foot = `<footer class="foot"><span>Mentions légales</span><span>Conditions</span><span>Confidentialité</span><span>contact@ageguessr.app</span></footer>`;
+const app = (body, opts) => `<div class="app">${topBar(opts)}<main>${body}</main>${foot}</div>`;
+
+const progress = (n, extra = '') => `<div class="progress"><span>Affaire ${n} / 3</span><span class="steps">${[1, 2, 3].map((i) => `<i class="${i < n ? 'done' : i === n ? 'now' : ''}"></i>`).join('')}</span>${extra}</div>`;
+const photo = (src, caption, credit = '') => `<figure class="photo"><img src="${src}" alt=""><figcaption><span>${caption}</span>${credit ? `<small>${credit}</small>` : ''}</figcaption></figure>`;
+const ageInput = (v) => `<div class="age"><button aria-label="Moins">−</button><div class="value"><b class="${v ? '' : 'placeholder'}">${v || '00'}</b><span>ans</span></div><button aria-label="Plus">+</button></div>`;
+const clip = (year, src) => `<div class="clip"><div class="meta">${icon('music')} Piste · Musique${year ? ' · 1989' : ''}<span class="lang-toggle"><b>FR</b><span>EN</span></span></div>
+  <p>Numéro un en France : « Pour toi Arménie » de Charles Aznavour et divers artistes.</p>${src ? '<div class="src">Source : <u>Wikipedia</u> (CC BY-SA)</div>' : ''}</div>`;
+
+const game1 = () => app(`<div class="case">${photo(P1, 'Pièce n° 1')}
+  <div>${progress(1)}<h1 class="question">Quel âge avait cette personne sur la photo ?</h1>
+    <div class="guess"><label>Votre estimation</label>${ageInput('')}
+      <div class="row-actions"><button class="btn primary">Valider</button><span class="hint-range">Entre 18 et 100 ans</span></div></div></div></div>`);
+
+const LEADS = [['music', 'Musique'], ['clapperboard', 'Cinéma'], ['trophy', 'Sport'], ['flask-conical', 'Science et techno'], ['globe', 'Monde'], ['sparkles', 'Célébrités']];
+const game2 = () => app(`<div class="case">${photo(P1, 'Pièce n° 1')}
+  <div>${progress(1)}
+    <div class="direction"><span class="arrow">↓</span><div><strong>Plus jeune que 40 ans</strong><span>Votre premier essai : 40 ans</span></div></div>
+    <p class="leads-title">Choisissez une piste</p><p class="leads-sub">Un fait marquant de l'année où la photo a été prise.</p>
+    <div class="leads">${LEADS.map(([i, l]) => `<button class="lead">${icon(i)}${l}</button>`).join('')}</div></div></div>`);
+
+const game3 = () => app(`<div class="case">${photo(P1, 'Pièce n° 1')}
+  <div>${progress(1)}
+    <div class="direction compact"><span class="arrow">↓</span><div><strong>Plus jeune que 40 ans</strong></div></div>
+    ${clip(false, false)}
+    <div class="guess"><label>Dernière estimation</label>${ageInput('38')}
+      <div class="row-actions"><button class="btn primary">Dernier essai</button></div></div></div></div>`);
+
+const verdict = () => app(`<div class="case">${photo(P1, 'Kimi Räikkönen, 2017', 'Photo : Morio<br><u>CC BY-SA 4.0</u> · <u>Commons</u>')}
+  <div>${progress(1)}<div style="margin-top:20px"><span class="stamp">${icon('stamp')} Affaire classée</span></div>
+    <h1 class="identity">Kimi Räikkönen</h1>
+    <p class="real-age">Il avait <b>37 ans</b> sur la photo · <u>Wikipedia</u></p>
+    <div class="score"><div class="total"><b>822</b><span>points sur 1 000</span></div>
+      <div class="tries">
+        <div class="try"><span class="k">Premier essai</span><span class="v">40 ans</span><span class="bar"><i style="width:74%"></i></span><span class="pts">370</span></div>
+        <div class="try"><span class="k">Dernier essai</span><span class="v">38 ans</span><span class="bar"><i style="width:90%"></i></span><span class="pts">452</span></div>
+      </div></div>
+    ${clip(true, true)}
+    <div class="verdict-actions"><button class="btn primary">Affaire suivante ${icon('arrow-right')}</button><button class="btn ghost sm">${icon('flag')} Signaler</button></div></div></div>`);
+
+const summary = () => app(`<div class="report"><p class="kicker">Rapport d'enquête · 4 novembre 2026</p><h1>Dossier du jour bouclé</h1>
+  <div class="big"><b>1 857</b><span>/ 3 000 points</span></div>
+  <ul class="cases">
+    <li><img src="${P1}" alt=""><div><div class="n">Kimi Räikkönen</div><div class="d">37 ans · essais 40, 38</div></div><span class="p">822</span></li>
+    <li><span class="thumb-ph">${icon('user')}</span><div><div class="n">Personne n° 2</div><div class="d">52 ans · essais 45, 50</div></div><span class="p">595</span></li>
+    <li><img src="${P3}" alt=""><div><div class="n">Avril Lavigne</div><div class="d">34 ans · essais 40, 45</div></div><span class="p">440</span></li>
+  </ul>
+  <div class="cta"><button class="btn primary">${icon('share-2')} Partager mon score</button><button class="btn secondary">Enquête libre</button></div>
+  <p class="next-file">${icon('clock')} Prochain dossier dans 8 h 54</p>
+  <div class="nudge"><p><b>Gardez votre série</b>Avec un compte, vos dossiers et votre série sont enregistrés.</p><button class="btn secondary sm">Créer un compte</button></div></div>`);
+
+const free = () => app(`<div class="free"><h1>Enquête libre</h1><p class="intro">Les mêmes règles que le dossier du jour, autant de fois que vous voulez. Rien ici ne compte pour le dossier du jour.</p>
+  <div class="sizes">
+    <button class="size"><b>5</b><span class="u">affaires</span><span class="t">≈ 3 minutes</span></button>
+    <button class="size featured"><b>10</b><span class="u">affaires</span><span class="t">≈ 6 minutes</span></button>
+    <button class="size"><b>20</b><span class="u">affaires</span><span class="t">≈ 12 minutes</span></button>
+  </div><p class="challenge-note">${icon('users')} À la fin, défiez vos amis sur la même série avec un lien.</p></div>`, { active: 'free' });
+
+const register = () => app(`<div class="auth"><h1>Créez votre compte</h1><p class="sub">Suivez votre série et comparez vos scores avec vos amis.</p>
+  <div class="field"><label>Email</label><div class="input focus"></div></div>
+  <div class="field"><label>Pseudo</label><div class="input"></div><p class="help">Visible par vos amis. Modifiable plus tard.</p></div>
+  <div class="field"><label>Mot de passe</label><div class="input"></div><p class="help">Au moins 12 caractères.</p></div>
+  <div class="check"><i></i><span>J'ai au moins 13 ans et j'accepte les <a>Conditions d'utilisation</a> et la <a>Politique de confidentialité</a>.</span></div>
+  <button class="btn primary block">Créer le compte</button><p class="alt">Déjà un compte ? <a>Se connecter</a></p></div>`, { active: '' });
+
+const prefs = `<div class="pref"><span>Langue du site</span><span class="seg"><span class="on">FR</span><span>EN</span></span></div>
+  <div class="pref"><span>Langue des pistes</span><span class="seg"><span class="on">FR</span><span>EN</span></span></div>
+  <div class="pref"><span>Thème</span><span class="seg"><span class="on">Sombre</span><span>Clair</span><span>Auto</span></span></div>`;
+const menuOpen = () => app(`<div class="case">${photo(P1, 'Pièce n° 1')}<div>${progress(1)}<h1 class="question">Quel âge avait cette personne sur la photo ?</h1></div></div>`, { user: true })
+  .replace('</main>', `</main><div class="dropdown"><div class="who"><b>maxime</b><span>Série : 12 jours</span></div><hr>
+  <div class="item hl">${icon('user')} Mon compte</div><div class="item">${icon('history')} Historique<span class="tag">bientôt</span></div>
+  <div class="item">${icon('images')} Curation<span class="tag">admin</span></div><div class="item">${icon('lightbulb')} Indices<span class="tag">admin</span></div><hr>
+  ${prefs}<hr><div class="item">${icon('log-out')} Se déconnecter</div></div>`);
+const sheet = () => app(`<div class="case">${photo(P1, 'Pièce n° 1')}</div>`).replace('</main>', `</main><div class="sheet-backdrop"></div><aside class="sheet">
+  <button class="icon-btn close">${icon('x')}</button>
+  <a class="big-link active">${icon('folder-open')} Dossier du jour</a><a class="big-link">${icon('search')} Enquête libre</a><hr>
+  ${prefs}<hr><button class="btn primary block">S'inscrire</button><button class="btn secondary block">Se connecter</button></aside>`);
+
+const SCREENS = [
+  ['game-1', 'Manche — 1er essai', game1, true],
+  ['game-2', 'Manche — sens + choix de piste', game2, true],
+  ['game-3', 'Manche — piste + dernier essai', game3, false],
+  ['verdict', 'Verdict', verdict, true],
+  ['summary', 'Rapport du jour (invité)', summary, true],
+  ['menu', 'Menu de compte (connecté, admin) / menu mobile', menuOpen, 'sheet'],
+  ['free', 'Enquête libre', free, false],
+  ['register', 'Inscription', register, false],
+];
+
+const dir = new URLSearchParams(location.search).get('d') === 'b' ? 'b' : 'a';
+const names = { a: 'A — Archives soignées', b: 'B — Contemporain épuré' };
+document.getElementById('board').innerHTML = `<header><h1>Ageguessr · maquettes</h1>
+  <a href="?d=a" class="${dir === 'a' ? 'on' : ''}">${names.a}</a><a href="?d=b" class="${dir === 'b' ? 'on' : ''}">${names.b}</a></header>` +
+  SCREENS.map(([id, label, render, mobile]) => `<section><p class="label">${label}</p><div class="row">
+    <div class="frame desktop dir-${dir}" data-screen="${dir}-${id}-desktop">${render()}</div>
+    ${mobile ? `<div class="frame mobile dir-${dir}" data-screen="${dir}-${id}-mobile">${(mobile === 'sheet' ? sheet : render)()}</div>` : ''}
+  </div></section>`).join('');
+lucide.createIcons();
+</script>
+</body>
+</html>

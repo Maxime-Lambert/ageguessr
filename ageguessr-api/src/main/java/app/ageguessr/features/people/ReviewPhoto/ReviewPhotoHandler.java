@@ -3,8 +3,10 @@ package app.ageguessr.features.people.ReviewPhoto;
 import app.ageguessr.features.people.PersonPhoto;
 import app.ageguessr.features.people.PersonPhotoRepository;
 import app.ageguessr.features.people.PersonRepository;
+import app.ageguessr.features.people.PhotoReportRepository;
 import app.ageguessr.shared.exceptions.ConflictException;
 import app.ageguessr.shared.exceptions.NotFoundException;
+import app.ageguessr.shared.reports.ReportStatus;
 import java.time.Clock;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ public class ReviewPhotoHandler {
 
     private final PersonPhotoRepository photos;
     private final PersonRepository people;
+    private final PhotoReportRepository reports;
     private final Clock clock;
 
     @Transactional
@@ -45,6 +48,8 @@ public class ReviewPhotoHandler {
             throw new ConflictException(
                     PHOTO_SLOT_TAKEN, "Another photo of this person already has this age or year");
         }
+        // A decision deals with what players reported: the photo leaves the reported queue.
+        reports.closeOpen(photo.getId(), ReportStatus.RESOLVED, clock.instant());
         return new ReviewPhotoResponse(photo.getId(), photo.getReviewStatus());
     }
 }

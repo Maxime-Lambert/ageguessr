@@ -38,10 +38,7 @@ public class GameRounds {
 
     /** A round of a series a guess can be made on: a series never closes, until purged. */
     public GameRound playable(FreeSeries series, short position) {
-        GameRound round = of(series).stream()
-                .filter(candidate -> candidate.position() == position)
-                .findFirst()
-                .orElseThrow(() -> new NotFoundException("No such round in this series"));
+        GameRound round = of(series, position);
         if (!round.playable()) {
             throw GameErrors.roundNeutralized();
         }
@@ -65,6 +62,25 @@ public class GameRounds {
             throw GameErrors.roundNeutralized();
         }
         return round;
+    }
+
+    /**
+     * A round of any day, as played: what a report looks at once the round is over, which
+     * may be after midnight.
+     */
+    public GameRound of(LocalDate gameDate, short position) {
+        return of(gameDate).stream()
+                .filter(round -> round.position() == position)
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException("No such round on this day"));
+    }
+
+    /** A round of a series, playable or not. */
+    public GameRound of(FreeSeries series, short position) {
+        return of(series).stream()
+                .filter(round -> round.position() == position)
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException("No such round in this series"));
     }
 
     /** A photo deleted between the two reads (person excluded meanwhile) neutralizes the round too. */

@@ -31,7 +31,9 @@ import tools.jackson.databind.ObjectMapper;
             "app.rate-limit.game.max-attempts=2",
             "app.rate-limit.game.window-minutes=1",
             "app.rate-limit.series.max-attempts=2",
-            "app.rate-limit.series.window-minutes=1"
+            "app.rate-limit.series.window-minutes=1",
+            "app.rate-limit.report.max-attempts=2",
+            "app.rate-limit.report.window-minutes=1"
         })
 class RateLimitFunctionalTest {
 
@@ -110,6 +112,28 @@ class RateLimitFunctionalTest {
         joinFrom(client).andExpect(status().isTooManyRequests());
 
         guessFrom(client).andExpect(status().isConflict());
+    }
+
+    /**
+     * The reports of a round have their own counter too: a player who reports never uses
+     * up their guesses, and a script cannot flood the admin queue.
+     */
+    @Test
+    void limitsTheReportsApart() throws Exception {
+        String client = "203.0.113.40";
+        reportFrom(client, "/api/game/2000-01-01/rounds/1/report").andExpect(status().isConflict());
+        reportFrom(client, "/api/game/series/" + java.util.UUID.randomUUID() + "/rounds/1/report")
+                .andExpect(status().isConflict());
+        reportFrom(client, "/api/game/2000-01-01/rounds/1/report").andExpect(status().isTooManyRequests());
+
+        guessFrom(client).andExpect(status().isConflict());
+    }
+
+    private ResultActions reportFrom(String clientIp, String url) throws Exception {
+        return mockMvc.perform(post(url)
+                .header("X-Forwarded-For", clientIp)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"target\":\"PHOTO\",\"reason\":\"OTHER\"}"));
     }
 
     private ResultActions startSeriesFrom(String clientIp) throws Exception {
