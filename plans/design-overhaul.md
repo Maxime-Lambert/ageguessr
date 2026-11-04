@@ -96,7 +96,7 @@ Status: Complete
 - [x] Ajouter `@angular/cdk` (même plage `^22.1.0` qu'Angular, 22.1.6 dans le lockfile) et
       son `overlay-prebuilt.css`
 - [x] Tokens de la direction A dans `styles.css` (`surface-2`, `primary*`, `score`,
-      `clip*`, ombres `overlay` et `print`), thème clair équivalent, paires ajoutées à
+      `paper*`, ombres `overlay` et `print`), thème clair équivalent, paires ajoutées à
       `design-tokens.spec.ts`. Utilitaires `card` et `eyebrow`, filtre `archive-photo` de
       la maquette
 - [x] Thème : préférence `dark` / `light` / `system`, `system` par défaut, qui suit
@@ -167,23 +167,45 @@ sans chevauchement. Les specs e2e n'ont pas été lancées en local (WSL) : c'es
 les exécute.
 
 ## Phase 4 : Écrans de jeu (branche `feature/game-screens-redesign`)
-Status: Not started
+Status: Complete
 
-- [ ] Manche (`round`) : photo en point focal, essai, sens, piste, 2e essai, selon la
-      maquette
-- [ ] Verdict (`round-result`) : score de la manche en avant, essais et points lisibles,
-      identité, indice et crédit
-- [ ] Rapport du jour (`day-summary`), jeu libre (`free-game`), défi (`challenge`),
-      classement
-- [ ] Bouton de signalement et choix du motif via `Menu` ou `Dialog` CDK
-- [ ] Traitement photo final (filtre ou duotone) appliqué, ligne de la roadmap cochée
+- [x] `CasePhoto` : le tirage monté (carton `paper`, légèrement incliné sur desktop),
+      jamais recadré, au plus 45 % de la hauteur sur mobile pour garder la question et
+      le champ à l'écran. Le crédit (auteur, licence, Commons) est sur le carton
+- [x] Manche (`round`) : deux colonnes sur desktop, `CaseSteps` (une barre par affaire),
+      sens en encart, pistes en cartes avec icône (`LeadIcon`) et aide, l'indice en
+      coupure de journal, `Field` + `AgeInput`, focus déplacé à chaque étape comme avant
+- [x] Verdict (`round-result`) : tampon « Affaire classée » (décoratif, le titre le dit
+      aux lecteurs d'écran), nom en grand, score en or avec une barre par essai,
+      coupure datée et sourcée, signalements
+- [x] Rapport du jour (`day-summary`) : score en grand, vignettes, une ligne par affaire
+- [x] Jeu libre (choix de la longueur en cartes), défi et partage (`Field`, `Button`),
+      pages en `Page width="wide"`, `h1` réservé aux lecteurs d'écran pendant la partie
+      (l'onglet actif de l'en-tête nomme déjà la page)
+- [x] Bouton de signalement : déclencheur discret avec drapeau, ton `paper` sur la
+      coupure, formulaire avec `Button`. Pas de Menu ni de Dialog : la liste des motifs
+      reste un formulaire dans le flux, plus simple et déjà accessible
+- [x] **Écart à la maquette** : pas de bascule FR/EN sur la coupure. La langue des
+      indices est fixée au premier essai et ne vaut qu'à partir de la manche suivante
+      (`hint-language.ts`) : une bascule sur l'indice affiché laisserait croire qu'on
+      peut le traduire. Le choix reste dans les Préférences, `HintLanguagePicker` est
+      supprimé des écrans de jeu
+- [x] Traitement photo tranché (pas de duotone), roadmap cochée
+- [x] Espaces explicites (`&ngsp;`) là où Angular collait les mots pour les lecteurs
+      d'écran (« 593points », « Affaire 1Jane Doe »)
+- [x] Budget du bundle initial : avertissement relevé de 500 à 550 kB. `@lucide/angular`
+      est un seul module, donc esbuild met dans `main` toutes les icônes utilisées, même
+      par les pages chargées à la demande : +45 kB bruts, +2 kB transférés (gzip)
 
 ### Verification Plan
 - `pnpm test` (specs existantes du jeu adaptées, sans en perdre), CI e2e verte
 - Captures prod après release, comparées à la maquette
 
 ### Phase Summary
-_(write when phase completes)_
+Fait le 2026-11-04. `pnpm test` : 349 tests verts, lint, format et build OK. Captures du
+build servi en statique avec l'API simulée par `page.route` (un seul Chromium) : 1er
+essai, sens et pistes, indice et dernier essai, verdict, rapport, en desktop et à 390 px.
+Conformes à la maquette A. Les specs e2e touchées (component-fr/game) ne tournent qu'en CI.
 
 ## Phase 5 : Auth, compte, légal, admin (branche `feature/secondary-screens-redesign`)
 Status: Not started

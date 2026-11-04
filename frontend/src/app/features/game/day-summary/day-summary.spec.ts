@@ -25,13 +25,14 @@ describe('DaySummary', () => {
 
     expect(page.querySelector('h2')?.textContent).toContain(GAME_TEXT.summary);
     expect(page.textContent).toContain(`1593 ${GAME_TEXT.outOf} 2000`);
-    const lines = Array.from(page.querySelectorAll('li')).map((li) =>
-      Array.from(li.children).map((part) => part.textContent?.trim()),
-    );
+    const lines = Array.from(page.querySelectorAll('li')).map((li) => ({
+      text: li.textContent?.replace(/\s+/g, ' ').trim(),
+      thumbnail: li.querySelector('img') !== null,
+    }));
     expect(lines).toEqual([
-      [`${GAME_TEXT.round} 1 · Jane Doe`, `593 ${GAME_TEXT.points}`],
-      [`${GAME_TEXT.round} 2 · ${GAME_TEXT.removed}`],
-      [`${GAME_TEXT.round} 3 · John Roe`, `1000 ${GAME_TEXT.points}`],
+      { text: `${GAME_TEXT.round} 1 Jane Doe 593 ${GAME_TEXT.points}`, thumbnail: true },
+      { text: `${GAME_TEXT.round} 2 ${GAME_TEXT.removed}`, thumbnail: false },
+      { text: `${GAME_TEXT.round} 3 John Roe 1000 ${GAME_TEXT.points}`, thumbnail: true },
     ]);
   });
 });

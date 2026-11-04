@@ -17,7 +17,7 @@ describe('Round', () => {
   }
 
   function type(value: string): void {
-    const input = page.querySelector<HTMLInputElement>('#guess')!;
+    const input = page.querySelector<HTMLInputElement>('app-age-input input')!;
     input.value = value;
     input.dispatchEvent(new Event('input'));
     page.querySelector('form')!.dispatchEvent(new Event('submit'));
@@ -42,7 +42,7 @@ describe('Round', () => {
     expect(image.getAttribute('alt')).toBe(GAME_TEXT.photoAlt);
     expect(page.textContent).toContain(`${GAME_TEXT.round} 1 of 3`);
     expect(page.textContent).toContain(GAME_TEXT.question);
-    expect(document.activeElement?.id).toBe('guess');
+    expect(document.activeElement).toBe(page.querySelector('app-age-input input'));
   });
 
   it('sends a valid guess', () => {
@@ -59,7 +59,7 @@ describe('Round', () => {
     type(value);
 
     expect(guesses).toEqual([]);
-    expect(page.querySelector('#guess-error')?.textContent).toContain(GAME_TEXT.invalidAge);
+    expect(page.querySelector('[aria-live="polite"]')?.textContent).toContain(GAME_TEXT.invalidAge);
   });
 
   it('sends nothing while a request is on its way', () => {
@@ -83,7 +83,7 @@ describe('Round', () => {
     );
 
     expect(page.textContent).toContain('Older than 30');
-    expect(page.querySelector('#guess')).toBeNull();
+    expect(page.querySelector('app-age-input input')).toBeNull();
     const buttons = Array.from(page.querySelectorAll<HTMLButtonElement>('button'));
     expect(buttons.map((button) => button.textContent?.trim())).toEqual(['Music', 'Sport']);
     expect(document.activeElement).toBe(buttons[0]);
@@ -106,11 +106,11 @@ describe('Round', () => {
 
     expect(page.textContent).toContain('Younger than 30');
     expect(page.textContent).toContain('A hit.');
-    expect(page.querySelector<HTMLInputElement>('#guess')!.value).toBe('');
+    expect(page.querySelector<HTMLInputElement>('app-age-input input')!.value).toBe('');
     expect(page.querySelector('button[type=submit]')?.textContent?.trim()).toBe(
       GAME_TEXT.secondGuessButton,
     );
-    expect(document.activeElement?.id).toBe('guess');
+    expect(document.activeElement).toBe(page.querySelector('app-age-input input'));
   });
 
   it('says so when no hint could be offered', () => {

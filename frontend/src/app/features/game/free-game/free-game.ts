@@ -5,7 +5,8 @@ import { ApiErrorResponse } from '../../../shared/api-error';
 import { ApiLanguage } from '../../../shared/i18n/language';
 import { DaySummary } from '../day-summary/day-summary';
 import { seriesLength, shorterSeries } from '../game-vocabulary';
-import { HintLanguagePicker } from '../hint-language-picker/hint-language-picker';
+import { Button } from '../../../shared/ui/button/button';
+import { Page } from '../../../shared/ui/page/page';
 import { HintCategory, RoundReport, RoundView, SERIES_SIZES, Series, SeriesSize } from '../models';
 import { RoundPlayer } from '../round-player/round-player';
 import { RoundsScreen } from '../rounds-screen';
@@ -18,7 +19,7 @@ import { ShareChallenge } from '../share-challenge/share-challenge';
  * is picked up again, from the server, on any device of an account.
  */
 @Component({
-  imports: [RoundPlayer, DaySummary, HintLanguagePicker, ShareChallenge],
+  imports: [RoundPlayer, DaySummary, ShareChallenge, Button, Page],
   selector: 'app-free-game',
   templateUrl: './free-game.html',
 })

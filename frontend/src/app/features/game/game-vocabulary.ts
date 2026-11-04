@@ -57,6 +57,7 @@ export const GAME_TEXT = {
   ...VOICE,
   question: $localize`:@@game.question:How old were they on this photo?`,
   photoAlt: $localize`:@@game.photoAlt:The person to guess`,
+  pickHintHelp: $localize`:@@game.pickHintHelp:A fact from the year the photo was taken.`,
   guessLabel: $localize`:@@game.guessLabel:Age`,
   firstGuessButton: $localize`:@@game.firstGuessButton:Guess`,
   secondGuessButton: $localize`:@@game.secondGuessButton:Final guess`,

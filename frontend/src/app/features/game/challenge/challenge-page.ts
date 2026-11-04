@@ -3,12 +3,15 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
+import { LucideShare2 } from '@lucide/angular';
 import { ApiErrorResponse } from '../../../shared/api-error';
+import { Button } from '../../../shared/ui/button/button';
+import { Field, TextInput } from '../../../shared/ui/field/field';
+import { Page } from '../../../shared/ui/page/page';
 import { ApiLanguage } from '../../../shared/i18n/language';
 import { Auth } from '../../auth/auth';
 import { DaySummary } from '../day-summary/day-summary';
 import { challengeIntro, nicknameError, shareText } from '../game-vocabulary';
-import { HintLanguagePicker } from '../hint-language-picker/hint-language-picker';
 import { Leaderboard } from '../leaderboard/leaderboard';
 import { Challenge, HintCategory, RoundReport, RoundView, Series } from '../models';
 import { RoundPlayer } from '../round-player/round-player';
@@ -25,10 +28,14 @@ import { NICKNAME_PATTERN, SHARE_TARGET, challengeUrl, squares } from '../share'
   imports: [
     RoundPlayer,
     DaySummary,
-    HintLanguagePicker,
     Leaderboard,
     ReactiveFormsModule,
     RouterLink,
+    Button,
+    Field,
+    Page,
+    TextInput,
+    LucideShare2,
   ],
   selector: 'app-challenge-page',
   templateUrl: './challenge-page.html',

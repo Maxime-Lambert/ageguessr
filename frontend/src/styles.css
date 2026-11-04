@@ -35,9 +35,9 @@
   /* Or : points, onglet actif, tampon « Affaire classee » */
   --color-score: #e0ad4f;
   /* Papier : coupure d'indice, carton de la photo */
-  --color-clip: #e9dfc9;
-  --color-clip-foreground: #2a2116;
-  --color-clip-muted: #6e604a;
+  --color-paper: #e9dfc9;
+  --color-paper-foreground: #2a2116;
+  --color-paper-muted: #6e604a;
 
   /* Indicateur chaud/froid, plus utilise par aucun ecran (voir design.md) */
   --color-hot: #e2572b;
@@ -70,9 +70,9 @@
   --color-primary: #241d14;
   --color-primary-foreground: #f5eedf;
   --color-score: #875a0e;
-  --color-clip: #efe3c8;
-  --color-clip-foreground: #2a2116;
-  --color-clip-muted: #66573f;
+  --color-paper: #efe3c8;
+  --color-paper-foreground: #2a2116;
+  --color-paper-muted: #66573f;
 
   --color-hot: #c8431d;
   --color-hot-foreground: #ffffff;

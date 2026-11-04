@@ -4,7 +4,9 @@ import { Observable } from 'rxjs';
 import { ApiLanguage } from '../../../shared/i18n/language';
 import { DaySummary } from '../day-summary/day-summary';
 import { GameApi } from '../game-api';
-import { HintLanguagePicker } from '../hint-language-picker/hint-language-picker';
+import { LucideClock } from '@lucide/angular';
+import { Button } from '../../../shared/ui/button/button';
+import { Page } from '../../../shared/ui/page/page';
 import { HintCategory, RoundReport, RoundView, TodayGame } from '../models';
 import { RoundPlayer } from '../round-player/round-player';
 import { RoundsScreen } from '../rounds-screen';
@@ -14,7 +16,7 @@ import { RoundsScreen } from '../rounds-screen';
  * from today's rounds (game_plays).
  */
 @Component({
-  imports: [RoundPlayer, DaySummary, HintLanguagePicker, RouterLink],
+  imports: [RoundPlayer, DaySummary, RouterLink, Button, Page, LucideClock],
   selector: 'app-game',
   templateUrl: './game.html',
 })

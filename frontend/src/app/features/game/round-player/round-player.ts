@@ -1,4 +1,5 @@
 import { Component, input, output } from '@angular/core';
+import { Button } from '../../../shared/ui/button/button';
 import { GAME_TEXT } from '../game-vocabulary';
 import { HintCategory, RoundView } from '../models';
 import { Round } from '../round/round';
@@ -11,7 +12,7 @@ import { RoundReporter } from '../report-button/report-button';
  * screen (RoundsScreen) talks to the API.
  */
 @Component({
-  imports: [Round, RoundResult],
+  imports: [Round, RoundResult, Button],
   selector: 'app-round-player',
   templateUrl: './round-player.html',
 })
