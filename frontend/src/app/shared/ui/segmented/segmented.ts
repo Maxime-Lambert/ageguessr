@@ -10,7 +10,7 @@ export interface SegmentedOption<T> {
 /**
  * A short exclusive choice shown in full (FR / EN, dark / light / auto): a radio group,
  * with the keyboard behaviour screen-reader users expect from one. Tab enters on the
- * selected option, the arrow keys move and select.
+ * selected option, the arrow keys move and select, Home and End jump to the ends.
  */
 @Component({
   selector: 'app-segmented',
@@ -35,6 +35,8 @@ export interface SegmentedOption<T> {
           (keydown.arrowdown)="move(i, 1, $event)"
           (keydown.arrowleft)="move(i, -1, $event)"
           (keydown.arrowup)="move(i, -1, $event)"
+          (keydown.home)="select(0, $event)"
+          (keydown.end)="select(options().length - 1, $event)"
         >
           {{ option.label }}
         </button>
@@ -51,10 +53,13 @@ export class Segmented<T> {
   private readonly buttons = viewChildren<ElementRef<HTMLButtonElement>>('option');
 
   protected move(index: number, delta: number, event: Event): void {
+    const count = this.options().length;
+    this.select((index + delta + count) % count, event);
+  }
+
+  protected select(index: number, event: Event): void {
     event.preventDefault();
-    const options = this.options();
-    const next = (index + delta + options.length) % options.length;
-    this.value.set(options[next].value);
-    this.buttons()[next].nativeElement.focus();
+    this.value.set(this.options()[index].value);
+    this.buttons()[index].nativeElement.focus();
   }
 }

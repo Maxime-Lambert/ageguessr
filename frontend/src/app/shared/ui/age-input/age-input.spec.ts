@@ -90,6 +90,7 @@ describe('AgeInput', () => {
     expect(guess.value).toBe(39);
     fixture.detectChanges();
     expect(control.getAttribute('aria-valuenow')).toBe('39');
+    expect(control.getAttribute('aria-valuetext')).toBe('39 years');
   });
 
   it('shows a value set by the form, and is disabled with it', () => {

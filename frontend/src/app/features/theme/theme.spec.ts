@@ -28,7 +28,11 @@ describe('Theme', () => {
     return TestBed.inject(Theme);
   }
 
-  const isLight = () => document.documentElement.classList.contains('light');
+  // The class follows the theme through an effect: flush effects before reading it.
+  const isLight = () => {
+    TestBed.tick();
+    return document.documentElement.classList.contains('light');
+  };
 
   beforeEach(() => {
     window.localStorage.clear();

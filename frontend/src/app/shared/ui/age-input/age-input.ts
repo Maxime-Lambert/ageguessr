@@ -43,6 +43,7 @@ import { Field } from '../field/field';
           [attr.aria-valuemin]="min()"
           [attr.aria-valuemax]="max()"
           [attr.aria-valuenow]="value()"
+          [attr.aria-valuetext]="value() === null ? null : value() + ' ' + unit"
           [value]="value() ?? ''"
           [disabled]="disabled()"
           (input)="typed(control.value)"

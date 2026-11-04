@@ -100,6 +100,8 @@ describe('Header', () => {
     expect(
       page.querySelector('app-dropdown [role="radiogroup"][aria-label="Theme"]'),
     ).not.toBeNull();
+    // Never the email (docs/decisions/architecture.md, privacy policy).
+    expect(page.textContent).not.toContain(PLAYER.email);
   });
 
   it('shows the admin pages to an admin only', () => {

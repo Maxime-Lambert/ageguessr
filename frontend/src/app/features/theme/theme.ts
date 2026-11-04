@@ -1,4 +1,12 @@
-import { DestroyRef, InjectionToken, Service, computed, inject, signal } from '@angular/core';
+import {
+  DestroyRef,
+  InjectionToken,
+  Service,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 
 export type ThemeName = 'dark' | 'light';
 /** What the player chose: a theme, or « system », which follows the device. */
@@ -46,13 +54,11 @@ export class Theme {
   });
 
   constructor() {
-    const onChange = (event: { matches: boolean }) => {
-      this.systemLight.set(event.matches);
-      this.apply();
-    };
+    const onChange = (event: { matches: boolean }) => this.systemLight.set(event.matches);
     this.query?.addEventListener('change', onChange);
     inject(DestroyRef).onDestroy(() => this.query?.removeEventListener('change', onChange));
-    this.apply();
+    // The page follows the theme whatever changed it: a choice or the device.
+    effect(() => document.documentElement.classList.toggle('light', this.theme() === 'light'));
   }
 
   setPreference(preference: ThemePreference): void {
@@ -63,15 +69,10 @@ export class Theme {
       // Storage refused (private mode, full): the choice still holds for this visit.
     }
     this.preference.set(preference);
-    this.apply();
   }
 
   /** Switches to the other theme, as an explicit choice. */
   toggle(): void {
     this.setPreference(this.theme() === 'dark' ? 'light' : 'dark');
-  }
-
-  private apply(): void {
-    document.documentElement.classList.toggle('light', this.theme() === 'light');
   }
 }

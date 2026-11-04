@@ -60,6 +60,7 @@ describe('Preferences', () => {
     fixture.detectChanges();
 
     expect(TestBed.inject(Theme).preference()).toBe('light');
+    TestBed.tick();
     expect(document.documentElement.classList.contains('light')).toBe(true);
     expect(option('Theme', 'Light').getAttribute('aria-checked')).toBe('true');
   });

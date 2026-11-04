@@ -36,10 +36,8 @@
           <svg lucideChevronDown [size]="16" aria-hidden="true"></svg>
         </span>
 
-        <div class="px-3 py-2">
-          <p class="truncate font-semibold">{{ user.username }}</p>
-          <p class="text-muted truncate text-[13px]">{{ user.email }}</p>
-        </div>
+        <!-- The username only: the email is never shown (architecture.md, privacy policy). -->
+        <p class="truncate px-3 py-2 font-semibold">{{ user.username }}</p>
         <hr class="border-border my-1.5" />
         <ng-container *ngTemplateOutlet="accountLinks; context: { user }" />
         <hr class="border-border my-1.5" />

@@ -60,4 +60,17 @@ describe('Segmented', () => {
     fixture.detectChanges();
     expect(fixture.componentInstance.scheme()).toBe('dark');
   });
+
+  it('jumps to the last and first options with End and Home', () => {
+    const { fixture, radios } = render();
+
+    radios[0].dispatchEvent(new KeyboardEvent('keydown', { key: 'End' }));
+    fixture.detectChanges();
+    expect(fixture.componentInstance.scheme()).toBe('system');
+    expect(document.activeElement).toBe(radios[2]);
+
+    radios[2].dispatchEvent(new KeyboardEvent('keydown', { key: 'Home' }));
+    fixture.detectChanges();
+    expect(fixture.componentInstance.scheme()).toBe('dark');
+  });
 });

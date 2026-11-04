@@ -45,7 +45,7 @@ export class Dropdown {
   readonly label = input<string | null>(null);
   readonly triggerClass = input('');
 
-  readonly open = signal(false);
+  protected readonly open = signal(false);
   protected readonly panelId = `dropdown-${nextId++}`;
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly trigger = viewChild.required<ElementRef<HTMLButtonElement>>('trigger');
