@@ -1,6 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ApiErrorResponse } from '../../../shared/api-error';
 import { ApiLanguage } from '../../../shared/i18n/language';
@@ -19,7 +18,7 @@ import { ShareChallenge } from '../share-challenge/share-challenge';
  * is picked up again, from the server, on any device of an account.
  */
 @Component({
-  imports: [RoundPlayer, DaySummary, HintLanguagePicker, RouterLink, ShareChallenge],
+  imports: [RoundPlayer, DaySummary, HintLanguagePicker, ShareChallenge],
   selector: 'app-free-game',
   templateUrl: './free-game.html',
 })

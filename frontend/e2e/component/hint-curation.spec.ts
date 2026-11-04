@@ -113,6 +113,7 @@ test.describe('hint curation', () => {
     await mockAdminApi(page);
     await page.goto('/en/');
 
+    await page.getByRole('banner').getByRole('button', { name: 'Admin' }).click();
     await page.getByRole('link', { name: 'Hints' }).click();
 
     await expect(page).toHaveURL(/\/en\/admin\/hints$/);

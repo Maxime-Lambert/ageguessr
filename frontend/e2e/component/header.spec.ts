@@ -14,13 +14,38 @@ test.describe('header', () => {
     await expect(page).toHaveURL(/\/en\/login$/);
   });
 
-  test('a logged-in user sees their username, linking to the account page', async ({ page }) => {
+  test('a logged-in user opens the account page from the menu under their username', async ({
+    page,
+  }) => {
     await asLoggedIn(page);
     await page.goto('/en/');
 
-    await expect(page.getByRole('banner').getByRole('link', { name: 'Log in' })).toHaveCount(0);
-    await page.getByRole('link', { name: 'Account settings for Player' }).click();
+    const header = page.getByRole('banner');
+    await expect(header.getByRole('link', { name: 'Log in' })).toHaveCount(0);
+    const menu = header.getByRole('button', { name: 'Player' });
+    await expect(menu).toHaveAttribute('aria-expanded', 'false');
+    await menu.click();
+    await expect(menu).toHaveAttribute('aria-expanded', 'true');
+    await header.getByRole('link', { name: 'My account' }).click();
+
     await expect(page).toHaveURL(/\/en\/account$/);
+    await expect(menu).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  test('the menu closes on Escape and gives the focus back to its button', async ({ page }) => {
+    await asLoggedIn(page);
+    await page.goto('/en/');
+
+    const menu = page.getByRole('banner').getByRole('button', { name: 'Player' });
+    await menu.click();
+    // The panel renders on the next frame: Tab before that would skip it.
+    await expect(page.getByRole('link', { name: 'My account' })).toBeVisible();
+    await page.keyboard.press('Tab');
+    await expect(page.getByRole('link', { name: 'My account' })).toBeFocused();
+    await page.keyboard.press('Escape');
+
+    await expect(menu).toHaveAttribute('aria-expanded', 'false');
+    await expect(menu).toBeFocused();
   });
 
   test('logging out turns the header back to guest mode', async ({ page }) => {
@@ -28,9 +53,11 @@ test.describe('header', () => {
     await page.route('**/api/auth/logout', (route) => route.fulfill({ status: 204, body: '' }));
     await page.goto('/en/');
 
-    await page.getByRole('button', { name: 'Log out' }).click();
+    const header = page.getByRole('banner');
+    await header.getByRole('button', { name: 'Player' }).click();
+    await header.getByRole('button', { name: 'Log out' }).click();
 
-    await expect(page.getByRole('banner').getByRole('link', { name: 'Log in' })).toBeVisible();
+    await expect(header.getByRole('link', { name: 'Log in' })).toBeVisible();
   });
 
   test('fits a phone screen without horizontal scrolling, even with a 20-character username', async ({
@@ -46,12 +73,30 @@ test.describe('header', () => {
       role: 'USER',
     });
     await page.goto('/en/');
-    await expect(page.getByRole('button', { name: 'Log out' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Menu' })).toBeVisible();
 
     const overflow = await page.evaluate(
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
     );
     expect(overflow).toBeLessThanOrEqual(0);
+  });
+
+  test('on a phone, the menu button opens a panel with the game modes and the account', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 360, height: 740 });
+    await asLoggedIn(page);
+    await page.goto('/en/');
+
+    await page.getByRole('button', { name: 'Menu' }).click();
+    const panel = page.getByRole('dialog', { name: 'Menu' });
+    await expect(panel.getByRole('link', { name: 'Free investigation' })).toBeVisible();
+    await expect(panel.getByRole('button', { name: 'Log out' })).toBeVisible();
+
+    await panel.getByRole('link', { name: 'Free investigation' }).click();
+
+    await expect(page).toHaveURL(/\/en\/free$/);
+    await expect(panel).toHaveCount(0);
   });
 
   test('declares the site icons, each served as an image', async ({ page, request }) => {
@@ -95,7 +140,9 @@ test.describe('site language', () => {
     );
     await page.goto('/en/account');
 
-    await page.getByRole('banner').getByRole('link', { name: 'Français' }).click();
+    const header = page.getByRole('banner');
+    await header.getByRole('button', { name: 'Player' }).click();
+    await header.getByRole('link', { name: 'Français' }).click();
 
     await expect(page).toHaveURL(/\/fr\/account$/);
     expect(saved).toEqual({ language: 'FR' });
@@ -108,7 +155,9 @@ test.describe('site language', () => {
     );
     await page.goto('/en/account');
 
-    await page.getByRole('banner').getByRole('link', { name: 'Français' }).click();
+    const header = page.getByRole('banner');
+    await header.getByRole('button', { name: 'Player' }).click();
+    await header.getByRole('link', { name: 'Français' }).click();
 
     await expect(page.getByText('Could not save your language. Try again.')).toBeVisible();
     await expect(page).toHaveURL(/\/en\/account$/);

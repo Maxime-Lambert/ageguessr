@@ -1,13 +1,28 @@
-<a
-  [href]="language.urlIn(language.other)"
-  [attr.lang]="language.other"
-  [attr.hreflang]="language.other"
-  class="hover:text-accent text-sm font-medium"
-  (click)="switch($event)"
-  >{{ names[language.other] }}</a
->
+<!-- Both languages, each named in itself: the current one as plain text, the other as a
+     real link (hreflang), turned into a switch by the click. -->
+<span class="border-border inline-flex rounded-sm border p-0.5 text-[13px]">
+  @for (code of codes; track code) {
+    @if (code === language.current) {
+      <span
+        class="bg-surface-2 rounded-[3px] px-2.5 py-1 font-semibold"
+        [attr.lang]="code"
+        aria-current="true"
+        >{{ names[code] }}</span
+      >
+    } @else {
+      <a
+        class="text-muted hover:text-foreground rounded-[3px] px-2.5 py-1"
+        [href]="language.urlIn(code)"
+        [attr.lang]="code"
+        [attr.hreflang]="code"
+        (click)="switch($event)"
+        >{{ names[code] }}</a
+      >
+    }
+  }
+</span>
 @if (language.error()) {
-  <span class="text-danger ml-2 text-xs" role="alert" i18n="@@language.switchFailed"
-    >Could not save your language. Try again.</span
-  >
+  <p class="text-danger mt-1 text-xs" role="alert" i18n="@@language.switchFailed">
+    Could not save your language. Try again.
+  </p>
 }
