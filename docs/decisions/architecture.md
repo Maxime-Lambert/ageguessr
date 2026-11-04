@@ -879,6 +879,10 @@ supplémentaire.
 **Raison** : une librairie de composants peut être ajoutée à tout moment si besoin de
 composants complexes. Partir sans évite une dépendance non nécessaire au MVP.
 
+**Mise à jour 2026-11-04** : ce besoin est arrivé avec la refonte visuelle. On ajoute
+`@angular/cdk` (menus, dialogs, overlay, focus) et nos propres composants dans
+`shared/ui`, sans librairie stylée (voir `design.md`, « Composants »).
+
 ### Internationalisation (i18n)
 **Décision** (2026-11-02, PR `feature/i18n`) : tout le site joueur existe en anglais et
 en français, avec l'i18n natif d'Angular (`@angular/localize`) et **une URL par
