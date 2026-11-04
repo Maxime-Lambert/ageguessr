@@ -29,8 +29,6 @@ test('a player signs up on the French site and gets French emails, with French l
   await page.locator('form').getByRole('button', { name: 'Se connecter' }).click();
   await expect(page).toHaveURL(/\/fr\/$/);
   await expect(
-    page
-      .getByRole('banner')
-      .getByRole('link', { name: `Paramètres du compte de ${account.username}` }),
+    page.getByRole('banner').getByRole('button', { name: account.username }),
   ).toBeVisible();
 });

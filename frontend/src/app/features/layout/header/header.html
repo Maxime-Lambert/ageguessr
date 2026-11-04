@@ -1,61 +1,152 @@
-<header class="border-border flex items-center justify-between gap-4 border-b px-4 py-4 sm:px-6">
-  <a routerLink="/" class="font-display shrink-0 text-2xl">Ageguessr</a>
-
-  <!-- min-w-0 + flex-1: the username is the one element allowed to shrink (and truncate)
-       so the header never overflows on a phone, whatever its length. -->
-  <nav
-    class="flex min-w-0 flex-1 items-center justify-end gap-3 sm:gap-4"
-    aria-label="Account"
-    i18n-aria-label="@@header.nav"
+<header
+  class="border-border bg-background flex h-14 items-center gap-6 border-b px-4 sm:h-16 sm:px-8"
+>
+  <a routerLink="/" class="font-display shrink-0 text-[22px] font-semibold sm:text-[26px]"
+    >Ageguessr</a
   >
-    <!-- From md up only: below, the header is full, and the game screens link to the
-         free investigation themselves. -->
-    <a
-      routerLink="/free"
-      class="hover:text-accent hidden shrink-0 text-sm font-medium md:inline"
-      i18n="@@header.free"
-      >Free investigation</a
-    >
-    @if (auth.currentUser(); as user) {
-      @if (user.role === 'ADMIN') {
-        <a routerLink="/admin/curation" class="hover:text-accent shrink-0 text-sm font-medium"
-          >Curation</a
-        >
-        <a routerLink="/admin/hints" class="hover:text-accent shrink-0 text-sm font-medium"
-          >Hints</a
-        >
-      }
+
+  <!-- From md up. Below, the menu button opens the same links in a side panel. -->
+  <nav class="hidden gap-1 md:flex" [attr.aria-label]="text.mainNav">
+    @for (link of gameLinks; track link.path) {
       <a
-        routerLink="/account"
-        class="hover:text-accent min-w-0 truncate text-sm font-medium sm:max-w-[12rem]"
-        [attr.aria-label]="accountLabel(user.username)"
-        >{{ user.username }}</a
+        [routerLink]="link.path"
+        routerLinkActive="text-foreground! shadow-[inset_0_-2px_0_var(--color-score)]"
+        [routerLinkActiveOptions]="{ exact: true }"
+        ariaCurrentWhenActive="page"
+        class="text-muted hover:text-foreground px-3 py-2 text-sm font-medium"
+        >{{ link.label }}</a
       >
-      <button
-        type="button"
-        (click)="logout()"
-        class="text-muted hover:text-foreground shrink-0 text-sm"
-        i18n="@@header.logout"
+    }
+  </nav>
+
+  <span class="flex-1"></span>
+
+  <div class="hidden items-center gap-2 md:flex">
+    @if (auth.currentUser(); as user) {
+      <app-dropdown
+        triggerClass="border-border hover:bg-surface-2 flex max-w-56 items-center gap-2 rounded-full border py-1 pr-2.5 pl-1 text-sm font-medium"
       >
-        Log out
-      </button>
+        <span appDropdownTrigger class="contents">
+          <span
+            class="bg-surface-2 grid size-7.5 shrink-0 place-items-center rounded-full text-[13px] font-bold"
+            aria-hidden="true"
+            >{{ initial(user.username) }}</span
+          >
+          <span class="truncate">{{ user.username }}</span>
+          <svg lucideChevronDown [size]="16" aria-hidden="true"></svg>
+        </span>
+
+        <div class="px-3 py-2">
+          <p class="truncate font-semibold">{{ user.username }}</p>
+          <p class="text-muted truncate text-[13px]">{{ user.email }}</p>
+        </div>
+        <hr class="border-border my-1.5" />
+        <ng-container *ngTemplateOutlet="accountLinks; context: { user }" />
+        <hr class="border-border my-1.5" />
+        <app-preferences class="px-3" />
+        <hr class="border-border my-1.5" />
+        <button type="button" class="menu-item w-full" (click)="logout()">
+          <svg lucideLogOut [size]="18" aria-hidden="true"></svg>{{ text.logout }}
+        </button>
+      </app-dropdown>
     } @else if (auth.sessionChecked()) {
       <!-- Hidden until the session restore settles, so a logged-in user never sees a
            "Log in" link flash on reload. -->
-      <a
-        routerLink="/login"
-        class="hover:text-accent shrink-0 text-sm font-medium"
-        i18n="@@header.login"
-        >Log in</a
-      >
-      <a
-        routerLink="/register"
-        class="bg-accent text-accent-foreground shrink-0 rounded-md px-3 py-1.5 text-sm font-medium"
-        i18n="@@header.signup"
-        >Sign up</a
-      >
+      <a appButton variant="ghost" size="sm" routerLink="/login">{{ text.login }}</a>
+      <a appButton size="sm" routerLink="/register">{{ text.signup }}</a>
     }
-    <app-language-switch class="shrink-0" />
-    <app-theme-toggle class="shrink-0" />
-  </nav>
+    @if (!auth.currentUser()) {
+      <app-dropdown
+        [label]="text.preferences"
+        triggerClass="text-muted hover:bg-surface-2 hover:text-foreground grid size-10 place-items-center rounded-sm"
+      >
+        <svg appDropdownTrigger lucideSettings2 [size]="20" aria-hidden="true"></svg>
+        <app-preferences class="px-3" />
+      </app-dropdown>
+    }
+  </div>
+
+  <button
+    type="button"
+    class="text-muted hover:bg-surface-2 hover:text-foreground -mr-2 grid size-10 place-items-center rounded-sm md:hidden"
+    aria-haspopup="dialog"
+    [attr.aria-label]="text.menu"
+    (click)="openSheet()"
+  >
+    <svg lucideMenu [size]="22" aria-hidden="true"></svg>
+  </button>
 </header>
+
+<!-- The links of a signed-in player, in the desktop menu and in the mobile panel. -->
+<ng-template #accountLinks let-user="user">
+  <a routerLink="/account" class="menu-item">
+    <svg lucideUser [size]="18" aria-hidden="true"></svg>{{ text.myAccount }}
+  </a>
+  @if (user.role === 'ADMIN') {
+    <a routerLink="/admin/curation" class="menu-item">
+      <svg lucideImages [size]="18" aria-hidden="true"></svg>Curation
+      <span class="menu-tag">admin</span>
+    </a>
+    <a routerLink="/admin/hints" class="menu-item">
+      <svg lucideLightbulb [size]="18" aria-hidden="true"></svg>Hints
+      <span class="menu-tag">admin</span>
+    </a>
+  }
+</ng-template>
+
+<!-- Phone menu: a side panel (CDK dialog: focus kept inside, Escape and the backdrop
+     close it, the focus goes back to the menu button). Any navigation closes it too. -->
+<ng-template #sheet>
+  <div class="bg-surface flex h-full flex-col overflow-y-auto px-5 pt-3 pb-6">
+    <button
+      type="button"
+      class="text-muted hover:text-foreground -mr-2 grid size-10 place-items-center self-end rounded-sm"
+      [attr.aria-label]="text.closeMenu"
+      (click)="closeSheet()"
+    >
+      <svg lucideX [size]="22" aria-hidden="true"></svg>
+    </button>
+
+    <nav class="grid" [attr.aria-label]="text.mainNav">
+      @for (link of gameLinks; track link.path) {
+        <a
+          [routerLink]="link.path"
+          routerLinkActive="text-accent"
+          [routerLinkActiveOptions]="{ exact: true }"
+          ariaCurrentWhenActive="page"
+          class="font-display flex items-center gap-3 py-2.5 text-2xl"
+        >
+          @if (link.path === '/') {
+            <svg lucideFolderOpen [size]="22" aria-hidden="true"></svg>
+          } @else {
+            <svg lucideSearch [size]="22" aria-hidden="true"></svg>
+          }
+          {{ link.label }}
+        </a>
+      }
+    </nav>
+
+    @if (auth.currentUser(); as user) {
+      <hr class="border-border my-3" />
+      <p class="text-muted px-3 pb-1 text-[13px]">{{ user.username }}</p>
+      <div class="grid">
+        <ng-container *ngTemplateOutlet="accountLinks; context: { user }" />
+      </div>
+    }
+
+    <hr class="border-border my-3" />
+    <app-preferences />
+    <hr class="border-border my-3" />
+
+    @if (auth.currentUser()) {
+      <button appButton variant="secondary" block type="button" (click)="closeSheet(); logout()">
+        {{ text.logout }}
+      </button>
+    } @else if (auth.sessionChecked()) {
+      <div class="grid gap-2">
+        <a appButton block routerLink="/register">{{ text.signup }}</a>
+        <a appButton variant="secondary" block routerLink="/login">{{ text.login }}</a>
+      </div>
+    }
+  </div>
+</ng-template>

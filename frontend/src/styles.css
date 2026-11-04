@@ -120,3 +120,36 @@ body {
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
+
+/* Ligne d'un menu deroulant ou du panneau mobile (lien ou bouton). */
+@utility menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5625rem 0.75rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  text-align: left;
+  color: var(--color-foreground);
+  &:hover {
+    background-color: var(--color-surface-2);
+  }
+  & svg {
+    color: var(--color-muted);
+  }
+}
+
+/* Petite etiquette a droite d'une ligne de menu (« admin »). */
+@utility menu-tag {
+  margin-left: auto;
+  padding: 0 0.375rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.6875rem;
+  color: var(--color-muted);
+}
+
+/* Panneau mobile (CDK Dialog) : toute la hauteur, colle a droite. */
+.app-sheet .cdk-dialog-container {
+  height: 100%;
+}

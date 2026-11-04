@@ -592,10 +592,6 @@
         <source>Privacy</source>
         <target>Confidentialité</target>
       </trans-unit>
-      <trans-unit id="header.nav" datatype="html">
-        <source>Account</source>
-        <target>Compte</target>
-      </trans-unit>
       <trans-unit id="header.logout" datatype="html">
         <source> Log out </source>
         <target>Se déconnecter</target>
@@ -607,18 +603,6 @@
       <trans-unit id="header.signup" datatype="html">
         <source>Sign up</source>
         <target>S'inscrire</target>
-      </trans-unit>
-      <trans-unit id="header.account" datatype="html">
-        <source>Account settings for <x id="username" equiv-text="username"/></source>
-        <target>Paramètres du compte de <x id="username" equiv-text="username"/></target>
-      </trans-unit>
-      <trans-unit id="theme.toLight" datatype="html">
-        <source>Switch to light theme</source>
-        <target>Passer au thème clair</target>
-      </trans-unit>
-      <trans-unit id="theme.toDark" datatype="html">
-        <source>Switch to dark theme</source>
-        <target>Passer au thème sombre</target>
       </trans-unit>
       <trans-unit id="common.genericError" datatype="html">
         <source>Something went wrong. Please try again.</source>
@@ -683,10 +667,6 @@
       <trans-unit id="game.shorterSeries" datatype="html">
         <source>Only <x id="count" equiv-text="count"/> photos could be drawn this time.</source>
         <target>Seulement <x id="count" equiv-text="count"/> photos ont pu être tirées cette fois.</target>
-      </trans-unit>
-      <trans-unit id="header.free" datatype="html">
-        <source>Free investigation</source>
-        <target>Enquête libre</target>
       </trans-unit>
       <trans-unit id="title.challenge" datatype="html">
         <source>Challenge · Ageguessr</source>
@@ -883,6 +863,46 @@
       <trans-unit id="ui.ageInput.more" datatype="html">
         <source>One year older</source>
         <target>Un an de plus</target>
+      </trans-unit>
+      <trans-unit id="header.mainNav" datatype="html">
+        <source>Main</source>
+        <target>Principale</target>
+      </trans-unit>
+      <trans-unit id="header.myAccount" datatype="html">
+        <source>My account</source>
+        <target>Mon compte</target>
+      </trans-unit>
+      <trans-unit id="header.preferences" datatype="html">
+        <source>Preferences</source>
+        <target>Préférences</target>
+      </trans-unit>
+      <trans-unit id="header.menu" datatype="html">
+        <source>Menu</source>
+        <target>Menu</target>
+      </trans-unit>
+      <trans-unit id="header.closeMenu" datatype="html">
+        <source>Close menu</source>
+        <target>Fermer le menu</target>
+      </trans-unit>
+      <trans-unit id="preferences.siteLanguage" datatype="html">
+        <source>Site language</source>
+        <target>Langue du site</target>
+      </trans-unit>
+      <trans-unit id="preferences.theme" datatype="html">
+        <source>Theme</source>
+        <target>Thème</target>
+      </trans-unit>
+      <trans-unit id="preferences.dark" datatype="html">
+        <source>Dark</source>
+        <target>Sombre</target>
+      </trans-unit>
+      <trans-unit id="preferences.light" datatype="html">
+        <source>Light</source>
+        <target>Clair</target>
+      </trans-unit>
+      <trans-unit id="preferences.system" datatype="html">
+        <source>Auto</source>
+        <target>Auto</target>
       </trans-unit>
     </body>
   </file>

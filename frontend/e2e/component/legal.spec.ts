@@ -27,6 +27,7 @@ test.describe('legal pages', () => {
       await expect(page).toHaveURL(new RegExp(`/en${path}$`));
       await expect(page.getByRole('heading', { level: 1 })).toHaveText(en);
 
+      await page.getByRole('banner').getByRole('button', { name: 'Preferences' }).click();
       const french = page.getByRole('banner').getByRole('link', { name: 'Français' });
       await expect(french).toHaveAttribute('href', `/fr${path}`);
       await expect(french).toHaveAttribute('hreflang', 'fr');

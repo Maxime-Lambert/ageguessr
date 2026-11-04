@@ -34,7 +34,7 @@ test.describe('account page', () => {
     await page.getByRole('button', { name: 'Save username' }).click();
 
     await expect(page.getByText('Username updated.')).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Account settings for NewName' })).toBeVisible();
+    await expect(page.getByRole('banner').getByRole('button', { name: 'NewName' })).toBeVisible();
   });
 
   test('requesting a deletion asks to confirm by email', async ({ page }) => {

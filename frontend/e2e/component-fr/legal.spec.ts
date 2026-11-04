@@ -16,14 +16,15 @@ test.describe('pages légales en français', () => {
 
       await expect(page.getByRole('heading', { level: 1 })).toHaveText(fr);
       await expect(page.locator('html')).toHaveAttribute('lang', 'fr');
-      await expect(page.getByRole('banner').getByRole('link', { name: 'English' })).toHaveAttribute(
-        'href',
-        `/en${path}`,
-      );
       const overflow = await page.evaluate(
         () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
       );
       expect(overflow).toBe(0);
+      // On a phone, the site language is in the menu panel.
+      await page.getByRole('button', { name: 'Menu' }).click();
+      await expect(
+        page.getByRole('dialog', { name: 'Menu' }).getByRole('link', { name: 'English' }),
+      ).toHaveAttribute('href', `/en${path}`);
     });
   }
 

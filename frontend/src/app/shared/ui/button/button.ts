@@ -1,4 +1,4 @@
-import { Directive, computed, input } from '@angular/core';
+import { Directive, booleanAttribute, computed, input } from '@angular/core';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
 export type ButtonSize = 'md' | 'sm';
@@ -34,8 +34,9 @@ const VARIANTS: Record<ButtonVariant, string> = {
 export class Button {
   readonly variant = input<ButtonVariant>('primary');
   readonly size = input<ButtonSize>('md');
-  /** Full width, for a single action at the bottom of a form or a mobile panel. */
-  readonly block = input(false);
+  /** Full width, for a single action at the bottom of a form or a mobile panel. Written
+   *  as a bare attribute (`<button appButton block>`), hence the boolean transform. */
+  readonly block = input(false, { transform: booleanAttribute });
 
   protected readonly classes = computed(() =>
     [BASE, SIZES[this.size()], VARIANTS[this.variant()], this.block() ? 'w-full' : ''].join(' '),

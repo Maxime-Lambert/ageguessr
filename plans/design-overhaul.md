@@ -130,20 +130,29 @@ pour les tokens, le thème et `shared/ui`). Lint, format et build OK. Choix nota
   partir de la Phase 3.
 
 ## Phase 3 : En-tête et navigation (même branche, `feature/ui-foundation`)
-Status: Not started
+Status: Complete
 
-- [ ] `Menu` de compte sur CDK Menu (`cdkMenuTriggerFor`, `cdkMenu`, `cdkMenuItem`) :
-      navigation clavier, Échap, retour du focus au déclencheur
-- [ ] `Sheet` mobile sur CDK Dialog : focus piégé, Échap, fermeture au clic sur le fond
-      et à la navigation
-- [ ] En-tête desktop : wordmark, navigation de jeu (Dossier du jour, Enquête libre),
-      menu de compte (pseudo → compte, admin, déconnexion) ou Se connecter / S'inscrire
-- [ ] Mobile : wordmark et bouton menu qui ouvre une `Sheet`, sans aucun chevauchement à
-      320 px
-- [ ] Langue du site et thème regroupés dans le menu (ou le pied de page). Le choix de la
-      langue des indices est revu (voir la maquette)
-- [ ] Supprimer les liens en doublon dans les écrans de jeu
-- [ ] i18n : nouveaux textes avec `@@` + `messages.fr.xlf`
+- [x] Menu de compte : **disclosure** `Dropdown` (`shared/ui/dropdown`), pas CDK Menu. Le
+      panneau mélange des liens et des groupes radio, ce qu'un `role="menu"` n'accepte
+      pas, et un menu prendrait les flèches dont les groupes radio ont besoin. Le bouton
+      porte `aria-expanded`, le panneau suit le bouton dans le DOM (Tab y entre
+      directement). Échap rend le focus au bouton, un clic dehors ou un lien suivi le ferme
+- [x] `Sheet` mobile sur CDK Dialog (`Header.openSheet`) : focus piégé, Échap, fond
+      cliquable, focus rendu au bouton Menu, fermeture à chaque `NavigationStart`
+- [x] En-tête desktop : wordmark, Dossier du jour et Enquête libre (vocabulaire de
+      `game-vocabulary.ts`, onglet actif souligné en or), Se connecter / S'inscrire et un
+      bouton Préférences pour un invité, sinon le menu du pseudo (compte, admin,
+      préférences, déconnexion)
+- [x] Mobile : wordmark et bouton Menu seulement. Le panneau reprend les modes de jeu, le
+      compte, les préférences et les boutons de connexion
+- [x] `Preferences` (`features/layout/preferences`) : langue du site (la paire, l'autre
+      langue reste un vrai lien `hreflang`), langue des indices et thème (`Segmented`)
+- [x] Liens en doublon retirés sous les écrans de jeu. Le choix de la langue des indices
+      y reste jusqu'à la Phase 4, qui le déplace sur la coupure. `ThemeToggle` supprimé
+- [x] i18n : nouveaux textes `header.*` et `preferences.*` + `messages.fr.xlf`, unités
+      obsolètes retirées (`header.account`, `header.free`, `header.nav`, `theme.to*`)
+- [x] Specs e2e adaptées (header, account, hint-curation, legal EN/FR, journeys auth et
+      french-account), exécutées par la CI seulement
 
 ### Verification Plan
 - Tests Vitest de l'en-tête (invité, connecté, admin, mobile)
@@ -151,7 +160,11 @@ Status: Not started
   320 et 390 px
 
 ### Phase Summary
-_(write when phase completes)_
+Fait le 2026-11-04. `pnpm test` : 343 tests verts, lint, format et build OK. Captures du
+build servi en statique (`python3 -m http.server`, un seul Chromium) : en-tête desktop,
+panneau Préférences, en-tête mobile à 360 px et panneau mobile conformes à la maquette,
+sans chevauchement. Les specs e2e n'ont pas été lancées en local (WSL) : c'est la CI qui
+les exécute.
 
 ## Phase 4 : Écrans de jeu (branche `feature/game-screens-redesign`)
 Status: Not started
