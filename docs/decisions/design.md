@@ -4,6 +4,54 @@ Charte graphique et décisions produit transverses, posées avant toute impléme
 visuelle. Complète `docs/decisions/architecture.md` (qui fixe déjà Tailwind, Vitest,
 Signals) sans le contredire.
 
+## Refonte visuelle (2026-11) : direction A, « Archives soignées »
+
+**Décision** (2026-11-04) : l'identité archives est gardée. C'était son exécution qui
+rendait le site brouillon : pas de hiérarchie, un menu à plat, des boutons indigo
+saturé sur fond brun. Référence visuelle : `docs/decisions/mockups/index.html?d=a`.
+La direction B (« Contemporain épuré », `?d=b`) a été écartée et reste dans le fichier
+pour mémoire. Plan : `plans/design-overhaul.md`.
+
+**Ce qui change** (les sections plus bas restent valables sauf mention contraire) :
+- **Bouton principal crème** (`primary` = `foreground`, texte = `background`) au lieu
+  de l'indigo. L'indigo devient un accent fin : lien, focus, élément sélectionné,
+  progression, icône de piste.
+- **Or pour le score** (`--color-score`), réservé aux points et à l'onglet actif. Il
+  sert aussi au tampon « Affaire classée » du verdict, la seule fantaisie graphique.
+- **La photo est un tirage monté** : un carton crème autour, une légende en Fraunces
+  italique, avec le crédit (auteur, licence, Commons) en bas à droite du carton. Le
+  carton est légèrement incliné sur desktop, droit sur mobile.
+- **L'indice est une coupure de journal** : un fond papier (`--color-clip*`) avec un
+  morceau de ruban adhésif, et le choix FR/EN de la langue des pistes dans son coin.
+- **Desktop en deux colonnes** (photo à gauche, dossier à droite), largeur maximale de
+  1 120 px. **Mobile en une colonne**, avec le menu en panneau latéral.
+- **Navigation** : Dossier du jour et Enquête libre dans l'en-tête, avec Se connecter /
+  S'inscrire, ou un menu de compte (compte, historique, admin, préférences,
+  déconnexion). La langue du site, la langue des pistes et le thème vont dans ce menu
+  (ou dans le panneau mobile), plus dans l'en-tête ni sous le jeu.
+- **Saisie de l'âge** : un grand champ avec des boutons − et +, sans les flèches natives
+  du champ numérique.
+- Le vocabulaire « enquête » (affaire, piste, dossier) est confirmé.
+
+**Nouveaux tokens (thème sombre)**, vérifiés WCAG AA le 2026-11-04 :
+
+| Token | Valeur | Usage |
+|---|---|---|
+| `--color-background` | `#15120E` | fond |
+| `--color-surface` | `#1F1A14` | cartes |
+| `--color-surface-2` | `#2B241B` | survol, élément sélectionné, fond d'avatar |
+| `--color-foreground` | `#EFE6D4` | texte, fond du bouton principal |
+| `--color-muted` | `#A3967F` | texte secondaire |
+| `--color-input-border` | `#75695A` | bord des champs |
+| `--color-accent` | `#A3A5F2` | accent indigo, plus doux |
+| `--color-score` | `#E0AD4F` | score, onglet actif, tampon |
+| `--color-clip` / `-foreground` / `-muted` | `#E9DFC9` / `#2A2116` / `#6E604A` | coupure, carton photo |
+
+**Règle de contraste** : `input-border` (2.86:1) et `danger` (4.13:1) ne passent pas sur
+`surface-2`. Ce fond ne porte donc jamais un champ ni un message d'erreur. Le thème
+clair de la direction A est défini en Phase 2, avec la même règle (luminosité ajustée,
+teintes inchangées).
+
 ## Identité visuelle
 
 ### Ambiance : archives / vieille photographie
@@ -152,7 +200,13 @@ Angular).
 projets Tailwind actuels, aucune dépendance à une charte d'icônes propriétaire.
 
 ### Composants
-**Décision** : Tailwind pur + tokens custom, pas de librairie de composants
+**Remplacé le 2026-11-04** : `@angular/cdk` (Menu, Dialog, Overlay, A11y) et nos propres
+composants dans `frontend/src/app/shared/ui/`. Pas de Spartan : il est construit sur le
+CDK et ajoute luxon, clsx et tw-animate-css pour des composants qu'on restylerait
+entièrement. Pas de Material ni de PrimeNG : leur look écraserait l'identité. Détails
+dans `plans/design-overhaul.md`. La décision d'origine suit, pour mémoire.
+
+**Décision d'origine** : Tailwind pur + tokens custom, pas de librairie de composants
 (Shadcn/Radix) au démarrage — déjà acté dans `docs/decisions/architecture.md`.
 
 **Conséquence à assumer** : l'accessibilité des composants complexes (modals, selects,

@@ -1,0 +1,188 @@
+# Refonte visuelle du frontend
+
+Le site en production paraît brouillon : pas de hiérarchie, des composants recopiés à la
+main, un menu à plat qui casse sur mobile. Ce plan refait la mise en page, l'UX, les
+couleurs et la navigation. On valide d'abord des maquettes statiques, puis on pose un
+socle de composants et on migre les écrans zone par zone. Plusieurs PR vers `develop`,
+une par phase de code. Pas de PR empilées : chaque branche part de `develop` une fois la
+précédente mergée.
+
+## For Future Agents
+As work proceeds: mark checkboxes `- [x]` as items complete; when a phase is done,
+set its status to `Complete` and write its **Phase Summary**; run the phase's
+**Verification Plan** and record the result before moving on.
+
+## Constat (captures prod du 2026-11-04, `/fr/`, 1440×900 et 390×844)
+
+- **En-tête mobile cassé** : « Se connecter » passe par-dessus le wordmark.
+- **Menu à plat** : jeu libre, connexion, inscription, langue et thème sont sur une
+  seule rangée, au même poids visuel. Pas de menu de compte, pas de menu mobile.
+- **Deux sélecteurs de langue concurrents** : « English » dans l'en-tête (langue du
+  site) et « Indices en English / Français » sous le jeu.
+- **Écran de jeu sans point focal** : une colonne étroite de 544 px sur desktop, une
+  photo dans une carte avec des bandes noires, le libellé « Âge » collé au champ, des
+  flèches de champ numérique natives, le lien « Enquête libre » en doublon de l'en-tête.
+- **Verdict peu lisible** : les points par essai sont alignés à droite, loin de leur
+  libellé. Le score de la manche n'est pas mis en valeur, et le crédit photo est noyé.
+- **Couleurs** : les boutons et les sélections indigo saturé jurent sur le fond brun.
+  Le filtre « vieille photo » est presque invisible, et le thème clair ne suit pas la
+  préférence système (capture `colorScheme: light` rendue en sombre).
+- **Code** : aucun composant d'UI partagé (`shared/` n'a que de l'i18n et des erreurs),
+  24 boutons primaires recopiés avec des variantes (`opacity-50`, `opacity-60`), des
+  marges choisies au cas par cas.
+- **Bug de données vu en passant (hors périmètre)** : des indices musique collent deux
+  mots, comme « Charles Aznavouret divers artistes » ou « George Michaelet Elton John ».
+  `scripts/hints/common.py:116` joint le texte des cellules avec `""` et perd le `<br>`
+  entre les deux. À corriger dans une PR `fix/` à part, avec une réimportation des
+  indices concernés.
+
+## Décisions
+
+- **Captures** : jamais de suite Playwright en local (elle fait planter WSL). Le script
+  `docs/decisions/mockups/shoot.mjs` (créé en Phase 1) lance un seul Chromium headless,
+  une page à la fois, sans serveur de dev, avec `timeout 240`. Il vise des fichiers
+  statiques (maquettes) ou l'URL de prod.
+- **Maquettes** : HTML statique autonome dans `docs/decisions/mockups/`, avec les
+  vraies polices (Fraunces, Inter) et les tokens de `styles.css` pour la direction qui
+  les garde. Ce sont des documents de décision, pas du code de production.
+- **Socle** : `@angular/cdk` (Menu, Dialog, Overlay, A11y) et nos propres composants
+  dans `frontend/src/app/shared/ui/`. **Pas de Spartan** : il est lui-même construit sur
+  le CDK et ajoute luxon, clsx et tw-animate-css, pour environ 8 composants qu'on
+  restylerait de toute façon entièrement. Pas d'Angular Material ni de PrimeNG : leur
+  look écraserait l'identité.
+- **Direction A, « Archives soignées »** (validée le 2026-11-04) : détail et tokens dans
+  `docs/decisions/design.md`, « Refonte visuelle (2026-11) ».
+
+## Phase 1 : Maquettes (branche `chore/design-mockups`)
+Status: Complete
+
+- [x] Captures prod des écrans principaux (jeu, verdict, jeu libre, inscription,
+      connexion, desktop et mobile), scratchpad de la session du 2026-11-04
+- [x] `docs/decisions/mockups/shoot.mjs` : le script de captures minimal décrit plus haut
+- [x] Maquette direction A, « Archives soignées » : on garde l'identité, avec une vraie
+      hiérarchie, la photo en tirage avec légende et une palette d'accents revue
+- [x] Maquette direction B, « Contemporain épuré » : neutre, la photo en grand, un accent
+      plus franc
+- [x] Chaque maquette couvre : en-tête desktop et mobile (menu ouvert), 1er essai,
+      sens et choix de piste, 2e essai avec indice, verdict, rapport final, choix du jeu
+      libre, inscription
+- [x] Captures des maquettes via `shoot.mjs`, relues par l'agent (débordements, contraste)
+- (Note : le 3e essai, le jeu libre et l'inscription n'existent qu'en desktop ;
+      crédits des photos dans `mockups/README.md`)
+- [x] Validation par l'utilisateur (2026-11-04) : **direction A**. Langue des pistes
+      dans le menu + bascule FR/EN sur la coupure : oui. Vocabulaire enquête : gardé
+- [x] `docs/decisions/design.md` : section « Refonte 2026-11 » qui renvoie aux maquettes
+      et note les tokens modifiés
+- [x] Contraste des nouveaux tokens vérifié par un calcul WCAG ponctuel (tout passe, sauf
+      `input-border` et `danger` sur `surface-2`, d'où une règle d'usage). Le passage par
+      `design-tokens.spec.ts` se fait en Phase 2, quand les tokens entrent dans `styles.css`
+
+### Verification Plan
+- `timeout 240 node docs/decisions/mockups/shoot.mjs` : sortie 0, une capture par écran
+  maquetté
+- `cd frontend && pnpm test` passe (tokens et contraste)
+
+### Phase Summary
+Fait le 2026-11-04. Le script de captures fonctionne (26 captures de maquettes en
+environ 1 min, WSL stable). Il visait aussi la prod pour le constat. `pnpm test` passe :
+la phase ne touche pas au code. La direction A est retenue et documentée dans
+`design.md`. `architecture.md` signale que la décision « sans librairie » est
+remplacée. Prochaine étape : Phase 2 sur `feature/ui-foundation`, depuis `develop` une
+fois cette PR mergée.
+
+## Phase 2 : Socle de composants (branche `feature/ui-foundation`)
+Status: Not started
+
+- [ ] Ajouter `@angular/cdk` (même version majeure qu'Angular), version exacte dans le
+      lockfile
+- [ ] Tokens de la direction A dans `styles.css` (`surface-2`, `score`, `clip*`, valeurs
+      sombres de `design.md`) et thème clair équivalent à définir. Paires ajoutées à
+      `design-tokens.spec.ts`. Espacements, rayons et ombres. Le thème clair suit `prefers-color-scheme` tant que l'utilisateur n'a rien choisi
+- [ ] `shared/ui` : `Button` (primary, secondary, ghost, danger, avec états disabled et
+      busy), `Card`, `Field` (label, aide, erreur, `aria-describedby`), `TextInput`,
+      `AgeInput` (sans flèches natives, clavier numérique), `SegmentedControl`, `Page`
+      (largeur et rythme vertical), `Menu` (sur CDK Menu), `Sheet` mobile (sur CDK Dialog)
+- [ ] Tests Vitest de chaque composant (rendu, variantes, aria, clavier)
+- [ ] Specs Playwright de composant écrites et exécutées par la CI uniquement
+
+### Verification Plan
+- `cd frontend && pnpm test && pnpm lint && pnpm build` passent
+- CI `frontend-test` verte sur la PR
+
+### Phase Summary
+_(write when phase completes)_
+
+## Phase 3 : En-tête et navigation (même branche ou `feature/navigation`)
+Status: Not started
+
+- [ ] En-tête desktop : wordmark, navigation de jeu (Dossier du jour, Enquête libre),
+      menu de compte (pseudo → compte, admin, déconnexion) ou Se connecter / S'inscrire
+- [ ] Mobile : wordmark et bouton menu qui ouvre une `Sheet`, sans aucun chevauchement à
+      320 px
+- [ ] Langue du site et thème regroupés dans le menu (ou le pied de page). Le choix de la
+      langue des indices est revu (voir la maquette)
+- [ ] Supprimer les liens en doublon dans les écrans de jeu
+- [ ] i18n : nouveaux textes avec `@@` + `messages.fr.xlf`
+
+### Verification Plan
+- Tests Vitest de l'en-tête (invité, connecté, admin, mobile)
+- `shoot.mjs` sur un build local ou sur la prod après release : pas de chevauchement à
+  320 et 390 px
+
+### Phase Summary
+_(write when phase completes)_
+
+## Phase 4 : Écrans de jeu (branche `feature/game-screens-redesign`)
+Status: Not started
+
+- [ ] Manche (`round`) : photo en point focal, essai, sens, piste, 2e essai, selon la
+      maquette
+- [ ] Verdict (`round-result`) : score de la manche en avant, essais et points lisibles,
+      identité, indice et crédit
+- [ ] Rapport du jour (`day-summary`), jeu libre (`free-game`), défi (`challenge`),
+      classement
+- [ ] Bouton de signalement et choix du motif via `Menu` ou `Dialog` CDK
+- [ ] Traitement photo final (filtre ou duotone) appliqué, ligne de la roadmap cochée
+
+### Verification Plan
+- `pnpm test` (specs existantes du jeu adaptées, sans en perdre), CI e2e verte
+- Captures prod après release, comparées à la maquette
+
+### Phase Summary
+_(write when phase completes)_
+
+## Phase 5 : Auth, compte, légal, admin (branche `feature/secondary-screens-redesign`)
+Status: Not started
+
+- [ ] Inscription, connexion, mot de passe oublié et réinitialisation, vérification
+      d'email : `Card` + `Field`
+- [ ] Compte (pseudo, mot de passe, suppression en zone `danger`)
+- [ ] Pages légales : typographie de lecture (largeur, interlignage, titres)
+- [ ] Admin (curation, indices) : composants partagés, en restant en anglais
+- [ ] Bandeau CGU harmonisé
+
+### Verification Plan
+- `pnpm test && pnpm lint && pnpm build`, CI verte
+
+### Phase Summary
+_(write when phase completes)_
+
+## Phase 6 : Documentation
+Status: Not started
+
+- [ ] `docs/decisions/design.md` : la section Composants décrit le CDK et `shared/ui`
+      (remplace « Tailwind pur, sans librairie »), et le traitement photo est tranché
+- [ ] `docs/decisions/architecture.md` mis à jour s'il mentionne l'absence de librairie
+- [ ] `docs/roadmap.md` : ligne « Refonte visuelle » ajoutée et cochée, duotone coché
+
+### Verification Plan
+- `grep -n "pas de librairie" docs/decisions/*.md` : ne renvoie plus de décision obsolète
+
+### Phase Summary
+_(write when phase completes)_
+
+## Final Recap
+_(write when all phases complete)_
+
+## Deployment Plan
+_(write when all phases complete)_

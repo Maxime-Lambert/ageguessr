@@ -155,6 +155,11 @@ la suivante).
       une série partagée par un lien, jouée une fois par chaque ami, avec un classement
       — PR `feature/free-investigation`
 
+- [ ] Refonte visuelle, direction A « Archives soignées » (`plans/design-overhaul.md`) :
+      maquettes validées, `docs/decisions/mockups/`, PR `chore/design-mockups`. Restent
+      le socle CDK + `shared/ui`, la navigation, les écrans de jeu et les écrans
+      secondaires
+
 ## Semaine 5 — Compte utilisateur + historique
 - [x] Inscription/connexion (frontend) + navigation (en-tête invité/connecté) — PR
       `feature/auth-completion`
