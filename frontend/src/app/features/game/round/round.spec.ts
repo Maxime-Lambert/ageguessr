@@ -59,7 +59,9 @@ describe('Round', () => {
     type(value);
 
     expect(guesses).toEqual([]);
-    expect(page.querySelector('[aria-live="polite"]')?.textContent).toContain(GAME_TEXT.invalidAge);
+    expect(page.querySelector('app-field [aria-live="polite"]')?.textContent).toContain(
+      GAME_TEXT.invalidAge,
+    );
   });
 
   it('sends nothing while a request is on its way', () => {
