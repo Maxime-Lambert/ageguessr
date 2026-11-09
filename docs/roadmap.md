@@ -156,10 +156,10 @@ la suivante).
       une série partagée par un lien, jouée une fois par chaque ami, avec un classement
       — PR `feature/free-investigation`
 
-- [ ] Refonte visuelle, direction A « Archives soignées » (`plans/design-overhaul.md`) :
-      maquettes validées, `docs/decisions/mockups/`, PR `chore/design-mockups`. Restent
-      le socle CDK + `shared/ui`, la navigation, les écrans de jeu et les écrans
-      secondaires
+- [x] Refonte visuelle, direction A « Archives soignées » (`plans/design-overhaul.md`) :
+      maquettes (`docs/decisions/mockups/`, PR `chore/design-mockups`), socle CDK +
+      `shared/ui` et navigation (PR #40), écrans de jeu (PR #41), auth, compte, pages
+      légales, admin et bandeau CGU (PR `feature/secondary-screens-redesign`)
 
 ## Semaine 5 — Compte utilisateur + historique
 - [x] Inscription/connexion (frontend) + navigation (en-tête invité/connecté) — PR

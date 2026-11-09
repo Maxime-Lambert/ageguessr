@@ -213,6 +213,24 @@ CDK et ajoute luxon, clsx et tw-animate-css pour des composants qu'on restylerai
 entièrement. Pas de Material ni de PrimeNG : leur look écraserait l'identité. Détails
 dans `plans/design-overhaul.md`. La décision d'origine suit, pour mémoire.
 
+**Ce que contient `shared/ui`** (2026-11-09, fin de la refonte) :
+- `Button` : directive sur `button` et `a` (`primary` crème, `secondary`, `ghost`,
+  `danger` ; tailles `md` et `sm` ; `block` pour la pleine largeur). Une directive plutôt
+  qu'un composant, pour garder la sémantique native de l'élément.
+- `Field` + `TextInput` (`appInput`) : libellé, aide et erreur liés au champ pour les
+  lecteurs d'écran. `controlId` fixe l'id du champ (`email`, `password`…) quand des liens
+  ou les tests de bout en bout le visent ; sans lui, chaque champ a un id généré.
+  `appInput` s'applique aussi aux `textarea`, qui gardent leur hauteur en lignes.
+- `AgeInput` (saisie de l'âge, − et +), `Segmented` (choix court en groupe radio),
+  `Dropdown` (disclosure, pas un menu ARIA : le panneau mêle liens et groupes radio),
+  `Page` (trois largeurs : `narrow` formulaire, `default` lecture, `wide` jeu).
+- Du CDK, seuls `Dialog` et le positionnement d'`Overlay` servent aujourd'hui (panneau
+  mobile). Les utilitaires CSS `card`, `eyebrow` et `menu-item` complètent ces
+  composants dans `styles.css`.
+- Les pages légales gardent une feuille de style de lecture partagée
+  (`features/legal/legal-page.css`) : environ 70 caractères par ligne, titres de section
+  séparés par un filet, mêmes marges que `Page`.
+
 **Décision d'origine** : Tailwind pur + tokens custom, pas de librairie de composants
 (Shadcn/Radix) au démarrage — déjà acté dans `docs/decisions/architecture.md`.
 

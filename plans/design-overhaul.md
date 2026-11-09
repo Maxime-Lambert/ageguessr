@@ -208,37 +208,61 @@ essai, sens et pistes, indice et dernier essai, verdict, rapport, en desktop et 
 Conformes à la maquette A. Les specs e2e touchées (component-fr/game) ne tournent qu'en CI.
 
 ## Phase 5 : Auth, compte, légal, admin (branche `feature/secondary-screens-redesign`)
-Status: Not started
+Status: Complete
 
-- [ ] Inscription, connexion, mot de passe oublié et réinitialisation, vérification
-      d'email : `Card` + `Field`
-- [ ] Compte (pseudo, mot de passe, suppression en zone `danger`)
-- [ ] Pages légales : typographie de lecture (largeur, interlignage, titres)
-- [ ] Admin (curation, indices) : composants partagés, en restant en anglais
-- [ ] Bandeau CGU harmonisé
+- [x] Inscription, connexion, mot de passe oublié et réinitialisation, vérification
+      d'email, suppression : `Page width="narrow"` + `Field` + `Button`, comme la maquette
+      (pas de carte autour du formulaire, contrairement à ce que prévoyait ce plan : la
+      maquette A n'en a pas). Landmark `main` ajouté sur chaque écran
+- [x] `Field.controlId` : les specs e2e visent `#email`, `#password`… (non lancées en
+      local), donc les ids des champs restent les mêmes
+- [x] Règles d'erreur partagées : `newPasswordError` (`password-rules.ts`, testée) et
+      les messages de pseudo dans `models.ts`, au lieu de quatre copies dans les templates
+- [x] Compte : sections en `card`, boutons `secondary`, suppression en carte bordée
+      `danger` avec un bouton `danger`
+- [x] Pages légales : `legal-page.css` revu (environ 70 caractères par ligne, texte à
+      17 px, titres de section séparés par un filet, mêmes marges que `Page`), `main`
+- [x] Admin (curation, indices, signalements, exclusion) : `Button`, `card`,
+      `appInput` (aussi sur les `textarea`, qui gardent leur hauteur), `Page width="wide"`,
+      en restant en anglais
+- [x] Bandeau CGU : `Button` `sm` (accepter) et `ghost` (plus tard), même largeur que
+      l'en-tête
 
 ### Verification Plan
 - `pnpm test && pnpm lint && pnpm build`, CI verte
 
 ### Phase Summary
-_(write when phase completes)_
+Fait le 2026-11-09. `pnpm test` : 362 tests verts, lint et build OK (bundle initial
+515 kB, sous l'avertissement à 550 kB). Extraction i18n : seuls des espaces changent dans
+les sources, les placeholders sont identiques, la build FR n'a aucune traduction
+manquante. Captures du build (un seul Chromium, API simulée par `page.route`) : connexion,
+inscription avec erreurs, compte connecté avec le bandeau CGU, CGU, suppression, en
+desktop et à 390 px. Les specs e2e ne tournent qu'en CI.
 
 ## Phase 6 : Documentation
-Status: Not started
+Status: Complete
 
-- [ ] `docs/decisions/design.md` : la section Composants décrit le CDK et `shared/ui`
-      (remplace « Tailwind pur, sans librairie »), et le traitement photo est tranché
-- [ ] `docs/decisions/architecture.md` mis à jour s'il mentionne l'absence de librairie
-- [ ] `docs/roadmap.md` : ligne « Refonte visuelle » ajoutée et cochée, duotone coché
+- [x] `docs/decisions/design.md` : la section Composants décrit le CDK et `shared/ui`
+      (fait en Phase 2, complété par la liste des composants), traitement photo tranché
+- [x] `docs/decisions/architecture.md` : déjà mis à jour en Phase 2 (« Mise à jour
+      2026-11-04 »)
+- [x] `docs/roadmap.md` : ligne « Refonte visuelle » cochée, duotone coché
 
 ### Verification Plan
 - `grep -n "pas de librairie" docs/decisions/*.md` : ne renvoie plus de décision obsolète
 
 ### Phase Summary
-_(write when phase completes)_
+Fait le 2026-11-09. Le grep ne renvoie que la décision d'origine, présentée comme
+remplacée (design.md) ou suivie de sa mise à jour (architecture.md).
 
 ## Final Recap
-_(write when all phases complete)_
+Refonte livrée en quatre PR vers `develop` : maquettes (`chore/design-mockups`), socle et
+navigation (#40), écrans de jeu (#41), écrans secondaires et documentation
+(`feature/secondary-screens-redesign`). Tout le frontend passe par `shared/ui` : plus de
+bouton ni de champ stylé à la main.
 
 ## Deployment Plan
-_(write when all phases complete)_
+Frontend seul, aucune migration liée à la refonte. Une release `develop` → `main` en merge
+commit (pas de rebase), puis le déploiement automatique. Après le déploiement : captures
+de prod (`shoot.mjs prod`) comparées à la maquette A, et un passage à la main sur
+connexion, compte et bandeau CGU.
