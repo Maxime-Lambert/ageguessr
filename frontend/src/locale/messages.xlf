@@ -16,25 +16,32 @@
           <context context-type="linenumber">20</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="title.profile" datatype="html">
+        <source>My profile · AgeGuessr</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.routes.ts</context>
+          <context context-type="linenumber">64</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="title.legalNotice" datatype="html">
         <source>Legal notice · AgeGuessr</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.routes.ts</context>
-          <context context-type="linenumber">84</context>
+          <context context-type="linenumber">90</context>
         </context-group>
       </trans-unit>
       <trans-unit id="title.terms" datatype="html">
         <source>Terms of Use · AgeGuessr</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.routes.ts</context>
-          <context context-type="linenumber">90</context>
+          <context context-type="linenumber">96</context>
         </context-group>
       </trans-unit>
       <trans-unit id="title.privacy" datatype="html">
         <source>Privacy Policy · AgeGuessr</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.routes.ts</context>
-          <context context-type="linenumber">95</context>
+          <context context-type="linenumber">101</context>
         </context-group>
       </trans-unit>
       <trans-unit id="account.title" datatype="html">
@@ -466,7 +473,7 @@
         <source>Invalid email or password.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/login/login.ts</context>
-          <context context-type="linenumber">50</context>
+          <context context-type="linenumber">60</context>
         </context-group>
       </trans-unit>
       <trans-unit id="common.usernameRule" datatype="html">
@@ -1471,6 +1478,125 @@
           <context context-type="linenumber">185</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="profile.title" datatype="html">
+        <source>My profile</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/profile/profile.ts</context>
+          <context context-type="linenumber">36</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="profile.currentStreak" datatype="html">
+        <source>Current streak</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/profile/profile.ts</context>
+          <context context-type="linenumber">37</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="profile.bestStreak" datatype="html">
+        <source>Best streak</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/profile/profile.ts</context>
+          <context context-type="linenumber">38</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="profile.days" datatype="html">
+        <source>days in a row</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/profile/profile.ts</context>
+          <context context-type="linenumber">39</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="profile.gamesPlayed" datatype="html">
+        <source>Files closed</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/profile/profile.ts</context>
+          <context context-type="linenumber">40</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="profile.average" datatype="html">
+        <source>Average score</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/profile/profile.ts</context>
+          <context context-type="linenumber">41</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="profile.best" datatype="html">
+        <source>Best score</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/profile/profile.ts</context>
+          <context context-type="linenumber">42</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="profile.history" datatype="html">
+        <source>Past files</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/profile/profile.ts</context>
+          <context context-type="linenumber">43</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="profile.streakExplained" datatype="html">
+        <source>A streak counts the days in a row on which you finished the day&apos;s file.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/profile/profile.ts</context>
+          <context context-type="linenumber">44</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="profile.empty" datatype="html">
+        <source>No file closed yet. Your games will show up here.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/profile/profile.ts</context>
+          <context context-type="linenumber">45</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="profile.play" datatype="html">
+        <source>Open today&apos;s file</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/profile/profile.ts</context>
+          <context context-type="linenumber">46</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="profile.incomplete" datatype="html">
+        <source>Not finished</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/profile/profile.ts</context>
+          <context context-type="linenumber">47</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="profile.roundNotFinished" datatype="html">
+        <source>Not finished</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/profile/profile.ts</context>
+          <context context-type="linenumber">48</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="profile.years" datatype="html">
+        <source>years old</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/profile/profile.ts</context>
+          <context context-type="linenumber">49</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="profile.guesses" datatype="html">
+        <source>Your guesses:</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/profile/profile.ts</context>
+          <context context-type="linenumber">51</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="profile.older" datatype="html">
+        <source>Older files</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/profile/profile.ts</context>
+          <context context-type="linenumber">52</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="profile.loadError" datatype="html">
+        <source>Your history could not be loaded.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/profile/profile.ts</context>
+          <context context-type="linenumber">53</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="language.switchFailed" datatype="html">
         <source> Could not save your language. Try again. </source>
         <context-group purpose="location">
@@ -1510,56 +1636,63 @@
         <source>Main</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/layout/header/header.ts</context>
-          <context context-type="linenumber">57</context>
+          <context context-type="linenumber">59</context>
         </context-group>
       </trans-unit>
       <trans-unit id="header.login" datatype="html">
         <source>Log in</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/layout/header/header.ts</context>
-          <context context-type="linenumber">58</context>
+          <context context-type="linenumber">60</context>
         </context-group>
       </trans-unit>
       <trans-unit id="header.signup" datatype="html">
         <source>Sign up</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/layout/header/header.ts</context>
-          <context context-type="linenumber">59</context>
+          <context context-type="linenumber">61</context>
         </context-group>
       </trans-unit>
       <trans-unit id="header.logout" datatype="html">
         <source>Log out</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/layout/header/header.ts</context>
-          <context context-type="linenumber">60</context>
+          <context context-type="linenumber">62</context>
         </context-group>
       </trans-unit>
       <trans-unit id="header.myAccount" datatype="html">
         <source>My account</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/layout/header/header.ts</context>
-          <context context-type="linenumber">61</context>
+          <context context-type="linenumber">63</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="header.profile" datatype="html">
+        <source>My profile</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/layout/header/header.ts</context>
+          <context context-type="linenumber">64</context>
         </context-group>
       </trans-unit>
       <trans-unit id="header.preferences" datatype="html">
         <source>Preferences</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/layout/header/header.ts</context>
-          <context context-type="linenumber">62</context>
+          <context context-type="linenumber">65</context>
         </context-group>
       </trans-unit>
       <trans-unit id="header.menu" datatype="html">
         <source>Menu</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/layout/header/header.ts</context>
-          <context context-type="linenumber">63</context>
+          <context context-type="linenumber">66</context>
         </context-group>
       </trans-unit>
       <trans-unit id="header.closeMenu" datatype="html">
         <source>Close menu</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/layout/header/header.ts</context>
-          <context context-type="linenumber">64</context>
+          <context context-type="linenumber">67</context>
         </context-group>
       </trans-unit>
       <trans-unit id="preferences.siteLanguage" datatype="html">

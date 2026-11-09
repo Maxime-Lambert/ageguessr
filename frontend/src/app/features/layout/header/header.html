@@ -77,6 +77,9 @@
 
 <!-- The links of a signed-in player, in the desktop menu and in the mobile panel. -->
 <ng-template #accountLinks let-user="user">
+  <a routerLink="/profile" class="menu-item">
+    <svg lucideHistory [size]="18" aria-hidden="true"></svg>{{ text.profile }}
+  </a>
   <a routerLink="/account" class="menu-item">
     <svg lucideUser [size]="18" aria-hidden="true"></svg>{{ text.myAccount }}
   </a>

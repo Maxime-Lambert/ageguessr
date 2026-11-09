@@ -162,7 +162,6 @@ retirer une fois tous faits.
   - Aucun retrait automatique. Un indice rejeté n'est plus tiré ; sous 5 indices, la
     catégorie est masquée pour cette année
 - [x] Enchaînement des 3 personnes du jour + récapitulatif final
-- [ ] Page d'accueil publique
 - [x] Vocabulaire de jeu centralisé dans un seul fichier (essai du ton « enquête »,
       critère de validation au premier playtest — voir `docs/decisions/design.md`)
 - [x] Trancher le duotone des photos sur de vraies photos Commons : pas de duotone, un
@@ -187,8 +186,11 @@ retirer une fois tous faits.
 - [x] Politique de mot de passe : 12 caractères minimum, sans composition, refus des mots
       de passe courants et de ceux contenant le pseudo ou l'email — PR
       `feature/password-policy`
-- [ ] Page profil (statistiques, historique visible)
-- [ ] Historique des parties passées (score, streak quotidien)
+- [x] Page profil `/profile`, privée : série en cours et meilleure série, dossiers
+      classés, score moyen et meilleur score — PR `feature/game-history`
+- [x] Historique des parties du jour passées, manche par manche, 30 jours par page, sans
+      photo (anti-triche). Les parties jouées en invité sont rattachées au compte à la
+      connexion — PR `feature/game-history`
 
 ## Semaine 6 — Amis
 - [ ] Demandes d'ami (envoi, acceptation, refus)
@@ -216,4 +218,5 @@ retirer une fois tous faits.
       `max-size` aujourd'hui, conservation illimitée)
 - [ ] Backup PostgreSQL (annoncer sa durée de conservation dans `/privacy`)
 - [ ] Déploiement prod final et smoke tests
-- [ ] Landing page de lancement
+- [ ] Landing page de lancement, qui tient aussi lieu de page d'accueil publique (fusion
+      décidée le 2026-11-09 : le jeu reste à `/`)

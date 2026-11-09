@@ -71,6 +71,10 @@ public class RateLimitFilter extends OncePerRequestFilter {
         if (uri.startsWith("/api/auth/")) {
             return auth;
         }
+        // The one costly read of the game: it loads every round the account ever played.
+        if (uri.equals("/api/game/history")) {
+            return game;
+        }
         if (!HttpMethod.POST.matches(request.getMethod())) {
             return null;
         }

@@ -95,6 +95,7 @@ describe('Header', () => {
     header();
 
     expect(trigger.getAttribute('aria-expanded')).toBe('true');
+    expect(named(page, 'a', 'My profile')?.getAttribute('href')).toBe('/profile');
     expect(named(page, 'a', 'My account')?.getAttribute('href')).toBe('/account');
     expect(named(page, 'button', 'Log out')).toBeDefined();
     expect(
@@ -113,7 +114,7 @@ describe('Header', () => {
       a.getAttribute('href'),
     );
 
-    expect(links).toEqual(['/account', '/admin/curation', '/admin/hints']);
+    expect(links).toEqual(['/profile', '/account', '/admin/curation', '/admin/hints']);
   });
 
   it('logging out returns to the home page as a guest', () => {
