@@ -33,7 +33,7 @@ test.describe('pages légales en français', () => {
     await page.goto('/fr/login');
 
     await page
-      .getByRole('navigation', { name: 'Informations légales' })
+      .getByRole('navigation', { name: 'Informations sur le site' })
       .getByRole('link', { name: 'Confidentialité' })
       .click();
 

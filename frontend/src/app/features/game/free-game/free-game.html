@@ -36,22 +36,30 @@
           @for (size of sizes; track size) {
             <button
               type="button"
-              class="card hover:border-accent font-display px-6 py-5 text-left text-[28px] disabled:opacity-50"
+              class="card hover:border-accent px-6 py-5 text-left disabled:opacity-50"
               [disabled]="starting()"
               (click)="start(size)"
             >
-              {{ seriesLength(size) }}
+              <span class="font-display block text-[28px]">{{ seriesLength(size) }}</span>
+              <span class="text-muted mt-1 block text-sm">{{ duration(size) }}</span>
             </button>
           }
         </div>
         @if (startError(); as startError) {
           <p class="text-danger mt-3 text-sm" role="alert">{{ startError }}</p>
         }
+        <section
+          aria-labelledby="free-rules-title"
+          class="border-border mt-12 max-w-[760px] border-t pt-8"
+        >
+          <app-how-to-play headingId="free-rules-title" />
+        </section>
       } @else if (game(); as series) {
         @if (shorter(); as shorter) {
           <p class="text-muted mb-4 text-sm" role="status">{{ shorter }}</p>
         }
         @if (active(); as round) {
+          <app-rules-card />
           <app-round-player
             [round]="round"
             [total]="total()"

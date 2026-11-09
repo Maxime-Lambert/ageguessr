@@ -2,7 +2,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { GAME_TEXT, seriesLength } from '../game-vocabulary';
+import { GAME_TEXT, seriesDuration, seriesLength } from '../game-vocabulary';
 import { Series } from '../models';
 import { finished, round, series } from '../testing';
 import { FreeGame } from './free-game';
@@ -14,6 +14,8 @@ describe('FreeGame', () => {
 
   beforeEach(() => {
     localStorage.clear();
+    // The first-visit rules card is covered on its own (rules-card.spec.ts).
+    localStorage.setItem('ageguessr-rules-seen', '1');
     TestBed.configureTestingModule({
       providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
     });
@@ -37,7 +39,9 @@ describe('FreeGame', () => {
   }
 
   function button(text: string): HTMLButtonElement {
-    return Array.from(page.querySelectorAll('button')).find((b) => b.textContent?.trim() === text)!;
+    return Array.from(page.querySelectorAll('button')).find((b) =>
+      b.textContent?.trim().startsWith(text),
+    )!;
   }
 
   function guess(value: string): void {
@@ -61,6 +65,16 @@ describe('FreeGame', () => {
 
     expect(page.querySelector('h2')?.textContent).toContain(`${GAME_TEXT.round} 1 of 2`);
     expect(page.textContent).toContain('Only 2 photos could be drawn this time.');
+  });
+
+  it('says roughly how long each length takes, and the rules', () => {
+    noCurrentSeries();
+
+    expect(button(seriesLength(5)).textContent).toContain(seriesDuration(3));
+    expect(button(seriesLength(10)).textContent).toContain(seriesDuration(5));
+    expect(button(seriesLength(20)).textContent).toContain(seriesDuration(10));
+    expect(page.querySelector('#free-rules-title')?.textContent).toContain(GAME_TEXT.howToPlay);
+    expect(page.textContent).toContain(GAME_TEXT.ruleLead);
   });
 
   it('picks up the series left unfinished and plays it on its own URLs', () => {

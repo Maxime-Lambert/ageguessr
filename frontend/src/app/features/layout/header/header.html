@@ -54,11 +54,15 @@
       <a appButton size="sm" routerLink="/register">{{ text.signup }}</a>
     }
     @if (!auth.currentUser()) {
+      <!-- A globe and the language code: the usual sign of a language switch. The name
+           keeps the visible code, so voice control can say what is on screen. -->
       <app-dropdown
-        [label]="text.preferences"
-        triggerClass="text-muted hover:bg-surface-2 hover:text-foreground grid size-10 place-items-center rounded-sm"
+        [label]="text.preferences + ' · ' + languageCode"
+        triggerClass="text-muted hover:bg-surface-2 hover:text-foreground flex h-10 items-center gap-1.5 rounded-sm px-2.5 text-sm font-semibold"
       >
-        <svg appDropdownTrigger lucideSettings2 [size]="20" aria-hidden="true"></svg>
+        <span appDropdownTrigger class="contents">
+          <svg lucideGlobe [size]="18" aria-hidden="true"></svg>{{ languageCode }}
+        </span>
         <app-preferences class="px-3" />
       </app-dropdown>
     }

@@ -14,7 +14,7 @@ import {
   LucideLogOut,
   LucideMenu,
   LucideSearch,
-  LucideSettings2,
+  LucideGlobe,
   LucideUser,
   LucideX,
 } from '@lucide/angular';
@@ -22,6 +22,7 @@ import { Button } from '../../../shared/ui/button/button';
 import { Dropdown } from '../../../shared/ui/dropdown/dropdown';
 import { Auth } from '../../auth/auth';
 import { GAME_TEXT } from '../../game/game-vocabulary';
+import { SiteLanguageService } from '../../i18n/site-language';
 import { Preferences } from '../preferences/preferences';
 
 @Component({
@@ -40,7 +41,7 @@ import { Preferences } from '../preferences/preferences';
     LucideLogOut,
     LucideMenu,
     LucideSearch,
-    LucideSettings2,
+    LucideGlobe,
     LucideUser,
     LucideX,
   ],
@@ -54,6 +55,8 @@ export class Header {
   private readonly sheetTemplate = viewChild.required<TemplateRef<unknown>>('sheet');
   private sheetRef: DialogRef | null = null;
   protected readonly auth = inject(Auth);
+  /** Shown on the guest's preferences button, so it reads as the language switch it is. */
+  protected readonly languageCode = inject(SiteLanguageService).current.toUpperCase();
 
   protected readonly text = {
     mainNav: $localize`:@@header.mainNav:Main`,

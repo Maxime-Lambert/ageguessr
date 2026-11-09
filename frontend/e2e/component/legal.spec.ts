@@ -21,7 +21,7 @@ test.describe('legal pages', () => {
       await page.goto('/en/');
 
       await page
-        .getByRole('navigation', { name: 'Legal' })
+        .getByRole('navigation', { name: 'Site information' })
         .getByRole('link', { name: footerLink, exact: true })
         .click();
       await expect(page).toHaveURL(new RegExp(`/en${path}$`));

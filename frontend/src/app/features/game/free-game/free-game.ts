@@ -4,7 +4,9 @@ import { Observable } from 'rxjs';
 import { ApiErrorResponse } from '../../../shared/api-error';
 import { ApiLanguage } from '../../../shared/i18n/language';
 import { DaySummary } from '../day-summary/day-summary';
-import { seriesLength, shorterSeries } from '../game-vocabulary';
+import { seriesDuration, seriesLength, shorterSeries } from '../game-vocabulary';
+import { HowToPlay } from '../how-to-play/how-to-play';
+import { RulesCard } from '../how-to-play/rules-card';
 import { Button } from '../../../shared/ui/button/button';
 import { Page } from '../../../shared/ui/page/page';
 import { HintCategory, RoundReport, RoundView, SERIES_SIZES, Series, SeriesSize } from '../models';
@@ -19,7 +21,7 @@ import { ShareChallenge } from '../share-challenge/share-challenge';
  * is picked up again, from the server, on any device of an account.
  */
 @Component({
-  imports: [RoundPlayer, DaySummary, ShareChallenge, Button, Page],
+  imports: [RoundPlayer, DaySummary, ShareChallenge, Button, Page, HowToPlay, RulesCard],
   selector: 'app-free-game',
   templateUrl: './free-game.html',
 })
@@ -28,6 +30,8 @@ export class FreeGame extends RoundsScreen<Series> {
 
   protected readonly sizes = SERIES_SIZES;
   protected readonly seriesLength = seriesLength;
+  /** About 30 seconds a case, rounded up to the minute: a hint of the commitment only. */
+  protected readonly duration = (size: SeriesSize) => seriesDuration(Math.ceil(size / 2));
 
   /** No series on screen: the player picks a length. */
   readonly choosing = signal(false);
