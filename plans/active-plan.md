@@ -162,20 +162,19 @@ de la manche du jour en cours. `RoundReveal.name` devient public pour être réu
 Mutation : PIT tourne en CI, à relever à la PR.
 
 ## Phase 3 : Page profil (frontend)
-Status: Not started
+Status: Complete
 
-- [ ] `features/game/history/history-api.ts` (ou méthode `GameApi.history(page)`) et
-      types dans `features/game/models.ts`
-- [ ] `features/game/profile/profile.ts|html` : `Page width="default"`, `h1` (pseudo),
+- [x] `GameApi.history(page)` et types `History*` dans `features/game/models.ts`
+- [x] `features/game/profile/profile.ts|html` : `Page width="default"`, `h1` (pseudo),
       tuiles de statistiques (série en cours mise en avant en `score`, meilleure série,
       parties, moyenne, meilleur score), puis la liste des jours : date longue dans la
       langue du site, score `points / max`, une ligne par manche (nom ou « Affaire
       retirée », âge, essais, points). Bouton « Plus ancien » tant que `hasMore`
-- [ ] États : chargement, erreur avec « Réessayer », aucun jour joué (lien vers le dossier
+- [x] États : chargement, erreur avec « Réessayer », aucun jour joué (lien vers le dossier
       du jour)
-- [ ] Route `profile` (`authGuard`, titre `$localize`), entrée « Profil » dans le menu de
+- [x] Route `profile` (`authGuard`, titre `$localize`), entrée « Profil » dans le menu de
       compte et le panneau mobile (`header.html`, icône Lucide `user` ou `history`)
-- [ ] i18n : textes `profile.*` en `$localize` / `i18n`, traduits dans
+- [x] i18n : textes `profile.*` en `$localize` / `i18n`, traduits dans
       `messages.fr.xlf`, vocabulaire « enquête » via `game-vocabulary.ts` (dossier,
       affaire). `pnpm extract-i18n` pour `messages.xlf`
 
@@ -187,7 +186,7 @@ Status: Not started
 - Interface (`e2e/component/profile.spec.ts` + `e2e/component-fr/profile.spec.ts`) :
   page rendue avec l'API simulée, dates et nombres au format de la langue, mobile
   390 px sans débordement
-- QA e2e (`e2e/journeys/history.spec.ts`) : jouer la partie du jour en invité
+- QA e2e (dans `e2e/journeys/daily-game.spec.ts`, en mode `serial` : les deux tests posent la partie du jour, ce qui efface les manches du jour) : jouer la partie du jour en invité
   (`seed-daily-game`), s'inscrire, confirmer, se connecter, ouvrir `/profile` : la
   partie y est, série 1. C'est la promesse de l'encart « Gardez votre série », un
   parcours critique
@@ -199,7 +198,15 @@ Status: Not started
 - Specs Playwright : CI seulement (WSL)
 
 ### Phase Summary
-_(write when phase completes)_
+Fait le 2026-11-09. `pnpm test` : 369 specs vertes, lint et build OK. Captures du build
+(`/fr/profile`, desktop et 390 px, API simulée) : conformes, tuiles en deux colonnes sur
+mobile. **Bug attrapé par les specs** : Angular lit une date `YYYY-MM-DD` comme minuit
+local ; la formater en UTC affichait la veille à l'est de Greenwich. Formatée dans le
+fuseau local, la spec passe à Paris comme à New York (`TZ=America/New_York`). Libellé
+« Vos essais : » avec ses deux-points dans la traduction (espace avant en français).
+Bundle initial : 515 → 536 kB bruts (+4,8 kB transférés), deux icônes Lucide dans
+`main` et un morceau commun d'Angular remonté par esbuild, sous l'avertissement de
+550 kB. Specs Playwright (interface EN/FR, parcours) : CI seulement.
 
 ## Phase 4 : Documentation et légal
 Status: Not started

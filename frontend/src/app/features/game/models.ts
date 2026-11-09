@@ -121,3 +121,44 @@ export type RoundReport =
 /** The guesses an age can take, as the API validates them (no minor on a photo). */
 export const MIN_AGE = 18;
 export const MAX_AGE = 100;
+
+/** An account's statistics and one page of its daily games (/api/game/history). */
+export interface History {
+  stats: HistoryStats;
+  /** Most recent first, 30 a page. */
+  days: HistoryDay[];
+  page: number;
+  hasMore: boolean;
+}
+
+export interface HistoryStats {
+  /** Complete days only, as the average and the best. */
+  gamesPlayed: number;
+  averagePoints: number;
+  bestPoints: number;
+  currentStreak: number;
+  bestStreak: number;
+}
+
+export interface HistoryDay {
+  /** YYYY-MM-DD, a UTC day (the draw's). */
+  date: string;
+  points: number;
+  max: number;
+  complete: boolean;
+  rounds: HistoryRound[];
+}
+
+export interface HistoryRound {
+  position: number;
+  finished: boolean;
+  /** Its photo was withdrawn since: no name, no age. */
+  neutralized: boolean;
+  /** Null until finished, or once neutralized, as `ageAtPhoto`. */
+  name: string | null;
+  ageAtPhoto: number | null;
+  firstGuess: number;
+  secondGuess: number | null;
+  /** Null until finished. */
+  points: number | null;
+}

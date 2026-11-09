@@ -908,6 +908,82 @@
         <source>A fact from the year the photo was taken.</source>
         <target>Un fait marquant de l'année où la photo a été prise.</target>
       </trans-unit>
+      <trans-unit id="title.profile" datatype="html">
+        <source>My profile · AgeGuessr</source>
+        <target>Mon profil · AgeGuessr</target>
+      </trans-unit>
+      <trans-unit id="header.profile" datatype="html">
+        <source>My profile</source>
+        <target>Mon profil</target>
+      </trans-unit>
+      <trans-unit id="profile.title" datatype="html">
+        <source>My profile</source>
+        <target>Mon profil</target>
+      </trans-unit>
+      <trans-unit id="profile.currentStreak" datatype="html">
+        <source>Current streak</source>
+        <target>Série en cours</target>
+      </trans-unit>
+      <trans-unit id="profile.bestStreak" datatype="html">
+        <source>Best streak</source>
+        <target>Meilleure série</target>
+      </trans-unit>
+      <trans-unit id="profile.days" datatype="html">
+        <source>days in a row</source>
+        <target>jours d'affilée</target>
+      </trans-unit>
+      <trans-unit id="profile.gamesPlayed" datatype="html">
+        <source>Files closed</source>
+        <target>Dossiers classés</target>
+      </trans-unit>
+      <trans-unit id="profile.average" datatype="html">
+        <source>Average score</source>
+        <target>Score moyen</target>
+      </trans-unit>
+      <trans-unit id="profile.best" datatype="html">
+        <source>Best score</source>
+        <target>Meilleur score</target>
+      </trans-unit>
+      <trans-unit id="profile.history" datatype="html">
+        <source>Past files</source>
+        <target>Dossiers passés</target>
+      </trans-unit>
+      <trans-unit id="profile.streakExplained" datatype="html">
+        <source>A streak counts the days in a row on which you finished the day's file.</source>
+        <target>Une série compte les jours d'affilée où vous avez terminé le dossier du jour.</target>
+      </trans-unit>
+      <trans-unit id="profile.empty" datatype="html">
+        <source>No file closed yet. Your games will show up here.</source>
+        <target>Aucun dossier classé pour l'instant. Vos parties apparaîtront ici.</target>
+      </trans-unit>
+      <trans-unit id="profile.play" datatype="html">
+        <source>Open today's file</source>
+        <target>Ouvrir le dossier du jour</target>
+      </trans-unit>
+      <trans-unit id="profile.incomplete" datatype="html">
+        <source>Not finished</source>
+        <target>Pas terminé</target>
+      </trans-unit>
+      <trans-unit id="profile.roundNotFinished" datatype="html">
+        <source>Not finished</source>
+        <target>Pas terminée</target>
+      </trans-unit>
+      <trans-unit id="profile.years" datatype="html">
+        <source>years old</source>
+        <target>ans</target>
+      </trans-unit>
+      <trans-unit id="profile.guesses" datatype="html">
+        <source>Your guesses:</source>
+        <target>Vos essais :</target>
+      </trans-unit>
+      <trans-unit id="profile.older" datatype="html">
+        <source>Older files</source>
+        <target>Dossiers plus anciens</target>
+      </trans-unit>
+      <trans-unit id="profile.loadError" datatype="html">
+        <source>Your history could not be loaded.</source>
+        <target>Votre historique n'a pas pu être chargé.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

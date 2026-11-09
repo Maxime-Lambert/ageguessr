@@ -8,6 +8,7 @@ import { filter } from 'rxjs';
 import {
   LucideChevronDown,
   LucideFolderOpen,
+  LucideHistory,
   LucideImages,
   LucideLightbulb,
   LucideLogOut,
@@ -33,6 +34,7 @@ import { Preferences } from '../preferences/preferences';
     Preferences,
     LucideChevronDown,
     LucideFolderOpen,
+    LucideHistory,
     LucideImages,
     LucideLightbulb,
     LucideLogOut,
@@ -59,6 +61,7 @@ export class Header {
     signup: $localize`:@@header.signup:Sign up`,
     logout: $localize`:@@header.logout:Log out`,
     myAccount: $localize`:@@header.myAccount:My account`,
+    profile: $localize`:@@header.profile:My profile`,
     preferences: $localize`:@@header.preferences:Preferences`,
     menu: $localize`:@@header.menu:Menu`,
     closeMenu: $localize`:@@header.closeMenu:Close menu`,
