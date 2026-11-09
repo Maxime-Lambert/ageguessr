@@ -13,6 +13,14 @@ import { HintCategory, RoundReport, RoundView, TodayGame } from './models';
 export class GameApi {
   private readonly http = inject(HttpClient);
 
+  /**
+   * Right after a login: the daily games played as a guest on this browser become the
+   * account's. Under /api/game because the guest cookie is only sent there.
+   */
+  claimGuestPlays(): Observable<{ claimed: number }> {
+    return this.http.post<{ claimed: number }>('/api/game/guest-plays/claim', {});
+  }
+
   today(): Observable<TodayGame> {
     return this.http.get<TodayGame>('/api/game/today');
   }

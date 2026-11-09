@@ -66,21 +66,21 @@ set its status to `Complete` and write its **Phase Summary**; run the phase's
   bouton « Plus ancien ».
 
 ## Phase 1 : Rattachement des parties invité
-Status: Not started
+Status: Complete
 
-- [ ] `GamePlayRepository` : deux requêtes `@Modifying`, dans une même transaction.
+- [x] `GamePlayRepository` : deux requêtes `@Modifying`, dans une même transaction.
       `deleteGuestPlaysAlreadyPlayedBy(guestId, userId)` supprime les lignes invité dont
       le compte a déjà la manche (même `game_date`, `position`), puis
       `moveGuestPlaysTo(guestId, userId)` passe les autres au compte
-- [ ] `features/game/ClaimGuestPlays/ClaimGuestPlaysHandler.java` : `@Transactional`,
+- [x] `features/game/ClaimGuestPlays/ClaimGuestPlaysHandler.java` : `@Transactional`,
       retourne le nombre de manches rattachées
-- [ ] `features/game/ClaimGuestPlays/ClaimGuestPlaysController.java` :
+- [x] `features/game/ClaimGuestPlays/ClaimGuestPlaysController.java` :
       `POST /api/game/guest-plays/claim`, 401 sans JWT, lit le cookie via `GuestCookie`,
       répond `{ "claimed": n }` et efface le cookie (`GuestCookie.clear()` à ajouter :
       même nom, même `Path`, `Max-Age=0`)
-- [ ] `SecurityConfig` : `/api/game/guest-plays/claim` authentifié (le reste de
+- [x] `SecurityConfig` : `/api/game/guest-plays/claim` authentifié (le reste de
       `/api/game/**` garde le JWT facultatif)
-- [ ] Frontend : `GameApi.claimGuestPlays()` (`features/game/game-api.ts`), appelé par
+- [x] Frontend : `GameApi.claimGuestPlays()` (`features/game/game-api.ts`), appelé par
       `Login` après une connexion réussie, avant la navigation. Une erreur est ignorée :
       elle ne bloque jamais la connexion
 
@@ -89,7 +89,7 @@ Status: Not started
   manches invité, supprime celle que le compte a déjà jouée, ne touche ni un autre
   invité ni un autre compte, garde les drapeaux de signalement (V16), relancé ne fait
   rien
-- Fonctionnel (`functional/game/ClaimGuestPlaysFunctionalTest`) : 401 sans JWT, sans
+- Fonctionnel (dans `functional/game/GameFunctionalTest`, qui a déjà la partie du jour en base) : 401 sans JWT, sans
   cookie → `claimed: 0`, avec cookie → manches visibles dans `GET /api/game/today` du
   compte et cookie effacé (`Max-Age=0`, `Path=/api/game`)
 - Unitaire frontend : `login.spec.ts` appelle le rattachement après succès, navigue même
@@ -100,7 +100,12 @@ Status: Not started
 - `cd frontend && pnpm exec ng test --include='src/app/features/{auth/login,game}/**/*.spec.ts'` : vert
 
 ### Phase Summary
-_(write when phase completes)_
+Fait le 2026-11-09. `ClaimGuestPlaysIntegrationTest` (3 tests) et les 3 nouveaux tests
+de `GameFunctionalTest` passent : la manche déjà jouée sur le compte l'emporte, un 2e
+appel ne rattache rien, le cookie est effacé (`Max-Age=0`, `Path=/api/game`), 401 sans
+compte. Frontend : 177 specs auth et jeu vertes ; `login.spec.ts` vérifie l'appel après
+la connexion et la navigation même s'il échoue. Les mises à jour en masse (JPQL)
+ignorent le verrou `@Version`, sans risque ici : seules les colonnes de joueur changent.
 
 ## Phase 2 : Historique et statistiques (API)
 Status: Not started
@@ -198,8 +203,8 @@ Status: Not started
       Date de mise à jour (`legal-dates.ts`). Pas de nouvelle version des CGU
 - [ ] `docs/roadmap.md` : Semaine 5 cochée, « Page d'accueil publique » retirée de la
       Semaine 4 et fusionnée dans « Landing page de lancement » (Semaine 8)
-- [ ] `plans/design-overhaul.md` déplacé dans `plans/done/`, puis ce plan à son tour à
-      la fin
+- [x] `plans/design-overhaul.md` déplacé dans `plans/done/`
+- [ ] Ce plan déplacé dans `plans/done/` (nom : `game-history.md`) à la fin
 
 ### Verification Plan
 - `grep -n "effet de bord" docs/decisions/architecture.md` : plus de note en suspens

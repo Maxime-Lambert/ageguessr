@@ -302,6 +302,51 @@ class GameFunctionalTest {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    void loggingInClaimsTheGuestGamesAndRemovesTheGuestCookie() throws Exception {
+        Cookie guest = guestCookie();
+        firstGuess(1, 30, guest).andExpect(status().isOk());
+        firstGuess(2, 50, guest).andExpect(status().isOk());
+        String email = "claim-" + UUID.randomUUID() + "@x.com";
+        AuthFlows.registerAndVerify(mockMvc, objectMapper, emailSender, email, PASSWORD);
+        String token = AuthFlows.login(mockMvc, objectMapper, email, PASSWORD).accessToken();
+        // Round 2 played on the account too: the account's round wins.
+        perform(post(round(2, "first-guess")), "{\"guess\":60,\"language\":\"EN\"}", null, token)
+                .andExpect(status().isOk());
+
+        String setCookie = perform(post("/api/game/guest-plays/claim"), "", guest, token)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.claimed").value(1))
+                .andReturn()
+                .getResponse()
+                .getHeader(HttpHeaders.SET_COOKIE);
+
+        assertThat(setCookie).startsWith(GuestCookie.NAME + "=;").contains("Max-Age=0", "Path=/api/game", "HttpOnly");
+        mockMvc.perform(get("/api/game/today").header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(jsonPath("$.rounds[0].firstGuess").value(30))
+                .andExpect(jsonPath("$.rounds[1].firstGuess").value(60));
+        mockMvc.perform(get("/api/game/today").cookie(guest))
+                .andExpect(jsonPath("$.rounds[0].step").value("NOT_STARTED"));
+        perform(post("/api/game/guest-plays/claim"), "", guest, token).andExpect(jsonPath("$.claimed").value(0));
+    }
+
+    @Test
+    void claimingWithoutAGuestCookieMovesNothingAndSetsNoCookie() throws Exception {
+        String email = "claim-" + UUID.randomUUID() + "@x.com";
+        AuthFlows.registerAndVerify(mockMvc, objectMapper, emailSender, email, PASSWORD);
+        String token = AuthFlows.login(mockMvc, objectMapper, email, PASSWORD).accessToken();
+
+        perform(post("/api/game/guest-plays/claim"), "", null, token)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.claimed").value(0))
+                .andExpect(header().doesNotExist(HttpHeaders.SET_COOKIE));
+    }
+
+    @Test
+    void claimingNeedsAnAccount() throws Exception {
+        perform(post("/api/game/guest-plays/claim"), "", guestCookie(), null).andExpect(status().isUnauthorized());
+    }
+
     /**
      * Neither the age, nor the identity, nor the credit (the Commons page names the
      * person), nor the internal photo id, nor the hint year (today's year minus the age).

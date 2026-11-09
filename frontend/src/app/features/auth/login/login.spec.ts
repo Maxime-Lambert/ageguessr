@@ -59,7 +59,7 @@ describe('Login', () => {
 });
 
 describe('Login return URL', () => {
-  async function loginWith(returnUrl: string | null): Promise<string> {
+  async function loginWith(returnUrl: string | null, claimFails = false): Promise<string> {
     TestBed.resetTestingModule();
     await TestBed.configureTestingModule({
       imports: [Login],
@@ -90,12 +90,23 @@ describe('Login return URL', () => {
       role: 'USER',
       language: 'EN',
     });
+    const claim = httpMock.expectOne('/api/game/guest-plays/claim');
+    expect(claim.request.method).toBe('POST');
+    if (claimFails) {
+      claim.flush(null, { status: 500, statusText: 'Server Error' });
+    } else {
+      claim.flush({ claimed: 2 });
+    }
 
     return navigateSpy.mock.calls[0][0] as string;
   }
 
   it('goes back to the page that required logging in', async () => {
     expect(await loginWith('/account')).toBe('/account');
+  });
+
+  it('claims the guest games of the browser, and logs in even if that fails', async () => {
+    expect(await loginWith('/account', true)).toBe('/account');
   });
 
   it('goes home without a return URL', async () => {
