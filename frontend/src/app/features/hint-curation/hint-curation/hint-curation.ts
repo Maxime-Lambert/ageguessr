@@ -11,6 +11,9 @@ import {
   HintReviewStatus,
   PendingHint,
 } from '../models';
+import { Page } from '../../../shared/ui/page/page';
+import { TextInput } from '../../../shared/ui/field/field';
+import { Button } from '../../../shared/ui/button/button';
 
 /** How many hints to ask for at once, and when to ask for more. */
 const BATCH_SIZE = 20;
@@ -40,7 +43,7 @@ const ERROR_MESSAGES: Record<string, string> = {
  * category is hidden for lack of approved hints.
  */
 @Component({
-  imports: [ReportedHints],
+  imports: [ReportedHints, Page, TextInput, Button],
   selector: 'app-hint-curation',
   templateUrl: './hint-curation.html',
   host: { '(document:keydown)': 'onKeydown($event)' },

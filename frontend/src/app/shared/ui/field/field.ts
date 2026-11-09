@@ -52,7 +52,8 @@ export class Field {
   selector: 'input[appInput], select[appInput], textarea[appInput]',
   host: {
     class:
-      'h-11.5 w-full rounded-sm border border-input-border bg-background px-3 text-foreground ' +
+      'w-full rounded-sm border border-input-border bg-background px-3 text-foreground ' +
+      '[&:not(textarea)]:h-11.5 [&:is(textarea)]:py-2 ' +
       'focus:border-accent focus:ring-3 focus:ring-accent/30 focus:outline-none ' +
       'aria-invalid:border-danger disabled:opacity-50',
     '[attr.id]': 'field?.id()',

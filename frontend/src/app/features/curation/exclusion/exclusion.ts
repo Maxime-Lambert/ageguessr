@@ -3,6 +3,8 @@ import { Component, inject, output, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CurationApi } from '../curation-api';
 import { PersonSearchResult, displayName } from '../models';
+import { Field, TextInput } from '../../../shared/ui/field/field';
+import { Button } from '../../../shared/ui/button/button';
 
 /**
  * Handles a removal request received by email: find the person by name or QID, then
@@ -10,7 +12,7 @@ import { PersonSearchResult, displayName } from '../models';
  * cannot be undone from the interface.
  */
 @Component({
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, Field, TextInput, Button],
   selector: 'app-exclusion',
   templateUrl: './exclusion.html',
 })

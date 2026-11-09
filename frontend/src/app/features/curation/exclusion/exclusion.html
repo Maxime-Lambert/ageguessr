@@ -1,7 +1,4 @@
-<section
-  class="bg-surface border-border rounded-lg border p-4 sm:p-6"
-  aria-labelledby="exclusion-title"
->
+<section class="card p-4 sm:p-6" aria-labelledby="exclusion-title">
   <h2 id="exclusion-title" class="font-display text-xl">Exclude a person</h2>
   <p class="text-muted mt-1 text-sm">
     On a removal request, or under the editorial line above. Find the person by name or Wikidata ID.
@@ -9,23 +6,10 @@
   </p>
 
   <form class="mt-4 flex flex-wrap items-end gap-2" [formGroup]="form" (ngSubmit)="search()">
-    <div class="min-w-0 flex-1">
-      <label for="exclusion-query" class="text-sm font-medium">Name or Wikidata ID</label>
-      <input
-        id="exclusion-query"
-        type="search"
-        formControlName="query"
-        autocomplete="off"
-        class="border-input-border bg-background mt-1 w-full rounded-md border px-3 py-2"
-      />
-    </div>
-    <button
-      type="submit"
-      [disabled]="busy()"
-      class="border-border rounded-md border px-4 py-2 text-sm disabled:opacity-50"
-    >
-      Search
-    </button>
+    <app-field class="min-w-0 flex-1" controlId="exclusion-query" label="Name or Wikidata ID">
+      <input appInput type="search" formControlName="query" autocomplete="off" />
+    </app-field>
+    <button type="submit" [disabled]="busy()" appButton variant="secondary">Search</button>
   </form>
   @if (query.touched && query.invalid) {
     <p class="text-danger mt-1 text-sm">Type at least 2 characters.</p>
@@ -62,7 +46,9 @@
                 type="button"
                 (click)="confirm(person)"
                 [disabled]="busy()"
-                class="bg-danger text-danger-foreground rounded-md px-3 py-1.5 font-medium disabled:opacity-50"
+                appButton
+                variant="danger"
+                size="sm"
               >
                 Delete {{ person.photoCount }} photo(s) and exclude
               </button>
@@ -75,7 +61,9 @@
               type="button"
               (click)="confirming.set(person.id)"
               [attr.aria-label]="'Exclude ' + displayName(person)"
-              class="border-border rounded-md border px-3 py-1.5"
+              appButton
+              variant="secondary"
+              size="sm"
             >
               Exclude…
             </button>

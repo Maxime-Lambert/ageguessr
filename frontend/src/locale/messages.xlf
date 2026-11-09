@@ -38,197 +38,175 @@
         </context-group>
       </trans-unit>
       <trans-unit id="account.title" datatype="html">
-        <source>Your account</source>
+        <source> Your account </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">2,4</context>
+          <context context-type="linenumber">4,7</context>
         </context-group>
       </trans-unit>
       <trans-unit id="account.profile" datatype="html">
         <source>Profile</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">5,6</context>
+          <context context-type="linenumber">8,9</context>
         </context-group>
       </trans-unit>
       <trans-unit id="account.email" datatype="html">
         <source> Email: <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;text-foreground&quot;&gt;"/><x id="INTERPOLATION" equiv-text="{{ auth.currentUser()?.email }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/><x id="START_TAG_SPAN_1" ctype="x-span_1" equiv-text="&lt;span class=&quot;block&quot;&gt;"/>Only you can see it.<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">7,11</context>
+          <context context-type="linenumber">10,14</context>
         </context-group>
       </trans-unit>
       <trans-unit id="common.username" datatype="html">
         <source>Username</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">13,15</context>
+          <context context-type="linenumber">17,18</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/register/register.html</context>
-          <context context-type="linenumber">20,22</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="common.usernameRule" datatype="html">
-        <source> 3 to 20 characters: letters, digits, _ or -. </source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">24,26</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/auth/register/register.html</context>
-          <context context-type="linenumber">36,38</context>
+          <context context-type="linenumber">17,18</context>
         </context-group>
       </trans-unit>
       <trans-unit id="account.usernameSaved" datatype="html">
         <source> Username updated. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">34,38</context>
+          <context context-type="linenumber">35,37</context>
         </context-group>
       </trans-unit>
       <trans-unit id="account.saveUsername" datatype="html">
         <source> Save username </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">44,46</context>
+          <context context-type="linenumber">46,48</context>
         </context-group>
       </trans-unit>
       <trans-unit id="account.passwordTitle" datatype="html">
         <source> Password </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">51,53</context>
+          <context context-type="linenumber">53,55</context>
         </context-group>
       </trans-unit>
       <trans-unit id="account.passwordIntro" datatype="html">
         <source> Your other devices will be logged out. You&apos;ll get an email confirming the change. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">54,57</context>
+          <context context-type="linenumber">56,59</context>
         </context-group>
       </trans-unit>
       <trans-unit id="account.currentPassword" datatype="html">
         <source>Current password</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">60,63</context>
+          <context context-type="linenumber">62,63</context>
         </context-group>
       </trans-unit>
       <trans-unit id="common.newPassword" datatype="html">
         <source>New password</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">72,75</context>
+          <context context-type="linenumber">74,75</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/reset-password/reset-password.html</context>
-          <context context-type="linenumber">13,15</context>
+          <context context-type="linenumber">15,16</context>
         </context-group>
       </trans-unit>
       <trans-unit id="common.confirmNewPassword" datatype="html">
         <source>Confirm new password</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">100,103</context>
+          <context context-type="linenumber">89,90</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/reset-password/reset-password.html</context>
-          <context context-type="linenumber">41,43</context>
+          <context context-type="linenumber">31,32</context>
         </context-group>
       </trans-unit>
       <trans-unit id="account.passwordSaved" datatype="html">
         <source> Password changed. Your other devices have been logged out. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">116,120</context>
+          <context context-type="linenumber">105,107</context>
         </context-group>
       </trans-unit>
       <trans-unit id="account.changePassword" datatype="html">
         <source> Change password </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">126,129</context>
+          <context context-type="linenumber">116,118</context>
         </context-group>
       </trans-unit>
       <trans-unit id="account.deleteTitle" datatype="html">
         <source> Delete account </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">133,135</context>
+          <context context-type="linenumber">123,125</context>
         </context-group>
       </trans-unit>
       <trans-unit id="account.deletionSent" datatype="html">
         <source> We sent a confirmation link to <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;font-medium&quot;&gt;"/><x id="INTERPOLATION" equiv-text="{{ auth.currentUser()?.email }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span
-        &gt;"/>. Your account will only be deleted once you open it and confirm. The link expires in 1 hour. </source>
+          &gt;"/>. Your account will only be deleted once you open it and confirm. The link expires in 1 hour. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">137,141</context>
+          <context context-type="linenumber">127,131</context>
         </context-group>
       </trans-unit>
       <trans-unit id="account.deleteIntro" datatype="html">
         <source> Permanently deletes your account, history and friends. We&apos;ll email you a link to confirm before anything is deleted. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">144,148</context>
+          <context context-type="linenumber">134,138</context>
         </context-group>
       </trans-unit>
       <trans-unit id="common.password" datatype="html">
         <source>Password</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">151,153</context>
+          <context context-type="linenumber">139</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/login/login.html</context>
-          <context context-type="linenumber">19,21</context>
+          <context context-type="linenumber">13</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/register/register.html</context>
-          <context context-type="linenumber">46,48</context>
+          <context context-type="linenumber">33,34</context>
         </context-group>
       </trans-unit>
       <trans-unit id="account.deleteSubmit" datatype="html">
         <source> Delete my account </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">172,174</context>
+          <context context-type="linenumber">159,161</context>
         </context-group>
       </trans-unit>
       <trans-unit id="account.wrongPassword" datatype="html">
         <source>Incorrect password. After too many attempts, your account is locked for 15 minutes.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.ts</context>
-          <context context-type="linenumber">15</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="account.usernameTaken" datatype="html">
-        <source>This username is already taken.</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/auth/account/account.ts</context>
-          <context context-type="linenumber">17</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/auth/register/register.html</context>
-          <context context-type="linenumber">32,34</context>
+          <context context-type="linenumber">18</context>
         </context-group>
       </trans-unit>
       <trans-unit id="account.passwordsDiffer" datatype="html">
         <source>New passwords don&apos;t match.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.ts</context>
-          <context context-type="linenumber">90</context>
+          <context context-type="linenumber">100</context>
         </context-group>
       </trans-unit>
       <trans-unit id="checkEmail.title" datatype="html">
-        <source>Check your email</source>
+        <source> Check your email </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/check-email/check-email.html</context>
-          <context context-type="linenumber">3,4</context>
+          <context context-type="linenumber">4,6</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/forgot-password/forgot-password.html</context>
-          <context context-type="linenumber">4,5</context>
+          <context context-type="linenumber">5,7</context>
         </context-group>
       </trans-unit>
       <trans-unit id="checkEmail.sentTo" datatype="html">
@@ -236,106 +214,106 @@
           &gt;"/>. Click it to activate your account.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/check-email/check-email.html</context>
-          <context context-type="linenumber">7,9</context>
+          <context context-type="linenumber">9,11</context>
         </context-group>
       </trans-unit>
       <trans-unit id="checkEmail.sent" datatype="html">
         <source>We sent a confirmation link to your inbox. Click it to activate your account.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/check-email/check-email.html</context>
-          <context context-type="linenumber">12,14</context>
+          <context context-type="linenumber">14,16</context>
         </context-group>
       </trans-unit>
       <trans-unit id="checkEmail.resent" datatype="html">
         <source> Verification email sent again — check your inbox. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/check-email/check-email.html</context>
-          <context context-type="linenumber">20,22</context>
+          <context context-type="linenumber">22,24</context>
         </context-group>
       </trans-unit>
       <trans-unit id="checkEmail.resend" datatype="html">
         <source> Didn&apos;t get it? Resend the email </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/check-email/check-email.html</context>
-          <context context-type="linenumber">29,32</context>
+          <context context-type="linenumber">33,36</context>
         </context-group>
       </trans-unit>
       <trans-unit id="deletion.doneTitle" datatype="html">
-        <source>Account deleted</source>
+        <source> Account deleted </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/confirm-account-deletion/confirm-account-deletion.html</context>
-          <context context-type="linenumber">5,6</context>
+          <context context-type="linenumber">9,11</context>
         </context-group>
       </trans-unit>
       <trans-unit id="deletion.done" datatype="html">
         <source> Your account and its data are gone. You can still play without an account. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/confirm-account-deletion/confirm-account-deletion.html</context>
-          <context context-type="linenumber">7,9</context>
+          <context context-type="linenumber">12,14</context>
         </context-group>
       </trans-unit>
       <trans-unit id="deletion.backToGame" datatype="html">
         <source>Back to the game</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/confirm-account-deletion/confirm-account-deletion.html</context>
-          <context context-type="linenumber">13,16</context>
+          <context context-type="linenumber">14,16</context>
         </context-group>
       </trans-unit>
       <trans-unit id="common.linkInvalid" datatype="html">
-        <source>Link invalid or expired</source>
+        <source> Link invalid or expired </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/confirm-account-deletion/confirm-account-deletion.html</context>
-          <context context-type="linenumber">17,18</context>
+          <context context-type="linenumber">21,23</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/confirm-email/confirm-email.html</context>
-          <context context-type="linenumber">19,20</context>
+          <context context-type="linenumber">22,24</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/reset-password/reset-password.html</context>
-          <context context-type="linenumber">79,80</context>
+          <context context-type="linenumber">65,67</context>
         </context-group>
       </trans-unit>
       <trans-unit id="deletion.invalid" datatype="html">
         <source> This deletion link no longer works. Your account has not been deleted. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/confirm-account-deletion/confirm-account-deletion.html</context>
-          <context context-type="linenumber">19,21</context>
+          <context context-type="linenumber">24,26</context>
         </context-group>
       </trans-unit>
       <trans-unit id="deletion.toAccount" datatype="html">
         <source>Go to my account</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/confirm-account-deletion/confirm-account-deletion.html</context>
-          <context context-type="linenumber">25,28</context>
+          <context context-type="linenumber">32,35</context>
         </context-group>
       </trans-unit>
       <trans-unit id="deletion.title" datatype="html">
-        <source>Delete your account?</source>
+        <source> Delete your account? </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/confirm-account-deletion/confirm-account-deletion.html</context>
-          <context context-type="linenumber">29,30</context>
+          <context context-type="linenumber">37,39</context>
         </context-group>
       </trans-unit>
       <trans-unit id="deletion.warning" datatype="html">
         <source> This permanently deletes your account, your history and your friends list. It cannot be undone. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/confirm-account-deletion/confirm-account-deletion.html</context>
-          <context context-type="linenumber">31,33</context>
+          <context context-type="linenumber">40,42</context>
         </context-group>
       </trans-unit>
       <trans-unit id="deletion.confirm" datatype="html">
         <source> Delete my account permanently </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/confirm-account-deletion/confirm-account-deletion.html</context>
-          <context context-type="linenumber">41,43</context>
+          <context context-type="linenumber">53,54</context>
         </context-group>
       </trans-unit>
       <trans-unit id="deletion.keep" datatype="html">
         <source>Keep my account</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/confirm-account-deletion/confirm-account-deletion.html</context>
-          <context context-type="linenumber">44,48</context>
+          <context context-type="linenumber">56,58</context>
         </context-group>
       </trans-unit>
       <trans-unit id="confirmEmail.loading" datatype="html">
@@ -346,42 +324,42 @@
         </context-group>
       </trans-unit>
       <trans-unit id="confirmEmail.title" datatype="html">
-        <source>Email confirmed</source>
+        <source> Email confirmed </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/confirm-email/confirm-email.html</context>
-          <context context-type="linenumber">8,9</context>
+          <context context-type="linenumber">12,14</context>
         </context-group>
       </trans-unit>
       <trans-unit id="confirmEmail.ready" datatype="html">
         <source>Your account is ready.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/confirm-email/confirm-email.html</context>
-          <context context-type="linenumber">9,11</context>
+          <context context-type="linenumber">14,15</context>
         </context-group>
       </trans-unit>
       <trans-unit id="confirmEmail.login" datatype="html">
-        <source> Log in </source>
+        <source>Log in</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/confirm-email/confirm-email.html</context>
-          <context context-type="linenumber">15,18</context>
+          <context context-type="linenumber">15,17</context>
         </context-group>
       </trans-unit>
       <trans-unit id="confirmEmail.invalid" datatype="html">
         <source> This confirmation link no longer works. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/confirm-email/confirm-email.html</context>
-          <context context-type="linenumber">21,24</context>
+          <context context-type="linenumber">25,28</context>
         </context-group>
       </trans-unit>
       <trans-unit id="common.backToLogin" datatype="html">
         <source>Back to login</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/confirm-email/confirm-email.html</context>
-          <context context-type="linenumber">27,31</context>
+          <context context-type="linenumber">33,37</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/forgot-password/forgot-password.html</context>
-          <context context-type="linenumber">14,17</context>
+          <context context-type="linenumber">13,16</context>
         </context-group>
       </trans-unit>
       <trans-unit id="forgot.sent" datatype="html">
@@ -389,106 +367,120 @@
         &gt;"/>, we sent it a link to choose a new password. The link expires in 1 hour. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/forgot-password/forgot-password.html</context>
-          <context context-type="linenumber">7,10</context>
+          <context context-type="linenumber">9,12</context>
         </context-group>
       </trans-unit>
       <trans-unit id="forgot.title" datatype="html">
-        <source>Forgot your password?</source>
+        <source> Forgot your password? </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/forgot-password/forgot-password.html</context>
-          <context context-type="linenumber">17,18</context>
+          <context context-type="linenumber">17,19</context>
         </context-group>
       </trans-unit>
       <trans-unit id="forgot.intro" datatype="html">
         <source> Enter your email and we&apos;ll send you a link to choose a new one. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/forgot-password/forgot-password.html</context>
-          <context context-type="linenumber">19,22</context>
+          <context context-type="linenumber">20,23</context>
         </context-group>
       </trans-unit>
       <trans-unit id="common.email" datatype="html">
         <source>Email</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/forgot-password/forgot-password.html</context>
-          <context context-type="linenumber">24,26</context>
+          <context context-type="linenumber">24</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/login/login.html</context>
-          <context context-type="linenumber">7,9</context>
+          <context context-type="linenumber">8</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/register/register.html</context>
-          <context context-type="linenumber">10,12</context>
+          <context context-type="linenumber">11</context>
         </context-group>
       </trans-unit>
       <trans-unit id="forgot.submit" datatype="html">
         <source> Send reset link </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/forgot-password/forgot-password.html</context>
-          <context context-type="linenumber">44,46</context>
+          <context context-type="linenumber">33,35</context>
         </context-group>
       </trans-unit>
       <trans-unit id="forgot.remembered" datatype="html">
-        <source> Remembered it? <x id="START_LINK" ctype="x-a" equiv-text="&lt;a routerLink=&quot;/login&quot; class=&quot;text-accent&quot;&gt;"/>Log in<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/></source>
+        <source> Remembered it? <x id="START_LINK" ctype="x-a" equiv-text="&lt;a routerLink=&quot;/login&quot; class=&quot;text-accent underline underline-offset-2&quot;&gt;"/>Log in<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/forgot-password/forgot-password.html</context>
-          <context context-type="linenumber">49,51</context>
+          <context context-type="linenumber">38,41</context>
         </context-group>
       </trans-unit>
       <trans-unit id="login.title" datatype="html">
-        <source>Welcome back</source>
+        <source> Welcome back </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/login/login.html</context>
-          <context context-type="linenumber">3,5</context>
+          <context context-type="linenumber">4,7</context>
         </context-group>
       </trans-unit>
       <trans-unit id="login.forgot" datatype="html">
         <source>Forgot password?</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/login/login.html</context>
-          <context context-type="linenumber">22,24</context>
+          <context context-type="linenumber">26,28</context>
         </context-group>
       </trans-unit>
       <trans-unit id="login.verify" datatype="html">
         <source>Please verify your email before logging in.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/login/login.html</context>
-          <context context-type="linenumber">39,40</context>
+          <context context-type="linenumber">37,38</context>
         </context-group>
       </trans-unit>
       <trans-unit id="login.resent" datatype="html">
         <source> Verification email sent — check your inbox. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/login/login.html</context>
-          <context context-type="linenumber">42,43</context>
+          <context context-type="linenumber">40,41</context>
         </context-group>
       </trans-unit>
       <trans-unit id="login.resend" datatype="html">
         <source> Resend verification email </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/login/login.html</context>
-          <context context-type="linenumber">51,52</context>
+          <context context-type="linenumber">49,50</context>
         </context-group>
       </trans-unit>
       <trans-unit id="login.submit" datatype="html">
         <source> Log in </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/login/login.html</context>
-          <context context-type="linenumber">63,65</context>
+          <context context-type="linenumber">56,58</context>
         </context-group>
       </trans-unit>
       <trans-unit id="login.noAccount" datatype="html">
-        <source> No account yet? <x id="START_LINK" ctype="x-a" equiv-text="&lt;a routerLink=&quot;/register&quot; class=&quot;text-accent&quot;&gt;"/>Create one<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/></source>
+        <source> No account yet? <x id="START_LINK" ctype="x-a" equiv-text="&lt;a routerLink=&quot;/register&quot; class=&quot;text-accent underline underline-offset-2&quot;&gt;"/>Create one<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/login/login.html</context>
-          <context context-type="linenumber">68,70</context>
+          <context context-type="linenumber">61,64</context>
         </context-group>
       </trans-unit>
       <trans-unit id="login.invalid" datatype="html">
         <source>Invalid email or password.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/login/login.ts</context>
-          <context context-type="linenumber">47</context>
+          <context context-type="linenumber">50</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="common.usernameRule" datatype="html">
+        <source>3 to 20 characters: letters, digits, _ or -.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/auth/models.ts</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="account.usernameTaken" datatype="html">
+        <source>This username is already taken.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/auth/models.ts</context>
+          <context context-type="linenumber">36</context>
         </context-group>
       </trans-unit>
       <trans-unit id="password.tooLong" datatype="html">
@@ -527,126 +519,134 @@
         </context-group>
       </trans-unit>
       <trans-unit id="register.title" datatype="html">
-        <source>Create your account</source>
+        <source> Create your account </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/register/register.html</context>
-          <context context-type="linenumber">3,4</context>
+          <context context-type="linenumber">4,6</context>
         </context-group>
       </trans-unit>
       <trans-unit id="register.intro" datatype="html">
         <source> Track your streak and compare scores with friends. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/register/register.html</context>
-          <context context-type="linenumber">5,8</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="register.usernameHint" datatype="html">
-        <source> Shown to your friends. You can change it later. </source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/auth/register/register.html</context>
-          <context context-type="linenumber">40,42</context>
+          <context context-type="linenumber">7,10</context>
         </context-group>
       </trans-unit>
       <trans-unit id="register.confirmPassword" datatype="html">
         <source>Confirm password</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/register/register.html</context>
-          <context context-type="linenumber">70,73</context>
+          <context context-type="linenumber">49,50</context>
         </context-group>
       </trans-unit>
       <trans-unit id="register.acceptTerms" datatype="html">
-        <source> I&apos;m at least 13 and I accept the <x id="START_LINK" ctype="x-a" equiv-text="&lt;a routerLink=&quot;/terms&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot; class=&quot;text-accent underline&quot;
+        <source> I&apos;m at least 13 and I accept the <x id="START_LINK" ctype="x-a" equiv-text="&lt;a
+              routerLink=&quot;/terms&quot;
+              target=&quot;_blank&quot;
+              rel=&quot;noopener&quot;
+              class=&quot;text-accent underline underline-offset-2&quot;
               &gt;"/>Terms<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a
-            &gt;"/> and the <x id="START_LINK_1" equiv-text="&lt;a routerLink=&quot;/privacy&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot; class=&quot;text-accent underline&quot;
+            &gt;"/> and the <x id="START_LINK_1" equiv-text="&lt;a
+              routerLink=&quot;/privacy&quot;
+              target=&quot;_blank&quot;
+              rel=&quot;noopener&quot;
+              class=&quot;text-accent underline underline-offset-2&quot;
               &gt;"/>Privacy Policy<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a
             &gt;"/>. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/register/register.html</context>
-          <context context-type="linenumber">91,99</context>
+          <context context-type="linenumber">72,88</context>
         </context-group>
       </trans-unit>
       <trans-unit id="register.termsRequired" datatype="html">
         <source> You need to accept the Terms to create an account. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/register/register.html</context>
-          <context context-type="linenumber">107,110</context>
+          <context context-type="linenumber">96,99</context>
         </context-group>
       </trans-unit>
       <trans-unit id="register.submit" datatype="html">
         <source> Create account </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/register/register.html</context>
-          <context context-type="linenumber">122,124</context>
+          <context context-type="linenumber">106,108</context>
         </context-group>
       </trans-unit>
       <trans-unit id="register.haveAccount" datatype="html">
-        <source> Already have an account? <x id="START_LINK" ctype="x-a" equiv-text="&lt;a routerLink=&quot;/login&quot; class=&quot;text-accent&quot;&gt;"/>Log in<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/></source>
+        <source> Already have an account? <x id="START_LINK" ctype="x-a" equiv-text="&lt;a routerLink=&quot;/login&quot; class=&quot;text-accent underline underline-offset-2&quot;&gt;"/>Log in<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/register/register.html</context>
-          <context context-type="linenumber">127,129</context>
+          <context context-type="linenumber">111,114</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="register.usernameHint" datatype="html">
+        <source>Shown to your friends. You can change it later.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/auth/register/register.ts</context>
+          <context context-type="linenumber">55</context>
         </context-group>
       </trans-unit>
       <trans-unit id="register.emailTaken" datatype="html">
         <source>An account with this email already exists.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/register/register.ts</context>
-          <context context-type="linenumber">88</context>
+          <context context-type="linenumber">108</context>
         </context-group>
       </trans-unit>
       <trans-unit id="reset.title" datatype="html">
-        <source>Choose a new password</source>
+        <source> Choose a new password </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/reset-password/reset-password.html</context>
-          <context context-type="linenumber">5,6</context>
+          <context context-type="linenumber">6,8</context>
         </context-group>
       </trans-unit>
       <trans-unit id="reset.intro" datatype="html">
         <source> Every device logged in to your account will be logged out. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/reset-password/reset-password.html</context>
-          <context context-type="linenumber">7,10</context>
+          <context context-type="linenumber">9,12</context>
         </context-group>
       </trans-unit>
       <trans-unit id="reset.submit" datatype="html">
         <source> Set new password </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/reset-password/reset-password.html</context>
-          <context context-type="linenumber">62,63</context>
+          <context context-type="linenumber">47,48</context>
         </context-group>
       </trans-unit>
       <trans-unit id="reset.doneTitle" datatype="html">
-        <source>Password updated</source>
+        <source> Password updated </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/reset-password/reset-password.html</context>
-          <context context-type="linenumber">67,68</context>
+          <context context-type="linenumber">53,55</context>
         </context-group>
       </trans-unit>
       <trans-unit id="reset.done" datatype="html">
         <source> Every device has been logged out. Log in with your new password. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/reset-password/reset-password.html</context>
-          <context context-type="linenumber">69,71</context>
+          <context context-type="linenumber">56,58</context>
         </context-group>
       </trans-unit>
       <trans-unit id="common.login" datatype="html">
         <source>Log in</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/reset-password/reset-password.html</context>
-          <context context-type="linenumber">75,78</context>
+          <context context-type="linenumber">58,60</context>
         </context-group>
       </trans-unit>
       <trans-unit id="reset.invalid" datatype="html">
         <source> This password reset link no longer works. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/reset-password/reset-password.html</context>
-          <context context-type="linenumber">81,83</context>
+          <context context-type="linenumber">68,70</context>
         </context-group>
       </trans-unit>
       <trans-unit id="reset.newLink" datatype="html">
         <source>Get a new link</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/reset-password/reset-password.html</context>
-          <context context-type="linenumber">87,91</context>
+          <context context-type="linenumber">76,80</context>
         </context-group>
       </trans-unit>
       <trans-unit id="termsBanner.title" datatype="html">
@@ -657,24 +657,27 @@
         </context-group>
       </trans-unit>
       <trans-unit id="termsBanner.body" datatype="html">
-        <source> Please read <x id="START_LINK" ctype="x-a" equiv-text="&lt;a routerLink=&quot;/terms&quot; class=&quot;text-accent underline&quot;&gt;"/>the new Terms<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/> and accept them. If you do not, you can delete your account from <x id="START_LINK_1" equiv-text="&lt;a routerLink=&quot;/account&quot; class=&quot;text-accent underline&quot;&gt;"/>your account page<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>. </source>
+        <source> Please read <x id="START_LINK" ctype="x-a" equiv-text="&lt;a routerLink=&quot;/terms&quot; class=&quot;text-accent underline underline-offset-2&quot;&gt;"/>the new Terms<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a
+          &gt;"/> and accept them. If you do not, you can delete your account from <x id="START_LINK_1" equiv-text="&lt;a routerLink=&quot;/account&quot; class=&quot;text-accent underline underline-offset-2&quot;
+            &gt;"/>your account page<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a
+          &gt;"/>. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/terms-banner/terms-banner.html</context>
-          <context context-type="linenumber">12,16</context>
+          <context context-type="linenumber">12,19</context>
         </context-group>
       </trans-unit>
       <trans-unit id="termsBanner.accept" datatype="html">
         <source> Accept </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/terms-banner/terms-banner.html</context>
-          <context context-type="linenumber">28,30</context>
+          <context context-type="linenumber">32,34</context>
         </context-group>
       </trans-unit>
       <trans-unit id="termsBanner.later" datatype="html">
         <source> Later </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/terms-banner/terms-banner.html</context>
-          <context context-type="linenumber">36,38</context>
+          <context context-type="linenumber">42,44</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.voice.round" datatype="html">
