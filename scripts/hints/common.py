@@ -95,6 +95,8 @@ class Tables(HTMLParser):
                                "wiki": "wikitable" in (attrs.get("class") or "")})
         elif not self.stack:
             return
+        elif tag == "br" and self.cell is not None:
+            self.cell["text"].append(" ")
         elif tag == "tr":
             self.stack[-1]["row"] = []
         elif tag in ("td", "th") and self.stack[-1]["row"] is not None:
