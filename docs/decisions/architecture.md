@@ -676,8 +676,10 @@ sont tirées dans `daily_rounds` (V12), les mêmes pour tous les joueurs.
 - **Pas de cache Redis** : la table évite déjà de recalculer, et lire 3 lignes par clé
   primaire ne coûte rien. Un cache devrait être invalidé par `people` (sens interdit),
   ou expirer après un délai qui laisserait une photo rejetée en jeu. La lecture lourde
-  est celle des images : elle passera par un cache HTTP (`Cache-Control` long sur
-  `/api/images/{publicId}`, possible puisque l'id change à chaque tirage).
+  est celle des images : elle passe par le cache HTTP du navigateur (`Cache-Control:
+  max-age=86400, public` sur `/api/images/{publicId}`, l'id changeant à chaque tirage).
+  Un jour suffit, une partie du jour ne se rejouant pas ; plus long, une photo rejetée
+  après un signalement resterait dans le cache des navigateurs.
 
 ### Déroulé d'une manche
 **Décision** (2026-11-02) : un 1er essai, puis le jeu dit seulement **« plus jeune »
