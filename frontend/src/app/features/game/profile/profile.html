@@ -1,0 +1,156 @@
+<!-- Dates: Angular reads "YYYY-MM-DD" as local midnight, so it is formatted in the local
+     time zone. Formatting it in UTC would show the day before east of Greenwich. -->
+<main>
+  <app-page>
+    <p class="eyebrow">{{ text.title }}</p>
+    <h1 class="font-display mt-1 text-[32px] leading-tight break-words sm:text-[40px]">
+      {{ auth.currentUser()?.username }}
+    </h1>
+
+    @switch (status()) {
+      @case ('loading') {
+        <p class="text-muted mt-8" role="status">{{ game.loading }}</p>
+      }
+      @case ('error') {
+        <p class="text-danger mt-8" role="alert">{{ text.loadError }}</p>
+        <button appButton variant="secondary" type="button" class="mt-3" (click)="load()">
+          {{ game.retry }}
+        </button>
+      }
+      @default {
+        @if (stats(); as stats) {
+          <section aria-labelledby="streak-title" class="mt-8 grid grid-cols-2 gap-3">
+            <div class="card col-span-2 flex items-center gap-4 p-5">
+              <svg lucideFlame [size]="32" class="text-score shrink-0" aria-hidden="true"></svg>
+              <div class="min-w-0">
+                <h2 id="streak-title" class="text-muted text-sm font-semibold">
+                  {{ text.currentStreak }}
+                </h2>
+                <p class="mt-0.5 flex items-baseline gap-2">
+                  <b class="font-display text-score text-[44px] leading-none">{{
+                    stats.currentStreak
+                  }}</b
+                  >&ngsp;
+                  <span class="text-muted">{{ text.days }}</span>
+                </p>
+                <p class="text-muted mt-1 text-[13px]">{{ text.streakExplained }}</p>
+              </div>
+            </div>
+            <dl class="contents">
+              <div class="card p-4">
+                <dt class="text-muted text-sm">{{ text.bestStreak }}</dt>
+                <dd class="font-display mt-1 text-[28px] leading-none font-semibold">
+                  {{ stats.bestStreak }}
+                </dd>
+              </div>
+              <div class="card p-4">
+                <dt class="text-muted text-sm">{{ text.gamesPlayed }}</dt>
+                <dd class="font-display mt-1 text-[28px] leading-none font-semibold">
+                  {{ stats.gamesPlayed }}
+                </dd>
+              </div>
+              <div class="card p-4">
+                <dt class="text-muted text-sm">{{ text.average }}</dt>
+                <dd class="font-display mt-1 text-[28px] leading-none font-semibold">
+                  {{ stats.averagePoints | number }}
+                </dd>
+              </div>
+              <div class="card p-4">
+                <dt class="text-muted text-sm">{{ text.best }}</dt>
+                <dd class="font-display mt-1 text-[28px] leading-none font-semibold">
+                  {{ stats.bestPoints | number }}
+                </dd>
+              </div>
+            </dl>
+          </section>
+        }
+
+        <h2 class="font-display mt-12 text-2xl">{{ text.history }}</h2>
+        @if (days().length === 0) {
+          <div class="card mt-4 p-5">
+            <p class="text-muted">{{ text.empty }}</p>
+            <a appButton routerLink="/" class="mt-4">{{ text.play }}</a>
+          </div>
+        } @else {
+          <ol class="mt-4 space-y-4">
+            @for (day of days(); track day.date) {
+              <li class="card overflow-hidden">
+                <article [attr.aria-label]="day.date | date: 'fullDate'">
+                  <header
+                    class="border-border flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b px-4 py-3"
+                  >
+                    <h3 class="font-semibold first-letter:uppercase">
+                      {{ day.date | date: 'fullDate' }}
+                    </h3>
+                    <p class="text-muted text-sm">
+                      @if (!day.complete) {
+                        <span
+                          class="border-border mr-2 rounded-sm border px-1.5 py-0.5 text-[11px]"
+                          >{{ text.incomplete }}</span
+                        >
+                      }
+                      <b class="font-display text-score text-lg">{{ day.points | number }}</b
+                      >&ngsp;{{ game.outOf }} {{ day.max | number }}
+                    </p>
+                  </header>
+                  <ul>
+                    @for (round of day.rounds; track round.position) {
+                      <li
+                        class="border-border grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-4 py-3 not-first:border-t"
+                      >
+                        <span class="min-w-0">
+                          <span class="text-muted block text-[13px]"
+                            >{{ game.round }} {{ round.position }}</span
+                          >&ngsp;
+                          <span class="block truncate font-semibold">
+                            @if (round.neutralized) {
+                              {{ game.removed }}
+                            } @else if (round.name) {
+                              {{ round.name }}
+                              <span class="text-muted font-normal"
+                                >· {{ round.ageAtPhoto }} {{ text.years }}</span
+                              >
+                            } @else {
+                              {{ text.roundNotFinished }}
+                            }
+                          </span>
+                          <span class="text-muted block text-[13px]">
+                            {{ text.guesses }} {{ round.firstGuess }}
+                            @if (round.secondGuess !== null) {
+                              → {{ round.secondGuess }}
+                            }
+                          </span>
+                        </span>
+                        @if (round.points !== null) {
+                          <span class="font-display text-xl font-bold">
+                            {{ round.points | number }}
+                            <span class="sr-only">{{ game.points }}</span>
+                          </span>
+                        }
+                      </li>
+                    }
+                  </ul>
+                </article>
+              </li>
+            }
+          </ol>
+          @if (moreFailed()) {
+            <p class="text-danger mt-4 text-sm" role="alert">{{ text.loadError }}</p>
+          }
+          @if (hasMore()) {
+            <button
+              appButton
+              variant="secondary"
+              type="button"
+              class="mt-6"
+              [disabled]="loadingMore()"
+              (click)="loadOlder()"
+            >
+              {{ text.older }}
+            </button>
+          }
+        }
+      }
+    }
+  </app-page>
+</main>

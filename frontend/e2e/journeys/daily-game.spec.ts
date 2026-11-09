@@ -1,5 +1,8 @@
 import { expect, test } from '@playwright/test';
-import { BACKEND_URL } from './support';
+import { BACKEND_URL, logIn, signUp, uniqueAccount } from './support';
+
+// Both tests seed today's game, which deletes today's plays: they must not run at once.
+test.describe.configure({ mode: 'serial' });
 
 /**
  * Today's game against the full app, as a guest: the e2e-profiled backend replaces
@@ -58,4 +61,44 @@ test('a guest plays the three rounds of the day, through a reload, to the case r
   // The day is played: coming back shows the report, not a new round.
   await page.reload();
   await expect(page.getByRole('heading', { name: 'Case report' })).toBeVisible();
+});
+
+test('a guest who then signs up finds the day on the profile, with a streak of 1', async ({
+  page,
+  request,
+}) => {
+  const seeded = await request.post(`${BACKEND_URL}/test-support/seed-daily-game`);
+  expect(seeded.ok()).toBe(true);
+
+  // Three exact first guesses, as a guest: a complete day at 3 000.
+  await page.goto('/en/');
+  const age = page.getByLabel('Age');
+  for (const [index, years] of [40, 55, 30].entries()) {
+    await expect(page.getByRole('heading', { name: `Case ${index + 1} of 3` })).toBeVisible();
+    await age.fill(String(years));
+    await page.getByRole('button', { name: 'Guess', exact: true }).click();
+    await expect(page.getByText('Spot on, first try.')).toBeVisible();
+    await page
+      .getByRole('button', { name: index < 2 ? 'Next case' : 'See the case report' })
+      .click();
+  }
+  await expect(page.getByText('3000 out of 3000')).toBeVisible();
+
+  // Signing up then logging in, on the same browser: the guest's day joins the account.
+  const account = uniqueAccount('history');
+  await signUp(page, request, account);
+  await logIn(page, account.email, account.password);
+  await expect(
+    page.getByRole('banner').getByRole('button', { name: account.username }),
+  ).toBeVisible();
+
+  await page.goto('/en/profile');
+  await expect(page.getByRole('heading', { name: account.username })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Current streak' })).toBeVisible();
+  const streak = page.locator('section[aria-labelledby="streak-title"]');
+  await expect(streak).toContainText('1');
+  const day = page.getByRole('article');
+  await expect(day).toHaveCount(1);
+  await expect(day).toContainText('3,000 out of 3,000');
+  await expect(day).toContainText('E2E');
 });

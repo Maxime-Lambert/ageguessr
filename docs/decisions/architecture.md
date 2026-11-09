@@ -671,13 +671,15 @@ sont tirées dans `daily_rounds` (V12), les mêmes pour tous les joueurs.
   restantes. Un simple signalement ne neutralise rien, sinon un script pourrait vider
   les parties. La neutralisation est **calculée à la lecture**
   (`DailyRoundRepository.findStatesOf`), pas stockée : `people` n'a pas à prévenir
-  `game`, et un rejet annulé rétablit la manche. Effet de bord à traiter avec
-  l'historique : un rejet tardif neutralise aussi la manche dans les parties passées.
+  `game`, et un rejet annulé rétablit la manche. Pour les parties passées, l'historique
+  ne réécrit pas ce qui a été joué (voir « Historique et profil »).
 - **Pas de cache Redis** : la table évite déjà de recalculer, et lire 3 lignes par clé
   primaire ne coûte rien. Un cache devrait être invalidé par `people` (sens interdit),
   ou expirer après un délai qui laisserait une photo rejetée en jeu. La lecture lourde
-  est celle des images : elle passera par un cache HTTP (`Cache-Control` long sur
-  `/api/images/{publicId}`, possible puisque l'id change à chaque tirage).
+  est celle des images : elle passe par le cache HTTP du navigateur (`Cache-Control:
+  max-age=86400, public` sur `/api/images/{publicId}`, l'id changeant à chaque tirage).
+  Un jour suffit, une partie du jour ne se rejouant pas ; plus long, une photo rejetée
+  après un signalement resterait dans le cache des navigateurs.
 
 ### Déroulé d'une manche
 **Décision** (2026-11-02) : un 1er essai, puis le jeu dit seulement **« plus jeune »
@@ -802,6 +804,44 @@ un classement.
 
 **Raison** : le jeu quotidien ne se joue qu'une fois par jour. Ce mode donne de quoi
 jouer plus, et de quoi comparer ses scores entre amis sans attendre la feature Amis.
+
+### Historique et profil
+**Décision** (2026-11-09, PR `feature/game-history`, plan `plans/done/game-history.md`) :
+un compte connecté voit sur `/profile` ses statistiques et ses parties du jour passées,
+manche par manche (`GET /api/game/history`, 30 jours par page).
+
+- **Privé** : seul le propriétaire le voit (`authGuard`, endpoint authentifié). La
+  visibilité par les amis viendra avec le système d'amis. Ce jour-là, cacher aux amis
+  les essais d'une manche pas terminée (aujourd'hui renvoyés, puisque ce sont ceux du
+  joueur) : avec « plus jeune / plus vieux », ils approcheraient la réponse du jour.
+- **Limité** : `GET /api/game/history` partage le compteur des essais (60 par minute et
+  par IP), seule lecture du jeu à charger tout l'historique d'un compte.
+- **Le passé n'est pas réécrit**, comme les points stockés à l'essai : une manche
+  neutralisée après avoir été terminée garde ses points et sa place dans le maximum du
+  jour, mais son nom n'est plus affiché. Une manche neutralisée avant d'être terminée
+  sort du maximum, comme le jour même. Un jour est complet quand chaque manche encore
+  jouable est terminée.
+- **Série** : jours UTC consécutifs complets (ceux du tirage). La série en cours compte
+  jusqu'à aujourd'hui si la partie du jour est complète, sinon jusqu'à hier.
+- **Rien de la réponse avant la fin** : le nom et l'âge d'une manche ne sortent que si
+  elle est terminée et encore jouable, sinon l'historique donnerait la réponse de la
+  manche du jour en cours. **Jamais de photo ni de `publicId`** (voir « Limites
+  connues »).
+- **Calculs en Java** (`HistoryCalculator`, pur) : toutes les manches du compte sont lues
+  (3 par jour au plus), puis les jours, séries et statistiques sont calculés en mémoire.
+  Testable unitairement et par mutation. À revoir si un compte dépasse plusieurs milliers
+  de jours.
+- **Parties invité rattachées à la connexion** : le frontend appelle
+  `POST /api/game/guest-plays/claim` juste après une connexion réussie. Sous `/api/game`
+  parce que le cookie invité a `Path=/api/game` et n'atteint jamais `/api/auth/login`.
+  Une manche déjà jouée par le compte l'emporte, la ligne invité est supprimée ; les
+  autres passent au compte, puis le cookie invité est effacé. Idempotent, jamais fait au
+  passage d'une lecture. Les séries de l'enquête libre ne sont pas rattachées (elles
+  expirent en 7 jours, et un défi garde le pseudo de l'invité).
+- **Exception front `auth → game`** : la page de connexion appelle
+  `GameApi.claimGuestPlays()` après le login. Le rattachement doit suivre la connexion
+  elle-même, pas une page de jeu ouverte ensuite (le joueur peut aller directement sur
+  son profil).
 
 ### Signalement des photos et des indices par les joueurs
 **Décision** (2026-11-03, PR `feature/player-reports`) : depuis le résultat d'une manche

@@ -52,6 +52,9 @@ public class SecurityConfig {
      */
     private static final String PUBLIC_GAME_PATHS = "/api/game/**";
 
+    /** Under /api/game, but about an account: its history, and claiming its guest games. */
+    private static final String[] ACCOUNT_GAME_PATHS = {"/api/game/history", "/api/game/guest-plays/claim"};
+
     private final RateLimitFilter rateLimitFilter;
 
     @Bean
@@ -67,6 +70,9 @@ public class SecurityConfig {
                         // behind a 401. GET only for the images: nothing else exists there.
                         .requestMatchers(HttpMethod.GET, PUBLIC_GAME_GET_PATHS)
                         .permitAll()
+                        // Before the public game paths: the first matching rule wins.
+                        .requestMatchers(ACCOUNT_GAME_PATHS)
+                        .authenticated()
                         .requestMatchers(PUBLIC_GAME_PATHS)
                         .permitAll()
                         // Admin tools (photo curation): checked here, by path, so that the

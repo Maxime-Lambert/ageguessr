@@ -56,6 +56,17 @@ public class GuestCookie {
                 .build();
     }
 
+    /** Removes the cookie: same name and path, expired at once. */
+    public ResponseCookie clear() {
+        return ResponseCookie.from(NAME, "")
+                .httpOnly(true)
+                .secure(secure)
+                .path("/api/game")
+                .sameSite("Lax")
+                .maxAge(0)
+                .build();
+    }
+
     private static Optional<UUID> parse(String value) {
         try {
             return Optional.of(UUID.fromString(value));

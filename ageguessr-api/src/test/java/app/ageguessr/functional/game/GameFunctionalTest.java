@@ -12,7 +12,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import app.ageguessr.TestcontainersConfiguration;
 import app.ageguessr.features.game.DailyRound;
 import app.ageguessr.features.game.DailyRoundRepository;
+import app.ageguessr.features.game.GamePlay;
+import app.ageguessr.features.game.GamePlayRepository;
 import app.ageguessr.features.game.GuestCookie;
+import app.ageguessr.features.game.PlayerKey;
+import app.ageguessr.shared.i18n.Language;
 import app.ageguessr.features.hints.Hint;
 import app.ageguessr.features.hints.HintAudience;
 import app.ageguessr.features.hints.HintCategory;
@@ -84,6 +88,9 @@ class GameFunctionalTest {
 
     @Autowired
     private DailyRoundRepository rounds;
+
+    @Autowired
+    private GamePlayRepository gamePlays;
 
     @Autowired
     private JdbcTemplate jdbc;
@@ -300,6 +307,119 @@ class GameFunctionalTest {
                 .andExpect(jsonPath("$.errorCode").value("VALIDATION_ERROR"));
         perform(post(round(9, "first-guess")), "{\"guess\":30,\"language\":\"EN\"}", null, null)
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void loggingInClaimsTheGuestGamesAndRemovesTheGuestCookie() throws Exception {
+        Cookie guest = guestCookie();
+        firstGuess(1, 30, guest).andExpect(status().isOk());
+        firstGuess(2, 50, guest).andExpect(status().isOk());
+        String email = "claim-" + UUID.randomUUID() + "@x.com";
+        AuthFlows.registerAndVerify(mockMvc, objectMapper, emailSender, email, PASSWORD);
+        String token = AuthFlows.login(mockMvc, objectMapper, email, PASSWORD).accessToken();
+        // Round 2 played on the account too: the account's round wins.
+        perform(post(round(2, "first-guess")), "{\"guess\":60,\"language\":\"EN\"}", null, token)
+                .andExpect(status().isOk());
+
+        String setCookie = perform(post("/api/game/guest-plays/claim"), "", guest, token)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.claimed").value(1))
+                .andReturn()
+                .getResponse()
+                .getHeader(HttpHeaders.SET_COOKIE);
+
+        assertThat(setCookie).startsWith(GuestCookie.NAME + "=;").contains("Max-Age=0", "Path=/api/game", "HttpOnly");
+        mockMvc.perform(get("/api/game/today").header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(jsonPath("$.rounds[0].firstGuess").value(30))
+                .andExpect(jsonPath("$.rounds[1].firstGuess").value(60));
+        mockMvc.perform(get("/api/game/today").cookie(guest))
+                .andExpect(jsonPath("$.rounds[0].step").value("NOT_STARTED"));
+        perform(post("/api/game/guest-plays/claim"), "", guest, token).andExpect(jsonPath("$.claimed").value(0));
+    }
+
+    @Test
+    void claimingWithoutAGuestCookieMovesNothingAndSetsNoCookie() throws Exception {
+        String email = "claim-" + UUID.randomUUID() + "@x.com";
+        AuthFlows.registerAndVerify(mockMvc, objectMapper, emailSender, email, PASSWORD);
+        String token = AuthFlows.login(mockMvc, objectMapper, email, PASSWORD).accessToken();
+
+        perform(post("/api/game/guest-plays/claim"), "", null, token)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.claimed").value(0))
+                .andExpect(header().doesNotExist(HttpHeaders.SET_COOKIE));
+    }
+
+    @Test
+    void claimingNeedsAnAccount() throws Exception {
+        perform(post("/api/game/guest-plays/claim"), "", guestCookie(), null).andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void theHistoryShowsFinishedRoundsOnlyAndNeverAnImage() throws Exception {
+        LocalDate yesterday = today.minusDays(1);
+        for (int i = 0; i < seeded.size(); i++) {
+            rounds.save(DailyRound.builder()
+                    .gameDate(yesterday)
+                    .position((short) (i + 1))
+                    .photoId(seeded.get(i).getId())
+                    .drawnAt(Instant.now())
+                    .build());
+        }
+        String email = "history-" + UUID.randomUUID() + "@x.com";
+        AuthFlows.registerAndVerify(mockMvc, objectMapper, emailSender, email, PASSWORD);
+        String token = AuthFlows.login(mockMvc, objectMapper, email, PASSWORD).accessToken();
+        String me = mockMvc.perform(get("/api/auth/me").header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        UUID userId = UUID.fromString(objectMapper.readTree(me).get("id").asString());
+        // Yesterday, three exact first guesses: a complete day at 3 000.
+        for (short position = 1; position <= 3; position++) {
+            gamePlays.save(GamePlay.start(yesterday, position, PlayerKey.account(userId), Language.FR, AGE, AGE, Instant.now()));
+        }
+        // Today, round 1 still being played, round 2 finished.
+        perform(post(round(1, "first-guess")), "{\"guess\":30,\"language\":\"EN\"}", null, token)
+                .andExpect(status().isOk());
+        perform(post(round(2, "first-guess")), "{\"guess\":40,\"language\":\"EN\"}", null, token)
+                .andExpect(status().isOk());
+
+        String json = mockMvc.perform(get("/api/game/history").header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.stats.gamesPlayed").value(1))
+                .andExpect(jsonPath("$.stats.bestPoints").value(3000))
+                .andExpect(jsonPath("$.stats.currentStreak").value(1))
+                .andExpect(jsonPath("$.days.length()").value(2))
+                .andExpect(jsonPath("$.days[0].date").value(today.toString()))
+                .andExpect(jsonPath("$.days[0].complete").value(false))
+                .andExpect(jsonPath("$.days[0].points").value(1000))
+                .andExpect(jsonPath("$.days[0].rounds[0].finished").value(false))
+                .andExpect(jsonPath("$.days[0].rounds[0].name").value(nullValue()))
+                .andExpect(jsonPath("$.days[0].rounds[0].ageAtPhoto").value(nullValue()))
+                .andExpect(jsonPath("$.days[0].rounds[0].points").value(nullValue()))
+                .andExpect(jsonPath("$.days[0].rounds[1].name").value("Person 1"))
+                .andExpect(jsonPath("$.days[0].rounds[1].ageAtPhoto").value(AGE))
+                .andExpect(jsonPath("$.days[1].complete").value(true))
+                .andExpect(jsonPath("$.days[1].max").value(3000))
+                .andExpect(jsonPath("$.page").value(0))
+                .andExpect(jsonPath("$.hasMore").value(false))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        assertThat(json).doesNotContain("/api/images/", "commons.wikimedia.org");
+        seeded.forEach(photo -> assertThat(json)
+                .doesNotContain(photo.getId().toString())
+                .doesNotContain(photo.getPublicId().toString()));
+
+        mockMvc.perform(get("/api/game/history?page=1").header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(jsonPath("$.days.length()").value(0))
+                .andExpect(jsonPath("$.hasMore").value(false));
+        mockMvc.perform(get("/api/game/history?page=-1").header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void theHistoryNeedsAnAccount() throws Exception {
+        mockMvc.perform(get("/api/game/history").cookie(guestCookie())).andExpect(status().isUnauthorized());
     }
 
     /**

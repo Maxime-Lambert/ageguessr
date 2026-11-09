@@ -39,9 +39,9 @@ test.describe('header', () => {
     const menu = page.getByRole('banner').getByRole('button', { name: 'Player' });
     await menu.click();
     // The panel renders on the next frame: Tab before that would skip it.
-    await expect(page.getByRole('link', { name: 'My account' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'My profile' })).toBeVisible();
     await page.keyboard.press('Tab');
-    await expect(page.getByRole('link', { name: 'My account' })).toBeFocused();
+    await expect(page.getByRole('link', { name: 'My profile' })).toBeFocused();
     await page.keyboard.press('Escape');
 
     await expect(menu).toHaveAttribute('aria-expanded', 'false');

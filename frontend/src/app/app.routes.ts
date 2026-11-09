@@ -59,6 +59,12 @@ export const routes: Routes = [
     loadComponent: () => import('./features/auth/account/account').then((m) => m.Account),
   },
   {
+    path: 'profile',
+    canActivate: [authGuard],
+    title: $localize`:@@title.profile:My profile · AgeGuessr`,
+    loadComponent: () => import('./features/game/profile/profile').then((m) => m.Profile),
+  },
+  {
     path: 'confirm-account-deletion',
     loadComponent: () =>
       import('./features/auth/confirm-account-deletion/confirm-account-deletion').then(

@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Service, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiLanguage } from '../../shared/i18n/language';
-import { HintCategory, RoundReport, RoundView, TodayGame } from './models';
+import { HintCategory, History, RoundReport, RoundView, TodayGame } from './models';
 
 /**
  * The daily game. Public: the auth interceptor adds the bearer token when signed in, and a
@@ -12,6 +12,19 @@ import { HintCategory, RoundReport, RoundView, TodayGame } from './models';
 @Service()
 export class GameApi {
   private readonly http = inject(HttpClient);
+
+  /**
+   * Right after a login: the daily games played as a guest on this browser become the
+   * account's. Under /api/game because the guest cookie is only sent there.
+   */
+  claimGuestPlays(): Observable<{ claimed: number }> {
+    return this.http.post<{ claimed: number }>('/api/game/guest-plays/claim', {});
+  }
+
+  /** The signed-in account's statistics and one page of its days (401 for a guest). */
+  history(page = 0): Observable<History> {
+    return this.http.get<History>('/api/game/history', { params: { page } });
+  }
 
   today(): Observable<TodayGame> {
     return this.http.get<TodayGame>('/api/game/today');
