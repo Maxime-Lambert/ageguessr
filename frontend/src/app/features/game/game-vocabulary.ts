@@ -57,6 +57,7 @@ export const GAME_TEXT = {
   ...VOICE,
   question: $localize`:@@game.question:How old were they on this photo?`,
   photoAlt: $localize`:@@game.photoAlt:The person to guess`,
+  pickHintHelp: $localize`:@@game.pickHintHelp:A fact from the year the photo was taken.`,
   guessLabel: $localize`:@@game.guessLabel:Age`,
   firstGuessButton: $localize`:@@game.firstGuessButton:Guess`,
   secondGuessButton: $localize`:@@game.secondGuessButton:Final guess`,
@@ -181,7 +182,7 @@ export function challengeIntro(creator: string | null, rounds: number): string {
  */
 export function shareText(points: number, max: number, squares: string, url: string): string {
   return (
-    $localize`:@@game.shareText:Ageguessr · ${GAME_TEXT.challenge}:challenge: · ${points}:points: / ${max}:max:` +
+    $localize`:@@game.shareText:AgeGuessr · ${GAME_TEXT.challenge}:challenge: · ${points}:points: / ${max}:max:` +
     `\n${squares}\n${url}`
   );
 }

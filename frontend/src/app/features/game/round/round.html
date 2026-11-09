@@ -1,93 +1,103 @@
-<section aria-labelledby="round-title">
-  <h2 id="round-title" class="text-muted text-sm font-medium tracking-wide uppercase">
-    {{ title() }}
-  </h2>
-
+<section
+  aria-labelledby="round-title"
+  class="grid items-start gap-5 md:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] md:gap-14"
+>
   @if (round().imageUrl; as imageUrl) {
-    <img
+    <app-case-photo
       [src]="imageUrl"
       [alt]="text.photoAlt"
-      class="archive-photo border-border mt-3 max-h-[60vh] w-full rounded-lg border object-contain"
-      (error)="imageFailed.emit()"
+      [caption]="text.round + ' ' + round().position"
+      (failed)="imageFailed.emit()"
     />
   }
 
-  @if (direction(); as direction) {
-    <p class="font-display mt-4 text-2xl" aria-live="polite">
-      <span aria-hidden="true">{{ round().direction === 'OLDER' ? '↑' : '↓' }}</span>
-      {{ direction }}
-    </p>
-  }
+  <div>
+    <div class="flex flex-wrap items-center gap-3">
+      <h2 id="round-title" class="eyebrow">{{ title() }}</h2>
+      <app-case-steps [position]="round().position" [total]="total()" />
+    </div>
 
-  @switch (step()) {
-    @case ('AWAITING_HINT') {
-      <div class="mt-4">
-        <p class="text-sm font-medium">{{ text.pickHint }}</p>
-        <div class="mt-2 flex flex-wrap gap-2">
+    @if (direction(); as direction) {
+      <!-- The side only, never how far (« Déroulé d'une manche »). -->
+      <div
+        class="bg-surface border-accent mt-5 flex items-center gap-4 rounded-md border-l-[3px]"
+        [class]="directionStyle().box"
+        aria-live="polite"
+      >
+        <span
+          class="bg-surface-2 text-accent grid shrink-0 place-items-center rounded-full"
+          [class]="directionStyle().arrow"
+          aria-hidden="true"
+        >
+          @if (round().direction === 'OLDER') {
+            <svg lucideArrowUp [size]="18"></svg>
+          } @else {
+            <svg lucideArrowDown [size]="18"></svg>
+          }
+        </span>
+        <p class="font-display" [class]="directionStyle().text">{{ direction }}</p>
+      </div>
+    }
+
+    @switch (step()) {
+      @case ('AWAITING_HINT') {
+        <p class="mt-8 font-semibold">{{ text.pickHint }}</p>
+        <p class="text-muted mt-0.5 text-sm">{{ text.pickHintHelp }}</p>
+        <div class="mt-4 grid grid-cols-2 gap-2.5 sm:grid-cols-3">
           @for (category of round().categories; track category) {
             <button
               #category
               type="button"
-              class="border-input-border hover:bg-surface rounded-md border px-3 py-2 text-sm"
+              class="card hover:border-accent flex flex-col items-start gap-2.5 p-4 text-left text-[15px] font-semibold disabled:opacity-50"
               [disabled]="busy()"
               (click)="pick(category)"
             >
+              <app-lead-icon class="text-accent" [category]="category" />
               {{ categoryLabels[category] }}
             </button>
           }
         </div>
-      </div>
-    }
-    @default {
-      @if (step() === 'AWAITING_SECOND_GUESS') {
-        <div class="bg-surface border-border mt-4 rounded-lg border p-4" aria-live="polite">
-          @if (round().hint; as hint) {
-            <p class="text-muted text-xs font-medium tracking-wide uppercase">
-              {{ text.hint }} · {{ categoryLabels[hint.category] }}
-            </p>
-            <p class="font-display mt-1 text-lg">{{ hint.text }}</p>
-          } @else {
-            <p class="text-sm">{{ text.noHint }}</p>
-          }
-        </div>
-      } @else {
-        <p class="font-display mt-4 text-2xl">{{ text.question }}</p>
       }
-
-      <form class="mt-4 flex items-end gap-3" (submit)="$event.preventDefault(); submitGuess()">
-        <div>
-          <label for="guess" class="text-sm font-medium">{{ text.guessLabel }}</label>
-          <input
-            #guessInput
-            id="guess"
-            type="number"
-            inputmode="numeric"
-            [min]="minAge"
-            [max]="maxAge"
-            step="1"
-            [formControl]="guess"
-            [attr.aria-invalid]="guess.invalid && guess.touched"
-            aria-describedby="guess-error"
-            class="border-input-border bg-background mt-1 w-28 rounded-md border px-3 py-2 text-lg"
-          />
-        </div>
-        <button
-          type="submit"
-          [disabled]="busy()"
-          class="bg-accent text-accent-foreground rounded-md px-4 py-2 font-medium disabled:opacity-60"
-        >
-          {{ step() === 'AWAITING_SECOND_GUESS' ? text.secondGuessButton : text.firstGuessButton }}
-        </button>
-      </form>
-      <p id="guess-error" class="text-danger mt-2 text-sm" aria-live="polite">
-        @if (guess.invalid && guess.touched) {
-          {{ text.invalidAge }}
+      @default {
+        @if (step() === 'AWAITING_SECOND_GUESS') {
+          <!-- The lead as a newspaper clipping: no year, it would give the answer away. -->
+          <div class="bg-paper text-paper-foreground mt-6 rounded-md px-5 py-4" aria-live="polite">
+            @if (round().hint; as hint) {
+              <p
+                class="text-paper-muted flex items-center gap-2 text-xs font-bold tracking-[0.08em] uppercase"
+              >
+                <app-lead-icon [category]="hint.category" [size]="14" />
+                {{ text.hint }} · {{ categoryLabels[hint.category] }}
+              </p>
+              <p class="font-display mt-2 text-xl leading-snug">{{ hint.text }}</p>
+            } @else {
+              <p class="text-sm">{{ text.noHint }}</p>
+            }
+          </div>
+        } @else {
+          <p class="font-display mt-5 text-[28px] leading-tight md:text-[40px]">
+            {{ text.question }}
+          </p>
         }
-      </p>
-    }
-  }
 
-  @if (error(); as error) {
-    <p class="text-danger mt-2 text-sm" role="alert">{{ error }}</p>
-  }
+        <form class="mt-6" (submit)="$event.preventDefault(); submitGuess()">
+          <app-field
+            [label]="text.guessLabel"
+            [error]="guess.invalid && guess.touched ? text.invalidAge : null"
+          >
+            <app-age-input [formControl]="guess" [min]="minAge" [max]="maxAge" />
+          </app-field>
+          <button appButton type="submit" class="mt-4 max-sm:w-full" [disabled]="busy()">
+            {{
+              step() === 'AWAITING_SECOND_GUESS' ? text.secondGuessButton : text.firstGuessButton
+            }}
+          </button>
+        </form>
+      }
+    }
+
+    @if (error(); as error) {
+      <p class="text-danger mt-3 text-sm" role="alert">{{ error }}</p>
+    }
+  </div>
 </section>

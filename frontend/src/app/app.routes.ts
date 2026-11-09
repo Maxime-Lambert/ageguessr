@@ -12,12 +12,12 @@ export const routes: Routes = [
   },
   {
     path: 'free',
-    title: $localize`:@@title.free:Free investigation · Ageguessr`,
+    title: $localize`:@@title.free:Free investigation · AgeGuessr`,
     loadComponent: () => import('./features/game/free-game/free-game').then((m) => m.FreeGame),
   },
   {
     path: 'challenge/:code',
-    title: $localize`:@@title.challenge:Challenge · Ageguessr`,
+    title: $localize`:@@title.challenge:Challenge · AgeGuessr`,
     loadComponent: () =>
       import('./features/game/challenge/challenge-page').then((m) => m.ChallengePage),
   },
@@ -68,31 +68,31 @@ export const routes: Routes = [
   {
     // adminGuard is only the interface's gate: the API checks the role on every call.
     path: 'admin/curation',
-    title: 'Photo curation · Ageguessr',
+    title: 'Photo curation · AgeGuessr',
     canActivate: [adminGuard],
     loadComponent: () => import('./features/curation/curation/curation').then((m) => m.Curation),
   },
   {
     path: 'admin/hints',
-    title: 'Hint curation · Ageguessr',
+    title: 'Hint curation · AgeGuessr',
     canActivate: [adminGuard],
     loadComponent: () =>
       import('./features/hint-curation/hint-curation/hint-curation').then((m) => m.HintCuration),
   },
   {
     path: 'legal-notice',
-    title: $localize`:@@title.legalNotice:Legal notice · Ageguessr`,
+    title: $localize`:@@title.legalNotice:Legal notice · AgeGuessr`,
     loadComponent: () =>
       import('./features/legal/legal-notice/legal-notice').then((m) => m.LegalNotice),
   },
   {
     path: 'terms',
-    title: $localize`:@@title.terms:Terms of Use · Ageguessr`,
+    title: $localize`:@@title.terms:Terms of Use · AgeGuessr`,
     loadComponent: () => import('./features/legal/terms/terms').then((m) => m.Terms),
   },
   {
     path: 'privacy',
-    title: $localize`:@@title.privacy:Privacy Policy · Ageguessr`,
+    title: $localize`:@@title.privacy:Privacy Policy · AgeGuessr`,
     loadComponent: () => import('./features/legal/privacy/privacy').then((m) => m.Privacy),
   },
   { path: '**', redirectTo: '' },

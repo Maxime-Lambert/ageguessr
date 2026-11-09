@@ -16,7 +16,7 @@ Ouvrir depuis WSL : `explorer.exe "$(wslpath -w docs/decisions/mockups/index.htm
 
 ## Crédits des photos
 
-Photos recadrées et teintées à partir de leur version servie par Ageguessr :
+Photos recadrées et teintées à partir de leur version servie par AgeGuessr :
 
 - `photos/raikkonen.jpg` : Kimi Räikkönen, par Morio, licence
   [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/), Wikimedia Commons.

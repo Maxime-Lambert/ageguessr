@@ -50,7 +50,7 @@ class PasswordResetFunctionalTest {
         login(email, "new-tortoise-violin").andExpect(status().isOk());
         mockMvc.perform(post("/api/auth/refresh").cookie(existingSession.asRequestCookie()))
                 .andExpect(status().isUnauthorized());
-        assertThat(emailSender.lastMessageTo(email).subject()).isEqualTo("Your Ageguessr password was changed");
+        assertThat(emailSender.lastMessageTo(email).subject()).isEqualTo("Your AgeGuessr password was changed");
     }
 
     @Test

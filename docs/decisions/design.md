@@ -1,4 +1,4 @@
-# Décisions de design — Ageguessr
+# Décisions de design — AgeGuessr
 
 Charte graphique et décisions produit transverses, posées avant toute implémentation
 visuelle. Complète `docs/decisions/architecture.md` (qui fixe déjà Tailwind, Vitest,
@@ -21,7 +21,7 @@ pour mémoire. Plan : `plans/design-overhaul.md`.
 - **La photo est un tirage monté** : un carton crème autour, une légende en Fraunces
   italique, avec le crédit (auteur, licence, Commons) en bas à droite du carton. Le
   carton est légèrement incliné sur desktop, droit sur mobile.
-- **L'indice est une coupure de journal** : un fond papier (`--color-clip*`) avec un
+- **L'indice est une coupure de journal** : un fond papier (`--color-paper*`) avec un
   morceau de ruban adhésif, et le choix FR/EN de la langue des pistes dans son coin.
 - **Desktop en deux colonnes** (photo à gauche, dossier à droite), largeur maximale de
   1 120 px. **Mobile en une colonne**, avec le menu en panneau latéral.
@@ -45,7 +45,7 @@ pour mémoire. Plan : `plans/design-overhaul.md`.
 | `--color-input-border` | `#75695A` | bord des champs |
 | `--color-accent` | `#A3A5F2` | accent indigo, plus doux |
 | `--color-score` | `#E0AD4F` | score, onglet actif, tampon |
-| `--color-clip` / `-foreground` / `-muted` | `#E9DFC9` / `#2A2116` / `#6E604A` | coupure, carton photo |
+| `--color-paper` / `-foreground` / `-muted` | `#E9DFC9` / `#2A2116` / `#6E604A` | coupure, carton photo |
 
 **Règle de contraste** : `input-border` (2.86:1) et `danger` (4.13:1) ne passent pas sur
 `surface-2`. Ce fond ne porte donc jamais un champ ni un message d'erreur. Le thème
@@ -169,6 +169,13 @@ grayscale() sepia() hue-rotate()` n'en donne qu'une approximation, un vrai duoto
 demande un filtre SVG. On ne tranche que sur de vraies photos Commons, donc une fois la
 Semaine 2 livrée. D'ici là, le filtre de vieillissement ci-dessus fait foi.
 
+**Tranché le 2026-11-04 : pas de duotone.** Sur les vraies photos de la maquette, le
+filtre léger (`sepia(0.18) contrast(1.06) saturate(0.85)`, utilitaire `archive-photo`)
+suffit : c'est le carton crème du tirage qui porte l'ambiance archives, et un duotone
+indigo rendrait les visages moins lisibles, alors que le joueur doit justement les
+juger. La photo n'est jamais recadrée (`CasePhoto`), pour ne rien cacher de ce qu'il
+faut évaluer.
+
 ### Typographie
 **Décision** : Fraunces (variable) pour les titres, le wordmark et les moments
 éditoriaux (indices, révélation du résultat) ; Inter pour l'UI et le texte courant.
@@ -205,6 +212,24 @@ composants dans `frontend/src/app/shared/ui/`. Pas de Spartan : il est construit
 CDK et ajoute luxon, clsx et tw-animate-css pour des composants qu'on restylerait
 entièrement. Pas de Material ni de PrimeNG : leur look écraserait l'identité. Détails
 dans `plans/design-overhaul.md`. La décision d'origine suit, pour mémoire.
+
+**Ce que contient `shared/ui`** (2026-11-09, fin de la refonte) :
+- `Button` : directive sur `button` et `a` (`primary` crème, `secondary`, `ghost`,
+  `danger` ; tailles `md` et `sm` ; `block` pour la pleine largeur). Une directive plutôt
+  qu'un composant, pour garder la sémantique native de l'élément.
+- `Field` + `TextInput` (`appInput`) : libellé, aide et erreur liés au champ pour les
+  lecteurs d'écran. `controlId` fixe l'id du champ (`email`, `password`…) quand des liens
+  ou les tests de bout en bout le visent ; sans lui, chaque champ a un id généré.
+  `appInput` s'applique aussi aux `textarea`, qui gardent leur hauteur en lignes.
+- `AgeInput` (saisie de l'âge, − et +), `Segmented` (choix court en groupe radio),
+  `Dropdown` (disclosure, pas un menu ARIA : le panneau mêle liens et groupes radio),
+  `Page` (trois largeurs : `narrow` formulaire, `default` lecture, `wide` jeu).
+- Du CDK, seuls `Dialog` et le positionnement d'`Overlay` servent aujourd'hui (panneau
+  mobile). Les utilitaires CSS `card`, `eyebrow` et `menu-item` complètent ces
+  composants dans `styles.css`.
+- Les pages légales gardent une feuille de style de lecture partagée
+  (`features/legal/legal-page.css`) : environ 70 caractères par ligne, titres de section
+  séparés par un filet, mêmes marges que `Page`.
 
 **Décision d'origine** : Tailwind pur + tokens custom, pas de librairie de composants
 (Shadcn/Radix) au démarrage — déjà acté dans `docs/decisions/architecture.md`.
@@ -301,11 +326,22 @@ historique et comparer avec ses amis, jamais comme un mur d'entrée.
 ## Nom et logo
 
 ### Wordmark typographique, pas d'icône
-**Décision** : "Ageguessr" en Fraunces comme seul élément de marque pour le MVP, pas
+**Décision** : "AgeGuessr" en Fraunces comme seul élément de marque pour le MVP, pas
 d'icône ni de mascotte.
 
 **Raison** : suffisant pour lancer, rapide à livrer, laisse la porte ouverte à une
 icône dédiée plus tard sans remettre en cause l'identité typographique.
+
+### Casse du nom : « AgeGuessr »
+**Décision** (2026-11-09) : la marque s'écrit « AgeGuessr » partout où un humain la lit
+(wordmark, titres d'onglet, emails, pages légales, texte de partage), et le domaine
+« AgeGuessr.app » dans les textes. Les identifiants techniques (package `app.ageguessr`,
+classes `AgeguessrApi*`, noms d'images Docker, URL) restent en minuscules ou inchangés.
+
+**Raison** : « Ageguessr » se lit mal, les deux majuscules découpent « Age » et
+« Guessr ». Le nom de domaine ne tient pas compte de la casse : `AgeGuessr.app` mène au
+même site, mais la barre d'adresse du navigateur l'affiche toujours en minuscules,
+c'est la norme des URL. Le titre d'onglet porte donc la casse à la place.
 
 ### Favicon
 **Décision** : le « A » de Fraunces, converti en tracé, en `--color-accent` sur un carré

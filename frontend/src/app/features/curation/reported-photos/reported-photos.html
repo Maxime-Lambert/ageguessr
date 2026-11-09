@@ -11,7 +11,9 @@
     }
     @case ('error') {
       <p class="text-danger text-sm" role="alert">The reported photos could not be loaded.</p>
-      <button type="button" class="text-accent text-sm underline" (click)="reload()">Retry</button>
+      <button type="button" appButton variant="secondary" size="sm" (click)="reload()">
+        Retry
+      </button>
     }
     @default {
       @if (items().length === 0) {
@@ -19,9 +21,7 @@
       }
       <ul class="space-y-3">
         @for (item of items(); track item.photoId) {
-          <li
-            class="bg-surface border-border grid gap-4 rounded-lg border p-4 sm:grid-cols-[10rem_1fr]"
-          >
+          <li class="card grid gap-4 p-4 sm:grid-cols-[10rem_1fr]">
             <div class="flex items-center justify-center">
               @if (images()[item.photoId]; as url) {
                 @if (url === 'error') {
@@ -39,7 +39,7 @@
               <div class="flex flex-wrap items-baseline gap-2">
                 <h3 class="font-display text-lg">{{ displayName(item.person) }}</h3>
                 <a
-                  class="text-accent underline"
+                  class="text-accent underline underline-offset-2"
                   [href]="'https://www.wikidata.org/wiki/' + item.person.wikidataId"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -59,7 +59,7 @@
                 <strong>{{ item.total }}</strong> open report(s): {{ reasonsText(item) }}
               </p>
               <a
-                class="text-accent underline"
+                class="text-accent underline underline-offset-2"
                 [href]="item.sourceUrl"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -68,7 +68,9 @@
               <div class="flex flex-wrap gap-2 pt-1">
                 <button
                   type="button"
-                  class="bg-danger text-danger-foreground rounded-md px-3 py-1 font-medium disabled:opacity-50"
+                  appButton
+                  variant="danger"
+                  size="sm"
                   [disabled]="busy() !== null"
                   (click)="reject(item)"
                 >
@@ -76,7 +78,9 @@
                 </button>
                 <button
                   type="button"
-                  class="border-border rounded-md border px-3 py-1 font-medium disabled:opacity-50"
+                  appButton
+                  variant="secondary"
+                  size="sm"
                   [disabled]="busy() !== null"
                   (click)="keep(item)"
                 >
@@ -84,7 +88,9 @@
                 </button>
                 <button
                   type="button"
-                  class="text-danger rounded-md px-3 py-1 font-medium underline disabled:opacity-50"
+                  appButton
+                  size="sm"
+                  [variant]="confirmingExclusion() === item.photoId ? 'danger' : 'ghost'"
                   [disabled]="busy() !== null"
                   (click)="exclude(item)"
                 >

@@ -10,7 +10,7 @@ import urllib.request
 from html.parser import HTMLParser
 from pathlib import Path
 
-USER_AGENT = "Ageguessr/1.0 (https://ageguessr.app; contact@ageguessr.app)"
+USER_AGENT = "AgeGuessr/1.0 (https://ageguessr.app; contact@ageguessr.app)"
 CACHE = Path(__file__).parent / ".cache"
 FIRST_YEAR, LAST_YEAR = 1932, 2015
 MINIMUM, TARGET = 5, 10
@@ -95,6 +95,8 @@ class Tables(HTMLParser):
                                "wiki": "wikitable" in (attrs.get("class") or "")})
         elif not self.stack:
             return
+        elif tag == "br" and self.cell is not None:
+            self.cell["text"].append(" ")
         elif tag == "tr":
             self.stack[-1]["row"] = []
         elif tag in ("td", "th") and self.stack[-1]["row"] is not None:

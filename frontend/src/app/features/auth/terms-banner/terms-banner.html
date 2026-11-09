@@ -1,17 +1,20 @@
 @if (visible()) {
   <section
     aria-labelledby="terms-banner-title"
-    class="bg-surface border-border border-b px-4 py-3 text-sm"
+    class="bg-surface border-border border-b px-4 py-4 text-sm sm:px-8"
   >
-    <div class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3">
-      <div class="min-w-0 flex-1">
-        <h2 id="terms-banner-title" class="font-medium" i18n="@@termsBanner.title">
+    <div class="mx-auto flex max-w-[1184px] flex-wrap items-center justify-between gap-x-6 gap-y-3">
+      <div class="min-w-0 flex-1 basis-80">
+        <h2 id="terms-banner-title" class="font-semibold" i18n="@@termsBanner.title">
           Our Terms of Use changed on {{ updated }}.
         </h2>
-        <p class="text-muted mt-1" i18n="@@termsBanner.body">
-          Please read <a routerLink="/terms" class="text-accent underline">the new Terms</a> and
-          accept them. If you do not, you can delete your account from
-          <a routerLink="/account" class="text-accent underline">your account page</a>.
+        <p class="text-muted mt-1 leading-relaxed" i18n="@@termsBanner.body">
+          Please read
+          <a routerLink="/terms" class="text-accent underline underline-offset-2">the new Terms</a>
+          and accept them. If you do not, you can delete your account from
+          <a routerLink="/account" class="text-accent underline underline-offset-2"
+            >your account page</a
+          >.
         </p>
         @if (error(); as error) {
           <p class="text-danger mt-1" role="alert">{{ error }}</p>
@@ -19,8 +22,9 @@
       </div>
       <div class="flex gap-2">
         <button
+          appButton
+          size="sm"
           type="button"
-          class="bg-accent text-accent-foreground rounded-md px-3 py-1.5 font-medium disabled:opacity-50"
           [disabled]="busy()"
           (click)="accept()"
           i18n="@@termsBanner.accept"
@@ -28,8 +32,10 @@
           Accept
         </button>
         <button
+          appButton
+          variant="ghost"
+          size="sm"
           type="button"
-          class="text-muted rounded-md px-3 py-1.5 underline"
           (click)="postpone()"
           i18n="@@termsBanner.later"
         >

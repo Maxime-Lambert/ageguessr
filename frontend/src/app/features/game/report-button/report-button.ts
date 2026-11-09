@@ -1,6 +1,8 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, input, signal } from '@angular/core';
+import { LucideFlag } from '@lucide/angular';
 import { Observable } from 'rxjs';
+import { Button } from '../../../shared/ui/button/button';
 import { GAME_TEXT, HINT_REPORT_REASONS, PHOTO_REPORT_REASONS } from '../game-vocabulary';
 import { ReportTarget, RoundReport } from '../models';
 
@@ -8,19 +10,24 @@ import { ReportTarget, RoundReport } from '../models';
 export type RoundReporter = (report: RoundReport) => Observable<void>;
 
 /**
- * A discreet link under the photo or the hint of a result, which opens a closed list of
+ * A discreet flag button by the photo or on the hint of a result, which opens a closed list of
  * reasons (no free text) and sends the one picked. Once sent, here or before a reload,
  * it says so instead of offering it again: one report per round.
  */
 @Component({
+  imports: [Button, LucideFlag],
   selector: 'app-report-button',
   templateUrl: './report-button.html',
+  // Open, the list takes the whole width of the row it sits in.
+  host: { class: 'block', '[class.basis-full]': 'open()' },
 })
 export class ReportButton {
   readonly target = input.required<ReportTarget>();
   /** Already reported by this player (RoundReveal), or just now. */
   readonly reported = input(false);
   readonly reporter = input.required<RoundReporter>();
+  /** `paper` on the hint's newspaper clipping, whose colors are not the page's. */
+  readonly tone = input<'page' | 'paper'>('page');
 
   protected readonly text = GAME_TEXT;
 
@@ -29,6 +36,12 @@ export class ReportButton {
   readonly sent = signal(false);
   readonly error = signal<string | null>(null);
   readonly picked = signal<string | null>(null);
+
+  protected readonly tones = computed(() =>
+    this.tone() === 'paper'
+      ? { trigger: 'text-paper-muted hover:text-paper-foreground', muted: 'text-paper-muted' }
+      : { trigger: 'text-muted hover:text-foreground', muted: 'text-muted' },
+  );
 
   readonly done = computed(() => this.reported() || this.sent());
   readonly label = computed(() =>

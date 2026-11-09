@@ -18,7 +18,7 @@ test('a player signs up on the French site and gets French emails, with French l
 
   // The account was saved in French: the email is French and its link opens the French site.
   const email = await openLastEmailLink(page, request, account.email);
-  expect(email.subject).toBe('Confirmez votre compte Ageguessr');
+  expect(email.subject).toBe('Confirmez votre compte AgeGuessr');
   expect(email.link.pathname).toBe('/fr/confirm-email');
   await expect(page.getByRole('heading', { name: 'Email confirmé' })).toBeVisible();
 
@@ -29,8 +29,6 @@ test('a player signs up on the French site and gets French emails, with French l
   await page.locator('form').getByRole('button', { name: 'Se connecter' }).click();
   await expect(page).toHaveURL(/\/fr\/$/);
   await expect(
-    page
-      .getByRole('banner')
-      .getByRole('link', { name: `Paramètres du compte de ${account.username}` }),
+    page.getByRole('banner').getByRole('button', { name: account.username }),
   ).toBeVisible();
 });

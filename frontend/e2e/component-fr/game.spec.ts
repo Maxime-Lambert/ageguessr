@@ -8,10 +8,12 @@ test.describe('le jeu en français', () => {
 
     await expect(page.getByRole('heading', { name: 'Le dossier du jour' })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Affaire 1 sur 3' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Français' })).toHaveAttribute(
-      'aria-pressed',
-      'true',
-    );
+    // The language of the hints is a preference, in the header's menu.
+    await page.getByRole('banner').getByRole('button', { name: 'Préférences' }).click();
+    await expect(
+      page.getByRole('radiogroup', { name: 'Indices en' }).getByRole('radio', { name: 'Français' }),
+    ).toHaveAttribute('aria-checked', 'true');
+    await page.keyboard.press('Escape');
 
     await page.getByLabel('Âge').fill('30');
     await page.getByRole('button', { name: 'Valider' }).click();
@@ -26,7 +28,10 @@ test.describe('le jeu en français', () => {
     const sent = await mockGame(page);
     await page.goto('/fr/');
 
-    await page.getByRole('button', { name: 'English' }).click();
+    const hints = page.getByRole('radiogroup', { name: 'Indices en' });
+    await page.getByRole('banner').getByRole('button', { name: 'Préférences' }).click();
+    await hints.getByRole('radio', { name: 'English' }).click();
+    await page.keyboard.press('Escape');
     await page.getByLabel('Âge').fill('30');
     await page.getByRole('button', { name: 'Valider' }).click();
 
@@ -34,8 +39,9 @@ test.describe('le jeu en français', () => {
     expect(sent).toEqual([{ guess: 30, language: 'EN' }]);
     // Remembered on this device.
     await page.reload();
-    await expect(page.getByRole('button', { name: 'English' })).toHaveAttribute(
-      'aria-pressed',
+    await page.getByRole('banner').getByRole('button', { name: 'Préférences' }).click();
+    await expect(hints.getByRole('radio', { name: 'English' })).toHaveAttribute(
+      'aria-checked',
       'true',
     );
   });

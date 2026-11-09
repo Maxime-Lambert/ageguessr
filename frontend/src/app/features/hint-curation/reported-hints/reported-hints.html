@@ -11,7 +11,9 @@
     }
     @case ('error') {
       <p class="text-danger text-sm" role="alert">The reported hints could not be loaded.</p>
-      <button type="button" class="text-accent text-sm underline" (click)="reload()">Retry</button>
+      <button type="button" appButton variant="secondary" size="sm" (click)="reload()">
+        Retry
+      </button>
     }
     @default {
       @if (items().length === 0) {
@@ -19,12 +21,12 @@
       }
       <ul class="space-y-3">
         @for (item of items(); track item.hintId) {
-          <li class="bg-surface border-border space-y-2 rounded-lg border p-4 text-sm">
+          <li class="card space-y-2 p-4 text-sm">
             <div class="flex flex-wrap items-baseline gap-2">
               <h3 class="font-display text-lg">{{ item.category }} · {{ item.year }}</h3>
               <span class="text-muted">{{ item.audience }} · {{ item.reviewStatus }}</span>
               <a
-                class="text-accent underline"
+                class="text-accent underline underline-offset-2"
                 [href]="item.sourceUrl"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -38,7 +40,8 @@
               <label class="block">
                 <span class="text-muted">English</span>
                 <textarea
-                  class="bg-background border-border mt-1 block w-full rounded-md border p-2"
+                  appInput
+                  class="mt-1"
                   rows="2"
                   [value]="drafts()[item.hintId].en"
                   (input)="edit(item.hintId, 'en', $any($event.target).value)"
@@ -49,7 +52,8 @@
               <label class="block">
                 <span class="text-muted">French</span>
                 <textarea
-                  class="bg-background border-border mt-1 block w-full rounded-md border p-2"
+                  appInput
+                  class="mt-1"
                   rows="2"
                   [value]="drafts()[item.hintId].fr"
                   (input)="edit(item.hintId, 'fr', $any($event.target).value)"
@@ -59,7 +63,8 @@
             <div class="flex flex-wrap gap-2 pt-1">
               <button
                 type="button"
-                class="bg-accent text-accent-foreground rounded-md px-3 py-1 font-medium disabled:opacity-50"
+                appButton
+                size="sm"
                 [disabled]="busy() !== null"
                 (click)="correct(item)"
               >
@@ -67,7 +72,9 @@
               </button>
               <button
                 type="button"
-                class="bg-danger text-danger-foreground rounded-md px-3 py-1 font-medium disabled:opacity-50"
+                appButton
+                variant="danger"
+                size="sm"
                 [disabled]="busy() !== null"
                 (click)="reject(item)"
               >
@@ -75,7 +82,9 @@
               </button>
               <button
                 type="button"
-                class="border-border rounded-md border px-3 py-1 font-medium disabled:opacity-50"
+                appButton
+                variant="secondary"
+                size="sm"
                 [disabled]="busy() !== null"
                 (click)="keep(item)"
               >

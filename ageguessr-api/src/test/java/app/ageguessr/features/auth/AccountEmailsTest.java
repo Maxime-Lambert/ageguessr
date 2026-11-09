@@ -65,7 +65,7 @@ class AccountEmailsTest {
         accountEmails.sendPasswordChanged(USER);
 
         EmailMessage message = sent();
-        assertThat(message.subject()).isEqualTo("Your Ageguessr password was changed");
+        assertThat(message.subject()).isEqualTo("Your AgeGuessr password was changed");
         assertThat(message.htmlBody())
                 .contains("Secure your account")
                 .contains("https://ageguessr.app/en/reset-password?token=raw-token")
@@ -93,7 +93,7 @@ class AccountEmailsTest {
         accountEmails.sendPasswordReset(FRENCH_USER);
 
         EmailMessage message = sent();
-        assertThat(message.subject()).isEqualTo("Réinitialisez votre mot de passe Ageguessr");
+        assertThat(message.subject()).isEqualTo("Réinitialisez votre mot de passe AgeGuessr");
         assertThat(message.htmlBody())
                 .contains("https://ageguessr.app/fr/reset-password?token=raw-token")
                 .contains("expire dans 1 heure");
@@ -116,7 +116,7 @@ class AccountEmailsTest {
                 .contains("https://ageguessr.app/fr/reset-password?token=raw-token")
                 .contains("24 heures");
         assertThat(messages.getAllValues().get(1).subject())
-                .isEqualTo("Confirmez la suppression de votre compte Ageguessr");
+                .isEqualTo("Confirmez la suppression de votre compte AgeGuessr");
         assertThat(messages.getAllValues().get(1).htmlBody())
                 .contains("https://ageguessr.app/fr/confirm-account-deletion?token=raw-token")
                 .contains("C'est définitif");

@@ -1,472 +1,476 @@
-<!-- Every statement here must match what the code does (retention periods, cookies,
+<main>
+  <!-- Every statement here must match what the code does (retention periods, cookies,
      processors). Changing one of them in the code means updating this page. -->
-@if (language === 'en') {
-  <article>
-    <h1>Privacy Policy</h1>
-    <p class="meta">Last updated: {{ updated }} · <app-language-switch /></p>
+  @if (language === 'en') {
+    <article>
+      <h1>Privacy Policy</h1>
+      <p class="meta">Last updated: {{ updated }} · <app-language-switch /></p>
 
-    <h2>1. Who is responsible</h2>
-    <p>
-      The data controller is the publisher of Ageguessr, a private individual (see the
-      <a routerLink="/legal-notice">Legal notice</a>). For any question or request about your data:
-      <a href="mailto:contact@ageguessr.app">contact&#64;ageguessr.app</a>.
-    </p>
+      <h2>1. Who is responsible</h2>
+      <p>
+        The data controller is the publisher of AgeGuessr, a private individual (see the
+        <a routerLink="/legal-notice">Legal notice</a>). For any question or request about your
+        data: <a href="mailto:contact@ageguessr.app">contact&#64;ageguessr.app</a>.
+      </p>
 
-    <h2>2. Playing without an account</h2>
-    <p>
-      We do not ask for anything. Like any website, your IP address and the technical details of
-      your requests pass through our network provider and our server to deliver the pages; our
-      server does not keep access logs. Your theme choice (dark or light) and the language of the
-      hints are stored on your device only and never sent to us. The language of the site you choose
-      is kept in a cookie, so that our server opens the site in that language.
-    </p>
-    <p>
-      When you play, your first guess gives your browser a random identifier, in the
-      <code>ageguessr_guest</code> cookie. It tells us nothing about you; it only ties your guesses
-      of the day together, so that you can reload the page and pick up where you were, and play each
-      photo once (legitimate interest, GDPR art. 6(1)(f): the game cannot work otherwise). We record
-      your guesses, the hint you chose and your points against it. Your IP address also goes into an
-      anti-abuse counter on guesses.
-    </p>
-    <p>
-      The free investigation and the challenges work the same way: starting a series or taking up a
-      challenge gives your browser the same identifier. To share a series as a challenge, or to take
-      one up, without an account, you choose a name for that challenge (3 to 20 letters, digits, "_"
-      or "-"), which cannot be the username of an account. Everyone with the link to a challenge you
-      shared sees your name as its sender; once they have played, they see it next to your score in
-      the leaderboard: do not use your real name if you do not want to.
-    </p>
-    <p>
-      From the result of a round you played, you can report its photo or its hint, choosing a reason
-      from a list. The report keeps only what is reported, the reason and the date: nothing about
-      you. To count one report per round, the round you played remembers that you reported it, and
-      is deleted with it. Your IP address goes into an anti-abuse counter on reports.
-    </p>
+      <h2>2. Playing without an account</h2>
+      <p>
+        We do not ask for anything. Like any website, your IP address and the technical details of
+        your requests pass through our network provider and our server to deliver the pages; our
+        server does not keep access logs. Your theme choice (dark or light) and the language of the
+        hints are stored on your device only and never sent to us. The language of the site you
+        choose is kept in a cookie, so that our server opens the site in that language.
+      </p>
+      <p>
+        When you play, your first guess gives your browser a random identifier, in the
+        <code>ageguessr_guest</code> cookie. It tells us nothing about you; it only ties your
+        guesses of the day together, so that you can reload the page and pick up where you were, and
+        play each photo once (legitimate interest, GDPR art. 6(1)(f): the game cannot work
+        otherwise). We record your guesses, the hint you chose and your points against it. Your IP
+        address also goes into an anti-abuse counter on guesses.
+      </p>
+      <p>
+        The free investigation and the challenges work the same way: starting a series or taking up
+        a challenge gives your browser the same identifier. To share a series as a challenge, or to
+        take one up, without an account, you choose a name for that challenge (3 to 20 letters,
+        digits, "_" or "-"), which cannot be the username of an account. Everyone with the link to a
+        challenge you shared sees your name as its sender; once they have played, they see it next
+        to your score in the leaderboard: do not use your real name if you do not want to.
+      </p>
+      <p>
+        From the result of a round you played, you can report its photo or its hint, choosing a
+        reason from a list. The report keeps only what is reported, the reason and the date: nothing
+        about you. To count one report per round, the round you played remembers that you reported
+        it, and is deleted with it. Your IP address goes into an anti-abuse counter on reports.
+      </p>
 
-    <h2>3. With an account: what we process and why</h2>
-    <ul>
-      <li>
-        <strong>To provide your account</strong> (performance of the contract, GDPR art. 6(1)(b)):
-        your email address, your username, your password (stored only as a bcrypt hash: we never see
-        it), whether your email is confirmed, your account's creation date, your language (English
-        or French: the site opens in it and our emails are written in it), and session and security
-        tokens (stored hashed).
-      </li>
-      <li>
-        <strong>To send you service emails</strong> (same basis): confirming your address, resetting
-        your password, securing or deleting your account. We send no newsletter and no advertising.
-      </li>
-      <li>
-        <strong>To protect accounts and the Service</strong> (legitimate interest, art. 6(1)(f)):
-        the number of failed sign-in attempts and a temporary lock after too many, and, on sign-in
-        and account requests, your IP address in an anti-abuse counter.
-      </li>
-      <li>
-        <strong>To prove you accepted the Terms</strong> (legitimate interest): the version of the
-        Terms you accepted and when.
-      </li>
-      <li>
-        <strong>To keep your games</strong> (performance of the contract): your guesses, the hints
-        you chose and your points, for each day you play while signed in, and for the free series
-        and the challenges you play.
-      </li>
-    </ul>
-    <p>
-      Your username is shown, with your score, to the players of a challenge you create or take up.
-      Your email address is never shown.
-    </p>
-    <p>
-      Providing an email address and choosing a username are required to create an account: without
-      them, no account can be created, but you can still play without one.
-    </p>
+      <h2>3. With an account: what we process and why</h2>
+      <ul>
+        <li>
+          <strong>To provide your account</strong> (performance of the contract, GDPR art. 6(1)(b)):
+          your email address, your username, your password (stored only as a bcrypt hash: we never
+          see it), whether your email is confirmed, your account's creation date, your language
+          (English or French: the site opens in it and our emails are written in it), and session
+          and security tokens (stored hashed).
+        </li>
+        <li>
+          <strong>To send you service emails</strong> (same basis): confirming your address,
+          resetting your password, securing or deleting your account. We send no newsletter and no
+          advertising.
+        </li>
+        <li>
+          <strong>To protect accounts and the Service</strong> (legitimate interest, art. 6(1)(f)):
+          the number of failed sign-in attempts and a temporary lock after too many, and, on sign-in
+          and account requests, your IP address in an anti-abuse counter.
+        </li>
+        <li>
+          <strong>To prove you accepted the Terms</strong> (legitimate interest): the version of the
+          Terms you accepted and when.
+        </li>
+        <li>
+          <strong>To keep your games</strong> (performance of the contract): your guesses, the hints
+          you chose and your points, for each day you play while signed in, and for the free series
+          and the challenges you play.
+        </li>
+      </ul>
+      <p>
+        Your username is shown, with your score, to the players of a challenge you create or take
+        up. Your email address is never shown.
+      </p>
+      <p>
+        Providing an email address and choosing a username are required to create an account:
+        without them, no account can be created, but you can still play without one.
+      </p>
 
-    <h2>4. How long we keep it</h2>
-    <ul>
-      <li>
-        Account data: until you delete your account. Deletion is immediate and permanent, including
-        tokens.
-      </li>
-      <li>
-        Tokens expire on their own: 90 days for staying signed in, 1 to 24 hours for links sent by
-        email.
-      </li>
-      <li>
-        Games played while signed in: with your account, deleted with it. Games played without an
-        account: 7 days after the day played.
-      </li>
-      <li>
-        Free series: 7 days after they were started, unless shared. Challenges, with their
-        leaderboard and the names chosen by the players without an account: 30 days after being
-        shared. Deleting your account deletes the series you started, the challenges made from them,
-        and your place in the challenges of others.
-      </li>
-      <li>
-        IP address in the anti-abuse counter: 1 minute, 1 hour for starting series, taking up
-        challenges and reporting.
-      </li>
-      <li>
-        Reports of a photo or a hint: as long as the photo or the hint exists. They hold nothing
-        about the player who sent them.
-      </li>
-      <li>Emails at our email provider: 30 days.</li>
-    </ul>
+      <h2>4. How long we keep it</h2>
+      <ul>
+        <li>
+          Account data: until you delete your account. Deletion is immediate and permanent,
+          including tokens.
+        </li>
+        <li>
+          Tokens expire on their own: 90 days for staying signed in, 1 to 24 hours for links sent by
+          email.
+        </li>
+        <li>
+          Games played while signed in: with your account, deleted with it. Games played without an
+          account: 7 days after the day played.
+        </li>
+        <li>
+          Free series: 7 days after they were started, unless shared. Challenges, with their
+          leaderboard and the names chosen by the players without an account: 30 days after being
+          shared. Deleting your account deletes the series you started, the challenges made from
+          them, and your place in the challenges of others.
+        </li>
+        <li>
+          IP address in the anti-abuse counter: 1 minute, 1 hour for starting series, taking up
+          challenges and reporting.
+        </li>
+        <li>
+          Reports of a photo or a hint: as long as the photo or the hint exists. They hold nothing
+          about the player who sent them.
+        </li>
+        <li>Emails at our email provider: 30 days.</li>
+      </ul>
 
-    <h2>5. Who else processes it</h2>
-    <p>We do not sell your data, show ads, or use any audience measurement tool.</p>
-    <ul>
-      <li>
-        <strong>OVH SAS</strong> (France): hosting of the server and database, in the Gravelines
-        data centre, France.
-      </li>
-      <li>
-        <strong>Cloudflare, Inc.</strong> (United States): domain name system, delivery and
-        protection of the site. It processes your IP address and request data.
-      </li>
-      <li>
-        <strong>Resend</strong> (United States): sending of service emails. It processes your email
-        address and the content of these emails, kept for 30 days.
-      </li>
-    </ul>
-    <p>
-      Transfers to the United States are covered by these providers' certification under the EU-U.S.
-      Data Privacy Framework and by the European Commission's standard contractual clauses.
-    </p>
+      <h2>5. Who else processes it</h2>
+      <p>We do not sell your data, show ads, or use any audience measurement tool.</p>
+      <ul>
+        <li>
+          <strong>OVH SAS</strong> (France): hosting of the server and database, in the Gravelines
+          data centre, France.
+        </li>
+        <li>
+          <strong>Cloudflare, Inc.</strong> (United States): domain name system, delivery and
+          protection of the site. It processes your IP address and request data.
+        </li>
+        <li>
+          <strong>Resend</strong> (United States): sending of service emails. It processes your
+          email address and the content of these emails, kept for 30 days.
+        </li>
+      </ul>
+      <p>
+        Transfers to the United States are covered by these providers' certification under the
+        EU-U.S. Data Privacy Framework and by the European Commission's standard contractual
+        clauses.
+      </p>
 
-    <h2>6. Cookies and local storage</h2>
-    <ul>
-      <li>
-        <code>ageguessr_refresh_token</code> (cookie, 90 days): keeps you signed in. Not readable by
-        scripts.
-      </li>
-      <li>
-        <code>ageguessr_guest</code> (cookie, 30 days): the random identifier of your games when you
-        play without an account. Not readable by scripts, sent only to the game.
-      </li>
-      <li>
-        <code>ageguessr_lang</code> (cookie, 1 year): remembers the language of the site you chose,
-        so that our server opens the site in it.
-      </li>
-      <li><code>ageguessr-theme</code> (local storage): remembers your theme choice.</li>
-      <li>
-        <code>ageguessr-hint-language</code> (local storage): remembers the language of the hints
-        you chose.
-      </li>
-      <li>
-        Cloudflare may set security cookies (such as <code>__cf_bm</code>) to tell humans from bots.
-      </li>
-    </ul>
-    <p>
-      All of them are strictly necessary or store a choice you made, so they do not require your
-      consent. There is no analytics or advertising cookie, hence no cookie banner.
-    </p>
+      <h2>6. Cookies and local storage</h2>
+      <ul>
+        <li>
+          <code>ageguessr_refresh_token</code> (cookie, 90 days): keeps you signed in. Not readable
+          by scripts.
+        </li>
+        <li>
+          <code>ageguessr_guest</code> (cookie, 30 days): the random identifier of your games when
+          you play without an account. Not readable by scripts, sent only to the game.
+        </li>
+        <li>
+          <code>ageguessr_lang</code> (cookie, 1 year): remembers the language of the site you
+          chose, so that our server opens the site in it.
+        </li>
+        <li><code>ageguessr-theme</code> (local storage): remembers your theme choice.</li>
+        <li>
+          <code>ageguessr-hint-language</code> (local storage): remembers the language of the hints
+          you chose.
+        </li>
+        <li>
+          Cloudflare may set security cookies (such as <code>__cf_bm</code>) to tell humans from
+          bots.
+        </li>
+      </ul>
+      <p>
+        All of them are strictly necessary or store a choice you made, so they do not require your
+        consent. There is no analytics or advertising cookie, hence no cookie banner.
+      </p>
 
-    <h2>7. Your rights</h2>
-    <p>
-      You can access your data, have it corrected or erased, receive it in a portable format, object
-      to its processing based on legitimate interest, and ask for its processing to be restricted.
-      You can change your username and delete your account yourself from your account page; for
-      everything else, write to
-      <a href="mailto:contact@ageguessr.app">contact&#64;ageguessr.app</a> from the address of your
-      account. We answer within one month. You can also lodge a complaint with the CNIL (<a
-        href="https://www.cnil.fr"
-        >cnil.fr</a
-      >) or with the data protection authority of your country.
-    </p>
+      <h2>7. Your rights</h2>
+      <p>
+        You can access your data, have it corrected or erased, receive it in a portable format,
+        object to its processing based on legitimate interest, and ask for its processing to be
+        restricted. You can change your username and delete your account yourself from your account
+        page; for everything else, write to
+        <a href="mailto:contact@ageguessr.app">contact&#64;ageguessr.app</a> from the address of
+        your account. We answer within one month. You can also lodge a complaint with the CNIL (<a
+          href="https://www.cnil.fr"
+          >cnil.fr</a
+        >) or with the data protection authority of your country.
+      </p>
 
-    <h2>8. People shown in the game</h2>
-    <p>
-      The game shows photos of public figures. Their name, dates of birth and death, photos, gender
-      and the continent of their nationality are collected from publicly accessible sources,
-      Wikidata and Wikimedia Commons, where they are published under free licences; we do not get
-      them from the people themselves. We keep only what the game needs, for as long as the game
-      exists, and use it for nothing else: gender and continent serve only to balance the selection
-      between women and men and between continents. The legal basis is our legitimate interest in
-      offering a game about public figures: it concerns data these people have made public as part
-      of their public life, already freely published, and we use none of it to profile, contact or
-      rate them. We never show a photo taken before the person turned 18, even if they are an adult
-      today.
-    </p>
-    <p>
-      So that the game does not feature people associated with grave violence or extremism, we also
-      check public Wikidata records (convictions or charges for serious crimes, membership of
-      far-right parties, heads of state or government of authoritarian states) solely to leave these
-      people out of the game. We do not keep these records: we only note that the person was left
-      out under our editorial line, without the reason. These are facts the people concerned made
-      public or that are part of the public record, and we use them only to show nothing about these
-      people.
-    </p>
-    <p>
-      Hints may also name public figures, for instance through their year of birth. These names and
-      facts come from Wikipedia and Wikidata and are stored with the hint, on the same legal basis
-      and for no other purpose. A hint built on someone's birth only names a person who was already
-      an adult when it was written.
-    </p>
-    <p>
-      If you appear in the game or in a hint and want to be removed, or want a photo of you
-      withdrawn, write to
-      <a href="mailto:contact@ageguessr.app">contact&#64;ageguessr.app</a>. We will delete your
-      photos, withdraw the hints that name you, keep only what is needed to make sure you are never
-      added again, and confirm it to you within one month.
-    </p>
+      <h2>8. People shown in the game</h2>
+      <p>
+        The game shows photos of public figures. Their name, dates of birth and death, photos,
+        gender and the continent of their nationality are collected from publicly accessible
+        sources, Wikidata and Wikimedia Commons, where they are published under free licences; we do
+        not get them from the people themselves. We keep only what the game needs, for as long as
+        the game exists, and use it for nothing else: gender and continent serve only to balance the
+        selection between women and men and between continents. The legal basis is our legitimate
+        interest in offering a game about public figures: it concerns data these people have made
+        public as part of their public life, already freely published, and we use none of it to
+        profile, contact or rate them. We never show a photo taken before the person turned 18, even
+        if they are an adult today.
+      </p>
+      <p>
+        So that the game does not feature people associated with grave violence or extremism, we
+        also check public Wikidata records (convictions or charges for serious crimes, membership of
+        far-right parties, heads of state or government of authoritarian states) solely to leave
+        these people out of the game. We do not keep these records: we only note that the person was
+        left out under our editorial line, without the reason. These are facts the people concerned
+        made public or that are part of the public record, and we use them only to show nothing
+        about these people.
+      </p>
+      <p>
+        Hints may also name public figures, for instance through their year of birth. These names
+        and facts come from Wikipedia and Wikidata and are stored with the hint, on the same legal
+        basis and for no other purpose. A hint built on someone's birth only names a person who was
+        already an adult when it was written.
+      </p>
+      <p>
+        If you appear in the game or in a hint and want to be removed, or want a photo of you
+        withdrawn, write to
+        <a href="mailto:contact@ageguessr.app">contact&#64;ageguessr.app</a>. We will delete your
+        photos, withdraw the hints that name you, keep only what is needed to make sure you are
+        never added again, and confirm it to you within one month.
+      </p>
 
-    <h2>9. Children</h2>
-    <p>
-      Accounts are for people aged 13 and over. If you believe a child under 13 has created an
-      account, write to us and we will delete it.
-    </p>
+      <h2>9. Children</h2>
+      <p>
+        Accounts are for people aged 13 and over. If you believe a child under 13 has created an
+        account, write to us and we will delete it.
+      </p>
 
-    <h2>10. Security</h2>
-    <p>
-      Connections are encrypted (HTTPS). Passwords and tokens are only stored hashed. Sign-in
-      attempts are limited, and an account is temporarily locked after repeated failures.
-    </p>
+      <h2>10. Security</h2>
+      <p>
+        Connections are encrypted (HTTPS). Passwords and tokens are only stored hashed. Sign-in
+        attempts are limited, and an account is temporarily locked after repeated failures.
+      </p>
 
-    <h2>11. Changes</h2>
-    <p>
-      This policy may be updated; the date at the top changes accordingly. If you have an account,
-      you will be told of any significant change.
-    </p>
-  </article>
-} @else {
-  <article lang="fr">
-    <h1>Politique de confidentialité</h1>
-    <p class="meta">Dernière mise à jour : {{ updated }} · <app-language-switch /></p>
+      <h2>11. Changes</h2>
+      <p>
+        This policy may be updated; the date at the top changes accordingly. If you have an account,
+        you will be told of any significant change.
+      </p>
+    </article>
+  } @else {
+    <article lang="fr">
+      <h1>Politique de confidentialité</h1>
+      <p class="meta">Dernière mise à jour : {{ updated }} · <app-language-switch /></p>
 
-    <h2>1. Responsable du traitement</h2>
-    <p>
-      Le responsable du traitement est l'éditeur d'Ageguessr, une personne physique (voir les
-      <a routerLink="/legal-notice">mentions légales</a>). Pour toute question ou demande sur vos
-      données : <a href="mailto:contact@ageguessr.app">contact&#64;ageguessr.app</a>.
-    </p>
+      <h2>1. Responsable du traitement</h2>
+      <p>
+        Le responsable du traitement est l'éditeur d'AgeGuessr, une personne physique (voir les
+        <a routerLink="/legal-notice">mentions légales</a>). Pour toute question ou demande sur vos
+        données : <a href="mailto:contact@ageguessr.app">contact&#64;ageguessr.app</a>.
+      </p>
 
-    <h2>2. Jouer sans compte</h2>
-    <p>
-      Nous ne vous demandons rien. Comme pour tout site, votre adresse IP et les informations
-      techniques de vos requêtes transitent par notre prestataire réseau et notre serveur pour
-      afficher les pages ; notre serveur ne conserve pas de journal des accès. Votre choix de thème
-      (sombre ou clair) et la langue des indices sont enregistrés sur votre appareil uniquement et
-      ne nous sont jamais envoyés. La langue du site que vous choisissez est gardée dans un cookie,
-      pour que notre serveur vous ouvre le site dans cette langue.
-    </p>
-    <p>
-      Quand vous jouez, votre premier essai donne à votre navigateur un identifiant aléatoire, dans
-      le cookie <code>ageguessr_guest</code>. Il ne dit rien de vous ; il relie seulement vos essais
-      du jour, pour que vous puissiez recharger la page et reprendre où vous en étiez, et jouer
-      chaque photo une seule fois (intérêt légitime, RGPD art. 6.1.f : le jeu ne peut pas
-      fonctionner autrement). Nous enregistrons vos essais, l'indice choisi et vos points avec cet
-      identifiant. Votre adresse IP passe aussi dans un compteur anti-abus sur les essais.
-    </p>
-    <p>
-      L'enquête libre et les défis fonctionnent de la même façon : lancer une série ou relever un
-      défi donne à votre navigateur le même identifiant. Pour partager une série en défi, ou pour en
-      relever un, sans compte, vous choisissez un nom pour ce défi (3 à 20 lettres, chiffres, « _ »
-      ou « - »), qui ne peut pas être le pseudo d'un compte. Toute personne qui a le lien d'un défi
-      que vous avez partagé voit votre nom comme celui de l'expéditeur ; une fois qu'elle a joué,
-      elle le voit à côté de votre score dans le classement : n'utilisez pas votre vrai nom si vous
-      ne le souhaitez pas.
-    </p>
-    <p>
-      Depuis le résultat d'une manche jouée, vous pouvez signaler sa photo ou son indice, en
-      choisissant un motif dans une liste. Le signalement ne garde que ce qui est signalé, le motif
-      et la date : rien sur vous. Pour compter un signalement par manche, la manche jouée retient
-      que vous l'avez signalée, et est supprimée avec elle. Votre adresse IP passe aussi dans un
-      compteur anti-abus sur les signalements.
-    </p>
+      <h2>2. Jouer sans compte</h2>
+      <p>
+        Nous ne vous demandons rien. Comme pour tout site, votre adresse IP et les informations
+        techniques de vos requêtes transitent par notre prestataire réseau et notre serveur pour
+        afficher les pages ; notre serveur ne conserve pas de journal des accès. Votre choix de
+        thème (sombre ou clair) et la langue des indices sont enregistrés sur votre appareil
+        uniquement et ne nous sont jamais envoyés. La langue du site que vous choisissez est gardée
+        dans un cookie, pour que notre serveur vous ouvre le site dans cette langue.
+      </p>
+      <p>
+        Quand vous jouez, votre premier essai donne à votre navigateur un identifiant aléatoire,
+        dans le cookie <code>ageguessr_guest</code>. Il ne dit rien de vous ; il relie seulement vos
+        essais du jour, pour que vous puissiez recharger la page et reprendre où vous en étiez, et
+        jouer chaque photo une seule fois (intérêt légitime, RGPD art. 6.1.f : le jeu ne peut pas
+        fonctionner autrement). Nous enregistrons vos essais, l'indice choisi et vos points avec cet
+        identifiant. Votre adresse IP passe aussi dans un compteur anti-abus sur les essais.
+      </p>
+      <p>
+        L'enquête libre et les défis fonctionnent de la même façon : lancer une série ou relever un
+        défi donne à votre navigateur le même identifiant. Pour partager une série en défi, ou pour
+        en relever un, sans compte, vous choisissez un nom pour ce défi (3 à 20 lettres, chiffres, «
+        _ » ou « - »), qui ne peut pas être le pseudo d'un compte. Toute personne qui a le lien d'un
+        défi que vous avez partagé voit votre nom comme celui de l'expéditeur ; une fois qu'elle a
+        joué, elle le voit à côté de votre score dans le classement : n'utilisez pas votre vrai nom
+        si vous ne le souhaitez pas.
+      </p>
+      <p>
+        Depuis le résultat d'une manche jouée, vous pouvez signaler sa photo ou son indice, en
+        choisissant un motif dans une liste. Le signalement ne garde que ce qui est signalé, le
+        motif et la date : rien sur vous. Pour compter un signalement par manche, la manche jouée
+        retient que vous l'avez signalée, et est supprimée avec elle. Votre adresse IP passe aussi
+        dans un compteur anti-abus sur les signalements.
+      </p>
 
-    <h2>3. Avec un compte : données traitées et finalités</h2>
-    <ul>
-      <li>
-        <strong>Fournir votre compte</strong> (exécution du contrat, RGPD art. 6.1.b) : votre
-        adresse email, votre pseudo, votre mot de passe (conservé uniquement sous forme de hash
-        bcrypt : nous ne le voyons jamais), la confirmation ou non de votre email, la date de
-        création du compte, votre langue (français ou anglais : le site s'ouvre dans cette langue et
-        nos emails sont écrits dans cette langue), et des jetons de session et de sécurité
-        (conservés hachés).
-      </li>
-      <li>
-        <strong>Vous envoyer les emails du service</strong> (même base) : confirmation de votre
-        adresse, réinitialisation du mot de passe, sécurisation ou suppression du compte. Aucune
-        newsletter, aucune publicité.
-      </li>
-      <li>
-        <strong>Protéger les comptes et le Service</strong> (intérêt légitime, art. 6.1.f) : le
-        nombre d'échecs de connexion et un blocage temporaire après trop d'échecs, et, lors des
-        requêtes de connexion et de compte, votre adresse IP dans un compteur anti-abus.
-      </li>
-      <li>
-        <strong>Prouver votre acceptation des CGU</strong> (intérêt légitime) : la version des
-        conditions acceptée et sa date.
-      </li>
-      <li>
-        <strong>Conserver vos parties</strong> (exécution du contrat) : vos essais, les indices
-        choisis et vos points, pour chaque jour joué en étant connecté, et pour les séries de
-        l'enquête libre et les défis que vous jouez.
-      </li>
-    </ul>
-    <p>
-      Votre pseudo est visible, avec votre score, par les joueurs d'un défi que vous créez ou que
-      vous relevez. Votre adresse email n'est jamais affichée.
-    </p>
-    <p>
-      La fourniture d'une adresse email et le choix d'un pseudo sont nécessaires à la création d'un
-      compte : sans eux, aucun compte ne peut être créé, mais vous pouvez toujours jouer sans
-      compte.
-    </p>
+      <h2>3. Avec un compte : données traitées et finalités</h2>
+      <ul>
+        <li>
+          <strong>Fournir votre compte</strong> (exécution du contrat, RGPD art. 6.1.b) : votre
+          adresse email, votre pseudo, votre mot de passe (conservé uniquement sous forme de hash
+          bcrypt : nous ne le voyons jamais), la confirmation ou non de votre email, la date de
+          création du compte, votre langue (français ou anglais : le site s'ouvre dans cette langue
+          et nos emails sont écrits dans cette langue), et des jetons de session et de sécurité
+          (conservés hachés).
+        </li>
+        <li>
+          <strong>Vous envoyer les emails du service</strong> (même base) : confirmation de votre
+          adresse, réinitialisation du mot de passe, sécurisation ou suppression du compte. Aucune
+          newsletter, aucune publicité.
+        </li>
+        <li>
+          <strong>Protéger les comptes et le Service</strong> (intérêt légitime, art. 6.1.f) : le
+          nombre d'échecs de connexion et un blocage temporaire après trop d'échecs, et, lors des
+          requêtes de connexion et de compte, votre adresse IP dans un compteur anti-abus.
+        </li>
+        <li>
+          <strong>Prouver votre acceptation des CGU</strong> (intérêt légitime) : la version des
+          conditions acceptée et sa date.
+        </li>
+        <li>
+          <strong>Conserver vos parties</strong> (exécution du contrat) : vos essais, les indices
+          choisis et vos points, pour chaque jour joué en étant connecté, et pour les séries de
+          l'enquête libre et les défis que vous jouez.
+        </li>
+      </ul>
+      <p>
+        Votre pseudo est visible, avec votre score, par les joueurs d'un défi que vous créez ou que
+        vous relevez. Votre adresse email n'est jamais affichée.
+      </p>
+      <p>
+        La fourniture d'une adresse email et le choix d'un pseudo sont nécessaires à la création
+        d'un compte : sans eux, aucun compte ne peut être créé, mais vous pouvez toujours jouer sans
+        compte.
+      </p>
 
-    <h2>4. Durées de conservation</h2>
-    <ul>
-      <li>
-        Données du compte : jusqu'à la suppression de votre compte. La suppression est immédiate et
-        définitive, jetons compris.
-      </li>
-      <li>
-        Les jetons expirent d'eux-mêmes : 90 jours pour rester connecté, de 1 à 24 heures pour les
-        liens envoyés par email.
-      </li>
-      <li>
-        Parties jouées en étant connecté : avec votre compte, supprimées avec lui. Parties jouées
-        sans compte : 7 jours après le jour joué.
-      </li>
-      <li>
-        Séries de l'enquête libre : 7 jours après leur lancement, sauf si elles sont partagées.
-        Défis, avec leur classement et les noms choisis par les joueurs sans compte : 30 jours après
-        leur partage. Supprimer votre compte supprime les séries que vous avez lancées, les défis
-        qui en sont issus, et votre place dans les défis des autres.
-      </li>
-      <li>
-        Adresse IP dans le compteur anti-abus : 1 minute, 1 heure pour le lancement de séries,
-        l'inscription aux défis et les signalements.
-      </li>
-      <li>
-        Signalements d'une photo ou d'un indice : tant que la photo ou l'indice existe. Ils ne
-        contiennent rien sur le joueur qui les a envoyés.
-      </li>
-      <li>Emails chez notre prestataire d'envoi : 30 jours.</li>
-    </ul>
+      <h2>4. Durées de conservation</h2>
+      <ul>
+        <li>
+          Données du compte : jusqu'à la suppression de votre compte. La suppression est immédiate
+          et définitive, jetons compris.
+        </li>
+        <li>
+          Les jetons expirent d'eux-mêmes : 90 jours pour rester connecté, de 1 à 24 heures pour les
+          liens envoyés par email.
+        </li>
+        <li>
+          Parties jouées en étant connecté : avec votre compte, supprimées avec lui. Parties jouées
+          sans compte : 7 jours après le jour joué.
+        </li>
+        <li>
+          Séries de l'enquête libre : 7 jours après leur lancement, sauf si elles sont partagées.
+          Défis, avec leur classement et les noms choisis par les joueurs sans compte : 30 jours
+          après leur partage. Supprimer votre compte supprime les séries que vous avez lancées, les
+          défis qui en sont issus, et votre place dans les défis des autres.
+        </li>
+        <li>
+          Adresse IP dans le compteur anti-abus : 1 minute, 1 heure pour le lancement de séries,
+          l'inscription aux défis et les signalements.
+        </li>
+        <li>
+          Signalements d'une photo ou d'un indice : tant que la photo ou l'indice existe. Ils ne
+          contiennent rien sur le joueur qui les a envoyés.
+        </li>
+        <li>Emails chez notre prestataire d'envoi : 30 jours.</li>
+      </ul>
 
-    <h2>5. Destinataires et sous-traitants</h2>
-    <p>
-      Nous ne vendons pas vos données, n'affichons pas de publicité et n'utilisons aucun outil de
-      mesure d'audience.
-    </p>
-    <ul>
-      <li>
-        <strong>OVH SAS</strong> (France) : hébergement du serveur et de la base de données, dans le
-        datacenter de Gravelines, en France.
-      </li>
-      <li>
-        <strong>Cloudflare, Inc.</strong> (États-Unis) : nom de domaine, acheminement et protection
-        du site. Traite votre adresse IP et les données de vos requêtes.
-      </li>
-      <li>
-        <strong>Resend</strong> (États-Unis) : envoi des emails du service. Traite votre adresse
-        email et le contenu de ces emails, conservés 30 jours.
-      </li>
-    </ul>
-    <p>
-      Les transferts vers les États-Unis sont encadrés par la certification de ces prestataires au
-      Data Privacy Framework UE–États-Unis et par les clauses contractuelles types de la Commission
-      européenne.
-    </p>
+      <h2>5. Destinataires et sous-traitants</h2>
+      <p>
+        Nous ne vendons pas vos données, n'affichons pas de publicité et n'utilisons aucun outil de
+        mesure d'audience.
+      </p>
+      <ul>
+        <li>
+          <strong>OVH SAS</strong> (France) : hébergement du serveur et de la base de données, dans
+          le datacenter de Gravelines, en France.
+        </li>
+        <li>
+          <strong>Cloudflare, Inc.</strong> (États-Unis) : nom de domaine, acheminement et
+          protection du site. Traite votre adresse IP et les données de vos requêtes.
+        </li>
+        <li>
+          <strong>Resend</strong> (États-Unis) : envoi des emails du service. Traite votre adresse
+          email et le contenu de ces emails, conservés 30 jours.
+        </li>
+      </ul>
+      <p>
+        Les transferts vers les États-Unis sont encadrés par la certification de ces prestataires au
+        Data Privacy Framework UE–États-Unis et par les clauses contractuelles types de la
+        Commission européenne.
+      </p>
 
-    <h2>6. Cookies et stockage local</h2>
-    <ul>
-      <li>
-        <code>ageguessr_refresh_token</code> (cookie, 90 jours) : vous garde connecté. Illisible par
-        les scripts.
-      </li>
-      <li>
-        <code>ageguessr_guest</code> (cookie, 30 jours) : l'identifiant aléatoire de vos parties
-        quand vous jouez sans compte. Illisible par les scripts, envoyé seulement au jeu.
-      </li>
-      <li>
-        <code>ageguessr_lang</code> (cookie, 1 an) : retient la langue du site que vous avez
-        choisie, pour que notre serveur vous ouvre le site dans cette langue.
-      </li>
-      <li><code>ageguessr-theme</code> (stockage local) : retient votre choix de thème.</li>
-      <li>
-        <code>ageguessr-hint-language</code> (stockage local) : retient la langue des indices que
-        vous avez choisie.
-      </li>
-      <li>
-        Cloudflare peut déposer des cookies de sécurité (comme <code>__cf_bm</code>) pour distinguer
-        les humains des robots.
-      </li>
-    </ul>
-    <p>
-      Tous sont strictement nécessaires ou retiennent un choix que vous avez fait : ils ne
-      requièrent pas votre consentement. Il n'y a aucun cookie de mesure d'audience ou de publicité,
-      donc pas de bannière cookies.
-    </p>
+      <h2>6. Cookies et stockage local</h2>
+      <ul>
+        <li>
+          <code>ageguessr_refresh_token</code> (cookie, 90 jours) : vous garde connecté. Illisible
+          par les scripts.
+        </li>
+        <li>
+          <code>ageguessr_guest</code> (cookie, 30 jours) : l'identifiant aléatoire de vos parties
+          quand vous jouez sans compte. Illisible par les scripts, envoyé seulement au jeu.
+        </li>
+        <li>
+          <code>ageguessr_lang</code> (cookie, 1 an) : retient la langue du site que vous avez
+          choisie, pour que notre serveur vous ouvre le site dans cette langue.
+        </li>
+        <li><code>ageguessr-theme</code> (stockage local) : retient votre choix de thème.</li>
+        <li>
+          <code>ageguessr-hint-language</code> (stockage local) : retient la langue des indices que
+          vous avez choisie.
+        </li>
+        <li>
+          Cloudflare peut déposer des cookies de sécurité (comme <code>__cf_bm</code>) pour
+          distinguer les humains des robots.
+        </li>
+      </ul>
+      <p>
+        Tous sont strictement nécessaires ou retiennent un choix que vous avez fait : ils ne
+        requièrent pas votre consentement. Il n'y a aucun cookie de mesure d'audience ou de
+        publicité, donc pas de bannière cookies.
+      </p>
 
-    <h2>7. Vos droits</h2>
-    <p>
-      Vous pouvez accéder à vos données, les faire rectifier ou effacer, les recevoir dans un format
-      portable, vous opposer aux traitements fondés sur l'intérêt légitime et demander la limitation
-      d'un traitement. Vous pouvez modifier votre pseudo et supprimer votre compte vous-même depuis
-      la page de votre compte ; pour le reste, écrivez à
-      <a href="mailto:contact@ageguessr.app">contact&#64;ageguessr.app</a> depuis l'adresse de votre
-      compte. Nous répondons sous un mois. Vous pouvez aussi adresser une réclamation à la CNIL (<a
-        href="https://www.cnil.fr"
-        >cnil.fr</a
-      >) ou à l'autorité de protection des données de votre pays.
-    </p>
+      <h2>7. Vos droits</h2>
+      <p>
+        Vous pouvez accéder à vos données, les faire rectifier ou effacer, les recevoir dans un
+        format portable, vous opposer aux traitements fondés sur l'intérêt légitime et demander la
+        limitation d'un traitement. Vous pouvez modifier votre pseudo et supprimer votre compte
+        vous-même depuis la page de votre compte ; pour le reste, écrivez à
+        <a href="mailto:contact@ageguessr.app">contact&#64;ageguessr.app</a> depuis l'adresse de
+        votre compte. Nous répondons sous un mois. Vous pouvez aussi adresser une réclamation à la
+        CNIL (<a href="https://www.cnil.fr">cnil.fr</a>) ou à l'autorité de protection des données
+        de votre pays.
+      </p>
 
-    <h2>8. Personnes présentées dans le jeu</h2>
-    <p>
-      Le jeu montre des photos de personnalités publiques. Leur nom, leurs dates de naissance et de
-      décès, leurs photos, leur genre et le continent de leur nationalité sont collectés auprès de
-      sources accessibles au public, Wikidata et Wikimedia Commons, où ils sont publiés sous licence
-      libre ; nous ne les obtenons pas des personnes elles-mêmes. Nous n'en conservons que ce dont
-      le jeu a besoin, aussi longtemps que le jeu existe, et ne les utilisons à aucune autre fin :
-      le genre et le continent servent uniquement à équilibrer la sélection entre femmes et hommes
-      et entre continents. La base légale est notre intérêt légitime à proposer un jeu sur des
-      personnalités publiques : il porte sur des données que ces personnes ont rendues publiques
-      dans le cadre de leur vie publique, déjà librement publiées, et nous n'en faisons aucun usage
-      pour les profiler, les contacter ou les noter. Nous ne montrons jamais une photo prise avant
-      les 18 ans de la personne, même si elle est majeure aujourd'hui.
-    </p>
-    <p>
-      Pour que le jeu ne présente pas de personnes associées à des violences graves ou à
-      l'extrémisme, nous consultons aussi des informations publiques de Wikidata (condamnations ou
-      poursuites pour des crimes graves, appartenance à un parti d'extrême droite, chefs d'État ou
-      de gouvernement d'États autoritaires), uniquement pour écarter ces personnes du jeu. Nous ne
-      conservons pas ces informations : nous notons seulement que la personne a été écartée au titre
-      de notre ligne éditoriale, sans le motif. Il s'agit de faits que les personnes concernées ont
-      rendus publics ou qui relèvent de la vie publique, et nous ne nous en servons que pour ne rien
-      montrer de ces personnes.
-    </p>
-    <p>
-      Les indices peuvent aussi nommer des personnalités publiques, par exemple à travers leur année
-      de naissance. Ces noms et ces faits viennent de Wikipédia et de Wikidata et sont conservés
-      avec l'indice, sur la même base légale et à aucune autre fin. Un indice tiré d'une naissance
-      ne nomme qu'une personne déjà majeure au moment de sa rédaction.
-    </p>
-    <p>
-      Si vous figurez dans le jeu ou dans un indice et souhaitez en être retiré, ou faire retirer
-      une photo de vous, écrivez à
-      <a href="mailto:contact@ageguessr.app">contact&#64;ageguessr.app</a>. Nous supprimerons vos
-      photos, retirerons les indices qui vous nomment, ne garderons que le nécessaire pour ne jamais
-      vous ajouter de nouveau, et vous le confirmerons sous un mois.
-    </p>
+      <h2>8. Personnes présentées dans le jeu</h2>
+      <p>
+        Le jeu montre des photos de personnalités publiques. Leur nom, leurs dates de naissance et
+        de décès, leurs photos, leur genre et le continent de leur nationalité sont collectés auprès
+        de sources accessibles au public, Wikidata et Wikimedia Commons, où ils sont publiés sous
+        licence libre ; nous ne les obtenons pas des personnes elles-mêmes. Nous n'en conservons que
+        ce dont le jeu a besoin, aussi longtemps que le jeu existe, et ne les utilisons à aucune
+        autre fin : le genre et le continent servent uniquement à équilibrer la sélection entre
+        femmes et hommes et entre continents. La base légale est notre intérêt légitime à proposer
+        un jeu sur des personnalités publiques : il porte sur des données que ces personnes ont
+        rendues publiques dans le cadre de leur vie publique, déjà librement publiées, et nous n'en
+        faisons aucun usage pour les profiler, les contacter ou les noter. Nous ne montrons jamais
+        une photo prise avant les 18 ans de la personne, même si elle est majeure aujourd'hui.
+      </p>
+      <p>
+        Pour que le jeu ne présente pas de personnes associées à des violences graves ou à
+        l'extrémisme, nous consultons aussi des informations publiques de Wikidata (condamnations ou
+        poursuites pour des crimes graves, appartenance à un parti d'extrême droite, chefs d'État ou
+        de gouvernement d'États autoritaires), uniquement pour écarter ces personnes du jeu. Nous ne
+        conservons pas ces informations : nous notons seulement que la personne a été écartée au
+        titre de notre ligne éditoriale, sans le motif. Il s'agit de faits que les personnes
+        concernées ont rendus publics ou qui relèvent de la vie publique, et nous ne nous en servons
+        que pour ne rien montrer de ces personnes.
+      </p>
+      <p>
+        Les indices peuvent aussi nommer des personnalités publiques, par exemple à travers leur
+        année de naissance. Ces noms et ces faits viennent de Wikipédia et de Wikidata et sont
+        conservés avec l'indice, sur la même base légale et à aucune autre fin. Un indice tiré d'une
+        naissance ne nomme qu'une personne déjà majeure au moment de sa rédaction.
+      </p>
+      <p>
+        Si vous figurez dans le jeu ou dans un indice et souhaitez en être retiré, ou faire retirer
+        une photo de vous, écrivez à
+        <a href="mailto:contact@ageguessr.app">contact&#64;ageguessr.app</a>. Nous supprimerons vos
+        photos, retirerons les indices qui vous nomment, ne garderons que le nécessaire pour ne
+        jamais vous ajouter de nouveau, et vous le confirmerons sous un mois.
+      </p>
 
-    <h2>9. Mineurs</h2>
-    <p>
-      Les comptes sont réservés aux personnes de 13 ans et plus. Si vous pensez qu'un enfant de
-      moins de 13 ans a créé un compte, écrivez-nous et nous le supprimerons.
-    </p>
+      <h2>9. Mineurs</h2>
+      <p>
+        Les comptes sont réservés aux personnes de 13 ans et plus. Si vous pensez qu'un enfant de
+        moins de 13 ans a créé un compte, écrivez-nous et nous le supprimerons.
+      </p>
 
-    <h2>10. Sécurité</h2>
-    <p>
-      Les connexions sont chiffrées (HTTPS). Les mots de passe et les jetons ne sont conservés que
-      hachés. Les tentatives de connexion sont limitées, et un compte est temporairement bloqué
-      après des échecs répétés.
-    </p>
+      <h2>10. Sécurité</h2>
+      <p>
+        Les connexions sont chiffrées (HTTPS). Les mots de passe et les jetons ne sont conservés que
+        hachés. Les tentatives de connexion sont limitées, et un compte est temporairement bloqué
+        après des échecs répétés.
+      </p>
 
-    <h2>11. Modifications</h2>
-    <p>
-      Cette politique peut évoluer ; la date en haut de page change alors. Si vous avez un compte,
-      vous serez informé de toute modification importante.
-    </p>
-  </article>
-}
+      <h2>11. Modifications</h2>
+      <p>
+        Cette politique peut évoluer ; la date en haut de page change alors. Si vous avez un compte,
+        vous serez informé de toute modification importante.
+      </p>
+    </article>
+  }
+</main>

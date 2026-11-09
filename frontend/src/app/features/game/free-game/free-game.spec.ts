@@ -41,7 +41,7 @@ describe('FreeGame', () => {
   }
 
   function guess(value: string): void {
-    const input = page.querySelector<HTMLInputElement>('#guess')!;
+    const input = page.querySelector<HTMLInputElement>('app-age-input input')!;
     input.value = value;
     input.dispatchEvent(new Event('input'));
     page.querySelector('form')!.dispatchEvent(new Event('submit'));

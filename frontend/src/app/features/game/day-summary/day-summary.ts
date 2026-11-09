@@ -27,6 +27,8 @@ export class DaySummary {
       removed: round.status === 'NEUTRALIZED',
       name: round.result?.person.name ?? null,
       points: round.result?.points ?? null,
+      // A small copy of the photo in the report: nothing to hide any more once played.
+      imageUrl: round.imageUrl,
     })),
   );
 }

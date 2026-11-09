@@ -1,20 +1,41 @@
-<section aria-labelledby="summary-title">
-  <h2 #heading id="summary-title" tabindex="-1" class="font-display text-3xl">
+<section aria-labelledby="summary-title" class="mx-auto max-w-[640px]">
+  <h2
+    #heading
+    id="summary-title"
+    tabindex="-1"
+    class="font-display text-[32px] outline-none md:text-[44px]"
+  >
     {{ text.summary }}
   </h2>
-  <p class="font-display mt-2 text-4xl">
-    {{ game().score.points }}
-    <span class="text-muted text-lg">{{ text.outOf }} {{ game().score.max }}</span>
+  <p class="text-muted mt-4 flex items-baseline gap-2.5 text-xl">
+    <b class="font-display text-score text-[56px] leading-none md:text-[72px]">{{
+      game().score.points
+    }}</b
+    >&ngsp;
+    <span>{{ text.outOf }} {{ game().score.max }}</span>
   </p>
 
-  <ol class="divide-border border-border mt-6 divide-y rounded-lg border">
+  <ol class="border-border mt-7 overflow-hidden rounded-md border">
     @for (line of lines(); track line.position) {
-      <li class="flex items-baseline justify-between gap-4 px-4 py-3">
-        <span>
-          {{ text.round }} {{ line.position }} · {{ line.removed ? text.removed : line.name }}
+      <li
+        class="bg-surface border-border grid grid-cols-[56px_minmax(0,1fr)_auto] items-center gap-4 px-4 py-3 not-first:border-t"
+      >
+        @if (line.imageUrl && !line.removed) {
+          <img [src]="line.imageUrl" alt="" class="archive-photo size-14 rounded-sm object-cover" />
+        } @else {
+          <span class="bg-surface-2 size-14 rounded-sm" aria-hidden="true"></span>
+        }
+        <span class="min-w-0">
+          <span class="text-muted block text-[13px]">{{ text.round }} {{ line.position }}</span
+          >&ngsp;
+          <span class="block truncate font-semibold">{{
+            line.removed ? text.removed : line.name
+          }}</span>
         </span>
         @if (!line.removed) {
-          <span class="font-medium">{{ line.points }} {{ text.points }}</span>
+          <span class="font-display text-xl font-bold">
+            {{ line.points }} <span class="sr-only">{{ text.points }}</span>
+          </span>
         }
       </li>
     }

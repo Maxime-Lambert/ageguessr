@@ -17,8 +17,15 @@
     (imageFailed)="imageError.emit()"
   />
   @if (imageFailed()) {
-    <p class="text-danger mt-2 text-sm" role="alert">{{ text.imageFailed }}</p>
-    <button type="button" class="text-accent mt-1 underline" (click)="retry.emit()">
+    <p class="text-danger mt-4 text-sm" role="alert">{{ text.imageFailed }}</p>
+    <button
+      appButton
+      variant="secondary"
+      size="sm"
+      type="button"
+      class="mt-2"
+      (click)="retry.emit()"
+    >
       {{ text.retry }}
     </button>
   }

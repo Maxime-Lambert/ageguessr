@@ -1,4 +1,4 @@
-# Ageguessr — Project Constitution
+# AgeGuessr — Project Constitution
 
 ## Stack
 - **Backend** : Spring Boot (Java 25 LTS), Maven, PostgreSQL, Spring Data JPA/Hibernate, Flyway, Redis

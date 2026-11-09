@@ -1,96 +1,125 @@
-<section aria-labelledby="result-title">
-  <h2
-    #heading
-    id="result-title"
-    tabindex="-1"
-    class="text-muted text-sm font-medium tracking-wide uppercase"
-  >
-    {{ title() }} · {{ text.result }}
-  </h2>
-
+<section
+  aria-labelledby="result-title"
+  class="grid items-start gap-5 md:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] md:gap-14"
+>
   @if (round().imageUrl; as imageUrl) {
-    <img
-      [src]="imageUrl"
-      [alt]="result().person.name"
-      class="archive-photo border-border mt-3 max-h-[50vh] w-full rounded-lg border object-contain"
-    />
+    <!-- The credit sits on the print, under the photo it belongs to (CC BY / BY-SA). -->
+    <app-case-photo [src]="imageUrl" [alt]="result().person.name" [caption]="result().person.name">
+      <small class="text-paper-muted text-right text-[11px] leading-snug">
+        {{ text.photoBy }}: {{ result().credit.author ?? text.unknownAuthor }}<br />
+        @if (result().credit.licenseUrl; as licenseUrl) {
+          <a [href]="licenseUrl" target="_blank" rel="noopener" class="underline">{{
+            result().credit.license
+          }}</a>
+        } @else {
+          {{ result().credit.license }}
+        }
+        ·
+        <a [href]="result().credit.sourceUrl" target="_blank" rel="noopener" class="underline">{{
+          text.source
+        }}</a>
+      </small>
+    </app-case-photo>
   }
 
-  <div class="mt-4 flex items-baseline justify-between gap-4">
+  <div>
+    <div class="flex flex-wrap items-center gap-3">
+      <h2 #heading id="result-title" tabindex="-1" class="eyebrow outline-none">
+        {{ title() }}<span class="sr-only"> · {{ text.result }}</span>
+      </h2>
+      <app-case-steps [position]="round().position" [total]="total()" />
+    </div>
+
+    <!-- The stamp repeats the heading's « Case closed » for the eye only. -->
+    <p class="mt-5" aria-hidden="true">
+      <span
+        class="border-score text-score inline-flex -rotate-3 items-center gap-2 rounded-sm border-2 px-2.5 py-1 text-[13px] font-extrabold tracking-[0.14em] uppercase"
+      >
+        <svg lucideStamp [size]="15"></svg>{{ text.result }}
+      </span>
+    </p>
+
     <a
       [href]="result().person.wikipediaUrl"
       target="_blank"
       rel="noopener"
-      class="font-display text-2xl underline-offset-4 hover:underline"
+      class="font-display mt-3 block text-[32px] leading-tight underline-offset-4 hover:underline md:text-[40px]"
       >{{ result().person.name }}</a
     >
-    <p class="font-display text-2xl">
-      {{ result().points }} <span class="text-muted text-base">{{ text.points }}</span>
-    </p>
-  </div>
+    <dl class="text-muted mt-1.5 flex gap-1.5">
+      <dt>{{ text.realAge }}</dt>
+      <dd class="text-foreground font-semibold">{{ result().age }}</dd>
+    </dl>
 
-  <dl class="mt-4 grid grid-cols-[auto_1fr_auto] gap-x-4 gap-y-1 text-sm">
-    <dt class="text-muted">{{ text.realAge }}</dt>
-    <dd class="font-medium">{{ result().age }}</dd>
-    <dd></dd>
-    <dt class="text-muted">{{ text.firstGuess }}</dt>
-    <dd>{{ result().firstGuess }}</dd>
-    <dd class="text-right">{{ result().firstPoints }}</dd>
-    @if (exact()) {
-      <dt class="text-muted col-span-3">{{ text.exact }}</dt>
-    } @else {
-      <dt class="text-muted">{{ text.secondGuess }}</dt>
-      <dd>{{ result().secondGuess }}</dd>
-      <dd class="text-right">{{ result().secondPoints }}</dd>
-    }
-  </dl>
-
-  @if (result().hint; as hint) {
-    <div class="bg-surface border-border mt-4 rounded-lg border p-4">
-      <p class="text-muted text-xs font-medium tracking-wide uppercase">
-        {{ text.hint }} · {{ categoryLabels[hint.category] }} · {{ hint.year }}
+    <div class="card mt-6 px-5 py-4">
+      <p class="flex items-baseline gap-2">
+        <!-- &ngsp;: Angular drops spaces between tags, screen readers would read "593points". -->
+        <b class="font-display text-score text-5xl leading-none">{{ result().points }}</b
+        >&ngsp;
+        <span class="text-muted">{{ text.points }}</span>
       </p>
-      <p class="font-display mt-1">{{ hint.text }}</p>
-      <p class="text-muted mt-1 text-xs">
-        {{ text.hintFrom }}
-        <a [href]="hint.sourceUrl" target="_blank" rel="noopener" class="underline">{{
-          text.wikipedia
-        }}</a>
-        ({{ text.hintLicense }})
-      </p>
-      <div class="mt-2">
-        <app-report-button
-          target="HINT"
-          [reported]="result().hintReported"
-          [reporter]="reporter()"
-        />
-      </div>
+      <dl
+        class="mt-4 grid grid-cols-[auto_auto_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2.5 text-sm"
+      >
+        <dt class="text-muted">{{ text.firstGuess }}</dt>
+        <dd class="font-semibold">{{ result().firstGuess }}</dd>
+        <dd class="bg-surface-2 h-1.5 overflow-hidden rounded-full" aria-hidden="true">
+          <i class="bg-score block h-full" [style.width.%]="firstBar()"></i>
+        </dd>
+        <dd class="text-right font-semibold tabular-nums">{{ result().firstPoints }}</dd>
+        @if (exact()) {
+          <dd class="text-score col-span-4">{{ text.exact }}</dd>
+        } @else {
+          <dt class="text-muted">{{ text.secondGuess }}</dt>
+          <dd class="font-semibold">{{ result().secondGuess }}</dd>
+          <dd class="bg-surface-2 h-1.5 overflow-hidden rounded-full" aria-hidden="true">
+            <i class="bg-score block h-full" [style.width.%]="secondBar()"></i>
+          </dd>
+          <dd class="text-right font-semibold tabular-nums">{{ result().secondPoints }}</dd>
+        }
+      </dl>
     </div>
-  }
 
-  <p class="text-muted mt-4 text-xs">
-    {{ text.photoBy }}: {{ result().credit.author ?? text.unknownAuthor }} ·
-    @if (result().credit.licenseUrl; as licenseUrl) {
-      <a [href]="licenseUrl" target="_blank" rel="noopener" class="underline">{{
-        result().credit.license
-      }}</a>
-    } @else {
-      {{ result().credit.license }}
+    @if (result().hint; as hint) {
+      <div class="bg-paper text-paper-foreground mt-5 rounded-md px-5 py-4">
+        <p
+          class="text-paper-muted flex items-center gap-2 text-xs font-bold tracking-[0.08em] uppercase"
+        >
+          <app-lead-icon [category]="hint.category" [size]="14" />
+          {{ text.hint }} · {{ categoryLabels[hint.category] }} · {{ hint.year }}
+        </p>
+        <p class="font-display mt-2 text-xl leading-snug">{{ hint.text }}</p>
+        <div
+          class="text-paper-muted mt-2.5 flex flex-wrap items-center justify-between gap-2 text-xs"
+        >
+          <p>
+            {{ text.hintFrom }}
+            <a [href]="hint.sourceUrl" target="_blank" rel="noopener" class="underline">{{
+              text.wikipedia
+            }}</a>
+            ({{ text.hintLicense }})
+          </p>
+          <app-report-button
+            target="HINT"
+            tone="paper"
+            [reported]="result().hintReported"
+            [reporter]="reporter()"
+          />
+        </div>
+      </div>
     }
-    ·
-    <a [href]="result().credit.sourceUrl" target="_blank" rel="noopener" class="underline">{{
-      text.source
-    }}</a>
-  </p>
-  <div class="mt-1">
-    <app-report-button target="PHOTO" [reported]="result().photoReported" [reporter]="reporter()" />
-  </div>
 
-  <button
-    type="button"
-    class="bg-accent text-accent-foreground mt-6 rounded-md px-4 py-2 font-medium"
-    (click)="next.emit()"
-  >
-    {{ last() ? text.seeSummary : text.next }}
-  </button>
+    <div class="mt-7 flex flex-wrap items-start gap-3">
+      <button appButton type="button" class="max-sm:flex-1" (click)="next.emit()">
+        {{ last() ? text.seeSummary : text.next }}
+        <svg lucideArrowRight [size]="18" aria-hidden="true"></svg>
+      </button>
+      <app-report-button
+        class="ml-auto"
+        target="PHOTO"
+        [reported]="result().photoReported"
+        [reporter]="reporter()"
+      />
+    </div>
+  </div>
 </section>

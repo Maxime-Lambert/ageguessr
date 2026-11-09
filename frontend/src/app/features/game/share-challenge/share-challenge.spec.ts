@@ -48,7 +48,7 @@ describe('ShareChallenge', () => {
     expect(page.textContent).toContain(GAME_TEXT.nicknameInvalid);
     http.expectNone('/api/game/series/series-1/share');
 
-    const input = page.querySelector<HTMLInputElement>('#nickname')!;
+    const input = page.querySelector<HTMLInputElement>('input[autocomplete="nickname"]')!;
     input.value = 'Sherlock';
     input.dispatchEvent(new Event('input'));
     page.querySelector('form')!.dispatchEvent(new Event('submit'));
@@ -57,7 +57,7 @@ describe('ShareChallenge', () => {
     request.flush(challenge({ status: 'FINISHED' }));
     fixture.detectChanges();
 
-    expect(page.querySelector<HTMLInputElement>('#challenge-link')!.value).toBe(
+    expect(page.querySelector<HTMLInputElement>('input[readonly]')!.value).toBe(
       'https://ageguessr.app/challenge/K7F2QX9M',
     );
     expect(button(GAME_TEXT.share)).toBeUndefined();
@@ -65,7 +65,7 @@ describe('ShareChallenge', () => {
     await fixture.whenStable();
     fixture.detectChanges();
     expect(share.handed.copied).toEqual([
-      'Ageguessr · Challenge · 1300 / 2000\n🟩🟥\nhttps://ageguessr.app/challenge/K7F2QX9M',
+      'AgeGuessr · Challenge · 1300 / 2000\n🟩🟥\nhttps://ageguessr.app/challenge/K7F2QX9M',
     ]);
     expect(page.textContent).toContain(GAME_TEXT.copied);
   });
@@ -99,7 +99,7 @@ describe('ShareChallenge', () => {
     http.expectOne('/api/game/series/series-1/share').flush(challenge({ status: 'FINISHED' }));
     fixture.detectChanges();
 
-    expect(page.querySelector('#nickname')).toBeNull();
-    expect(page.querySelector('#challenge-link')).not.toBeNull();
+    expect(page.querySelector('input[autocomplete="nickname"]')).toBeNull();
+    expect(page.querySelector('input[readonly]')).not.toBeNull();
   });
 });

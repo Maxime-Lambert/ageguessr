@@ -23,7 +23,7 @@ describe('share', () => {
 
   it('puts the score, the squares and the link in the text to share', () => {
     expect(shareText(3840, 5000, '🟩🟨', 'https://ageguessr.app/challenge/K7F2QX9M')).toBe(
-      'Ageguessr · Challenge · 3840 / 5000\n🟩🟨\nhttps://ageguessr.app/challenge/K7F2QX9M',
+      'AgeGuessr · Challenge · 3840 / 5000\n🟩🟨\nhttps://ageguessr.app/challenge/K7F2QX9M',
     );
   });
 });

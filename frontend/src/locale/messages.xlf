@@ -3,232 +3,210 @@
   <file source-language="en" datatype="plaintext" original="ng2.template">
     <body>
       <trans-unit id="title.free" datatype="html">
-        <source>Free investigation · Ageguessr</source>
+        <source>Free investigation · AgeGuessr</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.routes.ts</context>
           <context context-type="linenumber">15</context>
         </context-group>
       </trans-unit>
       <trans-unit id="title.challenge" datatype="html">
-        <source>Challenge · Ageguessr</source>
+        <source>Challenge · AgeGuessr</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.routes.ts</context>
           <context context-type="linenumber">20</context>
         </context-group>
       </trans-unit>
       <trans-unit id="title.legalNotice" datatype="html">
-        <source>Legal notice · Ageguessr</source>
+        <source>Legal notice · AgeGuessr</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.routes.ts</context>
           <context context-type="linenumber">84</context>
         </context-group>
       </trans-unit>
       <trans-unit id="title.terms" datatype="html">
-        <source>Terms of Use · Ageguessr</source>
+        <source>Terms of Use · AgeGuessr</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.routes.ts</context>
           <context context-type="linenumber">90</context>
         </context-group>
       </trans-unit>
       <trans-unit id="title.privacy" datatype="html">
-        <source>Privacy Policy · Ageguessr</source>
+        <source>Privacy Policy · AgeGuessr</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.routes.ts</context>
           <context context-type="linenumber">95</context>
         </context-group>
       </trans-unit>
       <trans-unit id="account.title" datatype="html">
-        <source>Your account</source>
+        <source> Your account </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">2,4</context>
+          <context context-type="linenumber">4,7</context>
         </context-group>
       </trans-unit>
       <trans-unit id="account.profile" datatype="html">
         <source>Profile</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">5,6</context>
+          <context context-type="linenumber">8,9</context>
         </context-group>
       </trans-unit>
       <trans-unit id="account.email" datatype="html">
         <source> Email: <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;text-foreground&quot;&gt;"/><x id="INTERPOLATION" equiv-text="{{ auth.currentUser()?.email }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/><x id="START_TAG_SPAN_1" ctype="x-span_1" equiv-text="&lt;span class=&quot;block&quot;&gt;"/>Only you can see it.<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">7,11</context>
+          <context context-type="linenumber">10,14</context>
         </context-group>
       </trans-unit>
       <trans-unit id="common.username" datatype="html">
         <source>Username</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">13,15</context>
+          <context context-type="linenumber">17,18</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/register/register.html</context>
-          <context context-type="linenumber">20,22</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="common.usernameRule" datatype="html">
-        <source> 3 to 20 characters: letters, digits, _ or -. </source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">24,26</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/auth/register/register.html</context>
-          <context context-type="linenumber">36,38</context>
+          <context context-type="linenumber">17,18</context>
         </context-group>
       </trans-unit>
       <trans-unit id="account.usernameSaved" datatype="html">
         <source> Username updated. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">34,38</context>
+          <context context-type="linenumber">35,37</context>
         </context-group>
       </trans-unit>
       <trans-unit id="account.saveUsername" datatype="html">
         <source> Save username </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">44,46</context>
+          <context context-type="linenumber">46,48</context>
         </context-group>
       </trans-unit>
       <trans-unit id="account.passwordTitle" datatype="html">
         <source> Password </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">51,53</context>
+          <context context-type="linenumber">53,55</context>
         </context-group>
       </trans-unit>
       <trans-unit id="account.passwordIntro" datatype="html">
         <source> Your other devices will be logged out. You&apos;ll get an email confirming the change. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">54,57</context>
+          <context context-type="linenumber">56,59</context>
         </context-group>
       </trans-unit>
       <trans-unit id="account.currentPassword" datatype="html">
         <source>Current password</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">60,63</context>
+          <context context-type="linenumber">62,63</context>
         </context-group>
       </trans-unit>
       <trans-unit id="common.newPassword" datatype="html">
         <source>New password</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">72,75</context>
+          <context context-type="linenumber">74,75</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/reset-password/reset-password.html</context>
-          <context context-type="linenumber">13,15</context>
+          <context context-type="linenumber">15,16</context>
         </context-group>
       </trans-unit>
       <trans-unit id="common.confirmNewPassword" datatype="html">
         <source>Confirm new password</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">100,103</context>
+          <context context-type="linenumber">89,90</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/reset-password/reset-password.html</context>
-          <context context-type="linenumber">41,43</context>
+          <context context-type="linenumber">31,32</context>
         </context-group>
       </trans-unit>
       <trans-unit id="account.passwordSaved" datatype="html">
         <source> Password changed. Your other devices have been logged out. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">116,120</context>
+          <context context-type="linenumber">105,107</context>
         </context-group>
       </trans-unit>
       <trans-unit id="account.changePassword" datatype="html">
         <source> Change password </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">126,129</context>
+          <context context-type="linenumber">116,118</context>
         </context-group>
       </trans-unit>
       <trans-unit id="account.deleteTitle" datatype="html">
         <source> Delete account </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">133,135</context>
+          <context context-type="linenumber">123,125</context>
         </context-group>
       </trans-unit>
       <trans-unit id="account.deletionSent" datatype="html">
         <source> We sent a confirmation link to <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;font-medium&quot;&gt;"/><x id="INTERPOLATION" equiv-text="{{ auth.currentUser()?.email }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span
-        &gt;"/>. Your account will only be deleted once you open it and confirm. The link expires in 1 hour. </source>
+          &gt;"/>. Your account will only be deleted once you open it and confirm. The link expires in 1 hour. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">137,141</context>
+          <context context-type="linenumber">127,131</context>
         </context-group>
       </trans-unit>
       <trans-unit id="account.deleteIntro" datatype="html">
         <source> Permanently deletes your account, history and friends. We&apos;ll email you a link to confirm before anything is deleted. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">144,148</context>
+          <context context-type="linenumber">134,138</context>
         </context-group>
       </trans-unit>
       <trans-unit id="common.password" datatype="html">
         <source>Password</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">151,153</context>
+          <context context-type="linenumber">139</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/login/login.html</context>
-          <context context-type="linenumber">19,21</context>
+          <context context-type="linenumber">13</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/register/register.html</context>
-          <context context-type="linenumber">46,48</context>
+          <context context-type="linenumber">33,34</context>
         </context-group>
       </trans-unit>
       <trans-unit id="account.deleteSubmit" datatype="html">
         <source> Delete my account </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">172,174</context>
+          <context context-type="linenumber">159,161</context>
         </context-group>
       </trans-unit>
       <trans-unit id="account.wrongPassword" datatype="html">
         <source>Incorrect password. After too many attempts, your account is locked for 15 minutes.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.ts</context>
-          <context context-type="linenumber">15</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="account.usernameTaken" datatype="html">
-        <source>This username is already taken.</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/auth/account/account.ts</context>
-          <context context-type="linenumber">17</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/auth/register/register.html</context>
-          <context context-type="linenumber">32,34</context>
+          <context context-type="linenumber">18</context>
         </context-group>
       </trans-unit>
       <trans-unit id="account.passwordsDiffer" datatype="html">
         <source>New passwords don&apos;t match.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.ts</context>
-          <context context-type="linenumber">90</context>
+          <context context-type="linenumber">100</context>
         </context-group>
       </trans-unit>
       <trans-unit id="checkEmail.title" datatype="html">
-        <source>Check your email</source>
+        <source> Check your email </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/check-email/check-email.html</context>
-          <context context-type="linenumber">3,4</context>
+          <context context-type="linenumber">4,6</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/forgot-password/forgot-password.html</context>
-          <context context-type="linenumber">4,5</context>
+          <context context-type="linenumber">5,7</context>
         </context-group>
       </trans-unit>
       <trans-unit id="checkEmail.sentTo" datatype="html">
@@ -236,106 +214,106 @@
           &gt;"/>. Click it to activate your account.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/check-email/check-email.html</context>
-          <context context-type="linenumber">7,9</context>
+          <context context-type="linenumber">9,11</context>
         </context-group>
       </trans-unit>
       <trans-unit id="checkEmail.sent" datatype="html">
         <source>We sent a confirmation link to your inbox. Click it to activate your account.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/check-email/check-email.html</context>
-          <context context-type="linenumber">12,14</context>
+          <context context-type="linenumber">14,16</context>
         </context-group>
       </trans-unit>
       <trans-unit id="checkEmail.resent" datatype="html">
         <source> Verification email sent again — check your inbox. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/check-email/check-email.html</context>
-          <context context-type="linenumber">20,22</context>
+          <context context-type="linenumber">22,24</context>
         </context-group>
       </trans-unit>
       <trans-unit id="checkEmail.resend" datatype="html">
         <source> Didn&apos;t get it? Resend the email </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/check-email/check-email.html</context>
-          <context context-type="linenumber">29,32</context>
+          <context context-type="linenumber">33,36</context>
         </context-group>
       </trans-unit>
       <trans-unit id="deletion.doneTitle" datatype="html">
-        <source>Account deleted</source>
+        <source> Account deleted </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/confirm-account-deletion/confirm-account-deletion.html</context>
-          <context context-type="linenumber">5,6</context>
+          <context context-type="linenumber">9,11</context>
         </context-group>
       </trans-unit>
       <trans-unit id="deletion.done" datatype="html">
         <source> Your account and its data are gone. You can still play without an account. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/confirm-account-deletion/confirm-account-deletion.html</context>
-          <context context-type="linenumber">7,9</context>
+          <context context-type="linenumber">12,14</context>
         </context-group>
       </trans-unit>
       <trans-unit id="deletion.backToGame" datatype="html">
         <source>Back to the game</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/confirm-account-deletion/confirm-account-deletion.html</context>
-          <context context-type="linenumber">13,16</context>
+          <context context-type="linenumber">14,16</context>
         </context-group>
       </trans-unit>
       <trans-unit id="common.linkInvalid" datatype="html">
-        <source>Link invalid or expired</source>
+        <source> Link invalid or expired </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/confirm-account-deletion/confirm-account-deletion.html</context>
-          <context context-type="linenumber">17,18</context>
+          <context context-type="linenumber">21,23</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/confirm-email/confirm-email.html</context>
-          <context context-type="linenumber">19,20</context>
+          <context context-type="linenumber">22,24</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/reset-password/reset-password.html</context>
-          <context context-type="linenumber">79,80</context>
+          <context context-type="linenumber">65,67</context>
         </context-group>
       </trans-unit>
       <trans-unit id="deletion.invalid" datatype="html">
         <source> This deletion link no longer works. Your account has not been deleted. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/confirm-account-deletion/confirm-account-deletion.html</context>
-          <context context-type="linenumber">19,21</context>
+          <context context-type="linenumber">24,26</context>
         </context-group>
       </trans-unit>
       <trans-unit id="deletion.toAccount" datatype="html">
         <source>Go to my account</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/confirm-account-deletion/confirm-account-deletion.html</context>
-          <context context-type="linenumber">25,28</context>
+          <context context-type="linenumber">32,35</context>
         </context-group>
       </trans-unit>
       <trans-unit id="deletion.title" datatype="html">
-        <source>Delete your account?</source>
+        <source> Delete your account? </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/confirm-account-deletion/confirm-account-deletion.html</context>
-          <context context-type="linenumber">29,30</context>
+          <context context-type="linenumber">37,39</context>
         </context-group>
       </trans-unit>
       <trans-unit id="deletion.warning" datatype="html">
         <source> This permanently deletes your account, your history and your friends list. It cannot be undone. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/confirm-account-deletion/confirm-account-deletion.html</context>
-          <context context-type="linenumber">31,33</context>
+          <context context-type="linenumber">40,42</context>
         </context-group>
       </trans-unit>
       <trans-unit id="deletion.confirm" datatype="html">
         <source> Delete my account permanently </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/confirm-account-deletion/confirm-account-deletion.html</context>
-          <context context-type="linenumber">41,43</context>
+          <context context-type="linenumber">53,54</context>
         </context-group>
       </trans-unit>
       <trans-unit id="deletion.keep" datatype="html">
         <source>Keep my account</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/confirm-account-deletion/confirm-account-deletion.html</context>
-          <context context-type="linenumber">44,48</context>
+          <context context-type="linenumber">56,58</context>
         </context-group>
       </trans-unit>
       <trans-unit id="confirmEmail.loading" datatype="html">
@@ -346,42 +324,42 @@
         </context-group>
       </trans-unit>
       <trans-unit id="confirmEmail.title" datatype="html">
-        <source>Email confirmed</source>
+        <source> Email confirmed </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/confirm-email/confirm-email.html</context>
-          <context context-type="linenumber">8,9</context>
+          <context context-type="linenumber">12,14</context>
         </context-group>
       </trans-unit>
       <trans-unit id="confirmEmail.ready" datatype="html">
         <source>Your account is ready.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/confirm-email/confirm-email.html</context>
-          <context context-type="linenumber">9,11</context>
+          <context context-type="linenumber">14,15</context>
         </context-group>
       </trans-unit>
       <trans-unit id="confirmEmail.login" datatype="html">
-        <source> Log in </source>
+        <source>Log in</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/confirm-email/confirm-email.html</context>
-          <context context-type="linenumber">15,18</context>
+          <context context-type="linenumber">15,17</context>
         </context-group>
       </trans-unit>
       <trans-unit id="confirmEmail.invalid" datatype="html">
         <source> This confirmation link no longer works. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/confirm-email/confirm-email.html</context>
-          <context context-type="linenumber">21,24</context>
+          <context context-type="linenumber">25,28</context>
         </context-group>
       </trans-unit>
       <trans-unit id="common.backToLogin" datatype="html">
         <source>Back to login</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/confirm-email/confirm-email.html</context>
-          <context context-type="linenumber">27,31</context>
+          <context context-type="linenumber">33,37</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/forgot-password/forgot-password.html</context>
-          <context context-type="linenumber">14,17</context>
+          <context context-type="linenumber">13,16</context>
         </context-group>
       </trans-unit>
       <trans-unit id="forgot.sent" datatype="html">
@@ -389,106 +367,120 @@
         &gt;"/>, we sent it a link to choose a new password. The link expires in 1 hour. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/forgot-password/forgot-password.html</context>
-          <context context-type="linenumber">7,10</context>
+          <context context-type="linenumber">9,12</context>
         </context-group>
       </trans-unit>
       <trans-unit id="forgot.title" datatype="html">
-        <source>Forgot your password?</source>
+        <source> Forgot your password? </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/forgot-password/forgot-password.html</context>
-          <context context-type="linenumber">17,18</context>
+          <context context-type="linenumber">17,19</context>
         </context-group>
       </trans-unit>
       <trans-unit id="forgot.intro" datatype="html">
         <source> Enter your email and we&apos;ll send you a link to choose a new one. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/forgot-password/forgot-password.html</context>
-          <context context-type="linenumber">19,22</context>
+          <context context-type="linenumber">20,23</context>
         </context-group>
       </trans-unit>
       <trans-unit id="common.email" datatype="html">
         <source>Email</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/forgot-password/forgot-password.html</context>
-          <context context-type="linenumber">24,26</context>
+          <context context-type="linenumber">24</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/login/login.html</context>
-          <context context-type="linenumber">7,9</context>
+          <context context-type="linenumber">8</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/register/register.html</context>
-          <context context-type="linenumber">10,12</context>
+          <context context-type="linenumber">11</context>
         </context-group>
       </trans-unit>
       <trans-unit id="forgot.submit" datatype="html">
         <source> Send reset link </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/forgot-password/forgot-password.html</context>
-          <context context-type="linenumber">44,46</context>
+          <context context-type="linenumber">33,35</context>
         </context-group>
       </trans-unit>
       <trans-unit id="forgot.remembered" datatype="html">
-        <source> Remembered it? <x id="START_LINK" ctype="x-a" equiv-text="&lt;a routerLink=&quot;/login&quot; class=&quot;text-accent&quot;&gt;"/>Log in<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/></source>
+        <source> Remembered it? <x id="START_LINK" ctype="x-a" equiv-text="&lt;a routerLink=&quot;/login&quot; class=&quot;text-accent underline underline-offset-2&quot;&gt;"/>Log in<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/forgot-password/forgot-password.html</context>
-          <context context-type="linenumber">49,51</context>
+          <context context-type="linenumber">38,41</context>
         </context-group>
       </trans-unit>
       <trans-unit id="login.title" datatype="html">
-        <source>Welcome back</source>
+        <source> Welcome back </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/login/login.html</context>
-          <context context-type="linenumber">3,5</context>
+          <context context-type="linenumber">4,7</context>
         </context-group>
       </trans-unit>
       <trans-unit id="login.forgot" datatype="html">
         <source>Forgot password?</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/login/login.html</context>
-          <context context-type="linenumber">22,24</context>
+          <context context-type="linenumber">26,28</context>
         </context-group>
       </trans-unit>
       <trans-unit id="login.verify" datatype="html">
         <source>Please verify your email before logging in.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/login/login.html</context>
-          <context context-type="linenumber">39,40</context>
+          <context context-type="linenumber">37,38</context>
         </context-group>
       </trans-unit>
       <trans-unit id="login.resent" datatype="html">
         <source> Verification email sent — check your inbox. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/login/login.html</context>
-          <context context-type="linenumber">42,43</context>
+          <context context-type="linenumber">40,41</context>
         </context-group>
       </trans-unit>
       <trans-unit id="login.resend" datatype="html">
         <source> Resend verification email </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/login/login.html</context>
-          <context context-type="linenumber">51,52</context>
+          <context context-type="linenumber">49,50</context>
         </context-group>
       </trans-unit>
       <trans-unit id="login.submit" datatype="html">
         <source> Log in </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/login/login.html</context>
-          <context context-type="linenumber">63,65</context>
+          <context context-type="linenumber">56,58</context>
         </context-group>
       </trans-unit>
       <trans-unit id="login.noAccount" datatype="html">
-        <source> No account yet? <x id="START_LINK" ctype="x-a" equiv-text="&lt;a routerLink=&quot;/register&quot; class=&quot;text-accent&quot;&gt;"/>Create one<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/></source>
+        <source> No account yet? <x id="START_LINK" ctype="x-a" equiv-text="&lt;a routerLink=&quot;/register&quot; class=&quot;text-accent underline underline-offset-2&quot;&gt;"/>Create one<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/login/login.html</context>
-          <context context-type="linenumber">68,70</context>
+          <context context-type="linenumber">61,64</context>
         </context-group>
       </trans-unit>
       <trans-unit id="login.invalid" datatype="html">
         <source>Invalid email or password.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/login/login.ts</context>
-          <context context-type="linenumber">47</context>
+          <context context-type="linenumber">50</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="common.usernameRule" datatype="html">
+        <source>3 to 20 characters: letters, digits, _ or -.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/auth/models.ts</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="account.usernameTaken" datatype="html">
+        <source>This username is already taken.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/auth/models.ts</context>
+          <context context-type="linenumber">36</context>
         </context-group>
       </trans-unit>
       <trans-unit id="password.tooLong" datatype="html">
@@ -527,777 +519,963 @@
         </context-group>
       </trans-unit>
       <trans-unit id="register.title" datatype="html">
-        <source>Create your account</source>
+        <source> Create your account </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/register/register.html</context>
-          <context context-type="linenumber">3,4</context>
+          <context context-type="linenumber">4,6</context>
         </context-group>
       </trans-unit>
       <trans-unit id="register.intro" datatype="html">
         <source> Track your streak and compare scores with friends. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/register/register.html</context>
-          <context context-type="linenumber">5,8</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="register.usernameHint" datatype="html">
-        <source> Shown to your friends. You can change it later. </source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/auth/register/register.html</context>
-          <context context-type="linenumber">40,42</context>
+          <context context-type="linenumber">7,10</context>
         </context-group>
       </trans-unit>
       <trans-unit id="register.confirmPassword" datatype="html">
         <source>Confirm password</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/register/register.html</context>
-          <context context-type="linenumber">70,73</context>
+          <context context-type="linenumber">49,50</context>
         </context-group>
       </trans-unit>
       <trans-unit id="register.acceptTerms" datatype="html">
-        <source> I&apos;m at least 13 and I accept the <x id="START_LINK" ctype="x-a" equiv-text="&lt;a routerLink=&quot;/terms&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot; class=&quot;text-accent underline&quot;
+        <source> I&apos;m at least 13 and I accept the <x id="START_LINK" ctype="x-a" equiv-text="&lt;a
+              routerLink=&quot;/terms&quot;
+              target=&quot;_blank&quot;
+              rel=&quot;noopener&quot;
+              class=&quot;text-accent underline underline-offset-2&quot;
               &gt;"/>Terms<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a
-            &gt;"/> and the <x id="START_LINK_1" equiv-text="&lt;a routerLink=&quot;/privacy&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot; class=&quot;text-accent underline&quot;
+            &gt;"/> and the <x id="START_LINK_1" equiv-text="&lt;a
+              routerLink=&quot;/privacy&quot;
+              target=&quot;_blank&quot;
+              rel=&quot;noopener&quot;
+              class=&quot;text-accent underline underline-offset-2&quot;
               &gt;"/>Privacy Policy<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a
             &gt;"/>. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/register/register.html</context>
-          <context context-type="linenumber">91,99</context>
+          <context context-type="linenumber">72,88</context>
         </context-group>
       </trans-unit>
       <trans-unit id="register.termsRequired" datatype="html">
         <source> You need to accept the Terms to create an account. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/register/register.html</context>
-          <context context-type="linenumber">107,110</context>
+          <context context-type="linenumber">96,99</context>
         </context-group>
       </trans-unit>
       <trans-unit id="register.submit" datatype="html">
         <source> Create account </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/register/register.html</context>
-          <context context-type="linenumber">122,124</context>
+          <context context-type="linenumber">106,108</context>
         </context-group>
       </trans-unit>
       <trans-unit id="register.haveAccount" datatype="html">
-        <source> Already have an account? <x id="START_LINK" ctype="x-a" equiv-text="&lt;a routerLink=&quot;/login&quot; class=&quot;text-accent&quot;&gt;"/>Log in<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/></source>
+        <source> Already have an account? <x id="START_LINK" ctype="x-a" equiv-text="&lt;a routerLink=&quot;/login&quot; class=&quot;text-accent underline underline-offset-2&quot;&gt;"/>Log in<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/register/register.html</context>
-          <context context-type="linenumber">127,129</context>
+          <context context-type="linenumber">111,114</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="register.usernameHint" datatype="html">
+        <source>Shown to your friends. You can change it later.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/auth/register/register.ts</context>
+          <context context-type="linenumber">55</context>
         </context-group>
       </trans-unit>
       <trans-unit id="register.emailTaken" datatype="html">
         <source>An account with this email already exists.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/register/register.ts</context>
-          <context context-type="linenumber">88</context>
+          <context context-type="linenumber">108</context>
         </context-group>
       </trans-unit>
       <trans-unit id="reset.title" datatype="html">
-        <source>Choose a new password</source>
+        <source> Choose a new password </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/reset-password/reset-password.html</context>
-          <context context-type="linenumber">5,6</context>
+          <context context-type="linenumber">6,8</context>
         </context-group>
       </trans-unit>
       <trans-unit id="reset.intro" datatype="html">
         <source> Every device logged in to your account will be logged out. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/reset-password/reset-password.html</context>
-          <context context-type="linenumber">7,10</context>
+          <context context-type="linenumber">9,12</context>
         </context-group>
       </trans-unit>
       <trans-unit id="reset.submit" datatype="html">
         <source> Set new password </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/reset-password/reset-password.html</context>
-          <context context-type="linenumber">62,63</context>
+          <context context-type="linenumber">47,48</context>
         </context-group>
       </trans-unit>
       <trans-unit id="reset.doneTitle" datatype="html">
-        <source>Password updated</source>
+        <source> Password updated </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/reset-password/reset-password.html</context>
-          <context context-type="linenumber">67,68</context>
+          <context context-type="linenumber">53,55</context>
         </context-group>
       </trans-unit>
       <trans-unit id="reset.done" datatype="html">
         <source> Every device has been logged out. Log in with your new password. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/reset-password/reset-password.html</context>
-          <context context-type="linenumber">69,71</context>
+          <context context-type="linenumber">56,58</context>
         </context-group>
       </trans-unit>
       <trans-unit id="common.login" datatype="html">
         <source>Log in</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/reset-password/reset-password.html</context>
-          <context context-type="linenumber">75,78</context>
+          <context context-type="linenumber">58,60</context>
         </context-group>
       </trans-unit>
       <trans-unit id="reset.invalid" datatype="html">
         <source> This password reset link no longer works. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/reset-password/reset-password.html</context>
-          <context context-type="linenumber">81,83</context>
+          <context context-type="linenumber">68,70</context>
         </context-group>
       </trans-unit>
       <trans-unit id="reset.newLink" datatype="html">
         <source>Get a new link</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/reset-password/reset-password.html</context>
-          <context context-type="linenumber">87,91</context>
+          <context context-type="linenumber">76,80</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="termsBanner.title" datatype="html">
+        <source> Our Terms of Use changed on <x id="INTERPOLATION" equiv-text="{{ updated }}"/>. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/auth/terms-banner/terms-banner.html</context>
+          <context context-type="linenumber">9,11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="termsBanner.body" datatype="html">
+        <source> Please read <x id="START_LINK" ctype="x-a" equiv-text="&lt;a routerLink=&quot;/terms&quot; class=&quot;text-accent underline underline-offset-2&quot;&gt;"/>the new Terms<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a
+          &gt;"/> and accept them. If you do not, you can delete your account from <x id="START_LINK_1" equiv-text="&lt;a routerLink=&quot;/account&quot; class=&quot;text-accent underline underline-offset-2&quot;
+            &gt;"/>your account page<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a
+          &gt;"/>. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/auth/terms-banner/terms-banner.html</context>
+          <context context-type="linenumber">12,19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="termsBanner.accept" datatype="html">
+        <source> Accept </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/auth/terms-banner/terms-banner.html</context>
+          <context context-type="linenumber">32,34</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="termsBanner.later" datatype="html">
+        <source> Later </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/auth/terms-banner/terms-banner.html</context>
+          <context context-type="linenumber">42,44</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.voice.round" datatype="html">
         <source>Case</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">12</context>
+          <context context-type="linenumber">19</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.voice.dailyGame" datatype="html">
         <source>Today&apos;s file</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">13</context>
+          <context context-type="linenumber">20</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.voice.hint" datatype="html">
         <source>Lead</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">14</context>
+          <context context-type="linenumber">21</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.voice.pickHint" datatype="html">
         <source>Pick a lead</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">15</context>
+          <context context-type="linenumber">22</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.voice.noHint" datatype="html">
         <source>No lead turned up for this case. Make your final guess.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">16</context>
+          <context context-type="linenumber">23</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.voice.result" datatype="html">
         <source>Case closed</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">17</context>
+          <context context-type="linenumber">24</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.voice.summary" datatype="html">
         <source>Case report</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">18</context>
+          <context context-type="linenumber">25</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.voice.next" datatype="html">
         <source>Next case</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">19</context>
+          <context context-type="linenumber">26</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.voice.seeSummary" datatype="html">
         <source>See the case report</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">20</context>
+          <context context-type="linenumber">27</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.voice.removed" datatype="html">
         <source>Withdrawn from the file</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">21</context>
+          <context context-type="linenumber">28</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.voice.freeMode" datatype="html">
         <source>Free investigation</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">22</context>
+          <context context-type="linenumber">29</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.voice.chooseLength" datatype="html">
         <source>How many cases?</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">23</context>
+          <context context-type="linenumber">30</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.voice.newSeries" datatype="html">
         <source>New investigation</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">24</context>
+          <context context-type="linenumber">31</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.voice.tryFree" datatype="html">
         <source>Not enough? Open a free investigation</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">25</context>
+          <context context-type="linenumber">32</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="game.voice.reportHint" datatype="html">
+        <source>Report this lead</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
+          <context context-type="linenumber">33</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.neutral.round" datatype="html">
         <source>Round</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">29</context>
+          <context context-type="linenumber">37</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.neutral.dailyGame" datatype="html">
         <source>Daily game</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">30</context>
+          <context context-type="linenumber">38</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.neutral.hint" datatype="html">
         <source>Hint</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">31</context>
+          <context context-type="linenumber">39</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.neutral.pickHint" datatype="html">
         <source>Pick a hint</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">32</context>
+          <context context-type="linenumber">40</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.neutral.noHint" datatype="html">
         <source>No hint for this round. Make your final guess.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">33</context>
+          <context context-type="linenumber">41</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.neutral.result" datatype="html">
         <source>Result</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">34</context>
+          <context context-type="linenumber">42</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.neutral.summary" datatype="html">
         <source>Summary</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">35</context>
+          <context context-type="linenumber">43</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.neutral.next" datatype="html">
         <source>Next round</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">36</context>
+          <context context-type="linenumber">44</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.neutral.seeSummary" datatype="html">
         <source>See the summary</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">37</context>
+          <context context-type="linenumber">45</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.neutral.removed" datatype="html">
         <source>Photo removed</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">38</context>
+          <context context-type="linenumber">46</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.neutral.freeMode" datatype="html">
         <source>Series</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">39</context>
+          <context context-type="linenumber">47</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.neutral.chooseLength" datatype="html">
         <source>How many rounds?</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">40</context>
+          <context context-type="linenumber">48</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.neutral.newSeries" datatype="html">
         <source>New series</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">41</context>
+          <context context-type="linenumber">49</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.neutral.tryFree" datatype="html">
         <source>Not enough? Play a series</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">42</context>
+          <context context-type="linenumber">50</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="game.neutral.reportHint" datatype="html">
+        <source>Report this hint</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
+          <context context-type="linenumber">51</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.question" datatype="html">
         <source>How old were they on this photo?</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">49</context>
+          <context context-type="linenumber">58</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.photoAlt" datatype="html">
         <source>The person to guess</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">50</context>
+          <context context-type="linenumber">59</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="game.pickHintHelp" datatype="html">
+        <source>A fact from the year the photo was taken.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
+          <context context-type="linenumber">60</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.guessLabel" datatype="html">
         <source>Age</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">51</context>
+          <context context-type="linenumber">61</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.firstGuessButton" datatype="html">
         <source>Guess</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">52</context>
+          <context context-type="linenumber">62</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.secondGuessButton" datatype="html">
         <source>Final guess</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">53</context>
+          <context context-type="linenumber">63</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.yourGuess" datatype="html">
         <source>Your guess</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">54</context>
+          <context context-type="linenumber">64</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.firstGuess" datatype="html">
         <source>First guess</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">55</context>
+          <context context-type="linenumber">65</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.secondGuess" datatype="html">
         <source>Final guess</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">56</context>
+          <context context-type="linenumber">66</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.realAge" datatype="html">
         <source>Age on the photo</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">57</context>
+          <context context-type="linenumber">67</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.exact" datatype="html">
         <source>Spot on, first try.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">58</context>
+          <context context-type="linenumber">68</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.points" datatype="html">
         <source>points</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">59</context>
+          <context context-type="linenumber">69</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.outOf" datatype="html">
         <source>out of</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">60</context>
+          <context context-type="linenumber">70</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.hintFrom" datatype="html">
         <source>From</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">61</context>
+          <context context-type="linenumber">71</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.photoBy" datatype="html">
         <source>Photo</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">64</context>
+          <context context-type="linenumber">74</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.unknownAuthor" datatype="html">
         <source>Unknown author</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">65</context>
+          <context context-type="linenumber">75</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.source" datatype="html">
         <source>Commons page</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">66</context>
+          <context context-type="linenumber">76</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.loading" datatype="html">
         <source>Opening the file…</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">67</context>
+          <context context-type="linenumber">77</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.noGame" datatype="html">
         <source>No case today. Come back tomorrow.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">68</context>
+          <context context-type="linenumber">78</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.retry" datatype="html">
         <source>Try again</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">69</context>
+          <context context-type="linenumber">79</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.invalidAge" datatype="html">
         <source>Enter a whole age from <x id="min" equiv-text="MIN_AGE"/> to <x id="max" equiv-text="MAX_AGE"/>.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">70</context>
+          <context context-type="linenumber">80</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.imageFailed" datatype="html">
         <source>The photo could not load.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">71</context>
+          <context context-type="linenumber">81</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.removedExplained" datatype="html">
         <source>This photo was withdrawn for everyone. It does not count in your score.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">72</context>
+          <context context-type="linenumber">82</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.closed" datatype="html">
         <source>Today&apos;s file is closed. Here is the new one.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">73</context>
+          <context context-type="linenumber">83</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.comeBack" datatype="html">
         <source>A new file opens at midnight UTC.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">75</context>
+          <context context-type="linenumber">85</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.hintLanguage" datatype="html">
         <source>Hints in</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">76</context>
+          <context context-type="linenumber">86</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.freeIntro" datatype="html">
         <source>Same rules as the daily game, as many as you like. Nothing here counts toward the daily game.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">77</context>
+          <context context-type="linenumber">87</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.noPhotos" datatype="html">
         <source>No photo is available right now. Try again later.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">78</context>
+          <context context-type="linenumber">88</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.tooManySeries" datatype="html">
         <source>Too many games started from your connection. Try again in a while.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">79</context>
+          <context context-type="linenumber">89</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.challenge" datatype="html">
         <source>Challenge</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">80</context>
+          <context context-type="linenumber">90</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.challengeFriends" datatype="html">
         <source>Challenge friends</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">81</context>
+          <context context-type="linenumber">91</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.challengeExplained" datatype="html">
         <source>Your friends play the same photos with the same hints, once each. Everyone sees the leaderboard after playing.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">82</context>
+          <context context-type="linenumber">92</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.nicknameLabel" datatype="html">
         <source>Your name in the challenge</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">83</context>
+          <context context-type="linenumber">93</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.nicknameRules" datatype="html">
         <source>3 to 20 letters, digits, &quot;_&quot; or &quot;-&quot;. Everyone with the link sees it.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">84</context>
+          <context context-type="linenumber">94</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.nicknameInvalid" datatype="html">
         <source>Use 3 to 20 letters, digits, &quot;_&quot; or &quot;-&quot;.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">85</context>
+          <context context-type="linenumber">95</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.nicknameTaken" datatype="html">
         <source>This name belongs to an account. Choose another one.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">86</context>
+          <context context-type="linenumber">96</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.createChallenge" datatype="html">
         <source>Create the link</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">87</context>
+          <context context-type="linenumber">97</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.challengeLink" datatype="html">
         <source>Link to the challenge</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">88</context>
+          <context context-type="linenumber">98</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.share" datatype="html">
         <source>Share</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">89</context>
+          <context context-type="linenumber">99</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.copyLink" datatype="html">
         <source>Copy the link</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">90</context>
+          <context context-type="linenumber">100</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.copied" datatype="html">
         <source>Copied.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">91</context>
+          <context context-type="linenumber">101</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.shareResult" datatype="html">
         <source>Share my result</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">92</context>
+          <context context-type="linenumber">102</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.acceptChallenge" datatype="html">
         <source>Take up the challenge</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">93</context>
+          <context context-type="linenumber">103</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.onceOnly" datatype="html">
         <source>One try each. The leaderboard shows once you have played.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">94</context>
+          <context context-type="linenumber">104</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.challengeNotFound" datatype="html">
         <source>This challenge does not exist or has expired. A challenge lasts 30 days.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">95</context>
+          <context context-type="linenumber">105</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.leaderboard" datatype="html">
         <source>Leaderboard</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">96</context>
+          <context context-type="linenumber">106</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.guestMark" datatype="html">
         <source>guest</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">97</context>
+          <context context-type="linenumber">107</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.youMark" datatype="html">
         <source>you</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">98</context>
+          <context context-type="linenumber">108</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.rank" datatype="html">
         <source>Rank</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">99</context>
+          <context context-type="linenumber">109</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.player" datatype="html">
         <source>Player</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">100</context>
+          <context context-type="linenumber">110</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="game.reportPhoto" datatype="html">
+        <source>Report this photo</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
+          <context context-type="linenumber">111</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="game.reportWhy" datatype="html">
+        <source>What is wrong?</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
+          <context context-type="linenumber">112</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="game.reportSend" datatype="html">
+        <source>Send</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
+          <context context-type="linenumber">113</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="game.reportCancel" datatype="html">
+        <source>Cancel</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
+          <context context-type="linenumber">114</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="game.reportSent" datatype="html">
+        <source>Reported, thank you. We will take a look.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
+          <context context-type="linenumber">115</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="game.reportTooMany" datatype="html">
+        <source>Too many reports from your connection. Try again later.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
+          <context context-type="linenumber">116</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="game.reportUnavailable" datatype="html">
+        <source>This can no longer be reported.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
+          <context context-type="linenumber">117</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="game.report.photo.tooSmall" datatype="html">
+        <source>The image is too small</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
+          <context context-type="linenumber">122</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="game.report.photo.notIdentifiable" datatype="html">
+        <source>The person cannot be made out</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
+          <context context-type="linenumber">123</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="game.report.photo.wrongPerson" datatype="html">
+        <source>It is not the right person</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
+          <context context-type="linenumber">124</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="game.report.photo.looksMinor" datatype="html">
+        <source>The person looks under 18</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
+          <context context-type="linenumber">125</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="game.report.photo.disturbing" datatype="html">
+        <source>This person bothers me</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
+          <context context-type="linenumber">126</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="game.report.photo.other" datatype="html">
+        <source>Something else</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
+          <context context-type="linenumber">127</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="game.report.hint.wrongYear" datatype="html">
+        <source>The year is wrong</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
+          <context context-type="linenumber">132</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="game.report.hint.false" datatype="html">
+        <source>The information is false</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
+          <context context-type="linenumber">133</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="game.report.hint.unclear" datatype="html">
+        <source>I do not understand it</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
+          <context context-type="linenumber">134</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="game.report.hint.disturbing" datatype="html">
+        <source>It bothers me</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
+          <context context-type="linenumber">135</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="game.report.hint.other" datatype="html">
+        <source>Something else</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
+          <context context-type="linenumber">136</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.voice.length" datatype="html">
         <source><x id="count" equiv-text="count"/> cases</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">106</context>
+          <context context-type="linenumber">142</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.neutral.length" datatype="html">
         <source><x id="count" equiv-text="count"/> rounds</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">107</context>
+          <context context-type="linenumber">143</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.shorterSeries" datatype="html">
         <source>Only <x id="count" equiv-text="count"/> photos could be drawn this time.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">112</context>
+          <context context-type="linenumber">148</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.older" datatype="html">
         <source>Older than <x id="guess" equiv-text="guess"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">118</context>
+          <context context-type="linenumber">154</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.younger" datatype="html">
         <source>Younger than <x id="guess" equiv-text="guess"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">119</context>
+          <context context-type="linenumber">155</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.category.music" datatype="html">
         <source>Music</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">123</context>
+          <context context-type="linenumber">159</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.category.film" datatype="html">
         <source>Film</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">124</context>
+          <context context-type="linenumber">160</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.category.sport" datatype="html">
         <source>Sport</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">125</context>
+          <context context-type="linenumber">161</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.category.science" datatype="html">
         <source>Science</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">126</context>
+          <context context-type="linenumber">162</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.category.world" datatype="html">
         <source>World events</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">127</context>
+          <context context-type="linenumber">163</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.category.celebrities" datatype="html">
         <source>Celebrities</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">128</context>
+          <context context-type="linenumber">164</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.roundTitle" datatype="html">
         <source><x id="round" equiv-text="GAME_TEXT.round"/> <x id="position" equiv-text="position"/> of <x id="total" equiv-text="total"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">132</context>
+          <context context-type="linenumber">168</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.challengeIntro" datatype="html">
         <source><x id="creator" equiv-text="creator"/> challenges you on <x id="length" equiv-text="seriesLength(rounds)"/>.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">138</context>
+          <context context-type="linenumber">174</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.challengeIntroAnonymous" datatype="html">
         <source>A friend challenges you on <x id="length" equiv-text="seriesLength(rounds)"/>.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">139</context>
+          <context context-type="linenumber">175</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.shareText" datatype="html">
-        <source>Ageguessr · <x id="challenge" equiv-text="GAME_TEXT.challenge"/> · <x id="points" equiv-text="points"/> / <x id="max" equiv-text="max"/></source>
+        <source>AgeGuessr · <x id="challenge" equiv-text="GAME_TEXT.challenge"/> · <x id="points" equiv-text="points"/> / <x id="max" equiv-text="max"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">149</context>
+          <context context-type="linenumber">185</context>
         </context-group>
       </trans-unit>
       <trans-unit id="language.switchFailed" datatype="html">
-        <source>Could not save your language. Try again.</source>
+        <source> Could not save your language. Try again. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/i18n/language-switch/language-switch.html</context>
-          <context context-type="linenumber">11,14</context>
+          <context context-type="linenumber">26,29</context>
         </context-group>
       </trans-unit>
       <trans-unit id="footer.nav" datatype="html">
@@ -1328,60 +1506,95 @@
           <context context-type="linenumber">12,13</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="header.nav" datatype="html">
-        <source>Account</source>
+      <trans-unit id="header.mainNav" datatype="html">
+        <source>Main</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/layout/header/header.html</context>
-          <context context-type="linenumber">9</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="header.free" datatype="html">
-        <source>Free investigation</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/layout/header/header.html</context>
-          <context context-type="linenumber">17,19</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="header.logout" datatype="html">
-        <source> Log out </source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/layout/header/header.html</context>
-          <context context-type="linenumber">40,42</context>
+          <context context-type="sourcefile">src/app/features/layout/header/header.ts</context>
+          <context context-type="linenumber">57</context>
         </context-group>
       </trans-unit>
       <trans-unit id="header.login" datatype="html">
         <source>Log in</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/layout/header/header.html</context>
-          <context context-type="linenumber">49,52</context>
+          <context context-type="sourcefile">src/app/features/layout/header/header.ts</context>
+          <context context-type="linenumber">58</context>
         </context-group>
       </trans-unit>
       <trans-unit id="header.signup" datatype="html">
         <source>Sign up</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/layout/header/header.html</context>
-          <context context-type="linenumber">55,58</context>
+          <context context-type="sourcefile">src/app/features/layout/header/header.ts</context>
+          <context context-type="linenumber">59</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="header.account" datatype="html">
-        <source>Account settings for <x id="username" equiv-text="username"/></source>
+      <trans-unit id="header.logout" datatype="html">
+        <source>Log out</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/layout/header/header.ts</context>
-          <context context-type="linenumber">17</context>
+          <context context-type="linenumber">60</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="theme.toLight" datatype="html">
-        <source>Switch to light theme</source>
+      <trans-unit id="header.myAccount" datatype="html">
+        <source>My account</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/theme/theme-toggle/theme-toggle.ts</context>
-          <context context-type="linenumber">12</context>
+          <context context-type="sourcefile">src/app/features/layout/header/header.ts</context>
+          <context context-type="linenumber">61</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="theme.toDark" datatype="html">
-        <source>Switch to dark theme</source>
+      <trans-unit id="header.preferences" datatype="html">
+        <source>Preferences</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/theme/theme-toggle/theme-toggle.ts</context>
-          <context context-type="linenumber">13</context>
+          <context context-type="sourcefile">src/app/features/layout/header/header.ts</context>
+          <context context-type="linenumber">62</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="header.menu" datatype="html">
+        <source>Menu</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/layout/header/header.ts</context>
+          <context context-type="linenumber">63</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="header.closeMenu" datatype="html">
+        <source>Close menu</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/layout/header/header.ts</context>
+          <context context-type="linenumber">64</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="preferences.siteLanguage" datatype="html">
+        <source>Site language</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/layout/preferences/preferences.ts</context>
+          <context context-type="linenumber">46</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="preferences.theme" datatype="html">
+        <source>Theme</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/layout/preferences/preferences.ts</context>
+          <context context-type="linenumber">48</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="preferences.dark" datatype="html">
+        <source>Dark</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/layout/preferences/preferences.ts</context>
+          <context context-type="linenumber">55</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="preferences.light" datatype="html">
+        <source>Light</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/layout/preferences/preferences.ts</context>
+          <context context-type="linenumber">56</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="preferences.system" datatype="html">
+        <source>Auto</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/layout/preferences/preferences.ts</context>
+          <context context-type="linenumber">57</context>
         </context-group>
       </trans-unit>
       <trans-unit id="common.genericError" datatype="html">
@@ -1396,6 +1609,27 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shared/common-messages.ts</context>
           <context context-type="linenumber">7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ui.ageInput.unit" datatype="html">
+        <source>years</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/ui/age-input/age-input.ts</context>
+          <context context-type="linenumber">80</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ui.ageInput.less" datatype="html">
+        <source>One year younger</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/ui/age-input/age-input.ts</context>
+          <context context-type="linenumber">81</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ui.ageInput.more" datatype="html">
+        <source>One year older</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/ui/age-input/age-input.ts</context>
+          <context context-type="linenumber">82</context>
         </context-group>
       </trans-unit>
     </body>

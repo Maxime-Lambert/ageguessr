@@ -6,6 +6,8 @@ import { ApiErrorResponse } from '../../../shared/api-error';
 import { HintCurationApi } from '../hint-curation-api';
 import { HintReportReason } from '../../../shared/reports/report-reasons';
 import { ReportedHint } from '../models';
+import { TextInput } from '../../../shared/ui/field/field';
+import { Button } from '../../../shared/ui/button/button';
 
 /** The reasons as the player picked them (game-vocabulary), in English like the admin. */
 export const HINT_REASON_LABELS: Record<HintReportReason, string> = {
@@ -27,6 +29,7 @@ const ERROR_MESSAGES: Record<string, string> = {
  * reports. Each closes the reports; nothing is taken out without the admin.
  */
 @Component({
+  imports: [TextInput, Button],
   selector: 'app-reported-hints',
   templateUrl: './reported-hints.html',
 })

@@ -3,18 +3,20 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Auth } from '../auth';
-import { USERNAME_PATTERN } from '../models';
+import { USERNAME_PATTERN, USERNAME_RULE_MESSAGE, USERNAME_TAKEN_MESSAGE } from '../models';
 import {
   NEW_PASSWORD_VALIDATORS,
   PASSWORD_HINT,
-  PASSWORD_TOO_LONG_MESSAGE,
+  newPasswordError,
   passwordRefusalMessage,
 } from '../password-rules';
 import { COMMON_MESSAGES } from '../../../shared/common-messages';
+import { Page } from '../../../shared/ui/page/page';
+import { Field, TextInput } from '../../../shared/ui/field/field';
+import { Button } from '../../../shared/ui/button/button';
 
 const WRONG_PASSWORD_MESSAGE = $localize`:@@account.wrongPassword:Incorrect password. After too many attempts, your account is locked for 15 minutes.`;
 const GENERIC_ERROR_MESSAGE = COMMON_MESSAGES.genericError;
-const USERNAME_TAKEN_MESSAGE = $localize`:@@account.usernameTaken:This username is already taken.`;
 
 function isWrongPassword(error: HttpErrorResponse): boolean {
   return (
@@ -24,7 +26,7 @@ function isWrongPassword(error: HttpErrorResponse): boolean {
 }
 
 @Component({
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, Page, Field, TextInput, Button],
   selector: 'app-account',
   templateUrl: './account.html',
 })
@@ -45,7 +47,6 @@ export class Account {
     newPassword: new FormControl('', { nonNullable: true, validators: NEW_PASSWORD_VALIDATORS }),
     confirmPassword: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
   });
-  readonly passwordTooLongMessage = PASSWORD_TOO_LONG_MESSAGE;
   readonly passwordHint = PASSWORD_HINT;
   readonly passwordRefusal = signal<string | null>(null);
   readonly passwordStatus = signal<'idle' | 'saving' | 'saved'>('idle');
@@ -56,6 +57,15 @@ export class Account {
   });
   readonly deletionStatus = signal<'idle' | 'sending' | 'sent'>('idle');
   readonly deletionError = signal<string | null>(null);
+
+  usernameFieldError(): string | null {
+    const control = this.usernameForm.controls.username;
+    return control.invalid && control.touched ? USERNAME_RULE_MESSAGE : null;
+  }
+
+  newPasswordFieldError(): string | null {
+    return newPasswordError(this.passwordForm.controls.newPassword, this.passwordRefusal());
+  }
 
   saveUsername(): void {
     if (this.usernameForm.invalid) {

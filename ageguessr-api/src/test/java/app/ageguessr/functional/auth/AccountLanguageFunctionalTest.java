@@ -47,7 +47,7 @@ class AccountLanguageFunctionalTest {
         register(email, "\"FR\"").andExpect(status().isCreated());
 
         EmailMessage verification = emailSender.lastMessageTo(email);
-        assertThat(verification.subject()).isEqualTo("Confirmez votre compte Ageguessr");
+        assertThat(verification.subject()).isEqualTo("Confirmez votre compte AgeGuessr");
         assertThat(verification.htmlBody()).contains("http://localhost:4200/fr/confirm-email?token=");
     }
 
@@ -75,7 +75,7 @@ class AccountLanguageFunctionalTest {
         mockMvc.perform(post("/api/auth/forgot-password")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"email\":\"%s\"}".formatted(email)));
-        assertThat(emailSender.lastMessageTo(email).subject()).isEqualTo("Réinitialisez votre mot de passe Ageguessr");
+        assertThat(emailSender.lastMessageTo(email).subject()).isEqualTo("Réinitialisez votre mot de passe AgeGuessr");
     }
 
     @Test

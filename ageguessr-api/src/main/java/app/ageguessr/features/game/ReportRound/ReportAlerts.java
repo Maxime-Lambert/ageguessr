@@ -58,7 +58,7 @@ class ReportAlerts {
 
     void photo(Person person, PhotoReportReason reason, long open, boolean inTodaysGame) {
         String name = person.getNameEn() != null ? person.getNameEn() : person.getNameFr();
-        String subject = "[Ageguessr] Photo reported: " + name;
+        String subject = "[AgeGuessr] Photo reported: " + name;
         String body = "<p>A photo of <strong>" + HtmlUtils.htmlEscape(name) + "</strong> ("
                 + HtmlUtils.htmlEscape(person.getWikidataId()) + ") has " + open + " open report(s), the last one: "
                 + reason + ".</p>"
@@ -69,7 +69,7 @@ class ReportAlerts {
 
     void hint(Hint hint, String reason, long open, boolean fromTodaysGame) {
         String text = hint.getTextEn() != null ? hint.getTextEn() : hint.getTextFr();
-        String subject = "[Ageguessr] Hint reported (" + hint.getCategory() + ", " + hint.getYear() + ")";
+        String subject = "[AgeGuessr] Hint reported (" + hint.getCategory() + ", " + hint.getYear() + ")";
         String body = "<p>The hint <em>" + HtmlUtils.htmlEscape(text) + "</em> has " + open
                 + " open report(s), the last one: " + reason + ".</p>"
                 + (fromTodaysGame ? "<p><strong>It was reported from today's game.</strong></p>" : "")

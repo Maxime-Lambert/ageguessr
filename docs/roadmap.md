@@ -1,4 +1,4 @@
-# Roadmap Ageguessr
+# Roadmap AgeGuessr
 
 Source de vérité de l'avancement produit, découpée en semaines indicatives.
 À cocher à chaque PR mergée (pas besoin d'attendre la fin d'une semaine pour avancer sur
@@ -13,7 +13,7 @@ la suivante).
       typo, formes, icônes, ton « enquête » à l'essai — PR `chore/design-charter`
 - [x] Mise en place technique de la charte (tokens Tailwind, polices, toggle thème,
       test de contraste des tokens) — PR `chore/design-charter`
-- [x] Logo/wordmark Ageguessr + favicon (« A » Fraunces, SVG + ICO + Apple touch icon)
+- [x] Logo/wordmark AgeGuessr + favicon (« A » Fraunces, SVG + ICO + Apple touch icon)
       — PR `chore/design-charter`
 - [x] Mentions légales, CGU et politique de confidentialité (EN + FR, droit français,
       acceptation des CGU versionnée à l'inscription, 13 ans minimum) — PR
@@ -147,7 +147,8 @@ la suivante).
 - [ ] Page d'accueil publique
 - [x] Vocabulaire de jeu centralisé dans un seul fichier (essai du ton « enquête »,
       critère de validation au premier playtest — voir `docs/decisions/design.md`)
-- [ ] Trancher le duotone des photos sur de vraies photos Commons
+- [x] Trancher le duotone des photos sur de vraies photos Commons : pas de duotone, un
+      filtre léger et le carton crème du tirage (`design.md`, « Traitement des photos »)
 - [x] Site en anglais et en français (`/en/`, `/fr/`, sélecteur dans l'en-tête), langue
       enregistrée sur le compte et emails dans cette langue, langue des indices choisie
       sur l'écran de jeu, administration en anglais — PR `feature/i18n`
@@ -155,10 +156,10 @@ la suivante).
       une série partagée par un lien, jouée une fois par chaque ami, avec un classement
       — PR `feature/free-investigation`
 
-- [ ] Refonte visuelle, direction A « Archives soignées » (`plans/design-overhaul.md`) :
-      maquettes validées, `docs/decisions/mockups/`, PR `chore/design-mockups`. Restent
-      le socle CDK + `shared/ui`, la navigation, les écrans de jeu et les écrans
-      secondaires
+- [x] Refonte visuelle, direction A « Archives soignées » (`plans/design-overhaul.md`) :
+      maquettes (`docs/decisions/mockups/`, PR `chore/design-mockups`), socle CDK +
+      `shared/ui` et navigation (PR #40), écrans de jeu (PR #41), auth, compte, pages
+      légales, admin et bandeau CGU (PR `feature/secondary-screens-redesign`)
 
 ## Semaine 5 — Compte utilisateur + historique
 - [x] Inscription/connexion (frontend) + navigation (en-tête invité/connecté) — PR

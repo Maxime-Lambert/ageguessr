@@ -43,7 +43,7 @@ describe('App', () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('header a')?.textContent).toContain('Ageguessr');
+    expect(compiled.querySelector('header a')?.textContent).toContain('AgeGuessr');
   });
 
   it('loads the site in the language of the restored account', async () => {

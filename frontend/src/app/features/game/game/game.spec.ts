@@ -31,7 +31,7 @@ describe('Game', () => {
   }
 
   function guess(value: string): void {
-    const input = page.querySelector<HTMLInputElement>('#guess')!;
+    const input = page.querySelector<HTMLInputElement>('app-age-input input')!;
     input.value = value;
     input.dispatchEvent(new Event('input'));
     page.querySelector('form')!.dispatchEvent(new Event('submit'));
@@ -211,7 +211,7 @@ describe('Game', () => {
     fixture.detectChanges();
 
     expect(page.querySelector('[role=alert]')?.textContent).toContain(GAME_TEXT.genericError);
-    expect(page.querySelector('#guess')).not.toBeNull();
+    expect(page.querySelector('app-age-input input')).not.toBeNull();
   });
 
   it('reloads once when the photo fails to load, then reports it', () => {
@@ -232,7 +232,7 @@ describe('Game', () => {
     button(GAME_TEXT.retry).click();
     load(today([round(1)]));
 
-    expect(page.querySelector('#guess')).not.toBeNull();
+    expect(page.querySelector('app-age-input input')).not.toBeNull();
   });
 
   it('reports the photo of the round on screen and keeps it reported', () => {

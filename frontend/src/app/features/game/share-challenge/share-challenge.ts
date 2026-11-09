@@ -4,6 +4,9 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ApiErrorResponse } from '../../../shared/api-error';
 import { Auth } from '../../auth/auth';
 import { GAME_TEXT, nicknameError, shareText } from '../game-vocabulary';
+import { LucideUsers } from '@lucide/angular';
+import { Button } from '../../../shared/ui/button/button';
+import { Field, TextInput } from '../../../shared/ui/field/field';
 import { Leaderboard } from '../leaderboard/leaderboard';
 import { Challenge, Series } from '../models';
 import { SeriesApi } from '../series-api';
@@ -15,7 +18,7 @@ import { NICKNAME_PATTERN, SHARE_TARGET, challengeUrl, squares } from '../share'
  * copied, with the score. Sharing again gives the same link (ShareSeriesHandler).
  */
 @Component({
-  imports: [ReactiveFormsModule, Leaderboard],
+  imports: [ReactiveFormsModule, Leaderboard, Button, Field, TextInput, LucideUsers],
   selector: 'app-share-challenge',
   templateUrl: './share-challenge.html',
 })
