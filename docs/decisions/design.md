@@ -1,4 +1,4 @@
-# Décisions de design — Ageguessr
+# Décisions de design — AgeGuessr
 
 Charte graphique et décisions produit transverses, posées avant toute implémentation
 visuelle. Complète `docs/decisions/architecture.md` (qui fixe déjà Tailwind, Vitest,
@@ -308,11 +308,22 @@ historique et comparer avec ses amis, jamais comme un mur d'entrée.
 ## Nom et logo
 
 ### Wordmark typographique, pas d'icône
-**Décision** : "Ageguessr" en Fraunces comme seul élément de marque pour le MVP, pas
+**Décision** : "AgeGuessr" en Fraunces comme seul élément de marque pour le MVP, pas
 d'icône ni de mascotte.
 
 **Raison** : suffisant pour lancer, rapide à livrer, laisse la porte ouverte à une
 icône dédiée plus tard sans remettre en cause l'identité typographique.
+
+### Casse du nom : « AgeGuessr »
+**Décision** (2026-11-09) : la marque s'écrit « AgeGuessr » partout où un humain la lit
+(wordmark, titres d'onglet, emails, pages légales, texte de partage), et le domaine
+« AgeGuessr.app » dans les textes. Les identifiants techniques (package `app.ageguessr`,
+classes `AgeguessrApi*`, noms d'images Docker, URL) restent en minuscules ou inchangés.
+
+**Raison** : « Ageguessr » se lit mal, les deux majuscules découpent « Age » et
+« Guessr ». Le nom de domaine ne tient pas compte de la casse : `AgeGuessr.app` mène au
+même site, mais la barre d'adresse du navigateur l'affiche toujours en minuscules,
+c'est la norme des URL. Le titre d'onglet porte donc la casse à la place.
 
 ### Favicon
 **Décision** : le « A » de Fraunces, converti en tracé, en `--color-accent` sur un carré

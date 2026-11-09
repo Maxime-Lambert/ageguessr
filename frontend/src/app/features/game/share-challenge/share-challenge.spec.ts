@@ -65,7 +65,7 @@ describe('ShareChallenge', () => {
     await fixture.whenStable();
     fixture.detectChanges();
     expect(share.handed.copied).toEqual([
-      'Ageguessr · Challenge · 1300 / 2000\n🟩🟥\nhttps://ageguessr.app/challenge/K7F2QX9M',
+      'AgeGuessr · Challenge · 1300 / 2000\n🟩🟥\nhttps://ageguessr.app/challenge/K7F2QX9M',
     ]);
     expect(page.textContent).toContain(GAME_TEXT.copied);
   });

@@ -1,4 +1,4 @@
-# Décisions d'architecture — Ageguessr
+# Décisions d'architecture — AgeGuessr
 
 ## Structure générale
 

@@ -10,7 +10,7 @@ import urllib.request
 from html.parser import HTMLParser
 from pathlib import Path
 
-USER_AGENT = "Ageguessr/1.0 (https://ageguessr.app; contact@ageguessr.app)"
+USER_AGENT = "AgeGuessr/1.0 (https://ageguessr.app; contact@ageguessr.app)"
 CACHE = Path(__file__).parent / ".cache"
 FIRST_YEAR, LAST_YEAR = 1932, 2015
 MINIMUM, TARGET = 5, 10

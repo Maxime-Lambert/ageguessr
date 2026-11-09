@@ -3,16 +3,16 @@
   <file source-language="en" target-language="fr" datatype="plaintext" original="ng2.template">
     <body>
       <trans-unit id="title.legalNotice" datatype="html">
-        <source>Legal notice · Ageguessr</source>
-        <target>Mentions légales · Ageguessr</target>
+        <source>Legal notice · AgeGuessr</source>
+        <target>Mentions légales · AgeGuessr</target>
       </trans-unit>
       <trans-unit id="title.terms" datatype="html">
-        <source>Terms of Use · Ageguessr</source>
-        <target>Conditions d'utilisation · Ageguessr</target>
+        <source>Terms of Use · AgeGuessr</source>
+        <target>Conditions d'utilisation · AgeGuessr</target>
       </trans-unit>
       <trans-unit id="title.privacy" datatype="html">
-        <source>Privacy Policy · Ageguessr</source>
-        <target>Politique de confidentialité · Ageguessr</target>
+        <source>Privacy Policy · AgeGuessr</source>
+        <target>Politique de confidentialité · AgeGuessr</target>
       </trans-unit>
       <trans-unit id="termsBanner.title" datatype="html">
         <source>Our Terms of Use changed on <x id="INTERPOLATION" equiv-text="{{ updated }}"/>.</source>
@@ -613,8 +613,8 @@
         <target>Trop de tentatives. Attendez une minute, puis réessayez.</target>
       </trans-unit>
       <trans-unit id="title.free" datatype="html">
-        <source>Free investigation · Ageguessr</source>
-        <target>Enquête libre · Ageguessr</target>
+        <source>Free investigation · AgeGuessr</source>
+        <target>Enquête libre · AgeGuessr</target>
       </trans-unit>
       <trans-unit id="game.voice.freeMode" datatype="html">
         <source>Free investigation</source>
@@ -669,8 +669,8 @@
         <target>Seulement <x id="count" equiv-text="count"/> photos ont pu être tirées cette fois.</target>
       </trans-unit>
       <trans-unit id="title.challenge" datatype="html">
-        <source>Challenge · Ageguessr</source>
-        <target>Défi · Ageguessr</target>
+        <source>Challenge · AgeGuessr</source>
+        <target>Défi · AgeGuessr</target>
       </trans-unit>
       <trans-unit id="game.tooManySeries" datatype="html">
         <source>Too many games started from your connection. Try again in a while.</source>
@@ -845,8 +845,8 @@
         <target>Un ami vous défie sur <x id="length" equiv-text="seriesLength(rounds)"/>.</target>
       </trans-unit>
       <trans-unit id="game.shareText" datatype="html">
-        <source>Ageguessr · <x id="challenge" equiv-text="GAME_TEXT.challenge"/> · <x id="points" equiv-text="points"/> / <x id="max" equiv-text="max"/></source>
-        <target>Ageguessr · <x id="challenge" equiv-text="GAME_TEXT.challenge"/> · <x id="points" equiv-text="points"/> / <x id="max" equiv-text="max"/></target>
+        <source>AgeGuessr · <x id="challenge" equiv-text="GAME_TEXT.challenge"/> · <x id="points" equiv-text="points"/> / <x id="max" equiv-text="max"/></source>
+        <target>AgeGuessr · <x id="challenge" equiv-text="GAME_TEXT.challenge"/> · <x id="points" equiv-text="points"/> / <x id="max" equiv-text="max"/></target>
       </trans-unit>
       <trans-unit id="game.nicknameTaken" datatype="html">
         <source>This name belongs to an account. Choose another one.</source>

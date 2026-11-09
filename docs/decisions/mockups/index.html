@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ageguessr — maquettes de refonte</title>
+<title>AgeGuessr — maquettes de refonte</title>
 <!-- Maquette de décision (docs/decisions), pas du code de production : polices via Google
      Fonts et icônes Lucide via CDN pour rester autonome. L'app, elle, auto-héberge. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -274,7 +274,7 @@ function topBar({ user = false, active = 'daily' } = {}) {
     : `<button class="btn ghost sm">Se connecter</button><button class="btn primary sm">S'inscrire</button>
        <button class="icon-btn" aria-label="Préférences">${icon('settings-2')}</button>`;
   return `<div class="top">
-    <span class="wordmark">Ageguessr</span>
+    <span class="wordmark">AgeGuessr</span>
     <nav class="nav"><a class="${active === 'daily' ? 'active' : ''}">Dossier du jour</a><a class="${active === 'free' ? 'active' : ''}">Enquête libre</a></nav>
     <span class="spacer"></span>
     <div class="actions">${right}<button class="icon-btn menu-btn" aria-label="Menu">${icon('menu')}</button></div>
@@ -371,7 +371,7 @@ const SCREENS = [
 
 const dir = new URLSearchParams(location.search).get('d') === 'b' ? 'b' : 'a';
 const names = { a: 'A — Archives soignées', b: 'B — Contemporain épuré' };
-document.getElementById('board').innerHTML = `<header><h1>Ageguessr · maquettes</h1>
+document.getElementById('board').innerHTML = `<header><h1>AgeGuessr · maquettes</h1>
   <a href="?d=a" class="${dir === 'a' ? 'on' : ''}">${names.a}</a><a href="?d=b" class="${dir === 'b' ? 'on' : ''}">${names.b}</a></header>` +
   SCREENS.map(([id, label, render, mobile]) => `<section><p class="label">${label}</p><div class="row">
     <div class="frame desktop dir-${dir}" data-screen="${dir}-${id}-desktop">${render()}</div>
