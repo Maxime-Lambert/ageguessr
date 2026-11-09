@@ -108,25 +108,25 @@ la connexion et la navigation même s'il échoue. Les mises à jour en masse (JP
 ignorent le verrou `@Version`, sans risque ici : seules les colonnes de joueur changent.
 
 ## Phase 2 : Historique et statistiques (API)
-Status: Not started
+Status: Complete
 
-- [ ] `features/game/GetHistory/HistoryCalculator.java` (pur, sans Spring) : à partir des
+- [x] `features/game/GetHistory/HistoryCalculator.java` (pur, sans Spring) : à partir des
       manches jouées et des états des manches de ces jours, construit les jours
       (`points`, `max`, `complete`), les statistiques et les séries, selon les décisions
       et hypothèses ci-dessus. `today` passé en paramètre (`Clock` UTC)
-- [ ] Requêtes : `GamePlayRepository.findByUserIdOrderByGameDateDescPositionAsc`, et
+- [x] Requêtes : `GamePlayRepository.findByUserId` (l'ordre est fait par le calcul), et
       l'état des manches de ces dates en une requête (`DailyRoundRepository`, sur le
       modèle de `findStatesOf`, avec le nom FR/EN et l'âge sur la photo pour les manches
       jouées encore jouables)
-- [ ] `features/game/GetHistory/GetHistoryHandler.java` + `HistoryResponse.java` :
+- [x] `features/game/GetHistory/GetHistoryHandler.java` + `HistoryResponse.java` :
       `stats` (`gamesPlayed`, `averagePoints`, `bestPoints`, `currentStreak`,
       `bestStreak`) et `days` paginés (`page`, 30 par page, `hasMore`). Une manche :
       `position`, `name` (dans la langue de la partie, `null` si neutralisée), `ageAtPhoto`
       (`null` si neutralisée), `firstGuess`, `secondGuess`, `points`, `neutralized`.
       **Jamais** de `publicId` ni d'URL d'image
-- [ ] `features/game/GetHistory/GetHistoryController.java` : `GET /api/game/history?page=0`,
-      401 sans JWT, `page` validé (`@Min(0)`)
-- [ ] `SecurityConfig` : `/api/game/history` authentifié
+- [x] `features/game/GetHistory/GetHistoryController.java` : `GET /api/game/history?page=0`,
+      401 sans JWT, `page` validé par `GetHistoryQuery` (`@Valid`, `@Min(0)`)
+- [x] `SecurityConfig` : `/api/game/history` authentifié
 
 **Tests**
 - Unitaire (`features/game/GetHistory/HistoryCalculatorTest`) : jour complet, jour à
@@ -137,7 +137,7 @@ Status: Not started
 - Intégration (`integration/game/GetHistoryIntegrationTest`) : les requêtes lisent les
   bonnes lignes (ordre, compte seul, jamais les lignes invité), le nom suit la langue
   de la partie, une photo rejetée donne `neutralized`
-- Fonctionnel (`functional/game/HistoryFunctionalTest`) : 401 sans JWT, réponse d'un
+- Fonctionnel (dans `functional/game/GameFunctionalTest`) : 401 sans JWT, réponse d'un
   compte qui a joué hier et aujourd'hui (série 2), pagination (`hasMore`), `page=-1` →
   400, la réponse ne contient ni `publicId` ni `/api/images/`
 - Architecture : les règles ArchUnit existantes couvrent le nouveau use case (package
@@ -150,7 +150,16 @@ Status: Not started
 - `./mvnw test -Dtest='HistoryCalculatorTest,GetHistory*,HistoryFunctionalTest'` : vert
 
 ### Phase Summary
-_(write when phase completes)_
+Fait le 2026-11-09. `./mvnw test` vert (toute la suite, ArchUnit compris).
+`HistoryCalculatorTest` : 16 tests, une règle chacun. `GetHistoryIntegrationTest` :
+pages de 30 jours, lignes du compte seul, page `Integer.MAX_VALUE` vide (le calcul de
+l'index passe en `long` pour ne pas déborder). `GameFunctionalTest` : une manche du jour
+pas finie n'a ni nom, ni âge, ni points, une manche finie les a, et la réponse ne
+contient ni `publicId`, ni id interne, ni URL d'image ou Commons ; `page=-1` → 400, 401
+sans compte. **Écart au plan** : le nom et l'âge ne sortent que pour une manche
+**terminée** et encore jouable. Sans cette règle, l'historique aurait donné la réponse
+de la manche du jour en cours. `RoundReveal.name` devient public pour être réutilisé.
+Mutation : PIT tourne en CI, à relever à la PR.
 
 ## Phase 3 : Page profil (frontend)
 Status: Not started

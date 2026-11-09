@@ -1,6 +1,7 @@
 package app.ageguessr.features.game;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -34,4 +35,20 @@ public interface DailyRoundRepository extends JpaRepository<DailyRound, DailyRou
             ORDER BY r.position
             """)
     List<RoundState> findStatesOf(@Param("gameDate") LocalDate gameDate);
+
+    /** As {@link #findStatesOf}, for several days in one query: an account's history. */
+    @Query(
+            """
+            SELECT new app.ageguessr.features.game.DatedRoundState(
+                r.gameDate, r.position,
+                CASE WHEN ph.reviewStatus = app.ageguessr.features.people.ReviewStatus.APPROVED
+                          AND p.excluded = false
+                     THEN app.ageguessr.features.game.DailyRoundStatus.PLAYABLE
+                     ELSE app.ageguessr.features.game.DailyRoundStatus.NEUTRALIZED END)
+            FROM DailyRound r
+            LEFT JOIN app.ageguessr.features.people.PersonPhoto ph ON ph.id = r.photoId
+            LEFT JOIN app.ageguessr.features.people.Person p ON p.id = ph.personId
+            WHERE r.gameDate IN :gameDates
+            """)
+    List<DatedRoundState> findStatesOn(@Param("gameDates") Collection<LocalDate> gameDates);
 }

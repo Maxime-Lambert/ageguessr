@@ -57,7 +57,7 @@ public record RoundReveal(
     }
 
     /** In the round's language, else the other one: ingestion keeps a person with either. */
-    private static String name(Person person, Language language) {
+    public static String name(Person person, Language language) {
         String preferred = language == Language.FR ? person.getNameFr() : person.getNameEn();
         String other = language == Language.FR ? person.getNameEn() : person.getNameFr();
         return preferred != null ? preferred : other;

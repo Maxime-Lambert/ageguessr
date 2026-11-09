@@ -13,6 +13,9 @@ public interface GamePlayRepository extends JpaRepository<GamePlay, UUID> {
 
     List<GamePlay> findByUserIdAndGameDate(UUID userId, LocalDate gameDate);
 
+    /** Every daily round an account started: its history (3 a day at most). */
+    List<GamePlay> findByUserId(UUID userId);
+
     List<GamePlay> findByGuestIdAndGameDate(UUID guestId, LocalDate gameDate);
 
     Optional<GamePlay> findByUserIdAndGameDateAndPosition(UUID userId, LocalDate gameDate, short position);
