@@ -1,4 +1,4 @@
-# Stratégie de tests — Ageguessr
+# Stratégie de tests — AgeGuessr
 
 Sept catégories de tests, chacune avec un rôle précis et un outillage dédié. Une feature
 n'a pas forcément besoin des sept — `/plan` doit justifier lesquelles s'appliquent (voir

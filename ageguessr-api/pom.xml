@@ -12,7 +12,7 @@
 	<artifactId>ageguessr-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>AgeguessrApi</name>
-	<description>Ageguessr backend API</description>
+	<description>AgeGuessr backend API</description>
 	<url/>
 	<licenses>
 		<license>

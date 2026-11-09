@@ -182,7 +182,7 @@ export function challengeIntro(creator: string | null, rounds: number): string {
  */
 export function shareText(points: number, max: number, squares: string, url: string): string {
   return (
-    $localize`:@@game.shareText:Ageguessr · ${GAME_TEXT.challenge}:challenge: · ${points}:points: / ${max}:max:` +
+    $localize`:@@game.shareText:AgeGuessr · ${GAME_TEXT.challenge}:challenge: · ${points}:points: / ${max}:max:` +
     `\n${squares}\n${url}`
   );
 }

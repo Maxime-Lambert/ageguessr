@@ -1,4 +1,4 @@
-# Roadmap Ageguessr
+# Roadmap AgeGuessr
 
 Source de vérité de l'avancement produit, découpée en semaines indicatives.
 À cocher à chaque PR mergée (pas besoin d'attendre la fin d'une semaine pour avancer sur
@@ -13,7 +13,7 @@ la suivante).
       typo, formes, icônes, ton « enquête » à l'essai — PR `chore/design-charter`
 - [x] Mise en place technique de la charte (tokens Tailwind, polices, toggle thème,
       test de contraste des tokens) — PR `chore/design-charter`
-- [x] Logo/wordmark Ageguessr + favicon (« A » Fraunces, SVG + ICO + Apple touch icon)
+- [x] Logo/wordmark AgeGuessr + favicon (« A » Fraunces, SVG + ICO + Apple touch icon)
       — PR `chore/design-charter`
 - [x] Mentions légales, CGU et politique de confidentialité (EN + FR, droit français,
       acceptation des CGU versionnée à l'inscription, 13 ans minimum) — PR

@@ -3,35 +3,35 @@
   <file source-language="en" datatype="plaintext" original="ng2.template">
     <body>
       <trans-unit id="title.free" datatype="html">
-        <source>Free investigation · Ageguessr</source>
+        <source>Free investigation · AgeGuessr</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.routes.ts</context>
           <context context-type="linenumber">15</context>
         </context-group>
       </trans-unit>
       <trans-unit id="title.challenge" datatype="html">
-        <source>Challenge · Ageguessr</source>
+        <source>Challenge · AgeGuessr</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.routes.ts</context>
           <context context-type="linenumber">20</context>
         </context-group>
       </trans-unit>
       <trans-unit id="title.legalNotice" datatype="html">
-        <source>Legal notice · Ageguessr</source>
+        <source>Legal notice · AgeGuessr</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.routes.ts</context>
           <context context-type="linenumber">84</context>
         </context-group>
       </trans-unit>
       <trans-unit id="title.terms" datatype="html">
-        <source>Terms of Use · Ageguessr</source>
+        <source>Terms of Use · AgeGuessr</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.routes.ts</context>
           <context context-type="linenumber">90</context>
         </context-group>
       </trans-unit>
       <trans-unit id="title.privacy" datatype="html">
-        <source>Privacy Policy · Ageguessr</source>
+        <source>Privacy Policy · AgeGuessr</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.routes.ts</context>
           <context context-type="linenumber">95</context>
@@ -1462,7 +1462,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="game.shareText" datatype="html">
-        <source>Ageguessr · <x id="challenge" equiv-text="GAME_TEXT.challenge"/> · <x id="points" equiv-text="points"/> / <x id="max" equiv-text="max"/></source>
+        <source>AgeGuessr · <x id="challenge" equiv-text="GAME_TEXT.challenge"/> · <x id="points" equiv-text="points"/> / <x id="max" equiv-text="max"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
           <context context-type="linenumber">185</context>
