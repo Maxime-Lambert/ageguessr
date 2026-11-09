@@ -4,9 +4,12 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { RouterLink } from '@angular/router';
 import { Auth } from '../auth';
 import { COMMON_MESSAGES } from '../../../shared/common-messages';
+import { Page } from '../../../shared/ui/page/page';
+import { Field, TextInput } from '../../../shared/ui/field/field';
+import { Button } from '../../../shared/ui/button/button';
 
 @Component({
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, Page, Field, TextInput, Button],
   selector: 'app-forgot-password',
   templateUrl: './forgot-password.html',
 })

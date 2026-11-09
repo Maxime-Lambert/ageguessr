@@ -5,6 +5,7 @@ import { COMMON_MESSAGES } from '../../../shared/common-messages';
 import { SiteLanguageService } from '../../i18n/site-language';
 import { TERMS_VERSION, displayDate } from '../../legal/legal-dates';
 import { Auth } from '../auth';
+import { Button } from '../../../shared/ui/button/button';
 
 /** Per tab: "Later" hides the banner until the tab is closed, then it asks again. */
 const LATER_KEY = 'ageguessr_terms_later';
@@ -15,7 +16,7 @@ const LATER_KEY = 'ageguessr_terms_later';
  * sends the version shown here; if the Terms changed since, the profile is read again.
  */
 @Component({
-  imports: [RouterLink],
+  imports: [RouterLink, Button],
   selector: 'app-terms-banner',
   templateUrl: './terms-banner.html',
 })

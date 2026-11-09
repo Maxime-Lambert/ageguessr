@@ -1,7 +1,9 @@
-<div class="mx-auto max-w-md px-6 py-16 text-center">
-  <div class="bg-surface border-border rounded-lg border p-6">
-    <h1 class="font-display text-3xl" i18n="@@checkEmail.title">Check your email</h1>
-    <p class="text-muted mt-2">
+<main>
+  <app-page width="narrow">
+    <h1 class="font-display text-[32px] leading-tight sm:text-[36px]" i18n="@@checkEmail.title">
+      Check your email
+    </h1>
+    <p class="text-muted mt-3 leading-relaxed">
       @if (email) {
         <ng-container i18n="@@checkEmail.sentTo"
           >We sent a confirmation link to <span class="text-foreground">{{ email }}</span
@@ -16,18 +18,20 @@
     </p>
 
     @if (resendSent()) {
-      <p class="text-muted mt-4 text-sm" i18n="@@checkEmail.resent">
+      <p class="text-muted mt-6 text-sm" role="status" i18n="@@checkEmail.resent">
         Verification email sent again — check your inbox.
       </p>
     } @else {
       <button
+        appButton
+        variant="secondary"
         type="button"
+        class="mt-6"
         (click)="resend()"
-        class="text-accent mt-4 text-sm underline"
         i18n="@@checkEmail.resend"
       >
         Didn't get it? Resend the email
       </button>
     }
-  </div>
-</div>
+  </app-page>
+</main>

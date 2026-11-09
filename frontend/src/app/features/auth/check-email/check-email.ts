@@ -1,9 +1,11 @@
 import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Auth } from '../auth';
+import { Page } from '../../../shared/ui/page/page';
+import { Button } from '../../../shared/ui/button/button';
 
 @Component({
-  imports: [],
+  imports: [Page, Button],
   selector: 'app-check-email',
   templateUrl: './check-email.html',
 })

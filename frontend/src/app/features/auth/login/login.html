@@ -1,51 +1,49 @@
-<div class="mx-auto max-w-md px-6 py-16">
-  <div class="bg-surface border-border rounded-lg border p-6">
-    <h1 class="font-display text-3xl" i18n="@@login.title">Welcome back</h1>
+<main>
+  <app-page width="narrow">
+    <h1 class="font-display text-[32px] leading-tight sm:text-[36px]" i18n="@@login.title">
+      Welcome back
+    </h1>
 
-    <form class="mt-6 space-y-4" [formGroup]="form" (ngSubmit)="submit()">
-      <div>
-        <label for="email" class="text-sm font-medium" i18n="@@common.email">Email</label>
-        <input
-          id="email"
-          type="email"
-          formControlName="email"
-          class="border-input-border bg-background mt-1 w-full rounded-md border px-3 py-2"
-        />
-      </div>
+    <form class="mt-8 space-y-5" [formGroup]="form" (ngSubmit)="submit()">
+      <app-field controlId="email" label="Email" i18n-label="@@common.email">
+        <input appInput type="email" formControlName="email" autocomplete="email" />
+      </app-field>
 
       <div>
-        <div class="flex items-baseline justify-between">
-          <label for="password" class="text-sm font-medium" i18n="@@common.password"
-            >Password</label
-          >
-          <a routerLink="/forgot-password" class="text-accent text-sm" i18n="@@login.forgot"
+        <app-field controlId="password" label="Password" i18n-label="@@common.password">
+          <input
+            appInput
+            type="password"
+            formControlName="password"
+            autocomplete="current-password"
+          />
+        </app-field>
+        <p class="mt-2 text-right text-sm">
+          <a
+            routerLink="/forgot-password"
+            class="text-accent underline underline-offset-2"
+            i18n="@@login.forgot"
             >Forgot password?</a
           >
-        </div>
-        <input
-          id="password"
-          type="password"
-          formControlName="password"
-          class="border-input-border bg-background mt-1 w-full rounded-md border px-3 py-2"
-        />
+        </p>
       </div>
 
       @if (errorMessage()) {
-        <p class="text-danger text-sm">{{ errorMessage() }}</p>
+        <p class="text-danger text-sm" role="alert">{{ errorMessage() }}</p>
       }
 
       @if (needsVerification()) {
-        <div class="border-border rounded-md border p-3 text-sm">
+        <div class="card p-4 text-sm">
           <p i18n="@@login.verify">Please verify your email before logging in.</p>
           @if (resendSent()) {
-            <p class="text-muted mt-1" i18n="@@login.resent">
+            <p class="text-muted mt-1" role="status" i18n="@@login.resent">
               Verification email sent — check your inbox.
             </p>
           } @else {
             <button
               type="button"
               (click)="resendVerification()"
-              class="text-accent mt-1 underline"
+              class="text-accent mt-1 underline underline-offset-2"
               i18n="@@login.resend"
             >
               Resend verification email
@@ -54,18 +52,14 @@
         </div>
       }
 
-      <button
-        type="submit"
-        [disabled]="submitting()"
-        class="bg-accent text-accent-foreground w-full rounded-md py-2 font-medium disabled:opacity-50"
-        i18n="@@login.submit"
-      >
+      <button appButton block type="submit" [disabled]="submitting()" i18n="@@login.submit">
         Log in
       </button>
     </form>
 
-    <p class="text-muted mt-4 text-sm" i18n="@@login.noAccount">
-      No account yet? <a routerLink="/register" class="text-accent">Create one</a>
+    <p class="text-muted mt-6 text-center text-sm" i18n="@@login.noAccount">
+      No account yet?
+      <a routerLink="/register" class="text-accent underline underline-offset-2">Create one</a>
     </p>
-  </div>
-</div>
+  </app-page>
+</main>

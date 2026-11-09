@@ -1,6 +1,13 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormControl } from '@angular/forms';
-import { NEW_PASSWORD_VALIDATORS, maxUtf8Bytes, passwordRefusalMessage } from './password-rules';
+import {
+  NEW_PASSWORD_VALIDATORS,
+  PASSWORD_HINT,
+  PASSWORD_TOO_LONG_MESSAGE,
+  maxUtf8Bytes,
+  newPasswordError,
+  passwordRefusalMessage,
+} from './password-rules';
 
 describe('maxUtf8Bytes', () => {
   const validate = (value: string) => maxUtf8Bytes(72)(new FormControl(value));
@@ -42,5 +49,34 @@ describe('passwordRefusalMessage', () => {
     expect(passwordRefusalMessage(error(400, 'VALIDATION_ERROR'))).toBeNull();
     expect(passwordRefusalMessage(error(409, 'PASSWORD_TOO_COMMON'))).toBeNull();
     expect(passwordRefusalMessage(error(500))).toBeNull();
+  });
+});
+
+describe('newPasswordError', () => {
+  const control = (value: string) =>
+    new FormControl(value, { nonNullable: true, validators: NEW_PASSWORD_VALIDATORS });
+
+  it('says nothing while a short password is still being typed', () => {
+    expect(newPasswordError(control('short'), null)).toBeNull();
+  });
+
+  it('turns the hint into an error once a short password was left', () => {
+    const typed = control('short');
+    typed.markAsTouched();
+
+    expect(newPasswordError(typed, null)).toBe(PASSWORD_HINT);
+  });
+
+  it('puts a refusal from the backend before the length rule', () => {
+    const typed = control('short');
+    typed.markAsTouched();
+
+    expect(newPasswordError(typed, 'Too common.')).toBe('Too common.');
+  });
+
+  it('reports a password too long right away', () => {
+    expect(newPasswordError(control('é'.repeat(37)), 'Too common.')).toBe(
+      PASSWORD_TOO_LONG_MESSAGE,
+    );
   });
 });

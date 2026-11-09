@@ -31,3 +31,6 @@ export interface RegisterResponse {
 
 /** Same rule as the backend's @Username constraint, which stays the source of truth. */
 export const USERNAME_PATTERN = /^[A-Za-z0-9_-]{3,20}$/;
+
+export const USERNAME_RULE_MESSAGE = $localize`:@@common.usernameRule:3 to 20 characters: letters, digits, _ or -.`;
+export const USERNAME_TAKEN_MESSAGE = $localize`:@@account.usernameTaken:This username is already taken.`;

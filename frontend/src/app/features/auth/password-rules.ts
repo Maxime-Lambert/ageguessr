@@ -42,3 +42,17 @@ export function passwordRefusalMessage(error: HttpErrorResponse): string | null 
   const errorCode = (error.error as ApiErrorResponse | null)?.errorCode;
   return (errorCode && REFUSAL_MESSAGES[errorCode]) ?? null;
 }
+
+/**
+ * The error under a new-password field, or null while the rule hint is enough. A password
+ * still too short only turns the hint into an error once the field was left.
+ */
+export function newPasswordError(control: AbstractControl, refusal: string | null): string | null {
+  if (control.hasError('maxUtf8Bytes')) {
+    return PASSWORD_TOO_LONG_MESSAGE;
+  }
+  if (refusal) {
+    return refusal;
+  }
+  return control.hasError('minlength') && control.touched ? PASSWORD_HINT : null;
+}
