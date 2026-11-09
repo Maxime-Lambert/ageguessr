@@ -4,6 +4,20 @@ Source de vérité de l'avancement produit, découpée en semaines indicatives.
 À cocher à chaque PR mergée (pas besoin d'attendre la fin d'une semaine pour avancer sur
 la suivante).
 
+## À vérifier à la main en prod
+
+Tests que seuls un compte et la boîte mail admin permettent de faire. À cocher, puis à
+retirer une fois tous faits.
+
+- [x] Bandeau de ré-acceptation des CGU (release #39, confirmé le 2026-11-09)
+- [ ] Signaler une photo et un indice depuis l'écran de résultat d'une manche terminée
+- [ ] Retrouver ces signalements dans `/admin/curation` (photos) et `/admin/hints`
+      (indices), puis rejeter, garder ou exclure
+- [ ] Recevoir l'email d'alerte admin quand plusieurs joueurs signalent la même photo
+      (`ADMIN_EMAIL` du `.env` de prod)
+- [ ] Indices musique corrigés par la migration V17 (release #45) : dans `/admin/hints`,
+      1989, « Pour toi Arménie » de Charles Aznavour et divers artistes
+
 ## Semaine 1 — Fondations
 - [x] Initialisation projet Spring Boot (Java 25) + Angular (Claude Code)
 - [x] Docker Compose local fonctionnel (PostgreSQL + Redis)
@@ -88,9 +102,13 @@ la suivante).
 - [x] Système de points : jusqu'à 500 points par essai selon l'écart (piste
       `500 × e^(−écart/10)`, à régler par playtest), manche = somme des deux essais, un
       1er essai exact vaut 1 000. Manches neutralisées hors du score du jour
-- [ ] Cache HTTP des images (`Cache-Control` long sur `/api/images/{publicId}`, l'id
-      changeant à chaque tirage). Remplace le cache Redis des parties : la table
-      `daily_rounds` évite déjà de recalculer
+- [x] Cache HTTP des images : `Cache-Control: max-age=86400, public` sur
+      `/api/images/{publicId}`, en place depuis PR `feature/people-sourcing` (testé dans
+      `GetImageFunctionalTest`). Volontairement pas plus long : une photo rejetée après
+      un signalement (personne qui paraît mineure, par exemple) ne doit pas rester des
+      mois dans le cache des navigateurs, et une partie du jour ne se rejoue pas le
+      lendemain. Remplace le cache Redis des parties : la table `daily_rounds` évite déjà
+      de recalculer
 
 ## Semaine 4 — Interface de jeu
 - [x] Écran principal : photo, input d'âge, « plus jeune / plus vieux » après le 1er
