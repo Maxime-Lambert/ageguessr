@@ -5,11 +5,13 @@ import app.ageguessr.features.game.DailyRoundStatus;
 import app.ageguessr.features.game.DatedRoundState;
 import app.ageguessr.features.game.GamePlay;
 import app.ageguessr.features.game.GamePlayRepository;
-import app.ageguessr.features.game.GameRound;
-import app.ageguessr.features.game.GameRounds;
 import app.ageguessr.features.game.RoundReveal;
 import app.ageguessr.features.game.RoundStep;
 import app.ageguessr.features.game.GetHistory.HistoryCalculator.Play;
+import app.ageguessr.features.people.Person;
+import app.ageguessr.features.people.PersonPhoto;
+import app.ageguessr.features.people.PersonPhotoRepository;
+import app.ageguessr.features.people.PersonRepository;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -17,7 +19,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,7 +30,8 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * An account's history: the statistics over every day played, and the rounds of one page
  * of days. Every played round is read at once (3 a day at most, about 1 100 a year), then
- * HistoryCalculator does the arithmetic; only the page's days load their photo and person.
+ * HistoryCalculator does the arithmetic. The photos and people of the page's days are
+ * loaded in two queries, whatever the number of days.
  */
 @Service
 @RequiredArgsConstructor
@@ -36,7 +41,8 @@ public class GetHistoryHandler {
 
     private final GamePlayRepository plays;
     private final DailyRoundRepository rounds;
-    private final GameRounds gameRounds;
+    private final PersonPhotoRepository photos;
+    private final PersonRepository people;
     private final Clock clock;
 
     @Transactional(readOnly = true)
@@ -44,10 +50,16 @@ public class GetHistoryHandler {
         List<GamePlay> played = plays.findByUserId(userId);
         Set<LocalDate> dates = played.stream().map(GamePlay::getGameDate).collect(Collectors.toSet());
         Map<LocalDate, Map<Short, Boolean>> playable = new HashMap<>();
+        Map<LocalDate, Map<Short, UUID>> photoOfRound = new HashMap<>();
         if (!dates.isEmpty()) {
             for (DatedRoundState state : rounds.findStatesOn(dates)) {
+                boolean stillPlayable = state.status() == DailyRoundStatus.PLAYABLE;
                 playable.computeIfAbsent(state.gameDate(), date -> new HashMap<>())
-                        .put(state.position(), state.status() == DailyRoundStatus.PLAYABLE);
+                        .put(state.position(), stillPlayable);
+                if (stillPlayable) {
+                    photoOfRound.computeIfAbsent(state.gameDate(), date -> new HashMap<>())
+                            .put(state.position(), state.photoId());
+                }
             }
         }
         HistoryCalculator.Result result = HistoryCalculator.compute(
@@ -57,8 +69,10 @@ public class GetHistoryHandler {
         // In long: a huge page number would overflow an int and go negative.
         int from = (int) Math.min((long) page * PAGE_SIZE, days.size());
         int to = Math.min(from + PAGE_SIZE, days.size());
-        List<HistoryResponse.Day> pageDays = days.subList(from, to).stream()
-                .map(day -> toDay(day, played))
+        List<HistoryCalculator.Day> shown = days.subList(from, to);
+        Answers answers = answersOf(shown, photoOfRound);
+        List<HistoryResponse.Day> pageDays = shown.stream()
+                .map(day -> toDay(day, played, photoOfRound.getOrDefault(day.date(), Map.of()), answers))
                 .toList();
         HistoryCalculator.Stats stats = result.stats();
         return new HistoryResponse(
@@ -78,13 +92,32 @@ public class GetHistoryHandler {
         return new Play(play.getGameDate(), play.getPosition(), finished, finished ? play.points() : 0);
     }
 
-    private HistoryResponse.Day toDay(HistoryCalculator.Day day, List<GamePlay> played) {
-        Map<Short, GameRound> ofDay = gameRounds.of(day.date()).stream()
-                .collect(Collectors.toMap(GameRound::position, round -> round));
+    /** The photos and people of the page's playable rounds: two queries for the whole page. */
+    private record Answers(Map<UUID, PersonPhoto> photos, Map<UUID, Person> people) {}
+
+    private Answers answersOf(List<HistoryCalculator.Day> shown, Map<LocalDate, Map<Short, UUID>> photoOfRound) {
+        Set<UUID> photoIds = shown.stream()
+                .flatMap(day -> photoOfRound.getOrDefault(day.date(), Map.of()).values().stream())
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+        Map<UUID, PersonPhoto> pagePhotos = photos.findAllById(photoIds).stream()
+                .collect(Collectors.toMap(PersonPhoto::getId, Function.identity()));
+        Set<UUID> personIds = pagePhotos.values().stream().map(PersonPhoto::getPersonId).collect(Collectors.toSet());
+        Map<UUID, Person> pagePeople = people.findAllById(personIds).stream()
+                .collect(Collectors.toMap(Person::getId, Function.identity()));
+        return new Answers(pagePhotos, pagePeople);
+    }
+
+    private static HistoryResponse.Day toDay(
+            HistoryCalculator.Day day, List<GamePlay> played, Map<Short, UUID> photoOfDay, Answers answers) {
         List<HistoryResponse.Round> rounds = played.stream()
                 .filter(play -> play.getGameDate().equals(day.date()))
                 .sorted(Comparator.comparing(GamePlay::getPosition))
-                .map(play -> toRound(play, ofDay.get(play.getPosition())))
+                .map(play -> {
+                    PersonPhoto photo = answers.photos().get(photoOfDay.get(play.getPosition()));
+                    Person person = photo == null ? null : answers.people().get(photo.getPersonId());
+                    return toRound(play, photo, person);
+                })
                 .toList();
         return new HistoryResponse.Day(day.date(), day.points(), day.max(), day.complete(), rounds);
     }
@@ -92,18 +125,19 @@ public class GetHistoryHandler {
     /**
      * The answer only for a finished round: today's round still being played must say
      * nothing more here than on the game screen. Nor for a neutralized one: its photo was
-     * rejected or its person excluded, so neither is shown again.
+     * rejected or its person excluded (or deleted between the two reads), so neither is
+     * shown again.
      */
-    private static HistoryResponse.Round toRound(GamePlay play, GameRound round) {
+    private static HistoryResponse.Round toRound(GamePlay play, PersonPhoto photo, Person person) {
         boolean finished = play.step() == RoundStep.FINISHED;
-        boolean neutralized = round == null || !round.playable();
+        boolean neutralized = photo == null || person == null;
         boolean reveal = finished && !neutralized;
         return new HistoryResponse.Round(
                 play.getPosition(),
                 finished,
                 neutralized,
-                reveal ? RoundReveal.name(round.person(), play.getLanguage()) : null,
-                reveal ? round.age() : null,
+                reveal ? RoundReveal.name(person, play.getLanguage()) : null,
+                reveal ? photo.getAgeAtPhoto() : null,
                 play.getFirstGuess(),
                 play.getSecondGuess(),
                 finished ? play.points() : null);

@@ -811,7 +811,11 @@ un compte connecté voit sur `/profile` ses statistiques et ses parties du jour 
 manche par manche (`GET /api/game/history`, 30 jours par page).
 
 - **Privé** : seul le propriétaire le voit (`authGuard`, endpoint authentifié). La
-  visibilité par les amis viendra avec le système d'amis.
+  visibilité par les amis viendra avec le système d'amis. Ce jour-là, cacher aux amis
+  les essais d'une manche pas terminée (aujourd'hui renvoyés, puisque ce sont ceux du
+  joueur) : avec « plus jeune / plus vieux », ils approcheraient la réponse du jour.
+- **Limité** : `GET /api/game/history` partage le compteur des essais (60 par minute et
+  par IP), seule lecture du jeu à charger tout l'historique d'un compte.
 - **Le passé n'est pas réécrit**, comme les points stockés à l'essai : une manche
   neutralisée après avoir été terminée garde ses points et sa place dans le maximum du
   jour, mais son nom n'est plus affiché. Une manche neutralisée avant d'être terminée
@@ -834,6 +838,10 @@ manche par manche (`GET /api/game/history`, 30 jours par page).
   autres passent au compte, puis le cookie invité est effacé. Idempotent, jamais fait au
   passage d'une lecture. Les séries de l'enquête libre ne sont pas rattachées (elles
   expirent en 7 jours, et un défi garde le pseudo de l'invité).
+- **Exception front `auth → game`** : la page de connexion appelle
+  `GameApi.claimGuestPlays()` après le login. Le rattachement doit suivre la connexion
+  elle-même, pas une page de jeu ouverte ensuite (le joueur peut aller directement sur
+  son profil).
 
 ### Signalement des photos et des indices par les joueurs
 **Décision** (2026-11-03, PR `feature/player-reports`) : depuis le résultat d'une manche

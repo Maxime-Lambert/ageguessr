@@ -40,7 +40,7 @@ public interface DailyRoundRepository extends JpaRepository<DailyRound, DailyRou
     @Query(
             """
             SELECT new app.ageguessr.features.game.DatedRoundState(
-                r.gameDate, r.position,
+                r.gameDate, r.position, r.photoId,
                 CASE WHEN ph.reviewStatus = app.ageguessr.features.people.ReviewStatus.APPROVED
                           AND p.excluded = false
                      THEN app.ageguessr.features.game.DailyRoundStatus.PLAYABLE

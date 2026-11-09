@@ -100,6 +100,21 @@ class RateLimitFunctionalTest {
     }
 
     /**
+     * The history, the one costly read, shares the guesses' counter. Limited before the
+     * security chain, so even its 401 without a token counts.
+     */
+    @Test
+    void limitsTheHistoryWithTheGuesses() throws Exception {
+        String client = "203.0.113.25";
+        for (int i = 0; i < 2; i++) {
+            mockMvc.perform(get("/api/game/history").header("X-Forwarded-For", client))
+                    .andExpect(status().isUnauthorized());
+        }
+        mockMvc.perform(get("/api/game/history").header("X-Forwarded-For", client))
+                .andExpect(status().isTooManyRequests());
+    }
+
+    /**
      * Creating series and joining challenges share a tighter counter of their own (each
      * series reveals the ages of its photos), apart from the guesses.
      */

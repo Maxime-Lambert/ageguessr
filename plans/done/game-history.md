@@ -251,6 +251,15 @@ l'on se connecte sur le même navigateur dans les 7 jours. Date de mise à jour
 Aucune : les sept s'appliquent. L'architecture n'ajoute pas de règle (les règles
 existantes suffisent), et le QA e2e se limite au seul parcours invité → compte → profil.
 
+## Revues (2026-11-09)
+- code-reviewer : rien de bloquant. Suite donnée : `GET /api/game/history` passe sous le
+  compteur des essais (`RateLimitFilter`, testé dans `RateLimitFunctionalTest`), et
+  `architecture.md` note qu'il faudra cacher aux amis les essais d'une manche pas
+  terminée.
+- architecture-reviewer : exception front `auth → game` documentée (connexion →
+  rattachement) ; les photos et personnes d'une page sont chargées en deux requêtes
+  (`findAllById`) au lieu de jusqu'à 210 (`DatedRoundState` porte le `photoId`).
+
 ## Final Recap
 Un compte voit sur `/profile` sa série, ses statistiques et ses parties du jour passées,
 sans photo et sans rien révéler d'une manche pas terminée. Les parties jouées en invité
