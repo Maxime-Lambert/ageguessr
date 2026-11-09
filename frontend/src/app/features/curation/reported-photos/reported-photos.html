@@ -11,11 +11,7 @@
     }
     @case ('error') {
       <p class="text-danger text-sm" role="alert">The reported photos could not be loaded.</p>
-      <button
-        type="button"
-        class="text-accent text-sm underline underline-offset-2"
-        (click)="reload()"
-      >
+      <button type="button" appButton variant="secondary" size="sm" (click)="reload()">
         Retry
       </button>
     }
@@ -92,7 +88,9 @@
                 </button>
                 <button
                   type="button"
-                  class="text-danger rounded-md px-3 py-1 font-medium underline disabled:opacity-50"
+                  appButton
+                  size="sm"
+                  [variant]="confirmingExclusion() === item.photoId ? 'danger' : 'ghost'"
                   [disabled]="busy() !== null"
                   (click)="exclude(item)"
                 >

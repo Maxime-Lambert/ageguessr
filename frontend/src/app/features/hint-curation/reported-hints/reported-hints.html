@@ -11,11 +11,7 @@
     }
     @case ('error') {
       <p class="text-danger text-sm" role="alert">The reported hints could not be loaded.</p>
-      <button
-        type="button"
-        class="text-accent text-sm underline underline-offset-2"
-        (click)="reload()"
-      >
+      <button type="button" appButton variant="secondary" size="sm" (click)="reload()">
         Retry
       </button>
     }
@@ -45,7 +41,7 @@
                 <span class="text-muted">English</span>
                 <textarea
                   appInput
-                  class="mt-1 block"
+                  class="mt-1"
                   rows="2"
                   [value]="drafts()[item.hintId].en"
                   (input)="edit(item.hintId, 'en', $any($event.target).value)"
@@ -57,7 +53,7 @@
                 <span class="text-muted">French</span>
                 <textarea
                   appInput
-                  class="mt-1 block"
+                  class="mt-1"
                   rows="2"
                   [value]="drafts()[item.hintId].fr"
                   (input)="edit(item.hintId, 'fr', $any($event.target).value)"
