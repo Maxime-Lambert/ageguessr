@@ -209,25 +209,29 @@ Bundle initial : 515 → 536 kB bruts (+4,8 kB transférés), deux icônes Lucid
 550 kB. Specs Playwright (interface EN/FR, parcours) : CI seulement.
 
 ## Phase 4 : Documentation et légal
-Status: Not started
+Status: Complete
 
-- [ ] `docs/decisions/architecture.md` : section « Historique et profil » (décisions
+- [x] `docs/decisions/architecture.md` : section « Historique et profil » (décisions
       ci-dessus), et remplacer l'« effet de bord à traiter avec l'historique » par la
       règle retenue
-- [ ] Politique de confidentialité (EN + FR, `privacy.html`) : les parties invité sont
+- [x] Politique de confidentialité (EN + FR, `privacy.html`) : les parties invité sont
       rattachées au compte à la connexion, puis gardées comme les parties du compte.
       Date de mise à jour (`legal-dates.ts`). Pas de nouvelle version des CGU
-- [ ] `docs/roadmap.md` : Semaine 5 cochée, « Page d'accueil publique » retirée de la
+- [x] `docs/roadmap.md` : Semaine 5 cochée, « Page d'accueil publique » retirée de la
       Semaine 4 et fusionnée dans « Landing page de lancement » (Semaine 8)
 - [x] `plans/design-overhaul.md` déplacé dans `plans/done/`
-- [ ] Ce plan déplacé dans `plans/done/` (nom : `game-history.md`) à la fin
+- [x] Ce plan déplacé dans `plans/done/` (nom : `game-history.md`) à la fin
 
 ### Verification Plan
 - `grep -n "effet de bord" docs/decisions/architecture.md` : plus de note en suspens
 - `cd frontend && pnpm test` : vert (spec des pages légales)
 
 ### Phase Summary
-_(write when phase completes)_
+Fait le 2026-11-09. `grep "effet de bord"` ne renvoie plus rien : la note est remplacée
+par un renvoi à la nouvelle section « Historique et profil » de `architecture.md`.
+Politique de confidentialité EN et FR : les parties invité sont rattachées au compte si
+l'on se connecte sur le même navigateur dans les 7 jours. Date de mise à jour
+`2026-11-09`, CGU inchangées. Specs des pages légales vertes (15).
 
 ## Edge cases à couvrir
 - Compte sans aucune partie : statistiques à 0, liste vide, pas d'erreur
@@ -248,7 +252,18 @@ Aucune : les sept s'appliquent. L'architecture n'ajoute pas de règle (les règl
 existantes suffisent), et le QA e2e se limite au seul parcours invité → compte → profil.
 
 ## Final Recap
-_(write when all phases complete)_
+Un compte voit sur `/profile` sa série, ses statistiques et ses parties du jour passées,
+sans photo et sans rien révéler d'une manche pas terminée. Les parties jouées en invité
+le rejoignent à la connexion. Calculs dans `HistoryCalculator` (pur, 16 tests),
+endpoints `GET /api/game/history` et `POST /api/game/guest-plays/claim` (authentifiés).
+Deux écarts au plan, notés dans les phases : la révélation limitée aux manches
+terminées, et la date formatée dans le fuseau local.
 
 ## Deployment Plan
-_(write when all phases complete)_
+Aucune migration : `game_plays` a déjà tout. Release `develop` → `main` en merge commit,
+déploiement automatique. Après le déploiement, avec un compte :
+1. jouer la partie du jour en invité dans une fenêtre privée, puis se connecter dans
+   cette même fenêtre : `/profile` montre le jour, série 1 ;
+2. vérifier qu'un jour pas terminé est marqué « Pas terminé » et ne casse pas la série ;
+3. ajouter ces vérifications à « À vérifier à la main en prod » de la roadmap si elles
+   ne sont pas faites tout de suite.
