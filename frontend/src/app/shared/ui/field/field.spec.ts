@@ -9,6 +9,9 @@ import { Field, TextInput } from './field';
       <input appInput type="text" />
     </app-field>
     <app-field label="Email"><input appInput type="email" /></app-field>
+    <app-field label="Password" controlId="password" hint="12 characters">
+      <input appInput type="password" />
+    </app-field>
   `,
 })
 class Host {
@@ -21,8 +24,8 @@ describe('Field', () => {
     const fixture = TestBed.createComponent(Host);
     fixture.detectChanges();
     const page = fixture.nativeElement as HTMLElement;
-    const [first, second] = Array.from(page.querySelectorAll('app-field'));
-    return { fixture, first, second };
+    const [first, second, third] = Array.from(page.querySelectorAll('app-field'));
+    return { fixture, first, second, third };
   }
 
   it('ties the label and the help text to the control', () => {
@@ -42,6 +45,15 @@ describe('Field', () => {
 
     expect(first.querySelector('input')!.id).not.toBe(second.querySelector('input')!.id);
     expect(second.querySelector('input')!.getAttribute('aria-describedby')).toBeNull();
+  });
+
+  it('uses a fixed id when given one, for its label and help text too', () => {
+    const { third } = render();
+    const control = third.querySelector('input')!;
+
+    expect(control.id).toBe('password');
+    expect(third.querySelector('label')!.getAttribute('for')).toBe('password');
+    expect(control.getAttribute('aria-describedby')).toBe('password-hint');
   });
 
   it('announces an error and marks the control invalid', () => {

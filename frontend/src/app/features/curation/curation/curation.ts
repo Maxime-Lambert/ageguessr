@@ -5,6 +5,8 @@ import { CurationApi } from '../curation-api';
 import { Exclusion } from '../exclusion/exclusion';
 import { ReportedPhotos } from '../reported-photos/reported-photos';
 import { PendingPhoto, PhotoDateSource, ReviewDecision, displayName } from '../models';
+import { Page } from '../../../shared/ui/page/page';
+import { Button } from '../../../shared/ui/button/button';
 
 /** How many photos to ask for at once, and when to ask for more. */
 const BATCH_SIZE = 20;
@@ -31,7 +33,7 @@ export const MIN_IMAGE_HEIGHT = 600;
  * is visible, framed at least from the face to the full body (plans/done/photo-curation.md).
  */
 @Component({
-  imports: [Exclusion, ReportedPhotos],
+  imports: [Exclusion, ReportedPhotos, Page, Button],
   selector: 'app-curation',
   templateUrl: './curation.html',
   host: { '(document:keydown)': 'onKeydown($event)' },

@@ -37,7 +37,7 @@ import { Field } from '../field/field';
           placeholder="00"
           role="spinbutton"
           class="font-display placeholder:text-border w-[2.2ch] bg-transparent text-center text-[40px] leading-[69px] font-semibold outline-none"
-          [attr.id]="field?.id"
+          [attr.id]="field?.id()"
           [attr.aria-describedby]="field?.describedBy()"
           [attr.aria-invalid]="field?.error() ? 'true' : null"
           [attr.aria-valuemin]="min()"

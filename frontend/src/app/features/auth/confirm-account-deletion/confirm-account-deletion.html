@@ -1,49 +1,62 @@
-<div class="mx-auto max-w-md px-4 py-16 sm:px-6">
-  <div class="bg-surface border-border rounded-lg border p-6">
+<main>
+  <app-page width="narrow">
     @switch (status()) {
       @case ('deleted') {
-        <h1 class="font-display text-3xl" i18n="@@deletion.doneTitle">Account deleted</h1>
-        <p class="text-muted mt-2" i18n="@@deletion.done">
+        <h1
+          class="font-display text-[32px] leading-tight sm:text-[36px]"
+          i18n="@@deletion.doneTitle"
+        >
+          Account deleted
+        </h1>
+        <p class="text-muted mt-3 leading-relaxed" i18n="@@deletion.done">
           Your account and its data are gone. You can still play without an account.
         </p>
-        <a
-          routerLink="/"
-          class="text-accent mt-4 inline-block underline"
-          i18n="@@deletion.backToGame"
-          >Back to the game</a
-        >
+        <a appButton routerLink="/" class="mt-6" i18n="@@deletion.backToGame">Back to the game</a>
       }
       @case ('invalid-link') {
-        <h1 class="font-display text-3xl" i18n="@@common.linkInvalid">Link invalid or expired</h1>
-        <p class="text-danger mt-2" i18n="@@deletion.invalid">
+        <h1
+          class="font-display text-[32px] leading-tight sm:text-[36px]"
+          i18n="@@common.linkInvalid"
+        >
+          Link invalid or expired
+        </h1>
+        <p class="text-danger mt-3" i18n="@@deletion.invalid">
           This deletion link no longer works. Your account has not been deleted.
         </p>
         <a
+          appButton
+          variant="secondary"
           routerLink="/account"
-          class="text-accent mt-4 inline-block underline"
+          class="mt-6"
           i18n="@@deletion.toAccount"
           >Go to my account</a
         >
       }
       @default {
-        <h1 class="font-display text-3xl" i18n="@@deletion.title">Delete your account?</h1>
-        <p class="text-muted mt-2" i18n="@@deletion.warning">
+        <h1 class="font-display text-[32px] leading-tight sm:text-[36px]" i18n="@@deletion.title">
+          Delete your account?
+        </h1>
+        <p class="text-muted mt-3 leading-relaxed" i18n="@@deletion.warning">
           This permanently deletes your account, your history and your friends list. It cannot be
           undone.
         </p>
-        <button
-          type="button"
-          (click)="confirm()"
-          [disabled]="status() === 'deleting'"
-          class="bg-danger text-danger-foreground mt-6 w-full rounded-md py-2 font-medium disabled:opacity-50"
-          i18n="@@deletion.confirm"
-        >
-          Delete my account permanently
-        </button>
-        <a routerLink="/" class="text-muted mt-4 inline-block text-sm" i18n="@@deletion.keep"
-          >Keep my account</a
-        >
+        <div class="mt-8 flex flex-col gap-3">
+          <button
+            appButton
+            variant="danger"
+            block
+            type="button"
+            (click)="confirm()"
+            [disabled]="status() === 'deleting'"
+            i18n="@@deletion.confirm"
+          >
+            Delete my account permanently
+          </button>
+          <a appButton variant="ghost" block routerLink="/" i18n="@@deletion.keep"
+            >Keep my account</a
+          >
+        </div>
       }
     }
-  </div>
-</div>
+  </app-page>
+</main>

@@ -6,18 +6,21 @@ import { Router, RouterLink } from '@angular/router';
 import { Auth } from '../auth';
 import { toApi } from '../../../shared/i18n/language';
 import { SiteLanguageService } from '../../i18n/site-language';
-import { USERNAME_PATTERN } from '../models';
+import { USERNAME_PATTERN, USERNAME_RULE_MESSAGE, USERNAME_TAKEN_MESSAGE } from '../models';
 import {
   NEW_PASSWORD_VALIDATORS,
   PASSWORDS_DIFFER_MESSAGE,
   PASSWORD_HINT,
-  PASSWORD_TOO_LONG_MESSAGE,
+  newPasswordError,
   passwordRefusalMessage,
 } from '../password-rules';
 import { COMMON_MESSAGES } from '../../../shared/common-messages';
+import { Button } from '../../../shared/ui/button/button';
+import { Field, TextInput } from '../../../shared/ui/field/field';
+import { Page } from '../../../shared/ui/page/page';
 
 @Component({
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, Page, Field, TextInput, Button],
   selector: 'app-register',
   templateUrl: './register.html',
 })
@@ -47,9 +50,26 @@ export class Register {
   readonly submitting = signal(false);
   readonly errorMessage = signal<string | null>(null);
   readonly usernameTaken = signal(false);
-  readonly passwordTooLongMessage = PASSWORD_TOO_LONG_MESSAGE;
   readonly passwordHint = PASSWORD_HINT;
   readonly passwordRefusal = signal<string | null>(null);
+  readonly usernameHint = $localize`:@@register.usernameHint:Shown to your friends. You can change it later.`;
+
+  usernameError(): string | null {
+    if (this.usernameTaken()) {
+      return USERNAME_TAKEN_MESSAGE;
+    }
+    const control = this.form.controls.username;
+    return control.invalid && control.touched ? USERNAME_RULE_MESSAGE : null;
+  }
+
+  passwordError(): string | null {
+    return newPasswordError(this.form.controls.password, this.passwordRefusal());
+  }
+
+  termsMissing(): boolean {
+    const control = this.form.controls.acceptTerms;
+    return control.invalid && control.touched;
+  }
 
   submit(): void {
     if (this.form.invalid) {

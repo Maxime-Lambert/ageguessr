@@ -4,6 +4,7 @@ import { reasonsText } from '../../../shared/reports/report-reasons';
 import { CurationApi } from '../curation-api';
 import { PhotoReportReason } from '../../../shared/reports/report-reasons';
 import { ReportedPhoto, displayName } from '../models';
+import { Button } from '../../../shared/ui/button/button';
 
 /** The reasons as the player picked them (game-vocabulary), in English like the admin. */
 export const PHOTO_REASON_LABELS: Record<PhotoReportReason, string> = {
@@ -21,6 +22,7 @@ export const PHOTO_REASON_LABELS: Record<PhotoReportReason, string> = {
  * (two clicks: it cannot be undone). Nothing is ever taken out without the admin.
  */
 @Component({
+  imports: [Button],
   selector: 'app-reported-photos',
   templateUrl: './reported-photos.html',
 })

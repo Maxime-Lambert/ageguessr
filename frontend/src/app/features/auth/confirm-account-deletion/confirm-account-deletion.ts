@@ -1,6 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Auth } from '../auth';
+import { Page } from '../../../shared/ui/page/page';
+import { Button } from '../../../shared/ui/button/button';
 
 type DeletionStatus = 'confirm' | 'deleting' | 'deleted' | 'invalid-link';
 
@@ -9,7 +11,7 @@ type DeletionStatus = 'confirm' | 'deleting' | 'deleted' | 'invalid-link';
  * (some even run their JavaScript), which would delete the account with no click.
  */
 @Component({
-  imports: [RouterLink],
+  imports: [RouterLink, Page, Button],
   selector: 'app-confirm-account-deletion',
   templateUrl: './confirm-account-deletion.html',
 })

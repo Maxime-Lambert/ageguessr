@@ -7,15 +7,18 @@ import {
   NEW_PASSWORD_VALIDATORS,
   PASSWORDS_DIFFER_MESSAGE,
   PASSWORD_HINT,
-  PASSWORD_TOO_LONG_MESSAGE,
+  newPasswordError,
   passwordRefusalMessage,
 } from '../password-rules';
 import { COMMON_MESSAGES } from '../../../shared/common-messages';
+import { Page } from '../../../shared/ui/page/page';
+import { Field, TextInput } from '../../../shared/ui/field/field';
+import { Button } from '../../../shared/ui/button/button';
 
 type ResetStatus = 'form' | 'success' | 'invalid-link';
 
 @Component({
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, Page, Field, TextInput, Button],
   selector: 'app-reset-password',
   templateUrl: './reset-password.html',
 })
@@ -28,12 +31,15 @@ export class ResetPassword {
     confirmPassword: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
   });
 
-  readonly passwordTooLongMessage = PASSWORD_TOO_LONG_MESSAGE;
   readonly passwordHint = PASSWORD_HINT;
   readonly passwordRefusal = signal<string | null>(null);
   readonly status = signal<ResetStatus>(this.token ? 'form' : 'invalid-link');
   readonly submitting = signal(false);
   readonly errorMessage = signal<string | null>(null);
+
+  passwordError(): string | null {
+    return newPasswordError(this.form.controls.newPassword, this.passwordRefusal());
+  }
 
   submit(): void {
     if (this.form.invalid || !this.token) {

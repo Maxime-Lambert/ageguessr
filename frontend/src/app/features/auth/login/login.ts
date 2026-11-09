@@ -4,9 +4,12 @@ import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Auth } from '../auth';
+import { Page } from '../../../shared/ui/page/page';
+import { Field, TextInput } from '../../../shared/ui/field/field';
+import { Button } from '../../../shared/ui/button/button';
 
 @Component({
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, Page, Field, TextInput, Button],
   selector: 'app-login',
   templateUrl: './login.html',
 })

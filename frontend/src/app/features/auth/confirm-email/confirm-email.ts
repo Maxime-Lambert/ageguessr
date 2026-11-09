@@ -1,11 +1,13 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Auth } from '../auth';
+import { Page } from '../../../shared/ui/page/page';
+import { Button } from '../../../shared/ui/button/button';
 
 type ConfirmEmailStatus = 'loading' | 'success' | 'error';
 
 @Component({
-  imports: [RouterLink],
+  imports: [RouterLink, Page, Button],
   selector: 'app-confirm-email',
   templateUrl: './confirm-email.html',
 })
