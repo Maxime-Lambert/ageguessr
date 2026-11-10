@@ -27,6 +27,10 @@ describe('Footer', () => {
     expect(link('Privacy')?.getAttribute('href')).toBe('/privacy');
   });
 
+  it('links to the rules', () => {
+    expect(link('How to play')?.getAttribute('href')).toBe('/how-to-play');
+  });
+
   it('shows the contact address as a mailto link', () => {
     expect(link('contact@ageguessr.app')?.getAttribute('href')).toBe(
       'mailto:contact@ageguessr.app',

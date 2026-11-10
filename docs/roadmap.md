@@ -17,6 +17,14 @@ retirer une fois tous faits.
       (`ADMIN_EMAIL` du `.env` de prod)
 - [ ] Indices musique corrigés par la migration V17 (release #45) : dans `/admin/hints`,
       1989, « Pour toi Arménie » de Charles Aznavour et divers artistes
+- [ ] Profil (release #48) : jouer la partie du jour en invité, se connecter sur le même
+      navigateur, ouvrir « Mon profil » : la partie y est, série de 1
+- [ ] Profil : une manche non terminée ne montre ni nom, ni âge, ni points ; « Dossiers
+      plus anciens » charge la page suivante quand il y a plus de 30 jours
+- [ ] Politique de confidentialité (EN + FR) : date du 2026-11-09 et paragraphe sur les
+      parties invité rattachées au compte
+- [ ] Parcours e2e « invité → compte → profil » (`e2e/journeys/daily-game.spec.ts`) :
+      jamais lancé, les parcours ne tournent dans aucune CI — à lancer à la main
 
 ## Semaine 1 — Fondations
 - [x] Initialisation projet Spring Boot (Java 25) + Angular (Claude Code)

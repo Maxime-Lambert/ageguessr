@@ -28,6 +28,7 @@
         @if (game.rounds.length === 0) {
           <p>{{ text.noGame }}</p>
         } @else if (active(); as round) {
+          <app-rules-card />
           <app-round-player
             [round]="round"
             [total]="total()"

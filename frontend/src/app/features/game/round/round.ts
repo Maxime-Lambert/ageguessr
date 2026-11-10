@@ -81,18 +81,27 @@ export class Round {
 
   constructor() {
     // Each step moves the focus to what is to be done next, so a keyboard or screen reader
-    // user never has to look for it; the field is emptied for the final guess.
+    // user never has to look for it. The final guess starts one year past the first, on
+    // the side given: − and + then adjust from there, and Enter alone never repeats a
+    // guess already known to be wrong.
     effect(() => {
       const step = this.step();
       const target =
         step === 'AWAITING_HINT' ? this.categoryButtons().at(0)?.nativeElement : this.guessInput();
       untracked(() => {
         if (step === 'AWAITING_SECOND_GUESS') {
-          this.guess.reset();
+          this.guess.reset(this.secondGuessStart());
         }
         target?.focus();
       });
     });
+  }
+
+  private secondGuessStart(): number | null {
+    const { firstGuess, direction } = this.round();
+    if (firstGuess === null || direction === null) return null;
+    const next = firstGuess + (direction === 'OLDER' ? 1 : -1);
+    return Math.min(MAX_AGE, Math.max(MIN_AGE, next));
   }
 
   submitGuess(): void {

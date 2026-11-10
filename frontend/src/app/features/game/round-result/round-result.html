@@ -86,7 +86,8 @@
           class="text-paper-muted flex items-center gap-2 text-xs font-bold tracking-[0.08em] uppercase"
         >
           <app-lead-icon [category]="hint.category" [size]="14" />
-          {{ text.hint }} · {{ categoryLabels[hint.category] }} · {{ hint.year }}
+          {{ text.hint }} · {{ categoryLabels[hint.category] }} · {{ hint.year }} ·
+          {{ yearsAgo() }}
         </p>
         <p class="font-display mt-2 text-xl leading-snug">{{ hint.text }}</p>
         <div
@@ -109,17 +110,16 @@
       </div>
     }
 
-    <div class="mt-7 flex flex-wrap items-start gap-3">
-      <button appButton type="button" class="max-sm:flex-1" (click)="next.emit()">
-        {{ last() ? text.seeSummary : text.next }}
-        <svg lucideArrowRight [size]="18" aria-hidden="true"></svg>
-      </button>
-      <app-report-button
-        class="ml-auto"
-        target="PHOTO"
-        [reported]="result().photoReported"
-        [reporter]="reporter()"
-      />
-    </div>
+    <button appButton type="button" class="mt-7 max-sm:w-full" (click)="next.emit()">
+      {{ last() ? text.seeSummary : text.next }}
+      <svg lucideArrowRight [size]="18" aria-hidden="true"></svg>
+    </button>
+    <!-- Its own line, away from the primary button: a secondary action, not a choice. -->
+    <app-report-button
+      class="mt-5 block"
+      target="PHOTO"
+      [reported]="result().photoReported"
+      [reporter]="reporter()"
+    />
   </div>
 </section>

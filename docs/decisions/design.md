@@ -52,6 +52,28 @@ pour mémoire. Plan : `plans/design-overhaul.md`.
 clair de la direction A est défini en Phase 2, avec la même règle (luminosité ajustée,
 teintes inchangées).
 
+## Revue produit (2026-11-09)
+
+Corrections après une revue sur la prod (captures, une série jouée) :
+- **Aide de la piste** : elle disait « un fait de l'année où la photo a été prise », alors
+  que l'API tire un fait de (année du jour − âge sur la photo). Elle dit désormais « il y a
+  autant d'années que l'âge de la personne sur la photo », et la révélation ajoute
+  « il y a 66 ans » à côté de l'année.
+- **Règles** : une carte « Comment jouer » (3 lignes) au-dessus de la 1re manche, cachée
+  pour de bon par « Compris » (stockage local, simple confort). Les règles restent sur la
+  page `/how-to-play` (pied de page) et sous le choix de longueur de l'Enquête libre.
+  Aucun nombre de manches par jour : c'est un réglage serveur.
+- **2e essai** : le champ part d'un an après le 1er essai, du côté indiqué, au lieu d'être
+  vide. − et + ajustent depuis là, et Entrée seule ne renvoie jamais un âge déjà faux.
+- **Champ d'âge vide** : « ? » en `muted` au lieu d'un « 00 » pâle, pris pour une valeur.
+- **Enquête libre** : une durée estimée sur chaque longueur (~30 s par affaire).
+- **Signaler la photo** : sur sa propre ligne sous le bouton principal, plus à côté.
+- **Profil** : calendrier des 30 derniers jours (jours UTC), or plus ou moins plein selon
+  le score, contour pointillé pour un jour pas terminé. Redit la liste pour l'œil
+  seulement : une phrase pour les lecteurs d'écran.
+- **En-tête invité** : un globe et le code de langue (« FR ») au lieu d'une icône de
+  réglages sans libellé. Le nom accessible garde le code visible (« Preferences · FR »).
+
 ## Identité visuelle
 
 ### Ambiance : archives / vieille photographie

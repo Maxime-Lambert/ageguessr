@@ -70,7 +70,7 @@ describe('Header', () => {
 
     expect(named(page, 'a', 'Log in')).toBeUndefined();
     expect(named(page, 'button', 'Log out')).toBeUndefined();
-    expect(named(page, 'button', 'Preferences')).toBeDefined();
+    expect(named(page, 'button', 'Preferences · EN')).toBeDefined();
   });
 
   it('offers log in, sign up and the preferences to a guest', () => {
@@ -79,7 +79,7 @@ describe('Header', () => {
 
     expect(named(page, 'a', 'Log in')?.getAttribute('href')).toBe('/login');
     expect(named(page, 'a', 'Sign up')?.getAttribute('href')).toBe('/register');
-    expect(named(page, 'button', 'Preferences')?.getAttribute('aria-expanded')).toBe('false');
+    expect(named(page, 'button', 'Preferences · EN')?.getAttribute('aria-expanded')).toBe('false');
   });
 
   it('gathers the account, the preferences and log out behind the username', () => {
@@ -88,7 +88,7 @@ describe('Header', () => {
     const trigger = page.querySelector<HTMLButtonElement>('app-dropdown > button')!;
 
     expect(named(page, 'a', 'Log in')).toBeUndefined();
-    expect(named(page, 'button', 'Preferences')).toBeUndefined();
+    expect(named(page, 'button', 'Preferences · EN')).toBeUndefined();
     expect(trigger.textContent).toContain('Player');
 
     trigger.click();

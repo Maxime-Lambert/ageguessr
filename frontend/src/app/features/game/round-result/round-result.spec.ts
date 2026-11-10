@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
-import { GAME_TEXT } from '../game-vocabulary';
+import { GAME_TEXT, yearsAgo } from '../game-vocabulary';
 import { RoundView } from '../models';
 import { finished } from '../testing';
 import { RoundResult } from './round-result';
@@ -70,6 +70,7 @@ describe('RoundResult', () => {
 
     expect(page.textContent).toContain('A hit.');
     expect(page.textContent).toContain('1986');
+    expect(page.textContent).toContain(yearsAgo(finished(1).result!.age));
     expect(link(GAME_TEXT.wikipedia).href).toBe('https://en.wikipedia.org/wiki/Hit');
   });
 

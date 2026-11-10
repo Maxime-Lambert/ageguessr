@@ -56,12 +56,21 @@ function json(body: unknown) {
   return { status: 200, contentType: 'application/json', body: JSON.stringify(body) };
 }
 
+/**
+ * Marks the first-visit rules card as seen, so a test sees the round straight away;
+ * the card has its own test (game.spec.ts).
+ */
+export async function skipRules(page: Page): Promise<void> {
+  await page.addInitScript(() => localStorage.setItem('ageguessr-rules-seen', '1'));
+}
+
 /** Mocks the game API for one round played to the end; returns the bodies sent, in order. */
 export async function mockGame(
   page: Page,
   rounds = [round(1), round(2), round(3)],
 ): Promise<unknown[]> {
   const sent: unknown[] = [];
+  await skipRules(page);
   await asGuest(page);
   await page.route('**/api/game/today', (route) =>
     route.fulfill(json({ date: DATE, rounds, score: { points: 0, max: 3000, complete: false } })),
@@ -146,6 +155,7 @@ function seriesOf(rounds: ReturnType<typeof round>[], size = rounds.length) {
 export async function mockSeries(page: Page, count = 5): Promise<unknown[]> {
   const started: unknown[] = [];
   let rounds = Array.from({ length: count }, (_, i) => round(i + 1));
+  await skipRules(page);
   await asGuest(page);
   await page.route('**/api/images/*', (route) =>
     route.fulfill({ status: 200, contentType: 'image/png', body: PIXEL }),

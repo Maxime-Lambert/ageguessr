@@ -577,8 +577,8 @@
         <target>Impossible d'enregistrer votre langue. Réessayez.</target>
       </trans-unit>
       <trans-unit id="footer.nav" datatype="html">
-        <source>Legal</source>
-        <target>Informations légales</target>
+        <source>Site information</source>
+        <target>Informations sur le site</target>
       </trans-unit>
       <trans-unit id="footer.legalNotice" datatype="html">
         <source>Legal notice</source>
@@ -905,8 +905,8 @@
         <target>Auto</target>
       </trans-unit>
       <trans-unit id="game.pickHintHelp" datatype="html">
-        <source>A fact from the year the photo was taken.</source>
-        <target>Un fait marquant de l'année où la photo a été prise.</target>
+        <source>A fact from as many years ago as this person's age on the photo.</source>
+        <target>Un fait survenu il y a autant d'années que l'âge de la personne sur la photo.</target>
       </trans-unit>
       <trans-unit id="title.profile" datatype="html">
         <source>My profile · AgeGuessr</source>
@@ -983,6 +983,62 @@
       <trans-unit id="profile.loadError" datatype="html">
         <source>Your history could not be loaded.</source>
         <target>Votre historique n'a pas pu être chargé.</target>
+      </trans-unit>
+      <trans-unit id="game.howToPlay" datatype="html">
+        <source>How to play</source>
+        <target>Comment jouer</target>
+      </trans-unit>
+      <trans-unit id="game.ruleGuess" datatype="html">
+        <source>Guess how old the person was on the photo. You get two guesses per case.</source>
+        <target>Devinez l'âge de la personne sur la photo. Vous avez deux essais par affaire.</target>
+      </trans-unit>
+      <trans-unit id="game.ruleLead" datatype="html">
+        <source>After the first, you learn whether they were older or younger, and you pick a lead: a fact from as many years ago as their age on the photo.</source>
+        <target>Après le premier, vous savez si elle était plus âgée ou plus jeune, et vous choisissez une piste : un fait survenu il y a autant d'années que son âge sur la photo.</target>
+      </trans-unit>
+      <trans-unit id="game.rulePoints" datatype="html">
+        <source>Each guess earns up to 500 points, more the closer it is; a spot-on first guess is worth 1000. A new file opens every day at midnight UTC.</source>
+        <target>Chaque essai rapporte jusqu'à 500 points, d'autant plus qu'il est proche ; un premier essai exact en vaut 1000. Un nouveau dossier s'ouvre chaque jour à minuit UTC.</target>
+      </trans-unit>
+      <trans-unit id="game.gotIt" datatype="html">
+        <source>Got it</source>
+        <target>Compris</target>
+      </trans-unit>
+      <trans-unit id="game.playToday" datatype="html">
+        <source>Open today&apos;s file</source>
+        <target>Ouvrir le dossier du jour</target>
+      </trans-unit>
+      <trans-unit id="game.seriesDuration" datatype="html">
+        <source>About <x id="minutes" equiv-text="minutes"/> min</source>
+        <target>Environ <x id="minutes" equiv-text="minutes"/> min</target>
+      </trans-unit>
+      <trans-unit id="game.yearsAgo" datatype="html">
+        <source><x id="years" equiv-text="years"/> years ago</source>
+        <target>il y a <x id="years" equiv-text="years"/> ans</target>
+      </trans-unit>
+      <trans-unit id="title.howToPlay" datatype="html">
+        <source>How to play · AgeGuessr</source>
+        <target>Comment jouer · AgeGuessr</target>
+      </trans-unit>
+      <trans-unit id="footer.howToPlay" datatype="html">
+        <source>How to play</source>
+        <target>Comment jouer</target>
+      </trans-unit>
+      <trans-unit id="profile.lastDays" datatype="html">
+        <source>Last 30 days</source>
+        <target>30 derniers jours</target>
+      </trans-unit>
+      <trans-unit id="profile.notPlayed" datatype="html">
+        <source>Not played</source>
+        <target>Pas joué</target>
+      </trans-unit>
+      <trans-unit id="profile.score" datatype="html">
+        <source>Score</source>
+        <target>Score</target>
+      </trans-unit>
+      <trans-unit id="profile.finishedLately" datatype="html">
+        <source>Files finished in the last 30 days: <x id="count" equiv-text="count"/></source>
+        <target>Dossiers terminés ces 30 derniers jours : <x id="count" equiv-text="count"/></target>
       </trans-unit>
     </body>
   </file>
