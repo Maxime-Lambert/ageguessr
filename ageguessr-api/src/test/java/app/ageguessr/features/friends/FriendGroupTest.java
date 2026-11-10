@@ -6,15 +6,15 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
 class FriendGroupTest {
 
     private final FriendshipRepository friendships = mock(FriendshipRepository.class);
-    private final FriendGroup friendGroup = new FriendGroup(friendships);
-
-    private record Name(UUID getId, String getUsername) implements FriendshipRepository.UsernameRow {}
+    private final FriendUsers users = mock(FriendUsers.class);
+    private final FriendGroup friendGroup = new FriendGroup(friendships, users);
 
     @Test
     void theCallerFirstThenTheFriendsWithTheirUsernames() {
@@ -22,7 +22,7 @@ class FriendGroupTest {
         UUID bob = UUID.randomUUID();
         UUID gone = UUID.randomUUID();
         when(friendships.findFriendIdsOf(me)).thenReturn(List.of(bob, gone));
-        when(friendships.findUsernamesOf(anyList())).thenReturn(List.of(new Name(bob, "bob"), new Name(me, "me")));
+        when(users.findUsernamesOf(anyList())).thenReturn(Map.of(bob, "bob", me, "me"));
 
         FriendGroup.Group group = friendGroup.of(me);
 

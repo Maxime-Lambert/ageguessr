@@ -169,6 +169,24 @@ class RateLimitFunctionalTest {
         guessFrom(client).andExpect(status().isConflict());
     }
 
+    /** Accepting, declining, removing and replacing one's link share the friends counter. */
+    @Test
+    void limitsEveryChangeToTheFriendsGraph() throws Exception {
+        String client = "203.0.113.70";
+        String id = java.util.UUID.randomUUID().toString();
+        mockMvc.perform(post("/api/friends/requests/" + id + "/accept").header("X-Forwarded-For", client))
+                .andExpect(status().isUnauthorized());
+        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete(
+                                "/api/friends/" + id)
+                        .header("X-Forwarded-For", client))
+                .andExpect(status().isUnauthorized());
+        mockMvc.perform(post("/api/friends/invite").header("X-Forwarded-For", client))
+                .andExpect(status().isTooManyRequests());
+        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/api/friends")
+                        .header("X-Forwarded-For", client))
+                .andExpect(status().isUnauthorized());
+    }
+
     /** Today's comparison and the leaderboard load every round of a whole group: costly. */
     @Test
     void limitsTheFriendsScoresWithTheGuesses() throws Exception {

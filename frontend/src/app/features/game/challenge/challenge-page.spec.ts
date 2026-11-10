@@ -5,7 +5,7 @@ import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/route
 import { Auth } from '../../auth/auth';
 import { GAME_TEXT } from '../game-vocabulary';
 import { Challenge } from '../models';
-import { SHARE_TARGET } from '../share';
+import { SHARE_TARGET } from '../../../shared/share-target';
 import { challenge, fakeShareTarget, finished, round, series } from '../testing';
 import { ChallengePage } from './challenge-page';
 

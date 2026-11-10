@@ -2,6 +2,7 @@ package app.ageguessr.features.friends.SendFriendRequest;
 
 import app.ageguessr.features.friends.FriendErrors;
 import app.ageguessr.features.friends.FriendLimits;
+import app.ageguessr.features.friends.FriendUsers;
 import app.ageguessr.features.friends.Friendship;
 import app.ageguessr.features.friends.FriendshipRepository;
 import java.time.Clock;
@@ -22,13 +23,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class SendFriendRequestHandler {
 
     private final FriendshipRepository friendships;
+    private final FriendUsers users;
     private final FriendLimits limits;
     private final Clock clock;
 
     @Transactional
     public void handle(UUID userId, SendFriendRequestCommand command) {
-        UUID addressee = friendships
-                .findVerifiedUserIdByUsername(command.username())
+        UUID addressee = users.findVerifiedIdByUsername(command.username())
                 .filter(id -> !id.equals(userId))
                 .orElseThrow(FriendErrors::noSuchPlayer);
         friendships.findBetween(userId, addressee).ifPresent(existing -> {

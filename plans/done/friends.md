@@ -158,7 +158,7 @@ Tests:
 
 ### Phase Summary
 Done 2026-11-10. V18 (`friendships` with the pair index, `friend_invites`), entities,
-`FriendshipRepository` (native SQL on `users` for usernames and the verified lookup),
+`FriendshipRepository`, `FriendUsers` (native SQL on `users`, extracted after the architecture review),
 `FriendLimits`, `FriendInviteCodes` (reuses `game/ShareCodes`, so the `friends → game`
 ArchUnit exception landed here already), 9 use cases. `app.friends.*` had to be added to
 `src/test/resources/application.properties` too (it replaces the main file in tests).
@@ -243,23 +243,23 @@ Verification: `pnpm test` 414 → all pass (65 files), lint and prettier clean, 
 passes (FR complete). Playwright component specs written (EN + FR), run by the CI only.
 
 ## Phase 4: Frontend — comparison, leaderboard, journey, legal
-Status: Not started
+Status: Complete
 
-- [ ] `FriendsToday` component on `/friends`: locked message with a link to the daily
+- [x] `FriendsToday` component on `/friends`: locked message with a link to the daily
       game, then the ranked list (me highlighted, points per round as score dots like
       the day summary)
-- [ ] `FriendsLeaderboard` component on `/friends`: rank, username, average, games,
+- [x] `FriendsLeaderboard` component on `/friends`: rank, username, average, games,
       streak; players with no game last, « No game yet »
-- [ ] Day summary: « Compare with your friends » link to `/friends` when signed in
-- [ ] Privacy policy EN + FR (what friends see, deletion), date updated
-- [ ] QA journey `e2e/journeys/friends.spec.ts`: two accounts sign up and confirm, A sends
+- [x] Day summary: « Compare with your friends » link to `/friends` when signed in
+- [x] Privacy policy EN + FR (what friends see, deletion), date updated
+- [x] QA journey `e2e/journeys/friends.spec.ts`: two accounts sign up and confirm, A sends
       a request by username, B accepts, both finish the seeded daily game, A sees B's
       score; and B adds A through A's invite link (the critical path named in
       `docs/testing-strategy.md`). Journeys do not run in CI today: listed as a prod
       check to run by hand
-- [ ] Reviews: `architecture-reviewer` and `code-reviewer` (user data, new endpoints,
+- [x] Reviews: `architecture-reviewer` and `code-reviewer` (user data, new endpoints,
       RGPD), fix what they find
-- [ ] Roadmap: Semaine 6 checked, prod checks added; plan moved to `plans/done/friends.md`
+- [x] Roadmap: Semaine 6 checked, prod checks added; plan moved to `plans/done/friends.md`
 
 Tests:
 - Unit (Vitest): today (locked, statuses, sort, me highlighted), leaderboard (order, no
@@ -273,7 +273,17 @@ Tests:
 - CI green on the PR (Playwright component EN + FR)
 
 ### Phase Summary
-_(write when phase completes)_
+Done 2026-11-10. Privacy policy EN + FR (what friends see, retention, rate limits), date
+2026-11-10, spec added. QA journey added at the end of `e2e/journeys/daily-game.spec.ts`
+rather than a new `friends.spec.ts`: it seeds today's game, and the seeding tests must run
+serially in one file. Reviews: code-reviewer found nothing blocking; two rate-limit gaps
+fixed (every non-GET `/api/friends*` now on the `friends` counter, test added); the timing
+difference of the username lookup is accepted (authenticated, 30/h, same 404).
+architecture-reviewer found nothing blocking; fixed: `SHARE_TARGET` moved to
+`shared/share-target.ts`, real HTTP error forwarded on the invite load, `FriendUsers`
+extracted from `FriendshipRepository`, doc line wrapped. Roadmap: Semaine 6 checked, prod
+checks added. Verification: `./mvnw test` 1195 tests green; `pnpm test` 415 green, lint,
+prettier and build clean; Playwright component specs run by the CI.
 
 ## Edge cases
 - Request to oneself, to an unknown or unverified username → same 404
@@ -291,7 +301,21 @@ _(write when phase completes)_
   played
 
 ## Final Recap
-_(write when all phases complete)_
+Friends shipped end to end in one PR: V18 graph (one row per pair), 11 endpoints under
+`/api/friends`, today's comparison locked until the caller's day is complete (points only),
+leaderboard by plain average, invite links, header badge, FR translations, privacy policy.
+Game rules shared through the public `game/PlayerHistory` + `PlayerHistories` (ArchUnit
+exception `friends → game`). Known limit: a guest who opens an invite link and has no
+account yet goes to the login page; registering from there does not bring them back to the
+invite (the register page has no `returnUrl`).
 
 ## Deployment Plan
-_(write when all phases complete)_
+1. PR `feature/friends` → `develop` (CI: backend, frontend, Playwright component EN + FR).
+2. Release PR `develop` → `main` with a **merge commit**; the mutation job runs there.
+3. Deploy is automatic (GHCR images, VPS). Flyway applies V18 at API start: two new tables,
+   no change to existing ones, nothing to back-fill.
+4. New optional env vars (defaults are fine): `FRIENDS_RATE_LIMIT_MAX_ATTEMPTS` (30),
+   `FRIENDS_RATE_LIMIT_WINDOW_MINUTES` (60), `FRIENDS_MAX_FRIENDS` (200),
+   `FRIENDS_MAX_PENDING_REQUESTS` (50).
+5. Prod checks by hand: listed in `docs/roadmap.md` (« Amis » lines), plus the friends QA
+   journey to run against a throwaway stack.

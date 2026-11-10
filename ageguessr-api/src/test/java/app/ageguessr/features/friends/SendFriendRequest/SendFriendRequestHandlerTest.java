@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 
 import app.ageguessr.features.friends.FriendErrors;
 import app.ageguessr.features.friends.FriendLimits;
+import app.ageguessr.features.friends.FriendUsers;
 import app.ageguessr.features.friends.Friendship;
 import app.ageguessr.features.friends.FriendshipRepository;
 import app.ageguessr.shared.exceptions.ConflictException;
@@ -29,14 +30,15 @@ class SendFriendRequestHandlerTest {
     private static final Instant NOW = Instant.parse("2026-11-10T10:00:00Z");
     private final FriendshipRepository friendships = mock(FriendshipRepository.class);
     private final FriendLimits limits = mock(FriendLimits.class);
+    private final FriendUsers users = mock(FriendUsers.class);
     private final SendFriendRequestHandler handler =
-            new SendFriendRequestHandler(friendships, limits, Clock.fixed(NOW, ZoneOffset.UTC));
+            new SendFriendRequestHandler(friendships, users, limits, Clock.fixed(NOW, ZoneOffset.UTC));
     private final UUID me = UUID.randomUUID();
     private final UUID bob = UUID.randomUUID();
 
     @Test
     void sendsARequestToTheAccountOfTheUsername() {
-        when(friendships.findVerifiedUserIdByUsername("Bob")).thenReturn(Optional.of(bob));
+        when(users.findVerifiedIdByUsername("Bob")).thenReturn(Optional.of(bob));
 
         handler.handle(me, new SendFriendRequestCommand("Bob"));
 
@@ -58,7 +60,7 @@ class SendFriendRequestHandlerTest {
 
     @Test
     void oneselfIsNotFoundEither() {
-        when(friendships.findVerifiedUserIdByUsername("me")).thenReturn(Optional.of(me));
+        when(users.findVerifiedIdByUsername("me")).thenReturn(Optional.of(me));
 
         assertThatThrownBy(() -> handler.handle(me, new SendFriendRequestCommand("me")))
                 .isInstanceOf(NotFoundException.class)
@@ -68,7 +70,7 @@ class SendFriendRequestHandlerTest {
 
     @Test
     void refusesWhenAlreadyFriends() {
-        when(friendships.findVerifiedUserIdByUsername("Bob")).thenReturn(Optional.of(bob));
+        when(users.findVerifiedIdByUsername("Bob")).thenReturn(Optional.of(bob));
         when(friendships.findBetween(me, bob)).thenReturn(Optional.of(Friendship.accepted(bob, me, NOW)));
 
         assertThatThrownBy(() -> handler.handle(me, new SendFriendRequestCommand("Bob")))
@@ -77,7 +79,7 @@ class SendFriendRequestHandlerTest {
 
     @Test
     void refusesASecondRequest() {
-        when(friendships.findVerifiedUserIdByUsername("Bob")).thenReturn(Optional.of(bob));
+        when(users.findVerifiedIdByUsername("Bob")).thenReturn(Optional.of(bob));
         when(friendships.findBetween(me, bob)).thenReturn(Optional.of(Friendship.request(me, bob, NOW)));
 
         assertThatThrownBy(() -> handler.handle(me, new SendFriendRequestCommand("Bob")))
@@ -87,7 +89,7 @@ class SendFriendRequestHandlerTest {
     @Test
     void neverTurnsACrossingRequestIntoAFriendship() {
         Friendship incoming = Friendship.request(bob, me, NOW);
-        when(friendships.findVerifiedUserIdByUsername("Bob")).thenReturn(Optional.of(bob));
+        when(users.findVerifiedIdByUsername("Bob")).thenReturn(Optional.of(bob));
         when(friendships.findBetween(me, bob)).thenReturn(Optional.of(incoming));
 
         assertThatThrownBy(() -> handler.handle(me, new SendFriendRequestCommand("Bob")))
@@ -98,7 +100,7 @@ class SendFriendRequestHandlerTest {
 
     @Test
     void checksTheLimitsBeforeSaving() {
-        when(friendships.findVerifiedUserIdByUsername("Bob")).thenReturn(Optional.of(bob));
+        when(users.findVerifiedIdByUsername("Bob")).thenReturn(Optional.of(bob));
         doThrow(FriendErrors.pendingLimitReached()).when(limits).checkCanSendRequest(me);
 
         assertThatThrownBy(() -> handler.handle(me, new SendFriendRequestCommand("Bob")))
@@ -108,7 +110,7 @@ class SendFriendRequestHandlerTest {
 
     @Test
     void aRequestCrossingAtTheSameInstantIsAConflict() {
-        when(friendships.findVerifiedUserIdByUsername("Bob")).thenReturn(Optional.of(bob));
+        when(users.findVerifiedIdByUsername("Bob")).thenReturn(Optional.of(bob));
         when(friendships.saveAndFlush(any())).thenThrow(new DataIntegrityViolationException("pair"));
 
         assertThatThrownBy(() -> handler.handle(me, new SendFriendRequestCommand("Bob")))

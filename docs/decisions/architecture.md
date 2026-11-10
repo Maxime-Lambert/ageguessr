@@ -832,7 +832,8 @@ manche par manche (`GET /api/game/history`, 30 jours par page).
   elle est terminée et encore jouable, sinon l'historique donnerait la réponse de la
   manche du jour en cours. **Jamais de photo ni de `publicId`** (voir « Limites
   connues »).
-- **Calculs en Java** (`PlayerHistory`, pur, partagé avec les amis depuis 2026-11-10) : toutes les manches du compte sont lues
+- **Calculs en Java** (`PlayerHistory`, pur, partagé avec les amis depuis 2026-11-10) :
+  toutes les manches du compte sont lues
   (3 par jour au plus), puis les jours, séries et statistiques sont calculés en mémoire.
   Testable unitairement et par mutation. À revoir si un compte dépasse plusieurs milliers
   de jours.
@@ -913,8 +914,13 @@ classement par moyenne de points par partie.
 - **Actions par id de relation**, jamais par id de compte : le frontend ne reçoit que
   l'id de la ligne `friendships` et le pseudo de l'autre, jamais son `users.id` ni son
   email. Une relation qui n'est pas la sienne répond 404, comme un id inconnu.
-- **Pseudos lus en SQL natif sur `users`**, comme le classement d'un défi : `friends`
-  n'importe pas `auth`.
+- **Pseudos lus en SQL natif sur `users`** (`FriendUsers`), comme le classement d'un
+  défi : `friends` n'importe pas `auth`.
+- **Front** : exception **`layout → friends`**, l'en-tête montre le nombre de demandes
+  reçues (`FriendsApi.incomingCount`, lu une fois par session et à chaque lecture de la
+  liste). Copier et partager le lien passent par `shared/share-target.ts`
+  (`SHARE_TARGET`, sorti de `game/share.ts` pour servir aux deux features). Le
+  récapitulatif du jour mène à `/friends` (exception `game → auth` déjà là pour le défi).
 - **Comparaison du jour** (`GET /api/friends/today`) : `{locked: true}` et aucune donnée
   tant que la partie du jour de l'appelant n'est pas complète (les points d'un ami
   renseigneraient sur les manches qu'il reste à jouer). Ensuite, des points seulement :

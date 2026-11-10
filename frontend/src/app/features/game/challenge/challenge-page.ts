@@ -17,7 +17,8 @@ import { Challenge, HintCategory, RoundReport, RoundView, Series } from '../mode
 import { RoundPlayer } from '../round-player/round-player';
 import { RoundsScreen } from '../rounds-screen';
 import { SeriesApi } from '../series-api';
-import { NICKNAME_PATTERN, SHARE_TARGET, challengeUrl, squares } from '../share';
+import { SHARE_TARGET } from '../../../shared/share-target';
+import { NICKNAME_PATTERN, challengeUrl, squares } from '../share';
 
 /**
  * A challenge, at /challenge/:code: who sent it, then, once joined, its series played with

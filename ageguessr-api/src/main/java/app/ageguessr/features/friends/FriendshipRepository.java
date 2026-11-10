@@ -67,25 +67,4 @@ public interface FriendshipRepository extends JpaRepository<Friendship, UUID> {
                     """,
             nativeQuery = true)
     List<RelationRow> findRelationsOf(@Param("userId") UUID userId);
-
-    /**
-     * The account a username names, whatever its case (as the unique index), if its email
-     * is verified: an account that cannot sign in is not a friend to add. SQL, as above.
-     */
-    @Query(
-            value = "SELECT id FROM users WHERE LOWER(username) = LOWER(:username) AND email_verified",
-            nativeQuery = true)
-    Optional<UUID> findVerifiedUserIdByUsername(@Param("username") String username);
-
-    @Query(value = "SELECT username FROM users WHERE id = :userId", nativeQuery = true)
-    Optional<String> findUsernameOf(@Param("userId") UUID userId);
-
-    interface UsernameRow {
-        UUID getId();
-
-        String getUsername();
-    }
-
-    @Query(value = "SELECT id AS id, username AS username FROM users WHERE id IN (:userIds)", nativeQuery = true)
-    List<UsernameRow> findUsernamesOf(@Param("userIds") List<UUID> userIds);
 }

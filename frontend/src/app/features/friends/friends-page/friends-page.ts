@@ -2,10 +2,11 @@ import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { COMMON_MESSAGES } from '../../../shared/common-messages';
 import { Button } from '../../../shared/ui/button/button';
 import { Field, TextInput } from '../../../shared/ui/field/field';
 import { Page } from '../../../shared/ui/page/page';
-import { SHARE_TARGET } from '../../game/share';
+import { SHARE_TARGET } from '../../../shared/share-target';
 import { FriendsApi, inviteUrl } from '../friends-api';
 import { FriendsLeaderboard } from '../friends-leaderboard/friends-leaderboard';
 import { FRIENDS_TEXT, NO_SUCH_PLAYER, friendsError } from '../friends-text';
@@ -70,7 +71,7 @@ export class FriendsPage {
     this.load();
     this.api.invite().subscribe({
       next: (invite) => this.inviteCode.set(invite.code),
-      error: () => this.inviteError.set(friendsError(new HttpErrorResponse({ status: 500 }))),
+      error: (error: HttpErrorResponse) => this.inviteError.set(friendsError(error)),
     });
   }
 
@@ -163,7 +164,7 @@ export class FriendsPage {
     if (!link) return;
     this.target.copy(link).then(
       () => this.copied.set(true),
-      () => this.inviteError.set(friendsError(new HttpErrorResponse({ status: 500 }))),
+      () => this.inviteError.set(COMMON_MESSAGES.genericError),
     );
   }
 

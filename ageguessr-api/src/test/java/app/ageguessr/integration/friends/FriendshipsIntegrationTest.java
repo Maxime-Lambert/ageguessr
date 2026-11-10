@@ -8,6 +8,7 @@ import app.ageguessr.features.auth.User;
 import app.ageguessr.features.auth.UserRepository;
 import app.ageguessr.features.friends.FriendInvite;
 import app.ageguessr.features.friends.FriendInviteRepository;
+import app.ageguessr.features.friends.FriendUsers;
 import app.ageguessr.features.friends.Friendship;
 import app.ageguessr.features.friends.FriendshipRepository;
 import app.ageguessr.features.friends.FriendshipRepository.RelationRow;
@@ -39,6 +40,9 @@ class FriendshipsIntegrationTest {
 
     @Autowired
     private FriendInviteRepository invites;
+
+    @Autowired
+    private FriendUsers friendUsers;
 
     @Autowired
     private UserRepository users;
@@ -101,10 +105,10 @@ class FriendshipsIntegrationTest {
         User verified = saveUser(true);
         User unverified = saveUser(false);
 
-        assertThat(friendships.findVerifiedUserIdByUsername(verified.getUsername().toUpperCase()))
+        assertThat(friendUsers.findVerifiedIdByUsername(verified.getUsername().toUpperCase()))
                 .contains(verified.getId());
-        assertThat(friendships.findVerifiedUserIdByUsername(unverified.getUsername())).isEmpty();
-        assertThat(friendships.findVerifiedUserIdByUsername("nobody-here")).isEmpty();
+        assertThat(friendUsers.findVerifiedIdByUsername(unverified.getUsername())).isEmpty();
+        assertThat(friendUsers.findVerifiedIdByUsername("nobody-here")).isEmpty();
     }
 
     @Test
@@ -138,10 +142,13 @@ class FriendshipsIntegrationTest {
         User alice = saveUser(true);
         User bob = saveUser(true);
 
-        assertThat(friendships.findUsernamesOf(List.of(alice.getId(), bob.getId(), UUID.randomUUID())))
-                .extracting(FriendshipRepository.UsernameRow::getUsername)
-                .containsExactlyInAnyOrder(alice.getUsername(), bob.getUsername());
-        assertThat(friendships.findUsernameOf(alice.getId())).contains(alice.getUsername());
+        assertThat(friendUsers.findUsernamesOf(List.of(alice.getId(), bob.getId(), UUID.randomUUID())))
+                .containsOnly(
+                        java.util.Map.entry(alice.getId(), alice.getUsername()),
+                        java.util.Map.entry(bob.getId(), bob.getUsername()));
+        assertThat(friendUsers.findUsernamesOf(List.of())).isEmpty();
+        assertThat(friendUsers.findUsernameOf(alice.getId())).contains(alice.getUsername());
+        assertThat(friendUsers.findUsernameOf(UUID.randomUUID())).isEmpty();
     }
 
     private User saveUser(boolean verified) {

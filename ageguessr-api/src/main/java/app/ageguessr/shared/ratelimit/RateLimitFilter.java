@@ -24,8 +24,8 @@ import tools.jackson.databind.ObjectMapper;
  * of free series and the joining of challenges: each series reveals the ages of its
  * photos, and a script must not harvest the pool. The reports of a round have their own,
  * so that reporting never uses up the guesses, and a script cannot flood the admin queue.
- * Friends too, on what a script would try in bulk: usernames (sending a request) and
- * invite codes (reading or accepting one).
+ * Friends too, on what a script would try in bulk: usernames (sending a request), invite
+ * codes (reading or accepting one), and every other change to the graph.
  * The game reads (GET) are not limited: they write nothing once the day is drawn.
  *
  * <p>Partitions by client IP (request.getRemoteAddr(), which WebConfig's
@@ -90,6 +90,11 @@ public class RateLimitFilter extends OncePerRequestFilter {
         if (INVITE_CODE.matcher(uri).matches()) {
             return friends;
         }
+        // Every change to the friends graph, the caller's own invite included: a request
+        // sent, accepted, declined or cancelled, a friend removed, a code replaced.
+        if (uri.startsWith("/api/friends") && !HttpMethod.GET.matches(request.getMethod())) {
+            return friends;
+        }
         if (!HttpMethod.POST.matches(request.getMethod())) {
             return null;
         }
@@ -98,9 +103,6 @@ public class RateLimitFilter extends OncePerRequestFilter {
         }
         if (ROUND_REPORT.matcher(uri).matches()) {
             return report;
-        }
-        if (uri.equals("/api/friends/requests")) {
-            return friends;
         }
         if (uri.startsWith("/api/game/")) {
             return game;

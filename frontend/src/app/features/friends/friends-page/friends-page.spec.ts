@@ -3,7 +3,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { vi } from 'vitest';
-import { SHARE_TARGET, ShareTarget } from '../../game/share';
+import { SHARE_TARGET, ShareTarget } from '../../../shared/share-target';
 import { Friends } from '../models';
 import { board, friendsOf, lockedToday, relation } from '../testing';
 import { FriendsPage } from './friends-page';
