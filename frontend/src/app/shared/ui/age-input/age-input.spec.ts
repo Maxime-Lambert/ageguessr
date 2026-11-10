@@ -48,6 +48,12 @@ describe('AgeInput', () => {
     expect(control.getAttribute('aria-valuemax')).toBe('100');
   });
 
+  it('asks with a « ? » while empty, which no one could take for an age', () => {
+    const { control } = render();
+
+    expect(control.getAttribute('placeholder')).toBe('?');
+  });
+
   it('keeps only digits from what is typed', () => {
     const { guess, control } = render();
 

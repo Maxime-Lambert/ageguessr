@@ -57,8 +57,16 @@ export const GAME_TEXT = {
   ...VOICE,
   question: $localize`:@@game.question:How old were they on this photo?`,
   photoAlt: $localize`:@@game.photoAlt:The person to guess`,
-  pickHintHelp: $localize`:@@game.pickHintHelp:A fact from the year the photo was taken.`,
+  // The API picks a fact from (game year − age on the photo): its distance in years is
+  // the answer. Never « the year the photo was taken », which is not known to the player.
+  pickHintHelp: $localize`:@@game.pickHintHelp:A fact from as many years ago as this person's age on the photo.`,
   guessLabel: $localize`:@@game.guessLabel:Age`,
+  howToPlay: $localize`:@@game.howToPlay:How to play`,
+  ruleGuess: $localize`:@@game.ruleGuess:Guess how old the person was on the photo. You get two guesses per case.`,
+  ruleLead: $localize`:@@game.ruleLead:After the first, you learn whether they were older or younger, and you pick a lead: a fact from as many years ago as their age on the photo.`,
+  rulePoints: $localize`:@@game.rulePoints:Each guess earns up to 500 points, more the closer it is; a spot-on first guess is worth 1000. A new file opens every day at midnight UTC.`,
+  gotIt: $localize`:@@game.gotIt:Got it`,
+  playToday: $localize`:@@game.playToday:Open today's file`,
   firstGuessButton: $localize`:@@game.firstGuessButton:Guess`,
   secondGuessButton: $localize`:@@game.secondGuessButton:Final guess`,
   yourGuess: $localize`:@@game.yourGuess:Your guess`,
@@ -163,6 +171,16 @@ export const CATEGORY_LABELS: Record<HintCategory, string> = {
   WORLD: $localize`:@@game.category.world:World events`,
   CELEBRITIES: $localize`:@@game.category.celebrities:Celebrities`,
 };
+
+/** How far back the hint is: the answer itself, so only shown once the round is over. */
+export function yearsAgo(years: number): string {
+  return $localize`:@@game.yearsAgo:${years}:years: years ago`;
+}
+
+/** A rough length for a free series, so the choice of size says what it commits to. */
+export function seriesDuration(minutes: number): string {
+  return $localize`:@@game.seriesDuration:About ${minutes}:minutes: min`;
+}
 
 export function roundTitle(position: number, total: number): string {
   return $localize`:@@game.roundTitle:${GAME_TEXT.round}:round: ${position}:position: of ${total}:total:`;

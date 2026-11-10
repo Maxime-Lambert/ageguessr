@@ -16,6 +16,12 @@ export const routes: Routes = [
     loadComponent: () => import('./features/game/free-game/free-game').then((m) => m.FreeGame),
   },
   {
+    path: 'how-to-play',
+    title: $localize`:@@title.howToPlay:How to play · AgeGuessr`,
+    loadComponent: () =>
+      import('./features/game/how-to-play/how-to-play-page').then((m) => m.HowToPlayPage),
+  },
+  {
     path: 'challenge/:code',
     title: $localize`:@@title.challenge:Challenge · AgeGuessr`,
     loadComponent: () =>

@@ -15,6 +15,8 @@ describe('Game', () => {
 
   beforeEach(() => {
     localStorage.clear();
+    // The first-visit rules card is covered on its own (rules-card.spec.ts).
+    localStorage.setItem('ageguessr-rules-seen', '1');
     TestBed.configureTestingModule({
       providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
     });

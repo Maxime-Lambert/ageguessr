@@ -20,6 +20,8 @@ test.describe('daily game', () => {
     await expect(page.getByText('A hit topped the charts.')).toBeVisible();
     await expect(page.getByLabel('Age')).toBeFocused();
 
+    // The final guess starts one year past the first, on the side given.
+    await expect(page.getByLabel('Age')).toHaveValue('31');
     await page.getByLabel('Age').fill('38');
     await page.getByRole('button', { name: 'Final guess' }).click();
 
@@ -70,6 +72,22 @@ test.describe('daily game', () => {
       expect(overflow).toBeLessThanOrEqual(0);
       const box = await photo.boundingBox();
       expect(box!.width).toBeLessThanOrEqual(375);
+    });
+
+    test('shows the rules on a first visit, then the round once they are dismissed', async ({
+      page,
+    }) => {
+      await mockGame(page);
+      // Runs after skipRules' script: this page is a first visit.
+      await page.addInitScript(() => localStorage.removeItem('ageguessr-rules-seen'));
+      await page.goto('/en/');
+
+      const rules = page.getByRole('region', { name: 'How to play' });
+      await expect(rules).toBeVisible();
+      await rules.getByRole('button', { name: 'Got it' }).click();
+
+      await expect(rules).toBeHidden();
+      await expect(page.getByLabel('Age')).toBeInViewport();
     });
   });
 });

@@ -11,7 +11,7 @@ import { LucideArrowRight, LucideStamp } from '@lucide/angular';
 import { Button } from '../../../shared/ui/button/button';
 import { CasePhoto } from '../case-photo/case-photo';
 import { CaseSteps } from '../case-steps/case-steps';
-import { CATEGORY_LABELS, GAME_TEXT, roundTitle } from '../game-vocabulary';
+import { CATEGORY_LABELS, GAME_TEXT, roundTitle, yearsAgo } from '../game-vocabulary';
 import { LeadIcon } from '../lead-icon/lead-icon';
 import { RoundReveal, RoundView } from '../models';
 import { ReportButton, RoundReporter } from '../report-button/report-button';
@@ -44,6 +44,8 @@ export class RoundResult {
 
   readonly title = computed(() => roundTitle(this.round().position, this.total()));
   readonly result = computed(() => this.round().result as RoundReveal);
+  /** The hint is from (game year − age): how far back it is, the key to read it. */
+  protected readonly yearsAgo = computed(() => yearsAgo(this.result().age));
   readonly exact = computed(() => this.result().secondGuess === null);
   /** How full each guess's bar is, in percent of what that guess could earn. */
   protected readonly firstBar = computed(() =>

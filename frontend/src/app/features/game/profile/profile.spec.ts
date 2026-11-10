@@ -101,6 +101,36 @@ describe('Profile', () => {
     ]);
   });
 
+  describe('the last 30 days', () => {
+    beforeEach(() => vi.useFakeTimers({ now: new Date('2026-11-09T23:30:00Z'), toFake: ['Date'] }));
+    afterEach(() => vi.useRealTimers());
+
+    it('draws one square a day up to today in UTC, by score, unfinished days outlined', () => {
+      page();
+      respond(
+        history({
+          days: [
+            { ...DAY, date: '2026-11-09', points: 3000, complete: true },
+            { ...DAY, date: '2026-11-08', points: 400, complete: false },
+            { ...DAY, date: '2026-10-11', points: 1600, complete: true },
+            { ...DAY, date: '2026-10-10', points: 3000, complete: true },
+          ],
+        }),
+      );
+      const root = page();
+      const squares = Array.from(root.querySelectorAll<HTMLElement>('[data-day]'));
+
+      expect(squares).toHaveLength(30);
+      expect(squares[0].className).toContain('bg-score/75');
+      expect(squares[1].className).toContain('bg-surface-2');
+      expect(squares[28].className).toContain('border-dashed');
+      expect(squares[29].className).toMatch(/bg-score(?!\/)/);
+      expect(root.querySelector('.sr-only')?.textContent).toContain(
+        'Files finished in the last 30 days: 2',
+      );
+    });
+  });
+
   it('lists a day with its rounds, and no name for a withdrawn photo', () => {
     page();
     respond(history());

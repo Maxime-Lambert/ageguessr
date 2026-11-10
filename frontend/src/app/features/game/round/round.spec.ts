@@ -94,7 +94,7 @@ describe('Round', () => {
     expect(hints).toEqual(['SPORT']);
   });
 
-  it('shows the hint and asks for the final guess in an empty field', () => {
+  it('shows the hint and starts the final guess one year past the first, on the side given', () => {
     show(round(1));
     type('30');
     show(
@@ -108,11 +108,43 @@ describe('Round', () => {
 
     expect(page.textContent).toContain('Younger than 30');
     expect(page.textContent).toContain('A hit.');
-    expect(page.querySelector<HTMLInputElement>('app-age-input input')!.value).toBe('');
+    expect(page.querySelector<HTMLInputElement>('app-age-input input')!.value).toBe('29');
     expect(page.querySelector('button[type=submit]')?.textContent?.trim()).toBe(
       GAME_TEXT.secondGuessButton,
     );
     expect(document.activeElement).toBe(page.querySelector('app-age-input input'));
+  });
+
+  it.each([
+    ['OLDER', 30, '31'],
+    ['OLDER', 100, '100'],
+    ['YOUNGER', 18, '18'],
+  ] as const)(
+    'starts a final guess after %s than %i at %s, within the ages allowed',
+    (direction, first, expected) => {
+      show(round(1));
+      show(
+        round(1, { step: 'AWAITING_SECOND_GUESS', firstGuess: first, direction, categories: [] }),
+      );
+
+      expect(page.querySelector<HTMLInputElement>('app-age-input input')!.value).toBe(expected);
+    },
+  );
+
+  it('sends the prefilled final guess as is', () => {
+    show(round(1));
+    show(
+      round(1, {
+        step: 'AWAITING_SECOND_GUESS',
+        firstGuess: 40,
+        direction: 'OLDER',
+        categories: [],
+      }),
+    );
+
+    page.querySelector('form')!.dispatchEvent(new Event('submit'));
+
+    expect(guesses).toEqual([41]);
   });
 
   it('says so when no hint could be offered', () => {

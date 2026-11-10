@@ -1,5 +1,5 @@
 import { DatePipe, DecimalPipe } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { LucideFlame } from '@lucide/angular';
 import { Button } from '../../../shared/ui/button/button';
@@ -8,6 +8,18 @@ import { Auth } from '../../auth/auth';
 import { GameApi } from '../game-api';
 import { GAME_TEXT } from '../game-vocabulary';
 import { HistoryDay, HistoryStats } from '../models';
+
+const CALENDAR_DAYS = 30;
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+/** Not played, then a quarter of the day's points or less, up to a full score. */
+const LEVEL_CLASSES = ['bg-surface-2', 'bg-score/25', 'bg-score/50', 'bg-score/75', 'bg-score'];
+
+/** How strong a played day's square is: by its share of the points it could earn. */
+function levelOf(day: HistoryDay): number {
+  if (day.max === 0) return 1;
+  return Math.min(4, 1 + Math.floor((4 * day.points) / day.max));
+}
 
 /**
  * The signed-in player's own profile: statistics, then the daily games, most recent
@@ -51,7 +63,34 @@ export class Profile {
     guesses: $localize`:@@profile.guesses:Your guesses:`,
     older: $localize`:@@profile.older:Older files`,
     loadError: $localize`:@@profile.loadError:Your history could not be loaded.`,
+    lastDays: $localize`:@@profile.lastDays:Last 30 days`,
+    notPlayed: $localize`:@@profile.notPlayed:Not played`,
+    score: $localize`:@@profile.score:Score`,
+    finishedLately: (count: number) =>
+      $localize`:@@profile.finishedLately:Files finished in the last 30 days: ${count}:count:`,
   };
+
+  /**
+   * The last 30 game days, oldest first, ending today in UTC (a file's date is a UTC day).
+   * Built from what is loaded: the first page holds the 30 latest days played, so every
+   * day of this window that was played is in it.
+   */
+  protected readonly calendar = computed(() => {
+    const played = new Map(this.days().map((day) => [day.date, day]));
+    const now = new Date();
+    const today = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+    return Array.from({ length: CALENDAR_DAYS }, (_, index) => {
+      const date = new Date(today - (CALENDAR_DAYS - 1 - index) * DAY_MS)
+        .toISOString()
+        .slice(0, 10);
+      const day = played.get(date);
+      return { date, day: day ?? null, level: day ? levelOf(day) : 0 };
+    });
+  });
+  protected readonly finishedLately = computed(
+    () => this.calendar().filter((cell) => cell.day?.complete).length,
+  );
+  protected readonly levels = LEVEL_CLASSES;
 
   constructor() {
     this.load();

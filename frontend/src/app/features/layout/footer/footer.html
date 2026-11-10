@@ -2,9 +2,12 @@
   <!-- flex-wrap: on a phone the links wrap onto a second line instead of overflowing. -->
   <nav
     class="flex flex-wrap items-center gap-x-4 gap-y-2"
-    aria-label="Legal"
+    aria-label="Site information"
     i18n-aria-label="@@footer.nav"
   >
+    <a routerLink="/how-to-play" class="hover:text-foreground" i18n="@@footer.howToPlay"
+      >How to play</a
+    >
     <a routerLink="/legal-notice" class="hover:text-foreground" i18n="@@footer.legalNotice"
       >Legal notice</a
     >
