@@ -20,11 +20,13 @@ import jakarta.persistence.Entity;
 class ArchitectureTests {
 
     /**
-     * Two exceptions, both from the game, which is built on the other features: on the
+     * Three exceptions. Two from the game, which is built on the other features: on the
      * photos of people (age, curation status, box, public id) and on the hints of a year.
-     * Never the reverse, see the next rules: neither knows anything of the game, which is
-     * why a curation decision is read by the game rather than pushed to it
-     * (docs/decisions/architecture.md).
+     * One from friends, which compares daily scores by the game's own rules (a complete
+     * day, its maximum, the average, the streak: PlayerHistory) rather than a copy of them.
+     * Never the reverse, see the next rules: neither people nor hints know anything of the
+     * game, which is why a curation decision is read by the game rather than pushed to it,
+     * and the game knows nothing of friends (docs/decisions/architecture.md).
      */
     @ArchTest
     static final ArchRule features_do_not_depend_on_each_other = slices().matching("app.ageguessr.features.(*)..")
@@ -35,7 +37,18 @@ class ArchitectureTests {
                     resideInAPackage("app.ageguessr.features.people.."))
             .ignoreDependency(
                     resideInAPackage("app.ageguessr.features.game.."),
-                    resideInAPackage("app.ageguessr.features.hints.."));
+                    resideInAPackage("app.ageguessr.features.hints.."))
+            .ignoreDependency(
+                    resideInAPackage("app.ageguessr.features.friends.."),
+                    resideInAPackage("app.ageguessr.features.game.."));
+
+    @ArchTest
+    static final ArchRule the_game_does_not_depend_on_friends = noClasses()
+            .that()
+            .resideInAPackage("app.ageguessr.features.game..")
+            .should()
+            .dependOnClassesThat()
+            .resideInAPackage("app.ageguessr.features.friends..");
 
     @ArchTest
     static final ArchRule people_does_not_depend_on_the_game = noClasses()

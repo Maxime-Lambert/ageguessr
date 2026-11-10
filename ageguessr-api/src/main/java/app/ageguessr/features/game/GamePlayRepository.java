@@ -1,6 +1,7 @@
 package app.ageguessr.features.game;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -15,6 +16,9 @@ public interface GamePlayRepository extends JpaRepository<GamePlay, UUID> {
 
     /** Every daily round an account started: its history (3 a day at most). */
     List<GamePlay> findByUserId(UUID userId);
+
+    /** Every daily round of a group of accounts: the friends' comparison and leaderboard. */
+    List<GamePlay> findByUserIdIn(Collection<UUID> userIds);
 
     List<GamePlay> findByGuestIdAndGameDate(UUID guestId, LocalDate gameDate);
 

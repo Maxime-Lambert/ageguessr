@@ -1,0 +1,50 @@
+<main>
+  <app-page width="narrow">
+    <h1 class="font-display text-[32px] leading-tight">{{ text.title }}</h1>
+    @switch (status()) {
+      @case ('loading') {
+        <p class="text-muted mt-6" role="status">{{ text.loading }}</p>
+      }
+      @case ('gone') {
+        <p class="mt-6" role="alert">{{ text.inviteGone }}</p>
+        <a appButton variant="secondary" routerLink="/friends" class="mt-5">{{
+          text.seeFriends
+        }}</a>
+      }
+      @case ('error') {
+        <p class="text-danger mt-6" role="alert">{{ text.loadError }}</p>
+        <button appButton variant="secondary" type="button" class="mt-3" (click)="load()">
+          {{ text.retry }}
+        </button>
+      }
+      @default {
+        @if (preview(); as preview) {
+          @if (status() === 'added') {
+            <p class="mt-6" role="status">{{ text.nowFriends(preview.username) }}</p>
+            <a appButton routerLink="/friends" class="mt-5">{{ text.seeFriends }}</a>
+          } @else if (preview.own) {
+            <p class="mt-6">{{ text.ownInvite }}</p>
+            <a appButton variant="secondary" routerLink="/friends" class="mt-5">{{
+              text.seeFriends
+            }}</a>
+          } @else if (preview.alreadyFriends) {
+            <p class="mt-6">{{ text.alreadyFriends(preview.username) }}</p>
+            <a appButton variant="secondary" routerLink="/friends" class="mt-5">{{
+              text.seeFriends
+            }}</a>
+          } @else {
+            <p class="mt-6 text-lg">{{ text.inviteFrom(preview.username) }}</p>
+            <button appButton type="button" class="mt-5" [disabled]="busy()" (click)="accept()">
+              {{ text.addFriend }}
+            </button>
+            <p class="text-danger mt-3 text-sm empty:hidden" role="alert">
+              @if (error()) {
+                {{ error() }}
+              }
+            </p>
+          }
+        }
+      }
+    }
+  </app-page>
+</main>

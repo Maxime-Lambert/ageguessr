@@ -1,0 +1,244 @@
+<main>
+  <app-page>
+    <h1 class="font-display text-[32px] leading-tight sm:text-[40px]">{{ text.title }}</h1>
+
+    @switch (status()) {
+      @case ('loading') {
+        <p class="text-muted mt-8" role="status">{{ text.loading }}</p>
+      }
+      @case ('error') {
+        <p class="text-danger mt-8" role="alert">{{ text.loadError }}</p>
+        <button appButton variant="secondary" type="button" class="mt-3" (click)="load()">
+          {{ text.retry }}
+        </button>
+      }
+      @default {
+        @if (friends(); as friends) {
+          <p class="text-danger mt-6 empty:hidden" role="alert">
+            @if (actionError()) {
+              {{ actionError() }}
+            }
+          </p>
+
+          @if (friends.incoming.length > 0) {
+            <section
+              id="incoming"
+              aria-labelledby="incoming-title"
+              class="card border-score mt-6 border-2 p-5"
+            >
+              <h2 id="incoming-title" class="font-display text-xl">
+                {{ text.incomingTitle }} ({{ friends.incoming.length }})
+              </h2>
+              <ul class="divide-border mt-2 divide-y">
+                @for (request of friends.incoming; track request.id) {
+                  <li data-incoming class="flex flex-wrap items-center gap-2 py-2.5">
+                    <span class="min-w-0 flex-1 truncate font-semibold">{{
+                      request.username
+                    }}</span>
+                    <button
+                      appButton
+                      size="sm"
+                      type="button"
+                      [disabled]="busyId() === request.id"
+                      (click)="accept(request)"
+                    >
+                      {{ text.accept }}
+                    </button>
+                    <button
+                      appButton
+                      size="sm"
+                      variant="secondary"
+                      type="button"
+                      [disabled]="busyId() === request.id"
+                      (click)="deleteRequest(request)"
+                    >
+                      {{ text.decline }}
+                    </button>
+                  </li>
+                }
+              </ul>
+            </section>
+          }
+
+          <div class="mt-6 grid gap-6">
+            @if (today(); as today) {
+              <app-friends-today [today]="today" />
+            }
+            @if (board(); as board) {
+              <app-friends-leaderboard [board]="board" />
+            }
+
+            <section aria-labelledby="add-title" class="card p-5">
+              <h2 id="add-title" class="font-display text-xl">{{ text.addTitle }}</h2>
+              <form
+                class="mt-3 flex flex-col gap-3 sm:flex-row sm:items-start"
+                [formGroup]="addForm"
+                (ngSubmit)="send()"
+              >
+                <app-field
+                  class="flex-1"
+                  [label]="text.usernameLabel"
+                  [hint]="text.usernameHint"
+                  [error]="sendError()"
+                  controlId="friend-username"
+                >
+                  <input
+                    appInput
+                    type="text"
+                    autocomplete="off"
+                    autocapitalize="off"
+                    spellcheck="false"
+                    maxlength="20"
+                    [formControl]="username"
+                  />
+                </app-field>
+                <button appButton type="submit" class="sm:mt-7" [disabled]="sending()">
+                  {{ text.send }}
+                </button>
+              </form>
+              <p class="mt-2 text-sm empty:hidden" role="status">
+                @if (sentTo(); as sentTo) {
+                  {{ text.sent(sentTo) }}
+                }
+              </p>
+
+              <h3 class="mt-6 font-semibold">{{ text.inviteTitle }}</h3>
+              <p class="text-muted mt-1 text-sm">{{ text.inviteHelp }}</p>
+              @if (inviteLink(); as link) {
+                <p
+                  data-invite-link
+                  class="bg-surface-2 mt-3 rounded-sm px-3 py-2 font-mono text-sm break-all"
+                >
+                  {{ link }}
+                </p>
+                <div class="mt-3 flex flex-wrap gap-2">
+                  <button appButton size="sm" type="button" (click)="copy()">
+                    {{ copied() ? text.copied : text.copy }}
+                  </button>
+                  @if (canShare) {
+                    <button appButton size="sm" variant="secondary" type="button" (click)="share()">
+                      {{ text.share }}
+                    </button>
+                  }
+                  @if (confirmingRegenerate()) {
+                    <span class="flex flex-wrap items-center gap-2 text-sm">
+                      {{ text.regenerateConfirm }}
+                      <button
+                        appButton
+                        size="sm"
+                        variant="secondary"
+                        type="button"
+                        (click)="regenerate()"
+                      >
+                        {{ text.confirm }}
+                      </button>
+                      <button
+                        appButton
+                        size="sm"
+                        variant="ghost"
+                        type="button"
+                        (click)="confirmingRegenerate.set(false)"
+                      >
+                        {{ text.keep }}
+                      </button>
+                    </span>
+                  } @else {
+                    <button
+                      appButton
+                      size="sm"
+                      variant="ghost"
+                      type="button"
+                      (click)="confirmingRegenerate.set(true)"
+                    >
+                      {{ text.regenerate }}
+                    </button>
+                  }
+                </div>
+              }
+              <p class="text-danger mt-2 text-sm empty:hidden" role="alert">
+                @if (inviteError()) {
+                  {{ inviteError() }}
+                }
+              </p>
+            </section>
+
+            <section aria-labelledby="friends-title" class="card p-5">
+              <h2 id="friends-title" class="font-display text-xl">
+                {{ text.friendsTitle }} ({{ friends.friends.length }})
+              </h2>
+              @if (friends.friends.length === 0) {
+                <p class="text-muted mt-2">{{ text.noFriends }}</p>
+              } @else {
+                <ul class="divide-border mt-2 divide-y">
+                  @for (friend of friends.friends; track friend.id) {
+                    <li data-friend class="flex flex-wrap items-center gap-2 py-2.5">
+                      <span class="min-w-0 flex-1 truncate">{{ friend.username }}</span>
+                      @if (confirmingRemoval() === friend.id) {
+                        <span class="text-sm">{{ text.removeConfirm(friend.username) }}</span>
+                        <button
+                          appButton
+                          size="sm"
+                          variant="secondary"
+                          type="button"
+                          [disabled]="busyId() === friend.id"
+                          (click)="remove(friend)"
+                        >
+                          {{ text.confirm }}
+                        </button>
+                        <button
+                          appButton
+                          size="sm"
+                          variant="ghost"
+                          type="button"
+                          (click)="confirmingRemoval.set(null)"
+                        >
+                          {{ text.keep }}
+                        </button>
+                      } @else {
+                        <span class="text-muted text-xs">{{
+                          friend.since | date: 'mediumDate'
+                        }}</span>
+                        <button
+                          appButton
+                          size="sm"
+                          variant="ghost"
+                          type="button"
+                          (click)="confirmingRemoval.set(friend.id)"
+                        >
+                          {{ text.remove }}
+                        </button>
+                      }
+                    </li>
+                  }
+                </ul>
+              }
+            </section>
+
+            @if (friends.outgoing.length > 0) {
+              <section aria-labelledby="outgoing-title" class="card p-5">
+                <h2 id="outgoing-title" class="font-display text-xl">{{ text.outgoingTitle }}</h2>
+                <ul class="divide-border mt-2 divide-y">
+                  @for (request of friends.outgoing; track request.id) {
+                    <li data-outgoing class="flex items-center gap-2 py-2.5">
+                      <span class="min-w-0 flex-1 truncate">{{ request.username }}</span>
+                      <button
+                        appButton
+                        size="sm"
+                        variant="ghost"
+                        type="button"
+                        [disabled]="busyId() === request.id"
+                        (click)="deleteRequest(request)"
+                      >
+                        {{ text.cancel }}
+                      </button>
+                    </li>
+                  }
+                </ul>
+              </section>
+            }
+          </div>
+        }
+      }
+    }
+  </app-page>
+</main>

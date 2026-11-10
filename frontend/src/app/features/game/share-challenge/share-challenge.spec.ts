@@ -4,7 +4,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Auth } from '../../auth/auth';
 import { GAME_TEXT } from '../game-vocabulary';
 import { Series } from '../models';
-import { SHARE_TARGET } from '../share';
+import { SHARE_TARGET } from '../../../shared/share-target';
 import { challenge, fakeShareTarget, finished, series } from '../testing';
 import { ShareChallenge } from './share-challenge';
 

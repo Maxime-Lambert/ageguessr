@@ -1,11 +1,11 @@
-package app.ageguessr.features.game.GetHistory;
+package app.ageguessr.features.game;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import app.ageguessr.features.game.GetHistory.HistoryCalculator.Day;
-import app.ageguessr.features.game.GetHistory.HistoryCalculator.Play;
-import app.ageguessr.features.game.GetHistory.HistoryCalculator.Result;
-import app.ageguessr.features.game.GetHistory.HistoryCalculator.Stats;
+import app.ageguessr.features.game.PlayerHistory.Day;
+import app.ageguessr.features.game.PlayerHistory.Play;
+import app.ageguessr.features.game.PlayerHistory.Result;
+import app.ageguessr.features.game.PlayerHistory.Stats;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
-class HistoryCalculatorTest {
+class PlayerHistoryTest {
 
     private static final LocalDate TODAY = LocalDate.of(2026, 11, 9);
 
@@ -148,7 +148,7 @@ class HistoryCalculatorTest {
         fullDay(newYear, 100, 100, 100);
         fullDay(newYear.minusDays(1), 100, 100, 100);
 
-        Result result = HistoryCalculator.compute(plays, playable, newYear);
+        Result result = PlayerHistory.compute(plays, playable, newYear);
 
         assertThat(result.stats().currentStreak()).isEqualTo(2);
         assertThat(result.stats().bestStreak()).isEqualTo(2);
@@ -192,7 +192,7 @@ class HistoryCalculatorTest {
     }
 
     private Result compute() {
-        return HistoryCalculator.compute(plays, playable, TODAY);
+        return PlayerHistory.compute(plays, playable, TODAY);
     }
 
     private void threeRounds(LocalDate date) {

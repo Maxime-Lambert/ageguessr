@@ -33,7 +33,9 @@ import tools.jackson.databind.ObjectMapper;
             "app.rate-limit.series.max-attempts=2",
             "app.rate-limit.series.window-minutes=1",
             "app.rate-limit.report.max-attempts=2",
-            "app.rate-limit.report.window-minutes=1"
+            "app.rate-limit.report.window-minutes=1",
+            "app.rate-limit.friends.max-attempts=2",
+            "app.rate-limit.friends.window-minutes=1"
         })
 class RateLimitFunctionalTest {
 
@@ -142,6 +144,61 @@ class RateLimitFunctionalTest {
         reportFrom(client, "/api/game/2000-01-01/rounds/1/report").andExpect(status().isTooManyRequests());
 
         guessFrom(client).andExpect(status().isConflict());
+    }
+
+    /**
+     * Friends have their own counter, on what a script would try in bulk: usernames and
+     * invite codes. Counted before authentication, like the others; the caller's own
+     * invite and the list are not limited.
+     */
+    @Test
+    void limitsTheFriendRequestsAndInviteCodesApart() throws Exception {
+        String client = "203.0.113.50";
+        mockMvc.perform(post("/api/friends/requests").header("X-Forwarded-For", client))
+                .andExpect(status().isUnauthorized());
+        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(
+                                "/api/friends/invite/K7F2QX9M")
+                        .header("X-Forwarded-For", client))
+                .andExpect(status().isUnauthorized());
+        mockMvc.perform(post("/api/friends/invite/K7F2QX9M/accept").header("X-Forwarded-For", client))
+                .andExpect(status().isTooManyRequests());
+
+        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/api/friends/invite")
+                        .header("X-Forwarded-For", client))
+                .andExpect(status().isUnauthorized());
+        guessFrom(client).andExpect(status().isConflict());
+    }
+
+    /** Accepting, declining, removing and replacing one's link share the friends counter. */
+    @Test
+    void limitsEveryChangeToTheFriendsGraph() throws Exception {
+        String client = "203.0.113.70";
+        String id = java.util.UUID.randomUUID().toString();
+        mockMvc.perform(post("/api/friends/requests/" + id + "/accept").header("X-Forwarded-For", client))
+                .andExpect(status().isUnauthorized());
+        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete(
+                                "/api/friends/" + id)
+                        .header("X-Forwarded-For", client))
+                .andExpect(status().isUnauthorized());
+        mockMvc.perform(post("/api/friends/invite").header("X-Forwarded-For", client))
+                .andExpect(status().isTooManyRequests());
+        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/api/friends")
+                        .header("X-Forwarded-For", client))
+                .andExpect(status().isUnauthorized());
+    }
+
+    /** Today's comparison and the leaderboard load every round of a whole group: costly. */
+    @Test
+    void limitsTheFriendsScoresWithTheGuesses() throws Exception {
+        String client = "203.0.113.60";
+        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/api/friends/today")
+                        .header("X-Forwarded-For", client))
+                .andExpect(status().isUnauthorized());
+        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(
+                                "/api/friends/leaderboard")
+                        .header("X-Forwarded-For", client))
+                .andExpect(status().isUnauthorized());
+        guessFrom(client).andExpect(status().isTooManyRequests());
     }
 
     private ResultActions reportFrom(String clientIp, String url) throws Exception {
