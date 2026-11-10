@@ -1,6 +1,5 @@
-package app.ageguessr.features.game.GetHistory;
+package app.ageguessr.features.game;
 
-import app.ageguessr.features.game.Scoring;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -11,7 +10,9 @@ import java.util.Set;
 
 /**
  * Turns an account's played rounds into days, statistics and streaks. Pure: no database,
- * no clock (today is given), so that every rule below is tested on its own.
+ * no clock (today is given), so that every rule below is tested on its own. Public: the
+ * profile (GetHistory) and the friends' comparison and leaderboard share these rules,
+ * written once (docs/decisions/architecture.md, the friends -> game exception).
  *
  * <p>The past is not rewritten, as for the points stored at each guess (V13): a round
  * neutralized after it was finished keeps its points and stays in the day's maximum. A
@@ -28,18 +29,18 @@ import java.util.Set;
  *   <li>The games played, average and best are over complete days with a maximum above 0.
  * </ul>
  */
-final class HistoryCalculator {
+public final class PlayerHistory {
 
-    private HistoryCalculator() {}
+    private PlayerHistory() {}
 
     /** A round the account started: its points only count once finished. */
-    record Play(LocalDate date, short position, boolean finished, int points) {}
+    public record Play(LocalDate date, short position, boolean finished, int points) {}
 
-    record Day(LocalDate date, int points, int max, boolean complete) {}
+    public record Day(LocalDate date, int points, int max, boolean complete) {}
 
-    record Stats(int gamesPlayed, int averagePoints, int bestPoints, int currentStreak, int bestStreak) {}
+    public record Stats(int gamesPlayed, int averagePoints, int bestPoints, int currentStreak, int bestStreak) {}
 
-    record Result(List<Day> days, Stats stats) {}
+    public record Result(List<Day> days, Stats stats) {}
 
     /**
      * @param plays the account's rounds, any order
@@ -47,7 +48,7 @@ final class HistoryCalculator {
      *     (its photo still approved), by position
      * @return the days, most recent first, and the statistics
      */
-    static Result compute(List<Play> plays, Map<LocalDate, Map<Short, Boolean>> playable, LocalDate today) {
+    public static Result compute(List<Play> plays, Map<LocalDate, Map<Short, Boolean>> playable, LocalDate today) {
         List<Day> days = plays.stream()
                 .map(Play::date)
                 .distinct()

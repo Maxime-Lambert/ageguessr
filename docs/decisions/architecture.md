@@ -52,13 +52,18 @@ ageguessr-api/src/test/java/app/ageguessr/features/persons/
         └── GetDailyPersonsHandlerTests.java
 ```
 
-**Dépendances entre features** : une feature n'importe pas une autre, avec deux
-exceptions, toutes deux depuis le jeu (décisions du 2026-11-02) :
-- `game → people` : le jeu repose sur les photos de `people` (âge, statut de curation,
+**Dépendances entre features** : une feature n'importe pas une autre, avec trois
+exceptions :
+- `game → people` (2026-11-02) : le jeu repose sur les photos de `people` (âge, statut de curation,
   case, `publicId`), donc `game` peut lire et modifier ses entités ;
-- `game → hints` : le jeu lit les indices d'une année (`HintRepository.findEligible`).
+- `game → hints` (2026-11-02) : le jeu lit les indices d'une année (`HintRepository.findEligible`) ;
+- `friends → game` (2026-11-10) : la comparaison du jour et le classement entre amis
+  appliquent les règles du jeu (jour complet, maximum, manche neutralisée, moyenne,
+  série), écrites une seule fois dans `game/PlayerHistory` et lues par
+  `game/PlayerHistories`. Le code des invitations reprend aussi `game/ShareCodes`.
 
-L'inverse est interdit : ni `people` ni `hints` ne savent rien du jeu. C'est pour ça
+L'inverse est interdit : ni `people` ni `hints` ne savent rien du jeu, et le jeu ne sait
+rien des amis. C'est pour ça
 qu'une décision de curation (photo ou indice) est lue par le jeu, et pas poussée vers lui
 (voir « Tirage quotidien »). Ces règles sont vérifiées par ArchUnit
 (`ArchitectureTests`).
@@ -810,10 +815,10 @@ jouer plus, et de quoi comparer ses scores entre amis sans attendre la feature A
 un compte connecté voit sur `/profile` ses statistiques et ses parties du jour passées,
 manche par manche (`GET /api/game/history`, 30 jours par page).
 
-- **Privé** : seul le propriétaire le voit (`authGuard`, endpoint authentifié). La
-  visibilité par les amis viendra avec le système d'amis. Ce jour-là, cacher aux amis
-  les essais d'une manche pas terminée (aujourd'hui renvoyés, puisque ce sont ceux du
-  joueur) : avec « plus jeune / plus vieux », ils approcheraient la réponse du jour.
+- **Privé** : seul le propriétaire le voit (`authGuard`, endpoint authentifié). Les amis
+  ne voient pas l'historique ni le profil (décision du 2026-11-10) : seulement les points
+  du jour, une fois leur propre partie finie, et la moyenne du classement (« Système
+  d'amis »).
 - **Limité** : `GET /api/game/history` partage le compteur des essais (60 par minute et
   par IP), seule lecture du jeu à charger tout l'historique d'un compte.
 - **Le passé n'est pas réécrit**, comme les points stockés à l'essai : une manche
@@ -827,7 +832,7 @@ manche par manche (`GET /api/game/history`, 30 jours par page).
   elle est terminée et encore jouable, sinon l'historique donnerait la réponse de la
   manche du jour en cours. **Jamais de photo ni de `publicId`** (voir « Limites
   connues »).
-- **Calculs en Java** (`HistoryCalculator`, pur) : toutes les manches du compte sont lues
+- **Calculs en Java** (`PlayerHistory`, pur, partagé avec les amis depuis 2026-11-10) : toutes les manches du compte sont lues
   (3 par jour au plus), puis les jours, séries et statistiques sont calculés en mémoire.
   Testable unitairement et par mutation. À revoir si un compte dépasse plusieurs milliers
   de jours.
@@ -885,13 +890,48 @@ personne, d'un mineur ou un indice faux doit pouvoir remonter vite, sans exposer
 donnée sur le joueur ni donner à un script le moyen de retirer des photos.
 
 ### Système d'amis
-**Décision** : système complet avec demandes d'ami (envoi/acceptation/refus), liste
-d'amis persistante, comparaison des scores quotidiens et historique.
+**Décision** (2026-11-10, PR `feature/friends`, plan `plans/done/friends.md`) : un compte
+ajoute des amis par leur pseudo exact ou par son lien d'invitation, voit ses amis et ses
+demandes, compare les scores de la partie du jour une fois la sienne terminée, et un
+classement par moyenne de points par partie.
 
-**Raison** : décision produit explicite — feature sociale à part entière, pas un simple
-lien de partage éphémère. Impact structurel : nécessite un graphe de relations
-utilisateur↔utilisateur en base (table `FriendRequests`/`Friendships`), à détailler dans
-le plan dédié à cette feature.
+- **Une table `friendships`** (V18) plutôt que deux : une demande et une amitié sont la
+  même paire à deux statuts (`PENDING`, puis `ACCEPTED`). Un index unique sur
+  `(LEAST, GREATEST)` des deux comptes garde une seule relation par paire, dans un sens
+  comme dans l'autre, même sur deux clics simultanés. `ON DELETE CASCADE` des deux côtés :
+  supprimer un compte supprime ses amitiés.
+- **Pseudo exact, sans recherche partielle** : les comptes ne peuvent pas être listés.
+  Un pseudo inconnu, un compte non vérifié et soi-même donnent le même 404.
+- **Lien d'invitation** (`friend_invites`, un code par compte, 8 caractères base32
+  Crockford comme les défis) : l'ouvrir et cliquer « Ajouter » crée l'amitié tout de
+  suite (le partager vaut consentement de son propriétaire). Régénérer le code coupe
+  l'ancien lien.
+- **Rien d'automatique** : une demande croisée (B a déjà demandé A, A demande B) est
+  refusée en 409 `INCOMING_REQUEST_EXISTS`, le frontend montre la demande à accepter.
+  Refuser, annuler, retirer : la ligne est supprimée, l'autre n'est pas prévenu, et peut
+  renvoyer une demande. Pas de liste de blocage pour l'instant.
+- **Actions par id de relation**, jamais par id de compte : le frontend ne reçoit que
+  l'id de la ligne `friendships` et le pseudo de l'autre, jamais son `users.id` ni son
+  email. Une relation qui n'est pas la sienne répond 404, comme un id inconnu.
+- **Pseudos lus en SQL natif sur `users`**, comme le classement d'un défi : `friends`
+  n'importe pas `auth`.
+- **Comparaison du jour** (`GET /api/friends/today`) : `{locked: true}` et aucune donnée
+  tant que la partie du jour de l'appelant n'est pas complète (les points d'un ami
+  renseigneraient sur les manches qu'il reste à jouer). Ensuite, des points seulement :
+  total, maximum et points par manche d'un ami qui a fini, « en cours » ou « pas joué »
+  sinon. Jamais un essai, un nom ou un âge.
+- **Classement** (`GET /api/friends/leaderboard`) : moyenne simple, sans minimum de
+  parties (décision utilisateur) ; égalité départagée par le nombre de parties, puis même
+  rang. Un joueur sans partie est en bas, sans rang.
+- **Limites** (`app.friends.*`) : 200 amis, 50 demandes envoyées en attente. Compteur
+  `friends` (30 par heure et par IP) sur l'envoi d'une demande et sur la lecture ou
+  l'acceptation d'un code ; la comparaison et le classement, qui lisent toutes les
+  manches d'un groupe, partagent le compteur des essais comme l'historique.
+- **Pas de cache** : 201 comptes au plus, quelques milliers de manches en mémoire. Redis
+  reste le stockage des limites de débit.
+
+**Raison** : décision produit explicite, feature sociale à part entière et pas un simple
+lien de partage éphémère.
 
 ---
 
