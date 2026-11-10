@@ -1,0 +1,37 @@
+<section aria-labelledby="friends-today-title" class="card p-5">
+  <h2 id="friends-today-title" class="font-display text-xl">{{ text.todayTitle }}</h2>
+  @if (today().locked) {
+    <p class="text-muted mt-2">{{ text.todayLocked }}</p>
+    <a appButton variant="secondary" routerLink="/" class="mt-4">{{ text.playToday }}</a>
+  } @else {
+    <ol class="divide-border mt-3 divide-y">
+      @for (player of today().players; track player.username) {
+        <li data-player class="flex items-center gap-3 py-2.5" [class.font-semibold]="player.me">
+          <span class="min-w-0 flex-1 truncate">
+            {{ player.username }}
+            @if (player.me) {
+              <span class="text-accent ml-1 text-xs font-normal">· {{ text.you }}</span>
+            }
+          </span>
+          @if (player.status === 'COMPLETE') {
+            <span class="flex gap-1" aria-hidden="true">
+              @for (round of player.rounds; track round.position) {
+                <i
+                  class="size-3 rounded-[3px]"
+                  [class]="squareClass(round.points)"
+                  [title]="text.round + ' ' + round.position + ' · ' + round.points"
+                ></i>
+              }
+            </span>
+            <span class="text-right whitespace-nowrap">
+              <b class="font-display">{{ player.points | number }}</b>
+              <span class="text-muted text-sm"> {{ text.outOf }} {{ player.max | number }}</span>
+            </span>
+          } @else {
+            <span class="text-muted text-sm">{{ statusText(player) }}</span>
+          }
+        </li>
+      }
+    </ol>
+  }
+</section>

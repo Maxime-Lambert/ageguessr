@@ -84,6 +84,15 @@
   <a routerLink="/profile" class="menu-item">
     <svg lucideHistory [size]="18" aria-hidden="true"></svg>{{ text.profile }}
   </a>
+  <a routerLink="/friends" class="menu-item">
+    <svg lucideUsers [size]="18" aria-hidden="true"></svg>{{ text.friends }}
+    @if (incomingRequests() > 0) {
+      <span class="bg-score text-primary-foreground ml-auto rounded-full px-1.5 text-xs font-bold">
+        <span aria-hidden="true">{{ incomingRequests() }}</span>
+        <span class="sr-only">{{ text.pendingRequests(incomingRequests()) }}</span>
+      </span>
+    }
+  </a>
   <a routerLink="/account" class="menu-item">
     <svg lucideUser [size]="18" aria-hidden="true"></svg>{{ text.myAccount }}
   </a>

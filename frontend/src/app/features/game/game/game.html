@@ -49,7 +49,12 @@
             <p class="text-muted mt-5 flex items-center gap-2 text-sm">
               <svg lucideClock [size]="16" aria-hidden="true"></svg>{{ text.comeBack }}
             </p>
-            <a appButton variant="secondary" routerLink="/free" class="mt-5">{{ text.tryFree }}</a>
+            <div class="mt-5 flex flex-wrap gap-3">
+              @if (auth.isAuthenticated()) {
+                <a appButton routerLink="/friends">{{ text.compareFriends }}</a>
+              }
+              <a appButton variant="secondary" routerLink="/free">{{ text.tryFree }}</a>
+            </div>
           </app-day-summary>
         }
       }

@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ApiLanguage } from '../../../shared/i18n/language';
+import { Auth } from '../../auth/auth';
 import { DaySummary } from '../day-summary/day-summary';
 import { GameApi } from '../game-api';
 import { LucideClock } from '@lucide/angular';
@@ -23,6 +24,8 @@ import { RoundsScreen } from '../rounds-screen';
 })
 export class Game extends RoundsScreen<TodayGame> {
   private readonly api = inject(GameApi);
+  /** A signed-in player can compare the day with their friends (exception front game → auth). */
+  protected readonly auth = inject(Auth);
 
   constructor() {
     super();

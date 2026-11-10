@@ -1040,6 +1040,270 @@
         <source>Files finished in the last 30 days: <x id="count" equiv-text="count"/></source>
         <target>Dossiers terminés ces 30 derniers jours : <x id="count" equiv-text="count"/></target>
       </trans-unit>
+      <trans-unit id="title.friends" datatype="html">
+        <source>Friends · AgeGuessr</source>
+        <target>Amis · AgeGuessr</target>
+      </trans-unit>
+      <trans-unit id="title.friendInvite" datatype="html">
+        <source>Friend invite · AgeGuessr</source>
+        <target>Invitation d'un ami · AgeGuessr</target>
+      </trans-unit>
+      <trans-unit id="friends.title" datatype="html">
+        <source>Friends</source>
+        <target>Amis</target>
+      </trans-unit>
+      <trans-unit id="friends.loading" datatype="html">
+        <source>Loading…</source>
+        <target>Chargement…</target>
+      </trans-unit>
+      <trans-unit id="friends.retry" datatype="html">
+        <source>Try again</source>
+        <target>Réessayer</target>
+      </trans-unit>
+      <trans-unit id="friends.loadError" datatype="html">
+        <source>Your friends could not be loaded.</source>
+        <target>Vos amis n'ont pas pu être chargés.</target>
+      </trans-unit>
+      <trans-unit id="friends.addTitle" datatype="html">
+        <source>Add a friend</source>
+        <target>Ajouter un ami</target>
+      </trans-unit>
+      <trans-unit id="friends.usernameLabel" datatype="html">
+        <source>Their exact username</source>
+        <target>Son pseudo exact</target>
+      </trans-unit>
+      <trans-unit id="friends.usernameHint" datatype="html">
+        <source>Usernames are not searchable: ask your friend for theirs.</source>
+        <target>Les pseudos ne se recherchent pas : demandez le sien à votre ami.</target>
+      </trans-unit>
+      <trans-unit id="friends.send" datatype="html">
+        <source>Send the request</source>
+        <target>Envoyer la demande</target>
+      </trans-unit>
+      <trans-unit id="friends.sent" datatype="html">
+        <source>Request sent to <x id="username" equiv-text="username"/>.</source>
+        <target>Demande envoyée à <x id="username" equiv-text="username"/>.</target>
+      </trans-unit>
+      <trans-unit id="friends.inviteTitle" datatype="html">
+        <source>Your invite link</source>
+        <target>Votre lien d'invitation</target>
+      </trans-unit>
+      <trans-unit id="friends.inviteHelp" datatype="html">
+        <source>Whoever opens this link and accepts becomes your friend at once. Only share it with people you know.</source>
+        <target>Quiconque ouvre ce lien et accepte devient tout de suite votre ami. Ne le partagez qu'avec des gens que vous connaissez.</target>
+      </trans-unit>
+      <trans-unit id="friends.copy" datatype="html">
+        <source>Copy the link</source>
+        <target>Copier le lien</target>
+      </trans-unit>
+      <trans-unit id="friends.copied" datatype="html">
+        <source>Link copied</source>
+        <target>Lien copié</target>
+      </trans-unit>
+      <trans-unit id="friends.share" datatype="html">
+        <source>Share</source>
+        <target>Partager</target>
+      </trans-unit>
+      <trans-unit id="friends.shareText" datatype="html">
+        <source>Add me as a friend on AgeGuessr: <x id="url" equiv-text="url"/></source>
+        <target>Ajoute-moi en ami sur AgeGuessr : <x id="url" equiv-text="url"/></target>
+      </trans-unit>
+      <trans-unit id="friends.regenerate" datatype="html">
+        <source>Get a new link</source>
+        <target>Changer de lien</target>
+      </trans-unit>
+      <trans-unit id="friends.regenerateConfirm" datatype="html">
+        <source>The current link will stop working. Get a new one?</source>
+        <target>Le lien actuel ne marchera plus. En créer un nouveau ?</target>
+      </trans-unit>
+      <trans-unit id="friends.incomingTitle" datatype="html">
+        <source>Requests received</source>
+        <target>Demandes reçues</target>
+      </trans-unit>
+      <trans-unit id="friends.outgoingTitle" datatype="html">
+        <source>Requests sent</source>
+        <target>Demandes envoyées</target>
+      </trans-unit>
+      <trans-unit id="friends.friendsTitle" datatype="html">
+        <source>My friends</source>
+        <target>Mes amis</target>
+      </trans-unit>
+      <trans-unit id="friends.accept" datatype="html">
+        <source>Accept</source>
+        <target>Accepter</target>
+      </trans-unit>
+      <trans-unit id="friends.decline" datatype="html">
+        <source>Decline</source>
+        <target>Refuser</target>
+      </trans-unit>
+      <trans-unit id="friends.cancel" datatype="html">
+        <source>Cancel</source>
+        <target>Annuler</target>
+      </trans-unit>
+      <trans-unit id="friends.remove" datatype="html">
+        <source>Remove</source>
+        <target>Retirer</target>
+      </trans-unit>
+      <trans-unit id="friends.removeConfirm" datatype="html">
+        <source>Remove <x id="username" equiv-text="username"/> from your friends?</source>
+        <target>Retirer <x id="username" equiv-text="username"/> de vos amis ?</target>
+      </trans-unit>
+      <trans-unit id="friends.confirm" datatype="html">
+        <source>Yes</source>
+        <target>Oui</target>
+      </trans-unit>
+      <trans-unit id="friends.keep" datatype="html">
+        <source>No</source>
+        <target>Non</target>
+      </trans-unit>
+      <trans-unit id="friends.noFriends" datatype="html">
+        <source>No friend yet. Send a request or share your link.</source>
+        <target>Pas encore d'ami. Envoyez une demande ou partagez votre lien.</target>
+      </trans-unit>
+      <trans-unit id="friends.todayTitle" datatype="html">
+        <source>Today&apos;s file</source>
+        <target>Le dossier du jour</target>
+      </trans-unit>
+      <trans-unit id="friends.todayLocked" datatype="html">
+        <source>Finish today&apos;s file to see your friends&apos; scores.</source>
+        <target>Terminez le dossier du jour pour voir les scores de vos amis.</target>
+      </trans-unit>
+      <trans-unit id="friends.playToday" datatype="html">
+        <source>Open today&apos;s file</source>
+        <target>Ouvrir le dossier du jour</target>
+      </trans-unit>
+      <trans-unit id="friends.inProgress" datatype="html">
+        <source>In progress</source>
+        <target>En cours</target>
+      </trans-unit>
+      <trans-unit id="friends.notPlayed" datatype="html">
+        <source>Not played yet</source>
+        <target>Pas encore joué</target>
+      </trans-unit>
+      <trans-unit id="friends.outOf" datatype="html">
+        <source>out of</source>
+        <target>sur</target>
+      </trans-unit>
+      <trans-unit id="friends.round" datatype="html">
+        <source>Round</source>
+        <target>Manche</target>
+      </trans-unit>
+      <trans-unit id="friends.points" datatype="html">
+        <source>points</source>
+        <target>points</target>
+      </trans-unit>
+      <trans-unit id="friends.you" datatype="html">
+        <source>you</source>
+        <target>vous</target>
+      </trans-unit>
+      <trans-unit id="friends.leaderboardTitle" datatype="html">
+        <source>Leaderboard</source>
+        <target>Classement</target>
+      </trans-unit>
+      <trans-unit id="friends.leaderboardHelp" datatype="html">
+        <source>Average score per daily file finished.</source>
+        <target>Score moyen par dossier du jour terminé.</target>
+      </trans-unit>
+      <trans-unit id="friends.rank" datatype="html">
+        <source>Rank</source>
+        <target>Rang</target>
+      </trans-unit>
+      <trans-unit id="friends.player" datatype="html">
+        <source>Player</source>
+        <target>Joueur</target>
+      </trans-unit>
+      <trans-unit id="friends.average" datatype="html">
+        <source>Average</source>
+        <target>Moyenne</target>
+      </trans-unit>
+      <trans-unit id="friends.games" datatype="html">
+        <source>Files</source>
+        <target>Dossiers</target>
+      </trans-unit>
+      <trans-unit id="friends.streak" datatype="html">
+        <source>Streak</source>
+        <target>Série</target>
+      </trans-unit>
+      <trans-unit id="friends.noGame" datatype="html">
+        <source>No file yet</source>
+        <target>Aucun dossier</target>
+      </trans-unit>
+      <trans-unit id="friends.aloneOnBoard" datatype="html">
+        <source>Add friends to compare your scores.</source>
+        <target>Ajoutez des amis pour comparer vos scores.</target>
+      </trans-unit>
+      <trans-unit id="friends.inviteFrom" datatype="html">
+        <source><x id="username" equiv-text="username"/> invites you to be friends on AgeGuessr.</source>
+        <target><x id="username" equiv-text="username"/> vous invite à devenir amis sur AgeGuessr.</target>
+      </trans-unit>
+      <trans-unit id="friends.addFriend" datatype="html">
+        <source>Add as a friend</source>
+        <target>Ajouter en ami</target>
+      </trans-unit>
+      <trans-unit id="friends.nowFriends" datatype="html">
+        <source>You and <x id="username" equiv-text="username"/> are now friends.</source>
+        <target><x id="username" equiv-text="username"/> et vous êtes maintenant amis.</target>
+      </trans-unit>
+      <trans-unit id="friends.alreadyFriends" datatype="html">
+        <source>You and <x id="username" equiv-text="username"/> are already friends.</source>
+        <target><x id="username" equiv-text="username"/> et vous êtes déjà amis.</target>
+      </trans-unit>
+      <trans-unit id="friends.ownInvite" datatype="html">
+        <source>This is your own invite link. Share it with your friends.</source>
+        <target>C'est votre propre lien d'invitation. Partagez-le avec vos amis.</target>
+      </trans-unit>
+      <trans-unit id="friends.inviteGone" datatype="html">
+        <source>This invite link no longer works. Ask your friend for a new one.</source>
+        <target>Ce lien d'invitation ne marche plus. Demandez-en un nouveau à votre ami.</target>
+      </trans-unit>
+      <trans-unit id="friends.seeFriends" datatype="html">
+        <source>See my friends</source>
+        <target>Voir mes amis</target>
+      </trans-unit>
+      <trans-unit id="friends.error.noSuchPlayer" datatype="html">
+        <source>No player with this username.</source>
+        <target>Aucun joueur avec ce pseudo.</target>
+      </trans-unit>
+      <trans-unit id="friends.error.gone" datatype="html">
+        <source>This request or friend is no longer there.</source>
+        <target>Cette demande ou cet ami n'est plus là.</target>
+      </trans-unit>
+      <trans-unit id="friends.error.alreadyFriends" datatype="html">
+        <source>You are already friends.</source>
+        <target>Vous êtes déjà amis.</target>
+      </trans-unit>
+      <trans-unit id="friends.error.alreadySent" datatype="html">
+        <source>You already sent a request to this player.</source>
+        <target>Vous avez déjà envoyé une demande à ce joueur.</target>
+      </trans-unit>
+      <trans-unit id="friends.error.incoming" datatype="html">
+        <source>This player already sent you a request: accept it in the requests received.</source>
+        <target>Ce joueur vous a déjà envoyé une demande : acceptez-la dans les demandes reçues.</target>
+      </trans-unit>
+      <trans-unit id="friends.error.limit" datatype="html">
+        <source>You reached the maximum number of friends.</source>
+        <target>Vous avez atteint le nombre maximum d'amis.</target>
+      </trans-unit>
+      <trans-unit id="friends.error.otherLimit" datatype="html">
+        <source>This player reached the maximum number of friends.</source>
+        <target>Ce joueur a atteint le nombre maximum d'amis.</target>
+      </trans-unit>
+      <trans-unit id="friends.error.pendingLimit" datatype="html">
+        <source>Too many requests waiting for an answer. Cancel some first.</source>
+        <target>Trop de demandes en attente de réponse. Annulez-en quelques-unes.</target>
+      </trans-unit>
+      <trans-unit id="game.compareFriends" datatype="html">
+        <source>Compare with your friends</source>
+        <target>Comparer avec vos amis</target>
+      </trans-unit>
+      <trans-unit id="header.friends" datatype="html">
+        <source>Friends</source>
+        <target>Amis</target>
+      </trans-unit>
+      <trans-unit id="header.pendingRequests" datatype="html">
+        <source><x id="count" equiv-text="count"/> requests waiting for an answer</source>
+        <target><x id="count" equiv-text="count"/> demandes en attente de réponse</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

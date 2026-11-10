@@ -21,10 +21,17 @@ retirer une fois tous faits.
       navigateur, ouvrir « Mon profil » : la partie y est, série de 1
 - [ ] Profil : une manche non terminée ne montre ni nom, ni âge, ni points ; « Dossiers
       plus anciens » charge la page suivante quand il y a plus de 30 jours
-- [ ] Politique de confidentialité (EN + FR) : date du 2026-11-09 et paragraphe sur les
-      parties invité rattachées au compte
+- [ ] Politique de confidentialité (EN + FR) : date du 2026-11-10, paragraphe sur les
+      parties invité rattachées au compte et ce que voient les amis
 - [ ] Parcours e2e « invité → compte → profil » (`e2e/journeys/daily-game.spec.ts`) :
       jamais lancé, les parcours ne tournent dans aucune CI — à lancer à la main
+- [ ] Amis (release de `feature/friends`) : deux comptes, une demande par pseudo, le
+      compteur dans le menu de l'autre, accepter ; la comparaison du jour reste fermée tant
+      que sa propre partie n'est pas finie, puis montre les points de l'ami
+- [ ] Amis : ouvrir le lien d'invitation d'un ami sur un autre compte et l'ajouter ;
+      remplacer son lien et vérifier que l'ancien ne marche plus
+- [ ] Parcours e2e « amis » (`e2e/journeys/daily-game.spec.ts`, dernier test) : jamais
+      lancé, comme les autres parcours — à lancer à la main
 
 ## Semaine 1 — Fondations
 - [x] Initialisation projet Spring Boot (Java 25) + Angular (Claude Code)
@@ -201,10 +208,14 @@ retirer une fois tous faits.
       connexion — PR `feature/game-history`
 
 ## Semaine 6 — Amis
-- [ ] Demandes d'ami (envoi, acceptation, refus)
-- [ ] Liste d'amis
-- [ ] Comparaison des scores du jour entre amis
-- [ ] Leaderboard entre amis (historique cumulé)
+- [x] Demandes d'ami (envoi, acceptation, refus, annulation) par pseudo exact, et lien
+      d'invitation personnel (ajout en un clic, lien remplaçable) — PR `feature/friends`
+- [x] Liste d'amis (retrait confirmé), demandes reçues comptées dans le menu — PR
+      `feature/friends`
+- [x] Comparaison des scores du jour entre amis, visible une fois sa propre partie finie,
+      points seulement — PR `feature/friends`
+- [x] Leaderboard entre amis : moyenne par partie, sans minimum de parties — PR
+      `feature/friends`
 
 ## Semaine 7 — Polish
 - [ ] SEO (meta tags, sitemap, Angular SSR si pertinent pour le référencement)

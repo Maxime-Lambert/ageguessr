@@ -114,7 +114,41 @@ describe('Header', () => {
       a.getAttribute('href'),
     );
 
-    expect(links).toEqual(['/profile', '/account', '/admin/curation', '/admin/hints']);
+    expect(links).toEqual(['/profile', '/friends', '/account', '/admin/curation', '/admin/hints']);
+  });
+
+  it('shows how many friend requests wait for an answer on the Friends link', () => {
+    signIn(PLAYER);
+    header();
+    httpMock.expectOne('/api/friends').flush({
+      friends: [],
+      incoming: [{ id: 'r1', username: 'watson', since: '' }],
+      outgoing: [],
+    });
+    const page = header();
+    page.querySelector<HTMLButtonElement>('app-dropdown > button')!.click();
+    header();
+
+    const link = page.querySelector('app-dropdown a[href="/friends"]')!;
+    expect(link.textContent).toContain('Friends');
+    expect(link.textContent).toContain('1 requests waiting for an answer');
+  });
+
+  it('shows no count without requests, and asks nothing for a guest', () => {
+    auth.sessionChecked.set(true);
+    header();
+    httpMock.expectNone('/api/friends');
+
+    signIn(PLAYER);
+    header();
+    httpMock.expectOne('/api/friends').flush({ friends: [], incoming: [], outgoing: [] });
+    const page = header();
+    page.querySelector<HTMLButtonElement>('app-dropdown > button')!.click();
+    header();
+
+    expect(page.querySelector('app-dropdown a[href="/friends"]')!.textContent).not.toContain(
+      'waiting',
+    );
   });
 
   it('logging out returns to the home page as a guest', () => {

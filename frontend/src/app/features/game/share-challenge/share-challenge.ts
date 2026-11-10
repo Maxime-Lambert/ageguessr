@@ -10,7 +10,8 @@ import { Field, TextInput } from '../../../shared/ui/field/field';
 import { Leaderboard } from '../leaderboard/leaderboard';
 import { Challenge, Series } from '../models';
 import { SeriesApi } from '../series-api';
-import { NICKNAME_PATTERN, SHARE_TARGET, challengeUrl, squares } from '../share';
+import { SHARE_TARGET } from '../../../shared/share-target';
+import { NICKNAME_PATTERN, challengeUrl, squares } from '../share';
 
 /**
  * « Challenge friends », at the end of a series its creator played: a guest names

@@ -7,7 +7,8 @@ import app.ageguessr.features.game.GamePlay;
 import app.ageguessr.features.game.GamePlayRepository;
 import app.ageguessr.features.game.RoundReveal;
 import app.ageguessr.features.game.RoundStep;
-import app.ageguessr.features.game.GetHistory.HistoryCalculator.Play;
+import app.ageguessr.features.game.PlayerHistory;
+import app.ageguessr.features.game.PlayerHistories;
 import app.ageguessr.features.people.Person;
 import app.ageguessr.features.people.PersonPhoto;
 import app.ageguessr.features.people.PersonPhotoRepository;
@@ -30,7 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * An account's history: the statistics over every day played, and the rounds of one page
  * of days. Every played round is read at once (3 a day at most, about 1 100 a year), then
- * HistoryCalculator does the arithmetic. The photos and people of the page's days are
+ * PlayerHistory does the arithmetic. The photos and people of the page's days are
  * loaded in two queries, whatever the number of days.
  */
 @Service
@@ -62,19 +63,19 @@ public class GetHistoryHandler {
                 }
             }
         }
-        HistoryCalculator.Result result = HistoryCalculator.compute(
-                played.stream().map(GetHistoryHandler::toPlay).toList(), playable, LocalDate.now(clock));
+        PlayerHistory.Result result = PlayerHistory.compute(
+                played.stream().map(PlayerHistories::toPlay).toList(), playable, LocalDate.now(clock));
 
-        List<HistoryCalculator.Day> days = result.days();
+        List<PlayerHistory.Day> days = result.days();
         // In long: a huge page number would overflow an int and go negative.
         int from = (int) Math.min((long) page * PAGE_SIZE, days.size());
         int to = Math.min(from + PAGE_SIZE, days.size());
-        List<HistoryCalculator.Day> shown = days.subList(from, to);
+        List<PlayerHistory.Day> shown = days.subList(from, to);
         Answers answers = answersOf(shown, photoOfRound);
         List<HistoryResponse.Day> pageDays = shown.stream()
                 .map(day -> toDay(day, played, photoOfRound.getOrDefault(day.date(), Map.of()), answers))
                 .toList();
-        HistoryCalculator.Stats stats = result.stats();
+        PlayerHistory.Stats stats = result.stats();
         return new HistoryResponse(
                 new HistoryResponse.Stats(
                         stats.gamesPlayed(),
@@ -87,15 +88,11 @@ public class GetHistoryHandler {
                 to < days.size());
     }
 
-    private static Play toPlay(GamePlay play) {
-        boolean finished = play.step() == RoundStep.FINISHED;
-        return new Play(play.getGameDate(), play.getPosition(), finished, finished ? play.points() : 0);
-    }
 
     /** The photos and people of the page's playable rounds: two queries for the whole page. */
     private record Answers(Map<UUID, PersonPhoto> photos, Map<UUID, Person> people) {}
 
-    private Answers answersOf(List<HistoryCalculator.Day> shown, Map<LocalDate, Map<Short, UUID>> photoOfRound) {
+    private Answers answersOf(List<PlayerHistory.Day> shown, Map<LocalDate, Map<Short, UUID>> photoOfRound) {
         Set<UUID> photoIds = shown.stream()
                 .flatMap(day -> photoOfRound.getOrDefault(day.date(), Map.of()).values().stream())
                 .filter(Objects::nonNull)
@@ -109,7 +106,7 @@ public class GetHistoryHandler {
     }
 
     private static HistoryResponse.Day toDay(
-            HistoryCalculator.Day day, List<GamePlay> played, Map<Short, UUID> photoOfDay, Answers answers) {
+            PlayerHistory.Day day, List<GamePlay> played, Map<Short, UUID> photoOfDay, Answers answers) {
         List<HistoryResponse.Round> rounds = played.stream()
                 .filter(play -> play.getGameDate().equals(day.date()))
                 .sorted(Comparator.comparing(GamePlay::getPosition))

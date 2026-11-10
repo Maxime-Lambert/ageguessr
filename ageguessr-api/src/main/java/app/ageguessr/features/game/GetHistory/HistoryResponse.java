@@ -14,7 +14,7 @@ public record HistoryResponse(Stats stats, List<Day> days, int page, boolean has
 
     public record Stats(int gamesPlayed, int averagePoints, int bestPoints, int currentStreak, int bestStreak) {}
 
-    /** @param max 1 000 per round that counted (see HistoryCalculator) */
+    /** @param max 1 000 per round that counted (see PlayerHistory) */
     public record Day(LocalDate date, int points, int max, boolean complete, List<Round> rounds) {}
 
     /**
