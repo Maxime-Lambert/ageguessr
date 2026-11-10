@@ -1,7 +1,7 @@
 import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { createGlobalPositionStrategy } from '@angular/cdk/overlay';
 import { NgTemplateOutlet } from '@angular/common';
-import { Component, Injector, TemplateRef, inject, viewChild } from '@angular/core';
+import { Component, Injector, TemplateRef, effect, inject, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationStart, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { filter } from 'rxjs';
@@ -16,11 +16,13 @@ import {
   LucideSearch,
   LucideGlobe,
   LucideUser,
+  LucideUsers,
   LucideX,
 } from '@lucide/angular';
 import { Button } from '../../../shared/ui/button/button';
 import { Dropdown } from '../../../shared/ui/dropdown/dropdown';
 import { Auth } from '../../auth/auth';
+import { FriendsApi } from '../../friends/friends-api';
 import { GAME_TEXT } from '../../game/game-vocabulary';
 import { SiteLanguageService } from '../../i18n/site-language';
 import { Preferences } from '../preferences/preferences';
@@ -43,6 +45,7 @@ import { Preferences } from '../preferences/preferences';
     LucideSearch,
     LucideGlobe,
     LucideUser,
+    LucideUsers,
     LucideX,
   ],
   selector: 'app-header',
@@ -55,6 +58,8 @@ export class Header {
   private readonly sheetTemplate = viewChild.required<TemplateRef<unknown>>('sheet');
   private sheetRef: DialogRef | null = null;
   protected readonly auth = inject(Auth);
+  /** Requests waiting for an answer, on the « Friends » link (exception front layout → friends). */
+  protected readonly incomingRequests = inject(FriendsApi).incomingCount;
   /** Shown on the guest's preferences button, so it reads as the language switch it is. */
   protected readonly languageCode = inject(SiteLanguageService).current.toUpperCase();
 
@@ -65,6 +70,9 @@ export class Header {
     logout: $localize`:@@header.logout:Log out`,
     myAccount: $localize`:@@header.myAccount:My account`,
     profile: $localize`:@@header.profile:My profile`,
+    friends: $localize`:@@header.friends:Friends`,
+    pendingRequests: (count: number) =>
+      $localize`:@@header.pendingRequests:${count}:count: requests waiting for an answer`,
     preferences: $localize`:@@header.preferences:Preferences`,
     menu: $localize`:@@header.menu:Menu`,
     closeMenu: $localize`:@@header.closeMenu:Close menu`,
@@ -76,6 +84,15 @@ export class Header {
   ];
 
   constructor() {
+    const friends = inject(FriendsApi);
+    // Once per session (and again on a new one): the count of requests received.
+    effect(() => {
+      if (this.auth.isAuthenticated()) {
+        friends.refreshCount();
+      } else {
+        friends.incomingCount.set(0);
+      }
+    });
     this.router.events
       .pipe(
         filter((event) => event instanceof NavigationStart),

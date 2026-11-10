@@ -29,4 +29,9 @@ export async function asLoggedIn(page: Page, user = USER): Promise<void> {
   await page.route('**/api/auth/me', (route) =>
     route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(user) }),
   );
+  // The header counts the friend requests received once signed in: none by default. A spec
+  // that needs friends routes the same URL again, and Playwright tries the latest first.
+  await page.route('**/api/friends', (route) =>
+    route.fulfill({ json: { friends: [], incoming: [], outgoing: [] } }),
+  );
 }

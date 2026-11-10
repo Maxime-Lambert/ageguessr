@@ -102,3 +102,71 @@ test('a guest who then signs up finds the day on the profile, with a streak of 1
   await expect(day).toContainText('3,000 out of 3,000');
   await expect(day).toContainText('E2E');
 });
+
+/**
+ * Sign-up → friend request → today's comparison, then the invite link (the critical path
+ * of docs/testing-strategy.md). In this file because it seeds today's game too, and the
+ * seeding tests must run one after the other. Two browsers, one per player.
+ */
+test('two players become friends and compare the day, then by invite link', async ({
+  browser,
+  request,
+}) => {
+  const seeded = await request.post(`${BACKEND_URL}/test-support/seed-daily-game`);
+  expect(seeded.ok()).toBe(true);
+  // A new context does not inherit the project's options: pass its base URL on.
+  const player = async () =>
+    (await browser.newContext({ baseURL: test.info().project.use.baseURL })).newPage();
+  const alice = await player();
+  const bob = await player();
+  const aliceAccount = uniqueAccount('alice');
+  const bobAccount = uniqueAccount('bob');
+  await signUp(alice, request, aliceAccount);
+  await logIn(alice, aliceAccount.email, aliceAccount.password);
+  await signUp(bob, request, bobAccount);
+  await logIn(bob, bobAccount.email, bobAccount.password);
+
+  // Alice asks Bob by his exact username; Bob sees the count in his menu and accepts.
+  await alice.goto('/en/friends');
+  await alice.locator('#friend-username').fill(bobAccount.username);
+  await alice.getByRole('button', { name: 'Send the request' }).click();
+  await expect(alice.getByText(`Request sent to ${bobAccount.username}.`)).toBeVisible();
+
+  await bob.goto('/en/');
+  await bob.getByRole('banner').getByRole('button', { name: bobAccount.username }).click();
+  await bob.getByRole('link', { name: /Friends/ }).click();
+  const incoming = bob.locator('[data-incoming]');
+  await expect(incoming).toContainText(aliceAccount.username);
+  await incoming.getByRole('button', { name: 'Accept' }).click();
+  await expect(bob.locator('[data-friend]')).toContainText(aliceAccount.username);
+
+  // Locked for Alice until her own day is done; Bob plays first.
+  await alice.reload();
+  await expect(alice.getByText("Finish today's file to see your friends' scores.")).toBeVisible();
+  for (const playing of [bob, alice]) {
+    await playing.goto('/en/');
+    for (const [index, years] of [40, 55, 30].entries()) {
+      await expect(playing.getByRole('heading', { name: `Case ${index + 1} of 3` })).toBeVisible();
+      await playing.getByLabel('Age').fill(String(years));
+      await playing.getByRole('button', { name: 'Guess', exact: true }).click();
+      await playing
+        .getByRole('button', { name: index < 2 ? 'Next case' : 'See the case report' })
+        .click();
+    }
+  }
+  await alice.getByRole('link', { name: 'Compare with your friends' }).click();
+  const today = alice.locator('section[aria-labelledby="friends-today-title"]');
+  await expect(today).toContainText(bobAccount.username);
+  await expect(today).toContainText('3,000 out of 3,000');
+
+  // A third player joins through Alice's invite link, in one click.
+  const link = (await alice.locator('[data-invite-link]').textContent())!.trim();
+  const carol = await player();
+  const carolAccount = uniqueAccount('carol');
+  await signUp(carol, request, carolAccount);
+  await logIn(carol, carolAccount.email, carolAccount.password);
+  await carol.goto(`/en${new URL(link).pathname}`);
+  await expect(carol.getByText(`${aliceAccount.username} invites you`)).toBeVisible();
+  await carol.getByRole('button', { name: 'Add as a friend' }).click();
+  await expect(carol.getByText(`You and ${aliceAccount.username} are now friends.`)).toBeVisible();
+});

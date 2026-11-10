@@ -2,6 +2,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { Auth } from '../../auth/auth';
 import { GAME_TEXT } from '../game-vocabulary';
 import { TodayGame } from '../models';
 import { finished, round, today } from '../testing';
@@ -145,6 +146,27 @@ describe('Game', () => {
       (a) => a.textContent?.trim() === GAME_TEXT.tryFree,
     );
     expect(link?.getAttribute('href')).toBe('/free');
+  });
+
+  it('offers a signed-in player to compare the day with their friends', () => {
+    const link = () =>
+      Array.from(page.querySelectorAll('a')).find(
+        (a) => a.textContent?.trim() === GAME_TEXT.compareFriends,
+      );
+    load(today([finished(1), finished(2), finished(3)]));
+    expect(link()).toBeUndefined();
+
+    TestBed.inject(Auth).currentUser.set({
+      id: '1',
+      email: 'me@x.com',
+      username: 'Jane_D',
+      emailVerified: true,
+      termsAccepted: true,
+      role: 'USER',
+      language: 'EN',
+    });
+    fixture.detectChanges();
+    expect(link()?.getAttribute('href')).toBe('/friends');
   });
 
   it('says when there is no game today', () => {

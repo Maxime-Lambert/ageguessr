@@ -91,6 +91,7 @@ export const GAME_TEXT = {
   closed: $localize`:@@game.closed:Today's file is closed. Here is the new one.`,
   genericError: COMMON_MESSAGES.genericError,
   comeBack: $localize`:@@game.comeBack:A new file opens at midnight UTC.`,
+  compareFriends: $localize`:@@game.compareFriends:Compare with your friends`,
   hintLanguage: $localize`:@@game.hintLanguage:Hints in`,
   freeIntro: $localize`:@@game.freeIntro:Same rules as the daily game, as many as you like. Nothing here counts toward the daily game.`,
   noPhotos: $localize`:@@game.noPhotos:No photo is available right now. Try again later.`,

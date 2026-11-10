@@ -205,18 +205,18 @@ share the `game` rate limit counter with `/api/game/history` (costly reads).
 Verification: `./mvnw test` → 1194 tests, 0 failure.
 
 ## Phase 3: Frontend — friends page and invite link
-Status: Not started
+Status: Complete
 
-- [ ] `FriendsApi` + models (error codes mapped to translated messages)
-- [ ] `/friends` page: add by username form (the crossing-request error links to the
+- [x] `FriendsApi` + models (error codes mapped to translated messages)
+- [x] `/friends` page: add by username form (the crossing-request error links to the
       incoming request), invite link (copy with the existing share
       helper, regenerate with confirmation), incoming (accept, decline), outgoing
       (cancel), friends (remove with a CDK confirmation dialog); empty states
-- [ ] `/friends/invite/:code`: preview, « Add as friend », own link, unknown/expired
+- [x] `/friends/invite/:code`: preview, « Add as friend », own link, unknown/expired
       code (« This link no longer works »), guest → login and back
-- [ ] Header menu « Friends » with the incoming count (screen-reader text), routes with
+- [x] Header menu « Friends » with the incoming count (screen-reader text), routes with
       `authGuard`
-- [ ] FR translations of every string in `messages.fr.xlf`, `shared/ui` components only
+- [x] FR translations of every string in `messages.fr.xlf`, `shared/ui` components only
 
 Tests:
 - Unit (Vitest): `FriendsApi`, the page (each action, errors, empty states), invite page
@@ -230,7 +230,17 @@ Tests:
 - `pnpm build` passes (FR translations complete)
 
 ### Phase Summary
-_(write when phase completes)_
+Done 2026-11-10. `FriendsApi` (holds `incomingCount` for the header badge), `friends-text.ts`
+(every string + `friendsError`, 404 meaning depends on context), `/friends` page,
+`/friends/invite/:code` page, header « Friends » item with the count, FR translations.
+Deviations: removal and link replacement are confirmed inline (Yes/No) rather than in a
+CDK dialog, lighter for a one-line action; the today and leaderboard components (planned
+in Phase 4) were built here as presentational components fed by the page. New front
+exceptions: `layout → friends` (badge), `friends → game` (`SHARE_TARGET` for copy/share),
+`game → auth` reused for the « Compare with your friends » link. `asLoggedIn` (Playwright
+session helper) now answers `/api/friends`, which the header calls once signed in.
+Verification: `pnpm test` 414 → all pass (65 files), lint and prettier clean, `ng build`
+passes (FR complete). Playwright component specs written (EN + FR), run by the CI only.
 
 ## Phase 4: Frontend — comparison, leaderboard, journey, legal
 Status: Not started

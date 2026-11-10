@@ -71,6 +71,19 @@ export const routes: Routes = [
     loadComponent: () => import('./features/game/profile/profile').then((m) => m.Profile),
   },
   {
+    path: 'friends',
+    canActivate: [authGuard],
+    title: $localize`:@@title.friends:Friends · AgeGuessr`,
+    loadComponent: () =>
+      import('./features/friends/friends-page/friends-page').then((m) => m.FriendsPage),
+  },
+  {
+    path: 'friends/invite/:code',
+    canActivate: [authGuard],
+    title: $localize`:@@title.friendInvite:Friend invite · AgeGuessr`,
+    loadComponent: () => import('./features/friends/invite/invite-page').then((m) => m.InvitePage),
+  },
+  {
     path: 'confirm-account-deletion',
     loadComponent: () =>
       import('./features/auth/confirm-account-deletion/confirm-account-deletion').then(

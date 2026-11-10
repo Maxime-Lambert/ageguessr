@@ -67,6 +67,21 @@ describe('Privacy', () => {
     );
   });
 
+  it('says what friends see, and never the guesses, in both languages', async () => {
+    const english = (await render('/privacy')).textContent?.replace(/\s+/g, ' ');
+    expect(english).toContain(
+      'Your friends see your username, your points of the day once they have finished their own daily game (never your guesses)',
+    );
+    expect(english).toContain('Friend requests and friendships: until they are declined');
+
+    TestBed.resetTestingModule();
+    const french = (await render('/privacy?lang=fr')).textContent?.replace(/\s+/g, ' ');
+    expect(french).toContain(
+      'Vos amis voient votre pseudo, vos points du jour une fois leur propre partie du jour terminée (jamais vos essais)',
+    );
+    expect(french).toContain("Demandes d'ami et amitiés : jusqu'à leur refus");
+  });
+
   it('promises no photo of a minor, in both languages', async () => {
     const english = await render('/privacy');
     expect(english.textContent?.replace(/\s+/g, ' ')).toContain(
