@@ -1,18 +1,30 @@
-import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
+import { HttpErrorResponse, HttpInterceptorFn, HttpRequest } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { catchError, switchMap, throwError } from 'rxjs';
+import { catchError, defer, switchMap, throwError } from 'rxjs';
 import { Auth } from './auth';
 
 const EXCLUDED_FROM_REFRESH = ['/api/auth/login', '/api/auth/refresh'];
 
+/**
+ * An API call sent while the session is being restored waits for it: the access token
+ * only lives in memory, so without waiting, a page loaded straight away (today's game at
+ * "/") would be read as a guest's, the account's rounds left out. The auth calls never
+ * wait: the restore itself is made of them.
+ */
+function waitsForSession(req: HttpRequest<unknown>, auth: Auth): boolean {
+  return !auth.sessionChecked() && req.url.startsWith('/api/') && !req.url.startsWith('/api/auth/');
+}
+
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const auth = inject(Auth);
-  const token = auth.accessToken();
-  const authorizedReq = token
-    ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })
-    : req;
+  // Read when sent, not when the call was made: after the wait, the token is the restored one.
+  const send = defer(() => {
+    const token = auth.accessToken();
+    return next(token ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } }) : req);
+  });
+  const sent = waitsForSession(req, auth) ? auth.sessionChecked$.pipe(switchMap(() => send)) : send;
 
-  return next(authorizedReq).pipe(
+  return sent.pipe(
     catchError((error: unknown) => {
       const isUnauthorized = error instanceof HttpErrorResponse && error.status === 401;
       const canRetry =

@@ -19,6 +19,8 @@ describe('authInterceptor', () => {
     http = TestBed.inject(HttpClient);
     auth = TestBed.inject(Auth);
     httpMock = TestBed.inject(HttpTestingController);
+    // Restored (a guest): the wait for the restore is covered on its own below.
+    auth.sessionChecked.set(true);
   });
 
   afterEach(() => {
@@ -72,5 +74,41 @@ describe('authInterceptor', () => {
 
     expect(failed).toBe(true);
     httpMock.expectNone('/api/auth/refresh');
+  });
+
+  describe('while the session is being restored', () => {
+    beforeEach(() => auth.sessionChecked.set(false));
+
+    it('holds an API call until the restore, then sends it with the restored token', () => {
+      http.get('/api/game/today').subscribe();
+      TestBed.tick();
+      httpMock.expectNone('/api/game/today');
+
+      auth.accessToken.set('restored-token');
+      auth.sessionChecked.set(true);
+      TestBed.tick();
+
+      const req = httpMock.expectOne('/api/game/today');
+      expect(req.request.headers.get('Authorization')).toBe('Bearer restored-token');
+      req.flush({});
+    });
+
+    it("sends a guest's held call without a token once the restore failed", () => {
+      http.get('/api/game/today').subscribe();
+      auth.sessionChecked.set(true);
+      TestBed.tick();
+
+      const req = httpMock.expectOne('/api/game/today');
+      expect(req.request.headers.has('Authorization')).toBe(false);
+      req.flush({});
+    });
+
+    it('never holds the auth calls the restore is made of', () => {
+      http.post('/api/auth/refresh', {}).subscribe();
+      http.get('/api/auth/me').subscribe();
+
+      httpMock.expectOne('/api/auth/refresh').flush({});
+      httpMock.expectOne('/api/auth/me').flush({});
+    });
   });
 });

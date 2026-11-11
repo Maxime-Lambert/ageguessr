@@ -32,6 +32,10 @@ retirer une fois tous faits.
       remplacer son lien et vérifier que l'ancien ne marche plus
 - [ ] Parcours e2e « amis » (`e2e/journeys/daily-game.spec.ts`, dernier test) : jamais
       lancé, comme les autres parcours — à lancer à la main
+- [ ] Retours du 2026-11-11 (`fix/smoke-test-feedback`) : connecté, finir la 1re manche
+      du jour puis recharger (sur l'écran de score ou après « Affaire suivante ») →
+      reprise à la 2e manche ; le lien d'un email d'alerte ouvre la file admin même avec un
+      compte en français ; « Envoyer » du signalement d'indice lisible en thème sombre
 
 ## Semaine 1 — Fondations
 - [x] Initialisation projet Spring Boot (Java 25) + Angular (Claude Code)
