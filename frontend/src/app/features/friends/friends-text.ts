@@ -13,15 +13,6 @@ export const FRIENDS_TEXT = {
   usernameHint: $localize`:@@friends.usernameHint:Usernames are not searchable: ask your friend for theirs.`,
   send: $localize`:@@friends.send:Send the request`,
   sent: (username: string) => $localize`:@@friends.sent:Request sent to ${username}:username:.`,
-  inviteTitle: $localize`:@@friends.inviteTitle:Your invite link`,
-  inviteHelp: $localize`:@@friends.inviteHelp:Whoever opens this link and accepts becomes your friend at once. Only share it with people you know.`,
-  copy: $localize`:@@friends.copy:Copy the link`,
-  copied: $localize`:@@friends.copied:Link copied`,
-  share: $localize`:@@friends.share:Share`,
-  shareText: (url: string) =>
-    $localize`:@@friends.shareText:Add me as a friend on AgeGuessr: ${url}:url:`,
-  regenerate: $localize`:@@friends.regenerate:Get a new link`,
-  regenerateConfirm: $localize`:@@friends.regenerateConfirm:The current link will stop working. Get a new one?`,
   incomingTitle: $localize`:@@friends.incomingTitle:Requests received`,
   outgoingTitle: $localize`:@@friends.outgoingTitle:Requests sent`,
   friendsTitle: $localize`:@@friends.friendsTitle:My friends`,
@@ -33,7 +24,7 @@ export const FRIENDS_TEXT = {
     $localize`:@@friends.removeConfirm:Remove ${username}:username: from your friends?`,
   confirm: $localize`:@@friends.confirm:Yes`,
   keep: $localize`:@@friends.keep:No`,
-  noFriends: $localize`:@@friends.noFriends:No friend yet. Send a request or share your link.`,
+  noFriends: $localize`:@@friends.noFriends:No friend yet. Send them a request with their username.`,
   todayTitle: $localize`:@@friends.todayTitle:Today's file`,
   todayLocked: $localize`:@@friends.todayLocked:Finish today's file to see your friends' scores.`,
   playToday: $localize`:@@friends.playToday:Open today's file`,
@@ -52,16 +43,6 @@ export const FRIENDS_TEXT = {
   streak: $localize`:@@friends.streak:Streak`,
   noGame: $localize`:@@friends.noGame:No file yet`,
   aloneOnBoard: $localize`:@@friends.aloneOnBoard:Add friends to compare your scores.`,
-  inviteFrom: (username: string) =>
-    $localize`:@@friends.inviteFrom:${username}:username: invites you to be friends on AgeGuessr.`,
-  addFriend: $localize`:@@friends.addFriend:Add as a friend`,
-  nowFriends: (username: string) =>
-    $localize`:@@friends.nowFriends:You and ${username}:username: are now friends.`,
-  alreadyFriends: (username: string) =>
-    $localize`:@@friends.alreadyFriends:You and ${username}:username: are already friends.`,
-  ownInvite: $localize`:@@friends.ownInvite:This is your own invite link. Share it with your friends.`,
-  inviteGone: $localize`:@@friends.inviteGone:This invite link no longer works. Ask your friend for a new one.`,
-  seeFriends: $localize`:@@friends.seeFriends:See my friends`,
 };
 
 export const NO_SUCH_PLAYER = $localize`:@@friends.error.noSuchPlayer:No player with this username.`;
@@ -91,8 +72,6 @@ export function friendsError(error: HttpErrorResponse, notFound = GONE): string 
       return $localize`:@@friends.error.otherLimit:This player reached the maximum number of friends.`;
     case 'PENDING_LIMIT_REACHED':
       return $localize`:@@friends.error.pendingLimit:Too many requests waiting for an answer. Cancel some first.`;
-    case 'OWN_INVITE':
-      return FRIENDS_TEXT.ownInvite;
     default:
       return COMMON_MESSAGES.genericError;
   }

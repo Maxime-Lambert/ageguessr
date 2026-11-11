@@ -104,14 +104,11 @@ test('a guest who then signs up finds the day on the profile, with a streak of 1
 });
 
 /**
- * Sign-up → friend request → today's comparison, then the invite link (the critical path
+ * Sign-up → friend request → today's comparison (the critical path
  * of docs/testing-strategy.md). In this file because it seeds today's game too, and the
  * seeding tests must run one after the other. Two browsers, one per player.
  */
-test('two players become friends and compare the day, then by invite link', async ({
-  browser,
-  request,
-}) => {
+test('two players become friends and compare the day', async ({ browser, request }) => {
   const seeded = await request.post(`${BACKEND_URL}/test-support/seed-daily-game`);
   expect(seeded.ok()).toBe(true);
   // A new context does not inherit the project's options: pass its base URL on.
@@ -158,15 +155,4 @@ test('two players become friends and compare the day, then by invite link', asyn
   const today = alice.locator('section[aria-labelledby="friends-today-title"]');
   await expect(today).toContainText(bobAccount.username);
   await expect(today).toContainText('3,000 out of 3,000');
-
-  // A third player joins through Alice's invite link, in one click.
-  const link = (await alice.locator('[data-invite-link]').textContent())!.trim();
-  const carol = await player();
-  const carolAccount = uniqueAccount('carol');
-  await signUp(carol, request, carolAccount);
-  await logIn(carol, carolAccount.email, carolAccount.password);
-  await carol.goto(`/en${new URL(link).pathname}`);
-  await expect(carol.getByText(`${aliceAccount.username} invites you`)).toBeVisible();
-  await carol.getByRole('button', { name: 'Add as a friend' }).click();
-  await expect(carol.getByText(`You and ${aliceAccount.username} are now friends.`)).toBeVisible();
 });

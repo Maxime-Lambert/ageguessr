@@ -892,7 +892,7 @@ donnée sur le joueur ni donner à un script le moyen de retirer des photos.
 
 ### Système d'amis
 **Décision** (2026-11-10, PR `feature/friends`, plan `plans/done/friends.md`) : un compte
-ajoute des amis par leur pseudo exact ou par son lien d'invitation, voit ses amis et ses
+ajoute des amis par leur pseudo exact, voit ses amis et ses
 demandes, compare les scores de la partie du jour une fois la sienne terminée, et un
 classement par moyenne de points par partie.
 
@@ -903,10 +903,10 @@ classement par moyenne de points par partie.
   supprimer un compte supprime ses amitiés.
 - **Pseudo exact, sans recherche partielle** : les comptes ne peuvent pas être listés.
   Un pseudo inconnu, un compte non vérifié et soi-même donnent le même 404.
-- **Lien d'invitation** (`friend_invites`, un code par compte, 8 caractères base32
-  Crockford comme les défis) : l'ouvrir et cliquer « Ajouter » crée l'amitié tout de
-  suite (le partager vaut consentement de son propriétaire). Régénérer le code coupe
-  l'ancien lien.
+- **Pas de lien d'invitation** : livré avec la feature (`friend_invites`, ajout en un
+  clic), puis retiré le 2026-11-11 sur retour produit (V19 supprime la table) — la demande
+  par pseudo, acceptée explicitement, reste le seul chemin. Un ancien lien
+  `/friends/invite/:code` redirige vers `/friends`.
 - **Rien d'automatique** : une demande croisée (B a déjà demandé A, A demande B) est
   refusée en 409 `INCOMING_REQUEST_EXISTS`, le frontend montre la demande à accepter.
   Refuser, annuler, retirer : la ligne est supprimée, l'autre n'est pas prévenu, et peut

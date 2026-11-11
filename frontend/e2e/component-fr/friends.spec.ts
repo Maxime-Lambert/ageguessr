@@ -32,10 +32,6 @@ test.describe('amis', () => {
         },
       }),
     );
-    await page.route('**/api/friends/invite', (route) =>
-      route.fulfill({ json: { code: 'K7F2QX9M' } }),
-    );
-
     await page.goto('/fr/friends');
 
     await expect(page.getByRole('heading', { name: 'Demandes reçues (1)' })).toBeVisible();
@@ -45,16 +41,5 @@ test.describe('amis', () => {
     await expect(page.getByText('Aucun dossier')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Envoyer la demande' })).toBeVisible();
     await expect(page.getByText("Pas encore d'ami.")).toBeVisible();
-  });
-
-  test("le lien d'invitation est en français", async ({ page }) => {
-    await asLoggedIn(page, { ...USER, language: 'FR' });
-    await page.route('**/api/friends/invite/K7F2QX9M', (route) =>
-      route.fulfill({ status: 404, json: { errorCode: 'NOT_FOUND', message: 'x' } }),
-    );
-
-    await page.goto('/fr/friends/invite/K7F2QX9M');
-
-    await expect(page.getByText("Ce lien d'invitation ne marche plus.")).toBeVisible();
   });
 });

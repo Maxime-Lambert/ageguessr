@@ -24,11 +24,6 @@ public final class FriendErrors {
         return new NotFoundException("No such friend");
     }
 
-    /** An unknown code, or one its owner replaced. */
-    public static NotFoundException noSuchInvite() {
-        return new NotFoundException("This invite link no longer works");
-    }
-
     public static ConflictException alreadyFriends() {
         return new ConflictException("ALREADY_FRIENDS", "You are already friends");
     }
@@ -54,9 +49,5 @@ public final class FriendErrors {
     public static ConflictException pendingLimitReached() {
         return new ConflictException(
                 "PENDING_LIMIT_REACHED", "Too many requests waiting for an answer, cancel some first");
-    }
-
-    public static ConflictException ownInvite() {
-        return new ConflictException("OWN_INVITE", "This is your own invite link");
     }
 }

@@ -54,7 +54,7 @@ public class Friendship {
         return new Friendship(requesterId, addresseeId, FriendshipStatus.PENDING, now);
     }
 
-    /** Through an invite link: its owner consented by sharing it, the other by opening it. */
+    /** Already accepted: a friendship in the state a request ends up in once accepted. */
     public static Friendship accepted(UUID requesterId, UUID addresseeId, Instant now) {
         return new Friendship(requesterId, addresseeId, FriendshipStatus.ACCEPTED, now);
     }

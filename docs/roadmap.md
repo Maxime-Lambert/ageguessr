@@ -28,8 +28,8 @@ retirer une fois tous faits.
 - [ ] Amis (release de `feature/friends`) : deux comptes, une demande par pseudo, le
       compteur dans le menu de l'autre, accepter ; la comparaison du jour reste fermée tant
       que sa propre partie n'est pas finie, puis montre les points de l'ami
-- [ ] Amis : ouvrir le lien d'invitation d'un ami sur un autre compte et l'ajouter ;
-      remplacer son lien et vérifier que l'ancien ne marche plus
+- [ ] Amis : plus de lien d'invitation sur `/friends` ; un ancien lien
+      `/friends/invite/…` ouvre la page Amis
 - [ ] Parcours e2e « amis » (`e2e/journeys/daily-game.spec.ts`, dernier test) : jamais
       lancé, comme les autres parcours — à lancer à la main
 - [ ] Retours du 2026-11-11 (`fix/smoke-test-feedback`) : connecté, finir la 1re manche
@@ -212,8 +212,9 @@ retirer une fois tous faits.
       connexion — PR `feature/game-history`
 
 ## Semaine 6 — Amis
-- [x] Demandes d'ami (envoi, acceptation, refus, annulation) par pseudo exact, et lien
-      d'invitation personnel (ajout en un clic, lien remplaçable) — PR `feature/friends`
+- [x] Demandes d'ami (envoi, acceptation, refus, annulation) par pseudo exact — PR
+      `feature/friends` (le lien d'invitation livré avec a été retiré le 2026-11-11,
+      `chore/remove-friend-invite-link`)
 - [x] Liste d'amis (retrait confirmé), demandes reçues comptées dans le menu — PR
       `feature/friends`
 - [x] Comparaison des scores du jour entre amis, visible une fois sa propre partie finie,

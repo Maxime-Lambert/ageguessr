@@ -146,12 +146,17 @@ class FriendsFunctionalTest {
                 .andExpect(jsonPath("$.players[0].rank").isEmpty());
     }
 
+    /** A request by username, accepted by the other: the only way to become friends. */
     private void befriend(Account owner, Account other) throws Exception {
-        String code = objectMapper
-                .readTree(perform(get("/api/friends/invite"), owner, null).andReturn().getResponse().getContentAsString())
-                .get("code")
+        perform(post("/api/friends/requests"), owner, "{\"username\":\"" + other.username() + "\"}")
+                .andExpect(status().isNoContent());
+        String requestId = objectMapper.readTree(list(other).andReturn().getResponse().getContentAsString())
+                .get("incoming")
+                .get(0)
+                .get("id")
                 .asString();
-        perform(post("/api/friends/invite/" + code + "/accept"), other, null).andExpect(status().isNoContent());
+        perform(post("/api/friends/requests/" + requestId + "/accept"), other, null)
+                .andExpect(status().isNoContent());
     }
 
     /** An exact first guess: a finished round worth 1 000. */
@@ -168,9 +173,6 @@ class FriendsFunctionalTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"username\":\"someone\"}"))
                 .andExpect(status().isUnauthorized());
-        mockMvc.perform(get("/api/friends/invite")).andExpect(status().isUnauthorized());
-        mockMvc.perform(get("/api/friends/invite/K7F2QX9M")).andExpect(status().isUnauthorized());
-        mockMvc.perform(post("/api/friends/invite/K7F2QX9M/accept")).andExpect(status().isUnauthorized());
         mockMvc.perform(delete("/api/friends/" + UUID.randomUUID())).andExpect(status().isUnauthorized());
     }
 
@@ -250,58 +252,10 @@ class FriendsFunctionalTest {
     }
 
     @Test
-    void addsAFriendThroughTheirInviteLink() throws Exception {
-        Account alice = account();
-        Account bob = account();
-        String code = objectMapper
-                .readTree(perform(get("/api/friends/invite"), alice, null)
-                        .andExpect(status().isOk())
-                        .andReturn()
-                        .getResponse()
-                        .getContentAsString())
-                .get("code")
-                .asString();
-        perform(get("/api/friends/invite"), alice, null).andExpect(jsonPath("$.code").value(code));
-
-        String preview = perform(get("/api/friends/invite/" + code.toLowerCase()), bob, null)
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.username").value(alice.username()))
-                .andExpect(jsonPath("$.own").value(false))
-                .andExpect(jsonPath("$.alreadyFriends").value(false))
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-        assertNothingPrivateIn(preview, alice);
-        perform(post("/api/friends/invite/" + code + "/accept"), alice, null)
-                .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.errorCode").value("OWN_INVITE"));
-        perform(post("/api/friends/invite/" + code + "/accept"), bob, null).andExpect(status().isNoContent());
-        perform(post("/api/friends/invite/" + code + "/accept"), bob, null).andExpect(status().isNoContent());
-        list(bob).andExpect(jsonPath("$.friends[0].username").value(alice.username()));
-
-        String newCode = objectMapper
-                .readTree(perform(post("/api/friends/invite"), alice, null)
-                        .andExpect(status().isOk())
-                        .andReturn()
-                        .getResponse()
-                        .getContentAsString())
-                .get("code")
-                .asString();
-        assertThat(newCode).isNotEqualTo(code);
-        perform(get("/api/friends/invite/" + code), bob, null).andExpect(status().isNotFound());
-        perform(get("/api/friends/invite/" + newCode), bob, null)
-                .andExpect(jsonPath("$.alreadyFriends").value(true));
-    }
-
-    @Test
     void deletingAnAccountRemovesItFromItsFriends() throws Exception {
         Account alice = account();
         Account bob = account();
-        String code = objectMapper
-                .readTree(perform(get("/api/friends/invite"), alice, null).andReturn().getResponse().getContentAsString())
-                .get("code")
-                .asString();
-        perform(post("/api/friends/invite/" + code + "/accept"), bob, null).andExpect(status().isNoContent());
+        befriend(alice, bob);
 
         jdbc.update("DELETE FROM users WHERE email = ?", alice.email());
 

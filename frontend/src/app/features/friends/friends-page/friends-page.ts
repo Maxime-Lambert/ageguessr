@@ -1,13 +1,11 @@
 import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { COMMON_MESSAGES } from '../../../shared/common-messages';
 import { Button } from '../../../shared/ui/button/button';
 import { Field, TextInput } from '../../../shared/ui/field/field';
 import { Page } from '../../../shared/ui/page/page';
-import { SHARE_TARGET } from '../../../shared/share-target';
-import { FriendsApi, inviteUrl } from '../friends-api';
+import { FriendsApi } from '../friends-api';
 import { FriendsLeaderboard } from '../friends-leaderboard/friends-leaderboard';
 import { FRIENDS_TEXT, NO_SUCH_PLAYER, friendsError } from '../friends-text';
 import { FriendsToday } from '../friends-today/friends-today';
@@ -15,7 +13,7 @@ import { Friends, FriendsLeaderboard as Board, FriendsToday as Today, Relation }
 
 /**
  * The signed-in player's friends: requests received, today's comparison, the leaderboard,
- * adding a friend (exact username or invite link), the friends and the requests sent.
+ * adding a friend (exact username), the friends and the requests sent.
  * Every change reloads the list, today's scores and the leaderboard, which depend on it.
  */
 @Component({
@@ -34,7 +32,6 @@ import { Friends, FriendsLeaderboard as Board, FriendsToday as Today, Relation }
 })
 export class FriendsPage {
   private readonly api = inject(FriendsApi);
-  private readonly target = inject(SHARE_TARGET);
 
   protected readonly text = FRIENDS_TEXT;
 
@@ -42,15 +39,11 @@ export class FriendsPage {
   protected readonly friends = signal<Friends | null>(null);
   protected readonly today = signal<Today | null>(null);
   protected readonly board = signal<Board | null>(null);
-  protected readonly inviteCode = signal<string | null>(null);
 
   /** The relation whose action is being sent: its buttons are disabled meanwhile. */
   protected readonly busyId = signal<string | null>(null);
   protected readonly actionError = signal<string | null>(null);
   protected readonly confirmingRemoval = signal<string | null>(null);
-  protected readonly confirmingRegenerate = signal(false);
-  protected readonly copied = signal(false);
-  protected readonly inviteError = signal<string | null>(null);
 
   protected readonly username = new FormControl('', {
     nonNullable: true,
@@ -61,18 +54,8 @@ export class FriendsPage {
   protected readonly sendError = signal<string | null>(null);
   protected readonly sentTo = signal<string | null>(null);
 
-  protected readonly inviteLink = computed(() => {
-    const code = this.inviteCode();
-    return code ? inviteUrl(this.target.origin(), code) : null;
-  });
-  protected readonly canShare = this.target.canShare();
-
   constructor() {
     this.load();
-    this.api.invite().subscribe({
-      next: (invite) => this.inviteCode.set(invite.code),
-      error: (error: HttpErrorResponse) => this.inviteError.set(friendsError(error)),
-    });
   }
 
   protected load(): void {
@@ -156,31 +139,6 @@ export class FriendsPage {
         this.actionError.set(friendsError(error));
         this.refresh();
       },
-    });
-  }
-
-  protected copy(): void {
-    const link = this.inviteLink();
-    if (!link) return;
-    this.target.copy(link).then(
-      () => this.copied.set(true),
-      () => this.inviteError.set(COMMON_MESSAGES.genericError),
-    );
-  }
-
-  protected share(): void {
-    const link = this.inviteLink();
-    if (!link) return;
-    void this.target.share(this.text.shareText(link)).catch(() => undefined);
-  }
-
-  protected regenerate(): void {
-    this.confirmingRegenerate.set(false);
-    this.copied.set(false);
-    this.inviteError.set(null);
-    this.api.regenerateInvite().subscribe({
-      next: (invite) => this.inviteCode.set(invite.code),
-      error: (error: HttpErrorResponse) => this.inviteError.set(friendsError(error)),
     });
   }
 }
