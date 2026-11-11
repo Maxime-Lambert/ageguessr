@@ -93,7 +93,7 @@ describe('authInterceptor', () => {
       req.flush({});
     });
 
-    it('sends a guest\'s held call without a token once the restore failed', () => {
+    it("sends a guest's held call without a token once the restore failed", () => {
       http.get('/api/game/today').subscribe();
       auth.sessionChecked.set(true);
       TestBed.tick();

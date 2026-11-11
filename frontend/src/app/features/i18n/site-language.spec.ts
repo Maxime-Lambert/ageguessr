@@ -115,7 +115,7 @@ describe('SiteLanguageService', () => {
     expect(page.loaded).toEqual(['/fr/admin/curation?x=1#top']);
   });
 
-  it('loads the home page of the account\'s language from a bare prefix', async () => {
+  it("loads the home page of the account's language from a bare prefix", async () => {
     const language = await setUp('en', '/');
     page = Object.assign(page, { location: () => '/en' });
 
