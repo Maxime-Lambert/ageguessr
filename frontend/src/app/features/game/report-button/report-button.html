@@ -39,14 +39,14 @@
       <div class="mt-3 flex gap-2">
         <button
           appButton
-          variant="secondary"
+          [variant]="tones().send"
           size="sm"
           type="submit"
           [disabled]="!picked() || sending()"
         >
           {{ text.reportSend }}
         </button>
-        <button appButton variant="ghost" size="sm" type="button" (click)="toggle()">
+        <button appButton [variant]="tones().cancel" size="sm" type="button" (click)="toggle()">
           {{ text.reportCancel }}
         </button>
       </div>

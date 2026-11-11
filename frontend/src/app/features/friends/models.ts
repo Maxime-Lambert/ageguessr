@@ -14,16 +14,6 @@ export interface Friends {
   outgoing: Relation[];
 }
 
-export interface Invite {
-  code: string;
-}
-
-export interface InvitePreview {
-  username: string;
-  own: boolean;
-  alreadyFriends: boolean;
-}
-
 export type TodayStatus = 'COMPLETE' | 'IN_PROGRESS' | 'NOT_PLAYED';
 
 export interface TodayPlayer {

@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { COMMON_MESSAGES } from '../../shared/common-messages';
-import { FRIENDS_TEXT, GONE, NO_SUCH_PLAYER, friendsError } from './friends-text';
+import { GONE, NO_SUCH_PLAYER, friendsError } from './friends-text';
 
 const error = (status: number, errorCode?: string) =>
   new HttpErrorResponse({ status, error: errorCode ? { errorCode, message: 'x' } : null });
@@ -22,7 +22,6 @@ describe('friendsError', () => {
     expect(friendsError(error(409, 'FRIEND_LIMIT_REACHED'))).toContain('You reached');
     expect(friendsError(error(409, 'OTHER_FRIEND_LIMIT_REACHED'))).toContain('This player reached');
     expect(friendsError(error(409, 'PENDING_LIMIT_REACHED'))).toContain('Cancel some');
-    expect(friendsError(error(409, 'OWN_INVITE'))).toBe(FRIENDS_TEXT.ownInvite);
     expect(friendsError(error(409, 'SOMETHING_NEW'))).toBe(COMMON_MESSAGES.genericError);
     expect(friendsError(error(500))).toBe(COMMON_MESSAGES.genericError);
   });

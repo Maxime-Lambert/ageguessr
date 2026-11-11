@@ -2,8 +2,6 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { vi } from 'vitest';
-import { SHARE_TARGET, ShareTarget } from '../../../shared/share-target';
 import { Friends } from '../models';
 import { board, friendsOf, lockedToday, relation } from '../testing';
 import { FriendsPage } from './friends-page';
@@ -11,22 +9,10 @@ import { FriendsPage } from './friends-page';
 describe('FriendsPage', () => {
   let fixture: ComponentFixture<FriendsPage>;
   let http: HttpTestingController;
-  let target: ShareTarget;
 
   beforeEach(() => {
-    target = {
-      canShare: () => false,
-      share: vi.fn(() => Promise.resolve()),
-      copy: vi.fn(() => Promise.resolve()),
-      origin: () => 'https://ageguessr.app',
-    };
     TestBed.configureTestingModule({
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        provideRouter([]),
-        { provide: SHARE_TARGET, useValue: target },
-      ],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
     });
     http = TestBed.inject(HttpTestingController);
     fixture = TestBed.createComponent(FriendsPage);
@@ -52,17 +38,15 @@ describe('FriendsPage', () => {
   };
 
   const open = (friends: Friends = friendsOf()) => {
-    http.expectOne({ method: 'GET', url: '/api/friends/invite' }).flush({ code: 'K7F2QX9M' });
     flushReads(friends);
     return page();
   };
 
-  it('shows the invite link, today’s file and the leaderboard, and an empty list', () => {
+  it('shows today’s file and the leaderboard, an empty list, and no invite link', () => {
     const view = open();
 
-    expect(view.querySelector('[data-invite-link]')?.textContent?.trim()).toBe(
-      'https://ageguessr.app/friends/invite/K7F2QX9M',
-    );
+    expect(view.textContent).not.toContain('invite link');
+    expect(view.textContent).not.toContain('Copy the link');
     expect(view.querySelector('app-friends-today')).not.toBeNull();
     expect(view.querySelector('app-friends-leaderboard')).not.toBeNull();
     expect(view.textContent).toContain('No friend yet.');
@@ -176,24 +160,7 @@ describe('FriendsPage', () => {
     expect(page().querySelector('[role="alert"]')?.textContent).toContain('no longer there');
   });
 
-  it('copies the invite link, and replaces it after confirming', async () => {
-    open();
-
-    button('Copy the link').click();
-    await Promise.resolve();
-    expect(target.copy).toHaveBeenCalledWith('https://ageguessr.app/friends/invite/K7F2QX9M');
-    expect(button('Link copied')).toBeDefined();
-
-    button('Get a new link').click();
-    expect(page().textContent).toContain('The current link will stop working.');
-    button('Yes').click();
-    http.expectOne({ method: 'POST', url: '/api/friends/invite' }).flush({ code: 'NEWCODE1' });
-
-    expect(page().querySelector('[data-invite-link]')?.textContent).toContain('NEWCODE1');
-  });
-
   it('offers to retry when the list cannot be loaded', () => {
-    http.expectOne('/api/friends/invite').flush({ code: 'K7F2QX9M' });
     http.expectOne('/api/friends').flush(null, { status: 500, statusText: 'Error' });
     http.expectOne('/api/friends/today').flush(null, { status: 500, statusText: 'Error' });
     http.expectOne('/api/friends/leaderboard').flush(null, { status: 500, statusText: 'Error' });

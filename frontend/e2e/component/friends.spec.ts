@@ -64,23 +64,18 @@ async function withFriends(page: Page): Promise<void> {
   await page.route('**/api/friends', (route) => route.fulfill({ json: FRIENDS }));
   await page.route('**/api/friends/today', (route) => route.fulfill({ json: TODAY }));
   await page.route('**/api/friends/leaderboard', (route) => route.fulfill({ json: BOARD }));
-  await page.route('**/api/friends/invite', (route) =>
-    route.fulfill({ json: { code: 'K7F2QX9M' } }),
-  );
 }
 
 test.describe('friends page', () => {
   test('a guest is sent to log in, and comes back after', async ({ page }) => {
     await asGuest(page);
 
-    await page.goto('/en/friends/invite/K7F2QX9M');
+    await page.goto('/en/friends');
 
-    await expect(page).toHaveURL(/\/en\/login\?returnUrl=%2Ffriends%2Finvite%2FK7F2QX9M$/);
+    await expect(page).toHaveURL(/\/en\/login\?returnUrl=%2Ffriends$/);
   });
 
-  test('shows the requests, today’s scores, the leaderboard and the invite link', async ({
-    page,
-  }) => {
+  test('shows the requests, today’s scores and the leaderboard', async ({ page }) => {
     await withFriends(page);
 
     await page.goto('/en/friends');
@@ -93,7 +88,6 @@ test.describe('friends page', () => {
     await expect(page.locator('section[aria-labelledby="friends-board-title"]')).toContainText(
       'watson',
     );
-    await expect(page.locator('[data-invite-link]')).toContainText('/friends/invite/K7F2QX9M');
     await expect(page.locator('[data-friend]')).toContainText('watson');
     await expect(page.locator('[data-outgoing]')).toContainText('moriarty');
   });
@@ -115,7 +109,7 @@ test.describe('friends page', () => {
     await withFriends(page);
 
     await page.goto('/en/friends');
-    await expect(page.locator('[data-invite-link]')).toBeVisible();
+    await expect(page.locator('[data-friend]')).toBeVisible();
 
     const overflow = await page.evaluate(
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
@@ -123,19 +117,11 @@ test.describe('friends page', () => {
     expect(overflow).toBeLessThanOrEqual(0);
   });
 
-  test('opens a friend’s invite link and adds them', async ({ page }) => {
-    await asLoggedIn(page);
-    await page.route('**/api/friends/invite/K7F2QX9M', (route) =>
-      route.fulfill({ json: { username: 'Holmes', own: false, alreadyFriends: false } }),
-    );
-    await page.route('**/api/friends/invite/K7F2QX9M/accept', (route) =>
-      route.fulfill({ status: 204 }),
-    );
+  test('sends an invite link shared before their removal to the friends page', async ({ page }) => {
+    await withFriends(page);
 
     await page.goto('/en/friends/invite/K7F2QX9M');
-    await expect(page.getByText('Holmes invites you to be friends on AgeGuessr.')).toBeVisible();
-    await page.getByRole('button', { name: 'Add as a friend' }).click();
 
-    await expect(page.getByText('You and Holmes are now friends.')).toBeVisible();
+    await expect(page).toHaveURL(/\/en\/friends$/);
   });
 });

@@ -24,8 +24,8 @@ import tools.jackson.databind.ObjectMapper;
  * of free series and the joining of challenges: each series reveals the ages of its
  * photos, and a script must not harvest the pool. The reports of a round have their own,
  * so that reporting never uses up the guesses, and a script cannot flood the admin queue.
- * Friends too, on what a script would try in bulk: usernames (sending a request), invite
- * codes (reading or accepting one), and every other change to the graph.
+ * Friends too, on what a script would try in bulk: usernames (sending a request), and
+ * every other change to the graph.
  * The game reads (GET) are not limited: they write nothing once the day is drawn.
  *
  * <p>Partitions by client IP (request.getRemoteAddr(), which WebConfig's
@@ -71,8 +71,6 @@ public class RateLimitFilter extends OncePerRequestFilter {
     private static final Pattern ROUND_REPORT = Pattern.compile("^/api/game/.+/rounds/[^/]+/report$");
     private static final Set<String> FRIENDS_SCORES =
             Set.of("/api/friends/today", "/api/friends/leaderboard");
-    // Someone's code, not the caller's own GET/POST /api/friends/invite.
-    private static final Pattern INVITE_CODE = Pattern.compile("^/api/friends/invite/[^/]+(/accept)?$");
 
     /** @param name prefixes the counter, so that playing never uses up the login attempts */
     private record Limit(String name, int maxAttempts, Duration window) {}
@@ -87,11 +85,8 @@ public class RateLimitFilter extends OncePerRequestFilter {
         if (uri.equals("/api/game/history") || FRIENDS_SCORES.contains(uri)) {
             return game;
         }
-        if (INVITE_CODE.matcher(uri).matches()) {
-            return friends;
-        }
-        // Every change to the friends graph, the caller's own invite included: a request
-        // sent, accepted, declined or cancelled, a friend removed, a code replaced.
+        // Every change to the friends graph: a request sent, accepted, declined or
+        // cancelled, a friend removed.
         if (uri.startsWith("/api/friends") && !HttpMethod.GET.matches(request.getMethod())) {
             return friends;
         }
