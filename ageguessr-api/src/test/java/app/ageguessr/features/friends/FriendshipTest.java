@@ -36,7 +36,7 @@ class FriendshipTest {
     }
 
     @Test
-    void anInviteMakesFriendsAtOnce() {
+    void canBeCreatedAlreadyAccepted() {
         Friendship friendship = Friendship.accepted(alice, bob, NOW);
 
         assertThat(friendship.isAccepted()).isTrue();
