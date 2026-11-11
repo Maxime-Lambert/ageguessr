@@ -147,29 +147,27 @@ class RateLimitFunctionalTest {
     }
 
     /**
-     * Friends have their own counter, on what a script would try in bulk: usernames and
-     * invite codes. Counted before authentication, like the others; the caller's own
-     * invite and the list are not limited.
+     * Friends have their own counter, on what a script would try in bulk: usernames.
+     * Counted before authentication, like the others; the list is not limited, and the
+     * guesses keep their own counter.
      */
     @Test
-    void limitsTheFriendRequestsAndInviteCodesApart() throws Exception {
+    void limitsTheFriendRequestsApart() throws Exception {
         String client = "203.0.113.50";
         mockMvc.perform(post("/api/friends/requests").header("X-Forwarded-For", client))
                 .andExpect(status().isUnauthorized());
-        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get(
-                                "/api/friends/invite/K7F2QX9M")
-                        .header("X-Forwarded-For", client))
+        mockMvc.perform(post("/api/friends/requests").header("X-Forwarded-For", client))
                 .andExpect(status().isUnauthorized());
-        mockMvc.perform(post("/api/friends/invite/K7F2QX9M/accept").header("X-Forwarded-For", client))
+        mockMvc.perform(post("/api/friends/requests").header("X-Forwarded-For", client))
                 .andExpect(status().isTooManyRequests());
 
-        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/api/friends/invite")
+        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/api/friends")
                         .header("X-Forwarded-For", client))
                 .andExpect(status().isUnauthorized());
         guessFrom(client).andExpect(status().isConflict());
     }
 
-    /** Accepting, declining, removing and replacing one's link share the friends counter. */
+    /** Accepting, declining and removing share the friends counter. */
     @Test
     void limitsEveryChangeToTheFriendsGraph() throws Exception {
         String client = "203.0.113.70";
@@ -180,7 +178,7 @@ class RateLimitFunctionalTest {
                                 "/api/friends/" + id)
                         .header("X-Forwarded-For", client))
                 .andExpect(status().isUnauthorized());
-        mockMvc.perform(post("/api/friends/invite").header("X-Forwarded-For", client))
+        mockMvc.perform(post("/api/friends/requests/" + id + "/accept").header("X-Forwarded-For", client))
                 .andExpect(status().isTooManyRequests());
         mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/api/friends")
                         .header("X-Forwarded-For", client))

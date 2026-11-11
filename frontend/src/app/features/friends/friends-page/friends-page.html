@@ -101,65 +101,6 @@
                   {{ text.sent(sentTo) }}
                 }
               </p>
-
-              <h3 class="mt-6 font-semibold">{{ text.inviteTitle }}</h3>
-              <p class="text-muted mt-1 text-sm">{{ text.inviteHelp }}</p>
-              @if (inviteLink(); as link) {
-                <p
-                  data-invite-link
-                  class="bg-surface-2 mt-3 rounded-sm px-3 py-2 font-mono text-sm break-all"
-                >
-                  {{ link }}
-                </p>
-                <div class="mt-3 flex flex-wrap gap-2">
-                  <button appButton size="sm" type="button" (click)="copy()">
-                    {{ copied() ? text.copied : text.copy }}
-                  </button>
-                  @if (canShare) {
-                    <button appButton size="sm" variant="secondary" type="button" (click)="share()">
-                      {{ text.share }}
-                    </button>
-                  }
-                  @if (confirmingRegenerate()) {
-                    <span class="flex flex-wrap items-center gap-2 text-sm">
-                      {{ text.regenerateConfirm }}
-                      <button
-                        appButton
-                        size="sm"
-                        variant="secondary"
-                        type="button"
-                        (click)="regenerate()"
-                      >
-                        {{ text.confirm }}
-                      </button>
-                      <button
-                        appButton
-                        size="sm"
-                        variant="ghost"
-                        type="button"
-                        (click)="confirmingRegenerate.set(false)"
-                      >
-                        {{ text.keep }}
-                      </button>
-                    </span>
-                  } @else {
-                    <button
-                      appButton
-                      size="sm"
-                      variant="ghost"
-                      type="button"
-                      (click)="confirmingRegenerate.set(true)"
-                    >
-                      {{ text.regenerate }}
-                    </button>
-                  }
-                </div>
-              }
-              <p class="text-danger mt-2 text-sm empty:hidden" role="alert">
-                @if (inviteError()) {
-                  {{ inviteError() }}
-                }
-              </p>
             </section>
 
             <section aria-labelledby="friends-title" class="card p-5">

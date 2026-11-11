@@ -77,12 +77,9 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/friends/friends-page/friends-page').then((m) => m.FriendsPage),
   },
-  {
-    path: 'friends/invite/:code',
-    canActivate: [authGuard],
-    title: $localize`:@@title.friendInvite:Friend invite · AgeGuessr`,
-    loadComponent: () => import('./features/friends/invite/invite-page').then((m) => m.InvitePage),
-  },
+  // Invite links were removed (2026-11-11): one already shared opens the friends page,
+  // where adding by username is the way now.
+  { path: 'friends/invite/:code', redirectTo: 'friends' },
   {
     path: 'confirm-account-deletion',
     loadComponent: () =>

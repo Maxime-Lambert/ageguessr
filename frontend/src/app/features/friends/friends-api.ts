@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Service, inject, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
-import { Friends, FriendsLeaderboard, FriendsToday, Invite, InvitePreview } from './models';
+import { Friends, FriendsLeaderboard, FriendsToday } from './models';
 
 /**
  * The friends of the signed-in account (every endpoint answers 401 to a guest). Also holds
@@ -45,23 +45,6 @@ export class FriendsApi {
     return this.http.delete<void>(`/api/friends/${encodeURIComponent(friendshipId)}`);
   }
 
-  invite(): Observable<Invite> {
-    return this.http.get<Invite>('/api/friends/invite');
-  }
-
-  /** A new code: the old link stops working. */
-  regenerateInvite(): Observable<Invite> {
-    return this.http.post<Invite>('/api/friends/invite', {});
-  }
-
-  previewInvite(code: string): Observable<InvitePreview> {
-    return this.http.get<InvitePreview>(`/api/friends/invite/${encodeURIComponent(code)}`);
-  }
-
-  acceptInvite(code: string): Observable<void> {
-    return this.http.post<void>(`/api/friends/invite/${encodeURIComponent(code)}/accept`, {});
-  }
-
   today(): Observable<FriendsToday> {
     return this.http.get<FriendsToday>('/api/friends/today');
   }
@@ -69,9 +52,4 @@ export class FriendsApi {
   leaderboard(): Observable<FriendsLeaderboard> {
     return this.http.get<FriendsLeaderboard>('/api/friends/leaderboard');
   }
-}
-
-/** The link to an invite, without the language prefix: Caddy picks each friend's. */
-export function inviteUrl(origin: string, code: string): string {
-  return `${origin}/friends/invite/${code}`;
 }

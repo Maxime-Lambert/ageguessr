@@ -6,8 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import app.ageguessr.TestcontainersConfiguration;
 import app.ageguessr.features.auth.User;
 import app.ageguessr.features.auth.UserRepository;
-import app.ageguessr.features.friends.FriendInvite;
-import app.ageguessr.features.friends.FriendInviteRepository;
 import app.ageguessr.features.friends.FriendUsers;
 import app.ageguessr.features.friends.Friendship;
 import app.ageguessr.features.friends.FriendshipRepository;
@@ -37,9 +35,6 @@ class FriendshipsIntegrationTest {
 
     @Autowired
     private FriendshipRepository friendships;
-
-    @Autowired
-    private FriendInviteRepository invites;
 
     @Autowired
     private FriendUsers friendUsers;
@@ -87,17 +82,15 @@ class FriendshipsIntegrationTest {
     }
 
     @Test
-    void deletingAnAccountDeletesItsFriendshipsAndInvite() {
+    void deletingAnAccountDeletesItsFriendships() {
         User alice = saveUser(true);
         User bob = saveUser(true);
         friendships.saveAndFlush(Friendship.accepted(alice.getId(), bob.getId(), NOW));
-        invites.saveAndFlush(new FriendInvite(alice.getId(), "ALICE000", NOW));
         entityManager.clear();
 
         jdbc.update("DELETE FROM users WHERE id = ?", alice.getId());
 
         assertThat(friendships.findFriendIdsOf(bob.getId())).isEmpty();
-        assertThat(invites.findByCode("ALICE000")).isEmpty();
     }
 
     @Test

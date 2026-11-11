@@ -1,7 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { FriendsApi, inviteUrl } from './friends-api';
+import { FriendsApi } from './friends-api';
 import { friendsOf, relation } from './testing';
 
 describe('FriendsApi', () => {
@@ -46,23 +46,9 @@ describe('FriendsApi', () => {
     expect(http.expectOne('/api/friends/requests/r1').request.method).toBe('DELETE');
     api.remove('f1').subscribe();
     expect(http.expectOne('/api/friends/f1').request.method).toBe('DELETE');
-    api.invite().subscribe();
-    expect(http.expectOne('/api/friends/invite').request.method).toBe('GET');
-    api.regenerateInvite().subscribe();
-    expect(http.expectOne('/api/friends/invite').request.method).toBe('POST');
-    api.previewInvite('K7F2QX9M').subscribe();
-    expect(http.expectOne('/api/friends/invite/K7F2QX9M').request.method).toBe('GET');
-    api.acceptInvite('K7F2QX9M').subscribe();
-    expect(http.expectOne('/api/friends/invite/K7F2QX9M/accept').request.method).toBe('POST');
     api.today().subscribe();
     http.expectOne('/api/friends/today');
     api.leaderboard().subscribe();
     http.expectOne('/api/friends/leaderboard');
-  });
-
-  it('builds the invite link without a language', () => {
-    expect(inviteUrl('https://ageguessr.app', 'K7F2QX9M')).toBe(
-      'https://ageguessr.app/friends/invite/K7F2QX9M',
-    );
   });
 });
