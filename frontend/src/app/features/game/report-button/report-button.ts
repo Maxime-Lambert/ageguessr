@@ -39,8 +39,18 @@ export class ReportButton {
 
   protected readonly tones = computed(() =>
     this.tone() === 'paper'
-      ? { trigger: 'text-paper-muted hover:text-paper-foreground', muted: 'text-paper-muted' }
-      : { trigger: 'text-muted hover:text-foreground', muted: 'text-muted' },
+      ? {
+          trigger: 'text-paper-muted hover:text-paper-foreground',
+          muted: 'text-paper-muted',
+          send: 'paper-secondary' as const,
+          cancel: 'paper-ghost' as const,
+        }
+      : {
+          trigger: 'text-muted hover:text-foreground',
+          muted: 'text-muted',
+          send: 'secondary' as const,
+          cancel: 'ghost' as const,
+        },
   );
 
   readonly done = computed(() => this.reported() || this.sent());

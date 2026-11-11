@@ -26,7 +26,7 @@ describe('SiteLanguageService', () => {
   let http: HttpTestingController;
 
   async function setUp(locale: string, url = '/account?tab=1#top'): Promise<SiteLanguageService> {
-    page = fakePage();
+    page = fakePage(`/${locale}${url}`);
     TestBed.configureTestingModule({
       providers: [
         provideHttpClient(),
@@ -103,6 +103,25 @@ describe('SiteLanguageService', () => {
 
     expect(page.loaded).toEqual(['/fr/account?tab=1#top']);
     expect(page.cookies).toEqual([expect.stringContaining('ageguessr_lang=fr')]);
+  });
+
+  it('keeps the page the browser asked for while the first navigation waits on the session', async () => {
+    const language = await setUp('en', '/');
+    // A link from an email: the admin guard holds the navigation, Router.url is still "/".
+    page = Object.assign(page, { location: () => '/en/admin/curation?x=1#top' });
+
+    language.alignWith({ ...USER, language: 'FR' });
+
+    expect(page.loaded).toEqual(['/fr/admin/curation?x=1#top']);
+  });
+
+  it('loads the home page of the account\'s language from a bare prefix', async () => {
+    const language = await setUp('en', '/');
+    page = Object.assign(page, { location: () => '/en' });
+
+    language.alignWith({ ...USER, language: 'FR' });
+
+    expect(page.loaded).toEqual(['/fr/']);
   });
 
   it("stays when the page is already in the account's language", async () => {

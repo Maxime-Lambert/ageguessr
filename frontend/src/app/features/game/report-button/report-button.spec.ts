@@ -125,4 +125,16 @@ describe('ReportButton', () => {
     expect(page.querySelector('form')).not.toBeNull();
     expect(button(GAME_TEXT.reportSend).disabled).toBe(false);
   });
+
+  it("draws its buttons in the paper's colors on the hint's clipping", () => {
+    fixture.componentRef.setInput('tone', 'paper');
+    show('HINT');
+    button(GAME_TEXT.reportHint).click();
+    fixture.detectChanges();
+
+    // The page's foreground is light in the dark theme: on the paper, even disabled, it vanished.
+    expect(button(GAME_TEXT.reportSend).className).toContain('text-paper-foreground');
+    expect(button(GAME_TEXT.reportSend).className).not.toContain('text-foreground ');
+    expect(button(GAME_TEXT.reportCancel).className).toContain('text-paper-muted');
+  });
 });

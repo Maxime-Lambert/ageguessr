@@ -1,6 +1,12 @@
 import { Directive, booleanAttribute, computed, input } from '@angular/core';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
+export type ButtonVariant =
+  | 'primary'
+  | 'secondary'
+  | 'ghost'
+  | 'danger'
+  | 'paper-secondary'
+  | 'paper-ghost';
 export type ButtonSize = 'md' | 'sm';
 
 // Full class strings, never assembled from pieces: Tailwind only generates the classes it
@@ -20,6 +26,11 @@ const VARIANTS: Record<ButtonVariant, string> = {
   secondary: 'border border-input-border text-foreground hover:bg-surface-2',
   ghost: 'text-muted hover:bg-surface-2 hover:text-foreground',
   danger: 'bg-danger text-danger-foreground hover:opacity-90',
+  // On the hint's newspaper clipping (bg-paper), whose colors are not the page's: the page's
+  // foreground is light in the dark theme, so it would vanish on the paper.
+  'paper-secondary':
+    'border border-paper-muted text-paper-foreground hover:bg-paper-foreground/10',
+  'paper-ghost': 'text-paper-muted hover:bg-paper-foreground/10 hover:text-paper-foreground',
 };
 
 /**

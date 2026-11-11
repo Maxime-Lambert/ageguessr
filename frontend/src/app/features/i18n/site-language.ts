@@ -18,6 +18,8 @@ export interface BrowserPage {
   secure(): boolean;
   setCookie(cookie: string): void;
   load(url: string): void;
+  /** Path, query and fragment of the page as the browser shows it, the prefix included. */
+  location(): string;
 }
 
 export const BROWSER_PAGE = new InjectionToken<BrowserPage>('BrowserPage', {
@@ -27,6 +29,8 @@ export const BROWSER_PAGE = new InjectionToken<BrowserPage>('BrowserPage', {
       secure: () => document.location.protocol === 'https:',
       setCookie: (cookie) => (document.cookie = cookie),
       load: (url) => document.location.assign(url),
+      location: () =>
+        document.location.pathname + document.location.search + document.location.hash,
     };
   },
 });
@@ -87,6 +91,10 @@ export class SiteLanguageService {
   /**
    * Once the session is known: a language never chosen becomes the page's (it came from
    * the browser), and a different one reloads the page in the account's language.
+   *
+   * The page comes from the browser, not the router: the session is restored before the
+   * first navigation ends (a guard such as the admin pages' waits for it), so Router.url
+   * would still be "/" and a link from an email would land on the home page.
    */
   alignWith(user: AuthUser): Observable<void> | null {
     if (user.language === null) {
@@ -94,7 +102,10 @@ export class SiteLanguageService {
     }
     const accountLanguage = fromApi(user.language);
     if (accountLanguage !== this.current) {
-      this.load(accountLanguage);
+      const prefix = new RegExp(`^/${this.current}(?=[/?#]|$)`);
+      const rest = this.page.location().replace(prefix, '') || '/';
+      this.page.setCookie(languageCookie(accountLanguage, this.page.secure()));
+      this.page.load(`/${accountLanguage}${rest}`);
     }
     return null;
   }
