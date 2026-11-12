@@ -20,7 +20,8 @@ export const HINT_REASON_LABELS: Record<HintReportReason, string> = {
 
 const ERROR_MESSAGES: Record<string, string> = {
   HINT_TEXT_BLANK: 'The text cannot be empty.',
-  HINT_TEXT_CONTAINS_YEAR: 'The text cannot contain a year: it would give the answer away.',
+  HINT_TEXT_CONTAINS_YEAR:
+    'The text cannot contain a year, nor its own in two digits ("May 68"): it would give the answer away.',
 };
 
 /**

@@ -3611,17 +3611,6 @@
   "category": "WORLD",
   "year": 1968,
   "audience": "FR",
-  "textFr": "Mai 68",
-  "textEn": null,
-  "sourceUrl": "https://www.wikidata.org/wiki/Q6743",
-  "sourceKind": "wikidata-notoriety",
-  "dedupeKey": "world-fr-wikidata-notoriety-event-q6743",
-  "translated": false
- },
- {
-  "category": "WORLD",
-  "year": 1968,
-  "audience": "FR",
   "textFr": "Création ou indépendance de l'État : Guinée équatoriale",
   "textEn": null,
   "sourceUrl": "https://www.wikidata.org/wiki/Q983",
@@ -3715,6 +3704,17 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q82542",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-fr-wikidata-notoriety-event-q82542",
+  "translated": false
+ },
+ {
+  "category": "WORLD",
+  "year": 1968,
+  "audience": "FR",
+  "textFr": "Assassinat de Robert F. Kennedy",
+  "textEn": null,
+  "sourceUrl": "https://www.wikidata.org/wiki/Q1187550",
+  "sourceKind": "wikidata-notoriety",
+  "dedupeKey": "world-fr-wikidata-notoriety-event-q1187550",
   "translated": false
  },
  {
@@ -12467,10 +12467,10 @@
   "year": 1968,
   "audience": "EN",
   "textFr": null,
-  "textEn": "May 68",
-  "sourceUrl": "https://www.wikidata.org/wiki/Q6743",
+  "textEn": "Tlatelolco massacre",
+  "sourceUrl": "https://www.wikidata.org/wiki/Q909737",
   "sourceKind": "wikidata-notoriety",
-  "dedupeKey": "world-en-wikidata-notoriety-event-q6743",
+  "dedupeKey": "world-en-wikidata-notoriety-event-q909737",
   "translated": false
  },
  {
@@ -12478,10 +12478,10 @@
   "year": 1968,
   "audience": "EN",
   "textFr": null,
-  "textEn": "Tlatelolco massacre",
-  "sourceUrl": "https://www.wikidata.org/wiki/Q909737",
+  "textEn": "Battle of Hue",
+  "sourceUrl": "https://www.wikidata.org/wiki/Q697053",
   "sourceKind": "wikidata-notoriety",
-  "dedupeKey": "world-en-wikidata-notoriety-event-q909737",
+  "dedupeKey": "world-en-wikidata-notoriety-event-q697053",
   "translated": false
  },
  {

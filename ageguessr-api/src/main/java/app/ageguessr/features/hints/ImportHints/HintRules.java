@@ -52,7 +52,10 @@ final class HintRules {
         if (tooLong(entry.textFr()) || tooLong(entry.textEn())) {
             return Optional.of(HintRejection.TEXT_TOO_LONG);
         }
-        if (HintText.containsAYear(entry.textFr()) || HintText.containsAYear(entry.textEn())) {
+        if (HintText.containsAYear(entry.textFr())
+                || HintText.containsAYear(entry.textEn())
+                || HintText.containsItsYear(entry.textFr(), entry.year())
+                || HintText.containsItsYear(entry.textEn(), entry.year())) {
             return Optional.of(HintRejection.YEAR_IN_TEXT);
         }
         if (!validSource(entry)) {

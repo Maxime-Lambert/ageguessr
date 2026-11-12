@@ -38,6 +38,9 @@ retirer une fois tous faits.
       propre signalement ; un indice Célébrités dit « l'âge qu'a (ou qu'aurait) cette année X » (V21)
 - [ ] Parcours e2e `daily-game` mis à jour pour les 3 pistes : à lancer à la main, comme
       les autres
+- [ ] Année en deux chiffres (`fix/two-digit-year-in-hints`) : en prod, relancer l'import
+      avec `--app.hints.import.retire-absent=true` (rapport : 8 ajoutés, 7 retirés,
+      0 refus) ; « Mai 68 » et « Windows 95 » ne sont plus proposés
 - [ ] Indices par notoriété (`feature/hint-notoriety`) : en prod, lancer l'import avec
       `--app.hints.import.retire-absent=true` (rapport : ~8 674 ajoutés, les anciens
       retirés, 0 refus), puis dans `/admin/hints` aucune année sous 3 catégories ; en jeu,
