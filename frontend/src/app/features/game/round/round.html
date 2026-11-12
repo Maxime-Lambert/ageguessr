@@ -18,7 +18,7 @@
     </div>
 
     @if (direction(); as direction) {
-      <!-- The side only, never how far (« Déroulé d'une manche »). -->
+      <!-- The side and the band of years (« Déroulé d'une manche »). -->
       <div
         class="bg-surface border-accent mt-5 flex items-center gap-4 rounded-md border-l-[3px]"
         [class]="directionStyle().box"
@@ -35,43 +35,76 @@
             <svg lucideArrowDown [size]="18"></svg>
           }
         </span>
-        <p class="font-display" [class]="directionStyle().text">{{ direction }}</p>
+        <div>
+          <p class="font-display" [class]="directionStyle().text">{{ direction }}</p>
+          @if (rangeLabel(); as rangeLabel) {
+            <p class="text-muted text-sm">{{ rangeLabel }}</p>
+          }
+        </div>
       </div>
     }
 
     @switch (step()) {
       @case ('AWAITING_HINT') {
-        <p class="mt-8 font-semibold">{{ text.pickHint }}</p>
+        <div class="mt-8 flex flex-wrap items-baseline justify-between gap-x-3">
+          <p id="pick-title" class="font-semibold">{{ pickTitle() }}</p>
+          @if (toPick() > 1) {
+            <p class="text-muted text-sm" aria-live="polite">{{ pickedLabel() }}</p>
+          }
+        </div>
         <p class="text-muted mt-0.5 text-sm">{{ text.pickHintHelp }}</p>
-        <div class="mt-4 grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+        <div
+          class="mt-4 grid grid-cols-2 gap-2.5 sm:grid-cols-3"
+          role="group"
+          aria-labelledby="pick-title"
+        >
           @for (category of round().categories; track category) {
             <button
               #category
               type="button"
-              class="card hover:border-accent flex flex-col items-start gap-2.5 p-4 text-left text-[15px] font-semibold disabled:opacity-50"
-              [disabled]="busy()"
-              (click)="pick(category)"
+              class="card hover:border-accent aria-pressed:border-accent aria-pressed:bg-surface-2 flex flex-col items-start gap-2.5 p-4 text-left text-[15px] font-semibold disabled:opacity-50"
+              [attr.aria-pressed]="isPicked(category)"
+              [disabled]="busy() || (pickComplete() && !isPicked(category))"
+              (click)="toggle(category)"
             >
-              <app-lead-icon class="text-accent" [category]="category" />
+              <span class="flex w-full items-center justify-between">
+                <app-lead-icon class="text-accent" [category]="category" />
+                @if (isPicked(category)) {
+                  <svg lucideCheck class="text-accent" [size]="18" aria-hidden="true"></svg>
+                }
+              </span>
               {{ categoryLabels[category] }}
             </button>
           }
         </div>
+        <button
+          appButton
+          type="button"
+          class="mt-4 max-sm:w-full"
+          [disabled]="busy() || !pickComplete()"
+          (click)="confirmHints()"
+        >
+          {{ text.showHints }}
+        </button>
       }
       @default {
         @if (step() === 'AWAITING_SECOND_GUESS') {
-          <!-- The lead as a newspaper clipping: no year, it would give the answer away. -->
-          <div class="bg-paper text-paper-foreground mt-6 rounded-md px-5 py-4" aria-live="polite">
-            @if (round().hint; as hint) {
-              <p
-                class="text-paper-muted flex items-center gap-2 text-xs font-bold tracking-[0.08em] uppercase"
-              >
-                <app-lead-icon [category]="hint.category" [size]="14" />
-                {{ text.hint }} · {{ categoryLabels[hint.category] }}
-              </p>
-              <p class="font-display mt-2 text-xl leading-snug">{{ hint.text }}</p>
-            } @else {
-              <p class="text-sm">{{ text.noHint }}</p>
+          <!-- Each lead as a newspaper clipping: no year, it would give the answer away. -->
+          <div class="mt-6 space-y-3" aria-live="polite">
+            @for (hint of round().hints ?? []; track hint.category) {
+              <div class="bg-paper text-paper-foreground rounded-md px-5 py-4">
+                <p
+                  class="text-paper-muted flex items-center gap-2 text-xs font-bold tracking-[0.08em] uppercase"
+                >
+                  <app-lead-icon [category]="hint.category" [size]="14" />
+                  {{ text.hint }} · {{ categoryLabels[hint.category] }}
+                </p>
+                <p class="font-display mt-2 text-xl leading-snug">{{ hint.text }}</p>
+              </div>
+            } @empty {
+              <div class="bg-paper text-paper-foreground rounded-md px-5 py-4">
+                <p class="text-sm">{{ text.noHint }}</p>
+              </div>
             }
           </div>
         } @else {
@@ -83,9 +116,9 @@
         <form class="mt-6" (submit)="$event.preventDefault(); submitGuess()">
           <app-field
             [label]="text.guessLabel"
-            [error]="guess.invalid && guess.touched ? text.invalidAge : null"
+            [error]="guess.invalid && guess.touched ? invalidText() : null"
           >
-            <app-age-input [formControl]="guess" [min]="minAge" [max]="maxAge" />
+            <app-age-input [formControl]="guess" [min]="minAge()" [max]="maxAge()" />
           </app-field>
           <button appButton type="submit" class="mt-4 max-sm:w-full" [disabled]="busy()">
             {{

@@ -157,9 +157,9 @@ export class ChallengePage extends RoundsScreen<Series> {
   protected sendHint(
     series: Series,
     round: RoundView,
-    category: HintCategory,
+    categories: HintCategory[],
   ): Observable<RoundView> {
-    return this.api.hint(series.id, round.position, category);
+    return this.api.hint(series.id, round.position, categories);
   }
 
   protected sendReport(series: Series, round: RoundView, report: RoundReport): Observable<void> {

@@ -51,7 +51,7 @@ export abstract class RoundsScreen<T extends PlayedRounds> {
   protected abstract sendHint(
     game: T,
     round: RoundView,
-    category: HintCategory,
+    categories: HintCategory[],
   ): Observable<RoundView>;
   protected abstract sendSecondGuess(
     game: T,
@@ -76,7 +76,9 @@ export abstract class RoundsScreen<T extends PlayedRounds> {
           ...round,
           result: {
             ...round.result!,
-            ...(report.target === 'PHOTO' ? { photoReported: true } : { hintReported: true }),
+            ...(report.target === 'PHOTO'
+              ? { photoReported: true }
+              : { reportedHints: [...round.result!.reportedHints, report.hintCategory] }),
           },
         }),
       ),
@@ -103,8 +105,8 @@ export abstract class RoundsScreen<T extends PlayedRounds> {
     this.play((game, round) => this.sendFirstGuess(game, round, guess, this.hintLanguage.value()));
   }
 
-  pickHint(category: HintCategory): void {
-    this.play((game, round) => this.sendHint(game, round, category));
+  pickHints(categories: HintCategory[]): void {
+    this.play((game, round) => this.sendHint(game, round, categories));
   }
 
   secondGuess(guess: number): void {

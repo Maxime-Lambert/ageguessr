@@ -12,6 +12,7 @@ import app.ageguessr.features.game.RoundView;
 import app.ageguessr.features.game.RoundViews;
 import app.ageguessr.features.game.SeriesViews;
 import app.ageguessr.features.hints.Hint;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -19,7 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Gives the hint of the category chosen, the same for every player of the series: the
+ * Gives the hints of the categories chosen, per category the same for every player of the series: the
  * key of the round holds the series, so friends comparing scores had the same help.
  */
 @Service
@@ -38,10 +39,9 @@ public class RevealSeriesHintHandler {
         FreeSeriesPlay play = plays.findOf(player, seriesId, position)
                 .filter(started -> started.step() == RoundStep.AWAITING_HINT)
                 .orElseThrow(GameErrors::wrongStep);
-        Hint hint = views.offer(round, play.getLanguage())
-                .pick(round.hintKey(), command.category(), play.getLanguage())
-                .orElseThrow(GameErrors::categoryUnavailable);
-        play.revealHint(command.category(), hint.getId());
+        List<Hint> hints = views.offer(round, play.getLanguage())
+                .pickAll(round.hintKey(), command.categories(), play.getLanguage(), views.hintsPerRound());
+        play.revealHints(hints.stream().map(Hint::getCategory).toList(), hints.stream().map(Hint::getId).toList());
         try {
             plays.saveAndFlush(play);
         } catch (ObjectOptimisticLockingFailureException e) {

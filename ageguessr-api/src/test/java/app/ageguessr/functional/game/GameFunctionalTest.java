@@ -1,6 +1,7 @@
 package app.ageguessr.functional.game;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.nullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -33,6 +34,7 @@ import app.ageguessr.features.people.ReviewStatus;
 import app.ageguessr.functional.auth.AuthFlows;
 import app.ageguessr.functional.auth.AuthFunctionalTestConfig;
 import app.ageguessr.shared.email.RecordingEmailSender;
+import com.jayway.jsonpath.JsonPath;
 import jakarta.servlet.http.Cookie;
 import java.time.Clock;
 import java.time.Instant;
@@ -150,8 +152,14 @@ class GameFunctionalTest {
                 .andExpect(jsonPath("$.step").value("AWAITING_HINT"))
                 .andExpect(jsonPath("$.firstGuess").value(30))
                 .andExpect(jsonPath("$.direction").value("OLDER"))
+                // 10 years off: the band of 6 to 15 years, on the older side.
+                .andExpect(jsonPath("$.gap").value("CLEARLY"))
+                .andExpect(jsonPath("$.range.min").value(36))
+                .andExpect(jsonPath("$.range.max").value(45))
                 .andExpect(jsonPath("$.categories.length()").value(1))
                 .andExpect(jsonPath("$.categories[0]").value("MUSIC"))
+                // A single category reaches the minimum: the player picks it alone.
+                .andExpect(jsonPath("$.hintsToPick").value(1))
                 .andReturn();
         assertNoAnswerIn(first.getResponse().getContentAsString());
         String setCookie = first.getResponse().getHeader(HttpHeaders.SET_COOKIE);
@@ -160,12 +168,14 @@ class GameFunctionalTest {
                 .contains("HttpOnly", "SameSite=Lax", "Path=/api/game", "Max-Age=2592000");
         Cookie guest = new Cookie(GuestCookie.NAME, setCookie.substring(GuestCookie.NAME.length() + 1, setCookie.indexOf(';')));
 
-        String hint = perform(post(round(1, "hint")), "{\"category\":\"MUSIC\"}", guest, null)
+        String hint = perform(post(round(1, "hint")), "{\"categories\":[\"MUSIC\"]}", guest, null)
                 .andExpect(status().isOk())
                 .andExpect(header().doesNotExist(HttpHeaders.SET_COOKIE))
                 .andExpect(jsonPath("$.step").value("AWAITING_SECOND_GUESS"))
-                .andExpect(jsonPath("$.hint.category").value("MUSIC"))
-                .andExpect(jsonPath("$.hint.text").value(containsString("A hit")))
+                .andExpect(jsonPath("$.hints.length()").value(1))
+                .andExpect(jsonPath("$.hints[0].category").value("MUSIC"))
+                .andExpect(jsonPath("$.hints[0].text").value(containsString("A hit")))
+                .andExpect(jsonPath("$.range.min").value(36))
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
@@ -173,7 +183,8 @@ class GameFunctionalTest {
 
         String during = mockMvc.perform(get("/api/game/today").cookie(guest))
                 .andExpect(jsonPath("$.rounds[0].step").value("AWAITING_SECOND_GUESS"))
-                .andExpect(jsonPath("$.rounds[0].hint.text").value(containsString("A hit")))
+                .andExpect(jsonPath("$.rounds[0].gap").value("CLEARLY"))
+                .andExpect(jsonPath("$.rounds[0].hints[0].text").value(containsString("A hit")))
                 .andExpect(jsonPath("$.rounds[1].step").value("NOT_STARTED"))
                 .andReturn()
                 .getResponse()
@@ -189,7 +200,8 @@ class GameFunctionalTest {
                 .andExpect(jsonPath("$.result.points").value(593))
                 .andExpect(jsonPath("$.result.person.name").value("Person 0"))
                 .andExpect(jsonPath("$.result.credit.author").value("Jane Photographer"))
-                .andExpect(jsonPath("$.result.hint.year").value(today.getYear() - AGE));
+                .andExpect(jsonPath("$.result.hints[0].year").value(today.getYear() - AGE))
+                .andExpect(jsonPath("$.result.reportedHints.length()").value(0));
 
         mockMvc.perform(get("/api/game/today").cookie(guest))
                 .andExpect(jsonPath("$.rounds[0].result.points").value(593))
@@ -203,6 +215,8 @@ class GameFunctionalTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.step").value("FINISHED"))
                 .andExpect(jsonPath("$.direction").value(nullValue()))
+                .andExpect(jsonPath("$.gap").value(nullValue()))
+                .andExpect(jsonPath("$.range").value(nullValue()))
                 .andExpect(jsonPath("$.result.points").value(1000))
                 .andExpect(jsonPath("$.result.secondGuess").value(nullValue()));
     }
@@ -254,18 +268,67 @@ class GameFunctionalTest {
     }
 
     @Test
+    void aPlayerPicksThreeCategoriesAndSeesOneHintOfEachWithoutTheirYear() throws Exception {
+        int year = today.getYear() - AGE;
+        for (int i = 0; i < Hint.MINIMUM_PER_CATEGORY; i++) {
+            saveHint(HintCategory.FILM, year, "Film " + i);
+            saveHint(HintCategory.SPORT, year, "Sport " + i);
+            saveHint(HintCategory.WORLD, year, "World " + i);
+        }
+        Cookie guest = guestCookie();
+        firstGuess(1, 30, guest)
+                .andExpect(jsonPath("$.categories.length()").value(4))
+                .andExpect(jsonPath("$.hintsToPick").value(3));
+
+        for (String wrong : List.of("[\"MUSIC\",\"FILM\"]", "[\"MUSIC\",\"FILM\",\"SPORT\",\"WORLD\"]", "[\"MUSIC\",\"MUSIC\",\"FILM\"]")) {
+            perform(post(round(1, "hint")), "{\"categories\":" + wrong + "}", guest, null)
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.errorCode").value("HINT_COUNT"));
+        }
+        perform(post(round(1, "hint")), "{\"categories\":[]}", guest, null).andExpect(status().isBadRequest());
+        perform(post(round(1, "hint")), "{\"categories\":[\"MUSIC\",\"FILM\",\"CELEBRITIES\"]}", guest, null)
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.errorCode").value("CATEGORY_UNAVAILABLE"));
+
+        String shown = perform(post(round(1, "hint")), "{\"categories\":[\"WORLD\",\"MUSIC\",\"SPORT\"]}", guest, null)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.step").value("AWAITING_SECOND_GUESS"))
+                .andExpect(jsonPath("$.hints[*].category").value(contains("MUSIC", "SPORT", "WORLD")))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        assertNoAnswerIn(shown);
+
+        // Another player who also picked SPORT sees the same sports hint.
+        Cookie other = guestCookie();
+        firstGuess(1, 30, other).andExpect(status().isOk());
+        String otherShown = perform(post(round(1, "hint")), "{\"categories\":[\"SPORT\",\"FILM\",\"WORLD\"]}", other, null)
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        assertThat(JsonPath.<List<String>>read(otherShown, "$.hints[?(@.category == 'SPORT')].text"))
+                .isEqualTo(JsonPath.<List<String>>read(shown, "$.hints[?(@.category == 'SPORT')].text"));
+
+        perform(post(round(1, "second-guess")), "{\"guess\":38}", guest, null)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.result.hints.length()").value(3))
+                .andExpect(jsonPath("$.result.hints[*].year").value(contains(year, year, year)))
+                .andExpect(jsonPath("$.result.hints[2].sourceUrl").value("https://en.wikipedia.org/wiki/Hit"));
+    }
+
+    @Test
     void refusesACategoryWithTooFewHints() throws Exception {
         Cookie guest = guestCookie();
         firstGuess(1, 30, guest).andExpect(status().isOk());
 
-        perform(post(round(1, "hint")), "{\"category\":\"FILM\"}", guest, null)
+        perform(post(round(1, "hint")), "{\"categories\":[\"FILM\"]}", guest, null)
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.errorCode").value("CATEGORY_UNAVAILABLE"));
     }
 
     @Test
     void refusesAHintToAGuestWithoutCookieAndSetsNone() throws Exception {
-        perform(post(round(1, "hint")), "{\"category\":\"MUSIC\"}", null, null)
+        perform(post(round(1, "hint")), "{\"categories\":[\"MUSIC\"]}", null, null)
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.errorCode").value("WRONG_STEP"))
                 .andExpect(header().doesNotExist(HttpHeaders.SET_COOKIE));
@@ -286,7 +349,7 @@ class GameFunctionalTest {
         photo.setReviewStatus(ReviewStatus.REJECTED);
         photos.save(photo);
 
-        perform(post(round(2, "hint")), "{\"category\":\"MUSIC\"}", guest, null)
+        perform(post(round(2, "hint")), "{\"categories\":[\"MUSIC\"]}", guest, null)
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.errorCode").value("ROUND_NEUTRALIZED"));
         mockMvc.perform(get("/api/game/today").cookie(guest))
@@ -488,11 +551,15 @@ class GameFunctionalTest {
     }
 
     private void saveHint(HintCategory category, int year) {
+        saveHint(category, year, "A hit of that year.");
+    }
+
+    private void saveHint(HintCategory category, int year, String textEn) {
         hints.save(Hint.builder()
                 .category(category)
                 .year(year)
                 .audience(HintAudience.ALL)
-                .textEn("A hit of that year.")
+                .textEn(textEn)
                 .textFr("Un tube de cette année.")
                 .sourceUrl("https://en.wikipedia.org/wiki/Hit")
                 .sourceKind("functional-test")

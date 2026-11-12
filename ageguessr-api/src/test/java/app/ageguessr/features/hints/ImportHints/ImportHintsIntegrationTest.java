@@ -75,4 +75,16 @@ class ImportHintsIntegrationTest {
         assertThat(report.refusedLines()).isEmpty();
         assertThat(report.added()).isEqualTo(entries.size()).isPositive();
     }
+
+    @Test
+    void theShippedCelebritiesGiveTheAgeDirectly() {
+        // The wording of V21: an import must never bring back the former one.
+        assertThat(reader.readAll())
+                .filteredOn(entry -> "CELEBRITIES".equals(entry.category()))
+                .isNotEmpty()
+                .allSatisfy(entry -> {
+                    assertThat(entry.textFr()).startsWith("Sur la photo, cette personne a l'âge qu'a cette année ");
+                    assertThat(entry.textEn()).startsWith("On the photo, this person is as old as this celebrity turns this year: ");
+                });
+    }
 }

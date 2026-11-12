@@ -20,13 +20,13 @@ describe('RulesCard', () => {
     )!;
   }
 
-  it('shows the three rules on a first visit, as a named region', () => {
+  it('shows the four rules on a first visit, as a named region', () => {
     const page = render();
 
     const region = page.querySelector('section')!;
     expect(region.getAttribute('aria-labelledby')).toBe('rules-card-title');
     expect(page.querySelector('#rules-card-title')?.textContent).toContain(GAME_TEXT.howToPlay);
-    expect(page.querySelectorAll('li')).toHaveLength(3);
+    expect(page.querySelectorAll('li')).toHaveLength(4);
     expect(page.textContent).toContain(GAME_TEXT.ruleLead);
   });
 

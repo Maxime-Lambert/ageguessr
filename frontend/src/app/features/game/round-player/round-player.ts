@@ -27,7 +27,7 @@ export class RoundPlayer {
 
   readonly firstGuess = output<number>();
   readonly secondGuess = output<number>();
-  readonly hintPicked = output<HintCategory>();
+  readonly hintsPicked = output<HintCategory[]>();
   readonly imageError = output<void>();
   readonly next = output<void>();
   readonly retry = output<void>();

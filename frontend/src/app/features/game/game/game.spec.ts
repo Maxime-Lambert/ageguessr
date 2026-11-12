@@ -62,19 +62,28 @@ describe('Game', () => {
         step: 'AWAITING_HINT',
         firstGuess: 30,
         direction: 'OLDER',
+        gap: 'CLEARLY',
+        range: { min: 36, max: 45 },
         categories: ['MUSIC'],
+        hintsToPick: 1,
       }),
     );
     fixture.detectChanges();
-    expect(page.textContent).toContain('Older than 30');
+    expect(page.textContent).toContain('Older than 30, by 6 to 15 years');
 
     button('Music').click();
-    http.expectOne('/api/game/2026-11-02/rounds/1/hint').flush(
+    fixture.detectChanges();
+    button(GAME_TEXT.showHints).click();
+    const hint = http.expectOne('/api/game/2026-11-02/rounds/1/hint');
+    expect(hint.request.body).toEqual({ categories: ['MUSIC'] });
+    hint.flush(
       round(1, {
         step: 'AWAITING_SECOND_GUESS',
         firstGuess: 30,
         direction: 'OLDER',
-        hint: { category: 'MUSIC', text: 'A hit.' },
+        gap: 'CLEARLY',
+        range: { min: 36, max: 45 },
+        hints: [{ category: 'MUSIC', text: 'A hit.' }],
       }),
     );
     fixture.detectChanges();
@@ -193,11 +202,14 @@ describe('Game', () => {
           firstGuess: 30,
           direction: 'OLDER',
           categories: ['MUSIC'],
+          hintsToPick: 1,
         }),
         round(2),
       ]),
     );
     button('Music').click();
+    fixture.detectChanges();
+    button(GAME_TEXT.showHints).click();
 
     conflict('/api/game/2026-11-02/rounds/1/hint', 'ROUND_NEUTRALIZED');
     load(today([round(1, { status: 'NEUTRALIZED', imageUrl: null }), round(2)]));
@@ -279,6 +291,6 @@ describe('Game', () => {
 
     expect(page.textContent).toContain(GAME_TEXT.reportSent);
     expect(fixture.componentInstance.active()?.result?.photoReported).toBe(true);
-    expect(fixture.componentInstance.active()?.result?.hintReported).toBe(false);
+    expect(fixture.componentInstance.active()?.result?.reportedHints).toEqual([]);
   });
 });

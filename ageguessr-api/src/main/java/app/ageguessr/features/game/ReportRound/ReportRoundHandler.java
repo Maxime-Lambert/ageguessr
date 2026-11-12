@@ -12,6 +12,7 @@ import app.ageguessr.features.game.PlayerKey;
 import app.ageguessr.features.game.RoundStep;
 import app.ageguessr.features.game.SeriesViews;
 import app.ageguessr.features.hints.Hint;
+import app.ageguessr.features.hints.HintCategory;
 import app.ageguessr.features.hints.HintReport;
 import app.ageguessr.features.hints.HintReportReason;
 import app.ageguessr.features.hints.HintReportRepository;
@@ -23,6 +24,7 @@ import app.ageguessr.features.people.PhotoReportRepository;
 import app.ageguessr.shared.reports.ReportStatus;
 import java.time.Clock;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -77,7 +79,7 @@ public class ReportRoundHandler {
             // A photo is urgent when it is in today's game, wherever it was seen: checked there.
             reportPhoto(round, play, reason.photo(), save);
         } else {
-            reportHint(play, reason.hint(), fromTodaysGame, save);
+            reportHint(play, reason, fromTodaysGame, save);
         }
     }
 
@@ -99,23 +101,40 @@ public class ReportRoundHandler {
         }
     }
 
-    /** Only the hint the player was shown, and while it is still in the game. */
-    private void reportHint(PlayedRound play, HintReportReason reason, boolean fromTodaysGame, Runnable save) {
-        Hint hint = (play.getHintId() == null ? null : hints.findById(play.getHintId())
+    /** Only a hint the player was shown, and while it is still in the game. */
+    private void reportHint(PlayedRound play, Reason reason, boolean fromTodaysGame, Runnable save) {
+        HintCategory category = categoryReported(play, reason.hintCategory());
+        Hint hint = play.progress().hintIdOf(category)
+                .flatMap(hints::findById)
                 .filter(found -> found.getReviewStatus() == HintReviewStatus.APPROVED)
-                .orElse(null));
-        if (hint == null) {
-            throw GameErrors.nothingToReport();
-        }
-        if (!play.progress().reportHint()) {
+                .orElseThrow(GameErrors::nothingToReport);
+        if (!play.progress().reportHint(category)) {
             return;
         }
         saveMark(save);
-        hintReports.save(HintReport.open(hint.getId(), reason, clock.instant()));
+        hintReports.save(HintReport.open(hint.getId(), reason.hint(), clock.instant()));
         long open = hintReports.countByHintIdAndStatus(hint.getId(), ReportStatus.OPEN);
         if (alerts.hintDue(open, fromTodaysGame)) {
-            alerts.hint(hint, reason.name(), open, fromTodaysGame);
+            alerts.hint(hint, reason.hint().name(), open, fromTodaysGame);
         }
+    }
+
+    /**
+     * The category named, which must be one shown; without one, the only hint of the round,
+     * for a round played before several hints or a page loaded before them.
+     */
+    private static HintCategory categoryReported(PlayedRound play, HintCategory named) {
+        List<HintCategory> shown = play.getHintCategories();
+        if (named == null) {
+            if (shown.size() != 1) {
+                throw shown.isEmpty() ? GameErrors.nothingToReport() : GameErrors.hintCategoryRequired();
+            }
+            return shown.getFirst();
+        }
+        if (!shown.contains(named)) {
+            throw GameErrors.nothingToReport();
+        }
+        return named;
     }
 
     /** Two tabs reporting the same round at once: the second one fails instead of counting twice. */
@@ -128,13 +147,13 @@ public class ReportRoundHandler {
     }
 
     /** The reason, read from the list of its target: exactly one of the two is set. */
-    record Reason(PhotoReportReason photo, HintReportReason hint) {
+    record Reason(PhotoReportReason photo, HintReportReason hint, HintCategory hintCategory) {
 
         static Reason of(ReportRoundCommand command) {
             try {
                 return switch (command.target()) {
-                    case PHOTO -> new Reason(PhotoReportReason.valueOf(command.reason()), null);
-                    case HINT -> new Reason(null, HintReportReason.valueOf(command.reason()));
+                    case PHOTO -> new Reason(PhotoReportReason.valueOf(command.reason()), null, null);
+                    case HINT -> new Reason(null, HintReportReason.valueOf(command.reason()), command.hintCategory());
                 };
             } catch (IllegalArgumentException e) {
                 throw GameErrors.invalidReason();

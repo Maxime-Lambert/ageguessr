@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { mockGame } from '../component/game-mocks';
+import { mockGame, pickLeads } from '../component/game-mocks';
 
 test.describe('signalements en français', () => {
   test("signale l'indice avec un motif traduit", async ({ page }) => {
@@ -8,7 +8,7 @@ test.describe('signalements en français', () => {
 
     await page.getByLabel('Âge').fill('30');
     await page.getByRole('button', { name: 'Valider' }).click();
-    await page.getByRole('button', { name: 'Musique' }).click();
+    await pickLeads(page, ['Musique', 'Cinéma', 'Sport'], 'Ouvrir ces pistes');
     await page.getByLabel('Âge').fill('38');
     await page.getByRole('button', { name: 'Dernier essai' }).click();
     await expect(page.getByRole('link', { name: 'Jane Doe' })).toBeVisible();
@@ -19,6 +19,6 @@ test.describe('signalements en français', () => {
 
     await expect(page.getByText('Signalé, merci. Nous allons regarder.')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Signaler cette photo' })).toBeVisible();
-    expect(sent.at(-1)).toEqual({ target: 'HINT', reason: 'WRONG_YEAR' });
+    expect(sent.at(-1)).toEqual({ target: 'HINT', reason: 'WRONG_YEAR', hintCategory: 'MUSIC' });
   });
 });

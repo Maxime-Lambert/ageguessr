@@ -905,8 +905,8 @@
         <target>Auto</target>
       </trans-unit>
       <trans-unit id="game.pickHintHelp" datatype="html">
-        <source>A fact from as many years ago as this person's age on the photo.</source>
-        <target>Un fait survenu il y a autant d'années que l'âge de la personne sur la photo.</target>
+        <source>Each one is a fact from as many years ago as this person's age on the photo: a song from 40 years ago means they were 40.</source>
+        <target>Chacune est un fait survenu il y a autant d'années que l'âge de la personne sur la photo : une chanson sortie il y a 40 ans veut dire qu'elle avait 40 ans.</target>
       </trans-unit>
       <trans-unit id="title.profile" datatype="html">
         <source>My profile · AgeGuessr</source>
@@ -993,8 +993,56 @@
         <target>Devinez l'âge de la personne sur la photo. Vous avez deux essais par affaire.</target>
       </trans-unit>
       <trans-unit id="game.ruleLead" datatype="html">
-        <source>After the first, you learn whether they were older or younger, and you pick a lead: a fact from as many years ago as their age on the photo.</source>
-        <target>Après le premier, vous savez si elle était plus âgée ou plus jeune, et vous choisissez une piste : un fait survenu il y a autant d'années que son âge sur la photo.</target>
+        <source>After the first, you learn whether they were older or younger, and by how much: 1 to 5 years, 6 to 15, or more.</source>
+        <target>Après le premier, vous savez si elle était plus âgée ou plus jeune, et de combien : de 1 à 5 ans, de 6 à 15, ou davantage.</target>
+      </trans-unit>
+      <trans-unit id="game.ruleHints" datatype="html">
+        <source>Then you pick 3 leads, each a fact from as many years ago as their age on the photo: a film released 40 years ago means they were 40 on it.</source>
+        <target>Puis vous choisissez 3 pistes, chacune un fait survenu il y a autant d'années que son âge sur la photo : un film sorti il y a 40 ans veut dire qu'elle y avait 40 ans.</target>
+      </trans-unit>
+      <trans-unit id="game.voice.showHints" datatype="html">
+        <source>Open these leads</source>
+        <target>Ouvrir ces pistes</target>
+      </trans-unit>
+      <trans-unit id="game.neutral.showHints" datatype="html">
+        <source>Show these hints</source>
+        <target>Voir ces indices</target>
+      </trans-unit>
+      <trans-unit id="game.gap.slightly" datatype="html">
+        <source>by 1 to 5 years</source>
+        <target>de 1 à 5 ans d'écart</target>
+      </trans-unit>
+      <trans-unit id="game.gap.clearly" datatype="html">
+        <source>by 6 to 15 years</source>
+        <target>de 6 à 15 ans d'écart</target>
+      </trans-unit>
+      <trans-unit id="game.gap.far" datatype="html">
+        <source>by 16 years or more</source>
+        <target>16 ans d'écart ou plus</target>
+      </trans-unit>
+      <trans-unit id="game.rangeOne" datatype="html">
+        <source>Only <x id="age" equiv-text="range.min"/> is left</source>
+        <target>Il ne reste que <x id="age" equiv-text="range.min"/> ans</target>
+      </trans-unit>
+      <trans-unit id="game.range" datatype="html">
+        <source>Between <x id="min" equiv-text="range.min"/> and <x id="max" equiv-text="range.max"/></source>
+        <target>Entre <x id="min" equiv-text="range.min"/> et <x id="max" equiv-text="range.max"/> ans</target>
+      </trans-unit>
+      <trans-unit id="game.ageOutOfRange" datatype="html">
+        <source>Enter a whole age from <x id="min" equiv-text="range.min"/> to <x id="max" equiv-text="range.max"/>.</source>
+        <target>Saisissez un âge entier entre <x id="min" equiv-text="range.min"/> et <x id="max" equiv-text="range.max"/>.</target>
+      </trans-unit>
+      <trans-unit id="game.voice.pickHints" datatype="html">
+        <source>Pick <x id="count" equiv-text="count"/> leads</source>
+        <target>Choisissez <x id="count" equiv-text="count"/> pistes</target>
+      </trans-unit>
+      <trans-unit id="game.neutral.pickHints" datatype="html">
+        <source>Pick <x id="count" equiv-text="count"/> hints</source>
+        <target>Choisissez <x id="count" equiv-text="count"/> indices</target>
+      </trans-unit>
+      <trans-unit id="game.picked" datatype="html">
+        <source><x id="picked" equiv-text="picked"/> of <x id="count" equiv-text="count"/> picked</source>
+        <target>Choix : <x id="picked" equiv-text="picked"/> sur <x id="count" equiv-text="count"/></target>
       </trans-unit>
       <trans-unit id="game.rulePoints" datatype="html">
         <source>Each guess earns up to 500 points, more the closer it is; a spot-on first guess is worth 1000. A new file opens every day at midnight UTC.</source>

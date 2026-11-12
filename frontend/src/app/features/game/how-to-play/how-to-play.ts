@@ -32,5 +32,10 @@ export class HowToPlay {
   readonly heading = input(true);
 
   protected readonly text = GAME_TEXT;
-  protected readonly rules = [GAME_TEXT.ruleGuess, GAME_TEXT.ruleLead, GAME_TEXT.rulePoints];
+  protected readonly rules = [
+    GAME_TEXT.ruleGuess,
+    GAME_TEXT.ruleLead,
+    GAME_TEXT.ruleHints,
+    GAME_TEXT.rulePoints,
+  ];
 }

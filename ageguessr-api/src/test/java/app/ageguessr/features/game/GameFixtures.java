@@ -4,6 +4,7 @@ import app.ageguessr.shared.i18n.Language;
 import app.ageguessr.features.hints.Hint;
 import app.ageguessr.features.hints.HintAudience;
 import app.ageguessr.features.hints.HintCategory;
+import app.ageguessr.features.hints.HintRepository;
 import app.ageguessr.features.hints.HintReviewStatus;
 import app.ageguessr.features.people.Person;
 import app.ageguessr.features.people.PersonPhoto;
@@ -11,6 +12,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.IntStream;
@@ -26,7 +28,19 @@ public final class GameFixtures {
     public static final int HINT_YEAR = 1986;
     public static final String QID = "Q42";
 
+    /** Three categories to pick, as in production. */
+    public static final HintProperties HINT_PROPERTIES = new HintProperties(3);
+
     private GameFixtures() {}
+
+    public static RoundViews views(HintRepository hints) {
+        return new RoundViews(new HintPicker(hints), HINT_PROPERTIES);
+    }
+
+    /** Several categories of {@code count} hints each, in one eligible list. */
+    public static List<Hint> hints(int count, HintCategory... categories) {
+        return Arrays.stream(categories).flatMap(category -> hints(category, count).stream()).toList();
+    }
 
     public static GameRound playableRound(short position) {
         PersonPhoto photo = PersonPhoto.builder()

@@ -32,6 +32,12 @@ retirer une fois tous faits.
       `/friends/invite/…` ouvre la page Amis
 - [ ] Parcours e2e « amis » (`e2e/journeys/daily-game.spec.ts`, dernier test) : jamais
       lancé, comme les autres parcours — à lancer à la main
+- [ ] Pistes et chaud/froid (`feature/better-hints-gameplay`) : après un 1er essai faux,
+      « Plus de 30 ans, de 6 à 15 ans d'écart » et « Entre 36 et 45 ans », saisie bornée ;
+      choisir 3 pistes, puis voir 3 indices ; au résultat, chaque indice a son année et son
+      propre signalement ; un indice Célébrités dit « l'âge qu'a cette année X » (V21)
+- [ ] Parcours e2e `daily-game` mis à jour pour les 3 pistes : à lancer à la main, comme
+      les autres
 - [ ] Retours du 2026-11-11 (`fix/smoke-test-feedback`) : connecté, finir la 1re manche
       du jour puis recharger (sur l'écran de score ou après « Affaire suivante ») →
       reprise à la 2e manche ; le lien d'un email d'alerte ouvre la file admin même avec un
@@ -234,6 +240,16 @@ retirer une fois tous faits.
 - [ ] Double authentification (TOTP), seule protection si la boîte mail d'un joueur est
       compromise (voir `docs/decisions/architecture.md`, « Récupération du compte »)
 - [ ] Partage de résultat façon Wordle (grille/emoji, pas de compte requis)
+- [x] Aider davantage pour le 2e essai (retours des joueurs : les indices n'aidaient pas) :
+      sens + tranche d'écart (1-5 / 6-15 / 16+ ans) à la place du simple plus/moins,
+      saisie limitée à la plage restante, 3 pistes de catégories différentes au lieu
+      d'une, Célébrités qui donne l'âge directement (V21), règles avec un exemple chiffré,
+      signalement indice par indice — PR `feature/better-hints-gameplay`
+- [ ] Indices plus connus : classer les faits selon les vues annuelles de l'article de
+      l'événement, Wikidata pour Sport, Techno/culture pop (à la place de Science) et
+      Monde, reclassement de Musique, Cinéma et Célébrités (mesures du spike du
+      2026-11-12 : Monde FR 3-7 faits connus par an, Science FR 1-3, Sport 0-4 avec les
+      pages d'année actuelles) — PR 2/2 à planifier
 
 ## Semaine 8 — Stabilisation et déploiement
 - [ ] Tests d'intégration sur les endpoints critiques

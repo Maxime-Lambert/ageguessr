@@ -16,6 +16,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
+import app.ageguessr.features.game.GameFixtures;
 import app.ageguessr.features.game.DrawDailyGame.DrawDailyGameHandler;
 import app.ageguessr.features.game.GamePlay;
 import app.ageguessr.features.game.GamePlayRepository;
@@ -41,7 +42,7 @@ class GetTodayGameHandlerTest {
     private final GameRounds rounds = mock(GameRounds.class);
     private final GamePlayRepository plays = mock(GamePlayRepository.class);
     private final HintRepository hintRepository = mock(HintRepository.class);
-    private final RoundViews views = new RoundViews(new HintPicker(hintRepository));
+    private final RoundViews views = GameFixtures.views(hintRepository);
     private final PlayerKey guest = PlayerKey.guest(UUID.randomUUID());
 
     @Test
@@ -50,7 +51,7 @@ class GetTodayGameHandlerTest {
                 .thenReturn(List.of(playableRound((short) 1), playableRound((short) 2), neutralizedRound((short) 3)));
         GamePlay exact = started(guest, (short) 1, AGE);
         GamePlay finished = started(guest, (short) 2, 30);
-        finished.revealHint(HintCategory.MUSIC, UUID.randomUUID());
+        finished.revealHints(List.of(HintCategory.MUSIC), List.of(UUID.randomUUID()));
         finished.finishWithSecondGuess(38, AGE, NOW);
         GamePlay outOfTheScore = started(guest, (short) 3, AGE);
         when(plays.findOf(guest, TODAY)).thenReturn(List.of(exact, finished, outOfTheScore));

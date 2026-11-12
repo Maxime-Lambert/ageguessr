@@ -1,6 +1,8 @@
 import { COMMON_MESSAGES } from '../../shared/common-messages';
 import {
   Direction,
+  GapBand,
+  GuessRange,
   HintCategory,
   HintReportReason,
   MAX_AGE,
@@ -20,6 +22,7 @@ export const INVESTIGATION_VOICE = {
   dailyGame: $localize`:@@game.voice.dailyGame:Today's file`,
   hint: $localize`:@@game.voice.hint:Lead`,
   pickHint: $localize`:@@game.voice.pickHint:Pick a lead`,
+  showHints: $localize`:@@game.voice.showHints:Open these leads`,
   noHint: $localize`:@@game.voice.noHint:No lead turned up for this case. Make your final guess.`,
   result: $localize`:@@game.voice.result:Case closed`,
   summary: $localize`:@@game.voice.summary:Case report`,
@@ -38,6 +41,7 @@ export const NEUTRAL_VOICE: typeof INVESTIGATION_VOICE = {
   dailyGame: $localize`:@@game.neutral.dailyGame:Daily game`,
   hint: $localize`:@@game.neutral.hint:Hint`,
   pickHint: $localize`:@@game.neutral.pickHint:Pick a hint`,
+  showHints: $localize`:@@game.neutral.showHints:Show these hints`,
   noHint: $localize`:@@game.neutral.noHint:No hint for this round. Make your final guess.`,
   result: $localize`:@@game.neutral.result:Result`,
   summary: $localize`:@@game.neutral.summary:Summary`,
@@ -59,11 +63,13 @@ export const GAME_TEXT = {
   photoAlt: $localize`:@@game.photoAlt:The person to guess`,
   // The API picks a fact from (game year − age on the photo): its distance in years is
   // the answer. Never « the year the photo was taken », which is not known to the player.
-  pickHintHelp: $localize`:@@game.pickHintHelp:A fact from as many years ago as this person's age on the photo.`,
+  pickHintHelp: $localize`:@@game.pickHintHelp:Each one is a fact from as many years ago as this person's age on the photo: a song from 40 years ago means they were 40.`,
   guessLabel: $localize`:@@game.guessLabel:Age`,
   howToPlay: $localize`:@@game.howToPlay:How to play`,
   ruleGuess: $localize`:@@game.ruleGuess:Guess how old the person was on the photo. You get two guesses per case.`,
-  ruleLead: $localize`:@@game.ruleLead:After the first, you learn whether they were older or younger, and you pick a lead: a fact from as many years ago as their age on the photo.`,
+  ruleLead: $localize`:@@game.ruleLead:After the first, you learn whether they were older or younger, and by how much: 1 to 5 years, 6 to 15, or more.`,
+  // 3 is app.game.hints.per-round (HintProperties): to change with it.
+  ruleHints: $localize`:@@game.ruleHints:Then you pick 3 leads, each a fact from as many years ago as their age on the photo: a film released 40 years ago means they were 40 on it.`,
   rulePoints: $localize`:@@game.rulePoints:Each guess earns up to 500 points, more the closer it is; a spot-on first guess is worth 1000. A new file opens every day at midnight UTC.`,
   gotIt: $localize`:@@game.gotIt:Got it`,
   playToday: $localize`:@@game.playToday:Open today's file`,
@@ -157,11 +163,47 @@ export function shorterSeries(count: number): string {
   return $localize`:@@game.shorterSeries:Only ${count}:count: photos could be drawn this time.`;
 }
 
-/** The side only, never how far: no "warm" or "cold" (« Déroulé d'une manche »). */
+/** The side of a wrong first guess (« Déroulé d'une manche »). */
 export function directionText(direction: Direction, guess: number): string {
   return direction === 'OLDER'
     ? $localize`:@@game.older:Older than ${guess}:guess:`
     : $localize`:@@game.younger:Younger than ${guess}:guess:`;
+}
+
+/** How far, told with the side: the band of years between the guess and the answer. */
+export function gapText(gap: GapBand): string {
+  switch (gap) {
+    case 'SLIGHTLY':
+      return $localize`:@@game.gap.slightly:by 1 to 5 years`;
+    case 'CLEARLY':
+      return $localize`:@@game.gap.clearly:by 6 to 15 years`;
+    case 'FAR':
+      return $localize`:@@game.gap.far:by 16 years or more`;
+  }
+}
+
+/** The ages left for the final guess, the field being kept inside them. */
+export function rangeText(range: GuessRange): string {
+  return range.min === range.max
+    ? $localize`:@@game.rangeOne:Only ${range.min}:age: is left`
+    : $localize`:@@game.range:Between ${range.min}:min: and ${range.max}:max:`;
+}
+
+/** The final guess out of its range: the bounds are those of the round. */
+export function ageOutOfRange(range: GuessRange): string {
+  return $localize`:@@game.ageOutOfRange:Enter a whole age from ${range.min}:min: to ${range.max}:max:.`;
+}
+
+/** How many leads to pick, and how many are picked so far. */
+export function pickHintsText(count: number): string {
+  if (count === 1) return GAME_TEXT.pickHint;
+  return VOICE === INVESTIGATION_VOICE
+    ? $localize`:@@game.voice.pickHints:Pick ${count}:count: leads`
+    : $localize`:@@game.neutral.pickHints:Pick ${count}:count: hints`;
+}
+
+export function pickedText(picked: number, count: number): string {
+  return $localize`:@@game.picked:${picked}:picked: of ${count}:count: picked`;
 }
 
 export const CATEGORY_LABELS: Record<HintCategory, string> = {

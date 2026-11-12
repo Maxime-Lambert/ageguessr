@@ -7,6 +7,13 @@ export type RoundStep = 'NOT_STARTED' | 'AWAITING_HINT' | 'AWAITING_SECOND_GUESS
 export type RoundStatus = 'PLAYABLE' | 'NEUTRALIZED';
 /** OLDER: the person is older than the guess. */
 export type Direction = 'OLDER' | 'YOUNGER';
+/** How far a wrong first guess is: 1-5, 6-15, 16 years or more (GapBand). */
+export type GapBand = 'SLIGHTLY' | 'CLEARLY' | 'FAR';
+/** The ages the side and the band leave, within 18-100: the final guess is kept inside. */
+export interface GuessRange {
+  min: number;
+  max: number;
+}
 export type HintCategory = 'MUSIC' | 'FILM' | 'SPORT' | 'SCIENCE' | 'WORLD' | 'CELEBRITIES';
 
 /** The hint during the round: no year, it would give the answer away. */
@@ -31,10 +38,12 @@ export interface RoundReveal {
   person: { name: string; wikipediaUrl: string };
   /** author null when Commons names none. */
   credit: { author: string | null; license: string; licenseUrl: string | null; sourceUrl: string };
-  hint: RevealedHint | null;
+  /** The hints shown, in their order; empty without any. */
+  hints: RevealedHint[];
   /** Already reported by this player from this round: shown as sent, not offered again. */
   photoReported: boolean;
-  hintReported: boolean;
+  /** As photoReported, the categories whose hint was reported. */
+  reportedHints: HintCategory[];
 }
 
 /** A round as the player sees it: nothing of the answer before `result`. */
@@ -45,9 +54,15 @@ export interface RoundView {
   imageUrl: string | null;
   step: RoundStep;
   firstGuess: number | null;
+  /** After a wrong first guess, until the result, as gap and range. */
   direction: Direction | null;
+  gap: GapBand | null;
+  range: GuessRange | null;
+  /** While awaiting the hints: the categories offered, and how many to pick. */
   categories: HintCategory[] | null;
-  hint: ShownHint | null;
+  hintsToPick: number | null;
+  /** While awaiting the final guess: the hints of the categories picked. */
+  hints: ShownHint[] | null;
   result: RoundReveal | null;
 }
 
@@ -116,7 +131,8 @@ export type ReportTarget = 'PHOTO' | 'HINT';
 
 /** The reason comes from the list of its target. */
 export type RoundReport =
-  { target: 'PHOTO'; reason: PhotoReportReason } | { target: 'HINT'; reason: HintReportReason };
+  | { target: 'PHOTO'; reason: PhotoReportReason }
+  | { target: 'HINT'; reason: HintReportReason; hintCategory: HintCategory };
 
 /** The guesses an age can take, as the API validates them (no minor on a photo). */
 export const MIN_AGE = 18;

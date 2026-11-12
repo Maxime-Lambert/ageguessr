@@ -8,6 +8,7 @@ import app.ageguessr.features.people.Person;
 import app.ageguessr.features.people.PersonPhoto;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
@@ -20,10 +21,12 @@ class RoundRevealTest {
     @Test
     void revealsTheAnswerThePointsOfBothGuessesWhoItWasAndTheCredit() {
         GamePlay play = play(Language.EN, 30);
-        play.revealHint(HintCategory.MUSIC, UUID.randomUUID());
+        play.revealHints(List.of(HintCategory.MUSIC), List.of(UUID.randomUUID()));
         play.finishWithSecondGuess(38, 40, NOW);
+        play.progress().reportHint(HintCategory.MUSIC);
 
-        RoundReveal reveal = RoundReveal.of(play, photo("Jane Photographer"), person("Jane Doe", "Jeanne Doe"), HINT);
+        RoundReveal reveal =
+                RoundReveal.of(play, photo("Jane Photographer"), person("Jane Doe", "Jeanne Doe"), List.of(HINT));
 
         assertThat(reveal.age()).isEqualTo(40);
         assertThat(reveal.firstGuess()).isEqualTo(30);
@@ -38,24 +41,26 @@ class RoundRevealTest {
                 "CC BY-SA 4.0",
                 "https://creativecommons.org/licenses/by-sa/4.0",
                 "https://commons.wikimedia.org/wiki/File:Jane.jpg"));
-        assertThat(reveal.hint()).isEqualTo(HINT);
+        assertThat(reveal.hints()).containsExactly(HINT);
+        assertThat(reveal.reportedHints()).containsExactly(HintCategory.MUSIC);
     }
 
     @Test
     void revealsAnExactFirstGuessWithoutSecondGuessNorHint() {
-        RoundReveal reveal = RoundReveal.of(play(Language.EN, 40), photo(null), person("Jane Doe", null), null);
+        RoundReveal reveal = RoundReveal.of(play(Language.EN, 40), photo(null), person("Jane Doe", null), List.of());
 
         assertThat(reveal.points()).isEqualTo(1000);
         assertThat(reveal.firstPoints()).isEqualTo(500);
         assertThat(reveal.secondGuess()).isNull();
         assertThat(reveal.secondPoints()).isNull();
-        assertThat(reveal.hint()).isNull();
+        assertThat(reveal.hints()).isEmpty();
+        assertThat(reveal.reportedHints()).isEmpty();
         assertThat(reveal.credit().author()).as("the screen says the author is unknown").isNull();
     }
 
     @Test
     void namesThePersonAndLinksTheArticleInFrenchForAFrenchRound() {
-        RoundReveal reveal = RoundReveal.of(play(Language.FR, 40), photo(null), person("Jane Doe", "Jeanne Doe"), null);
+        RoundReveal reveal = RoundReveal.of(play(Language.FR, 40), photo(null), person("Jane Doe", "Jeanne Doe"), List.of());
 
         assertThat(reveal.person()).isEqualTo(new RoundReveal.Identity(
                 "Jeanne Doe", "https://www.wikidata.org/wiki/Special:GoToLinkedPage/frwiki/Q42"));
@@ -63,11 +68,11 @@ class RoundRevealTest {
 
     @Test
     void fallsBackOnTheOtherNameWhenTheLanguageHasNone() {
-        assertThat(RoundReveal.of(play(Language.FR, 40), photo(null), person("Jane Doe", null), null)
+        assertThat(RoundReveal.of(play(Language.FR, 40), photo(null), person("Jane Doe", null), List.of())
                         .person()
                         .name())
                 .isEqualTo("Jane Doe");
-        assertThat(RoundReveal.of(play(Language.EN, 40), photo(null), person(null, "Jeanne Doe"), null)
+        assertThat(RoundReveal.of(play(Language.EN, 40), photo(null), person(null, "Jeanne Doe"), List.of())
                         .person()
                         .name())
                 .isEqualTo("Jeanne Doe");

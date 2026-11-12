@@ -65,13 +65,21 @@ describe('ReportButton', () => {
     expect(page.querySelector('form')).toBeNull();
   });
 
-  it('lists the reasons of a hint under its own label', () => {
+  it('lists the reasons of a hint under its own label, and says which hint it sends', () => {
+    fixture.componentRef.setInput('hintCategory', 'SPORT');
     show('HINT');
     button(GAME_TEXT.reportHint).click();
     fixture.detectChanges();
 
     expect(radios().map((radio) => radio.value)).toEqual(Object.keys(HINT_REPORT_REASONS));
-    expect(radios()[0].name).toBe('report-hint');
+    // One list per hint on a result: the ids stay unique.
+    expect(radios()[0].name).toBe('report-hint-sport');
+    pick(0);
+    submit();
+
+    expect(sent).toEqual([
+      { target: 'HINT', reason: Object.keys(HINT_REPORT_REASONS)[0], hintCategory: 'SPORT' },
+    ]);
   });
 
   it('sends nothing without a reason, nor twice while sending', () => {
