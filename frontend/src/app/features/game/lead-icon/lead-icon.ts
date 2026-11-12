@@ -1,5 +1,6 @@
 import { Component, input } from '@angular/core';
 import {
+  LucideBookOpen,
   LucideClapperboard,
   LucideFlaskConical,
   LucideGlobe,
@@ -13,6 +14,7 @@ import { HintCategory } from '../models';
 @Component({
   selector: 'app-lead-icon',
   imports: [
+    LucideBookOpen,
     LucideClapperboard,
     LucideFlaskConical,
     LucideGlobe,
@@ -40,6 +42,9 @@ import { HintCategory } from '../models';
       }
       @case ('CELEBRITIES') {
         <svg lucideSparkles [size]="size()"></svg>
+      }
+      @case ('LITERATURE') {
+        <svg lucideBookOpen [size]="size()"></svg>
       }
     }
   `,

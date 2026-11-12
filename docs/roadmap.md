@@ -38,6 +38,11 @@ retirer une fois tous faits.
       propre signalement ; un indice Célébrités dit « l'âge qu'a (ou qu'aurait) cette année X » (V21)
 - [ ] Parcours e2e `daily-game` mis à jour pour les 3 pistes : à lancer à la main, comme
       les autres
+- [ ] Littérature, année en deux chiffres, personne nommée (`feature/literature-hints`,
+      `fix/two-digit-year-in-hints`) : en prod, un seul import avec
+      `--app.hints.import.retire-absent=true` ; rapport attendu `read=10263`, `added=1598`,
+      `named=2592`, `retired=9`, `refused={}` ; la piste Littérature apparaît (icône livre),
+      « Mai 68 » n'est plus proposé, `/admin/hints` a une colonne Littérature
 - [ ] Indices par notoriété (`feature/hint-notoriety`) : en prod, lancer l'import avec
       `--app.hints.import.retire-absent=true` (rapport : ~8 674 ajoutés, les anciens
       retirés, 0 refus), puis dans `/admin/hints` aucune année sous 3 catégories ; en jeu,
@@ -250,6 +255,9 @@ retirer une fois tous faits.
       saisie limitée à la plage restante, 3 pistes de catégories différentes au lieu
       d'une, Célébrités qui donne l'âge directement (V21), règles avec un exemple chiffré,
       signalement indice par indice — PR `feature/better-hints-gameplay`
+- [x] Catégorie Littérature (7e) : parutions avec leur auteur et grands prix littéraires,
+      ~800 indices par langue, au moins 4 catégories jouables chaque année en FR et en EN
+      — PR `feature/literature-hints`
 - [x] Indices plus connus : faits Wikidata classés par les vues sur 12 mois de leur
       propre article, les 10 plus vus par catégorie, année et langue au-dessus d'un
       plancher par décennie ; 8 674 indices, au moins 3 catégories jouables chaque année

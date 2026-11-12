@@ -2,6 +2,7 @@ package app.ageguessr.functional.game;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.nullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -315,6 +316,25 @@ class GameFunctionalTest {
                 .andExpect(jsonPath("$.result.hints.length()").value(3))
                 .andExpect(jsonPath("$.result.hints[*].year").value(contains(year, year, year)))
                 .andExpect(jsonPath("$.result.hints[2].sourceUrl").value("https://en.wikipedia.org/wiki/Hit"));
+    }
+
+    @Test
+    void aLiteratureHintIsOfferedShownAndKeptInTheRound() throws Exception {
+        int year = today.getYear() - AGE;
+        for (int i = 0; i < Hint.MINIMUM_PER_CATEGORY; i++) {
+            saveHint(HintCategory.LITERATURE, year, "Book " + i);
+            saveHint(HintCategory.FILM, year, "Film " + i);
+        }
+        Cookie guest = guestCookie();
+        firstGuess(1, 30, guest).andExpect(jsonPath("$.categories", hasItem("LITERATURE")));
+
+        // V23: the round stores the category, as the CHECK constraints of the plays now allow.
+        perform(post(round(1, "hint")), "{\"categories\":[\"LITERATURE\",\"MUSIC\",\"FILM\"]}", guest, null)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.hints[*].category", hasItem("LITERATURE")));
+        perform(post(round(1, "second-guess")), "{\"guess\":38}", guest, null)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.result.hints[*].category", hasItem("LITERATURE")));
     }
 
     @Test

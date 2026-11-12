@@ -53,6 +53,8 @@
           }
         </div>
         <p class="text-muted mt-0.5 text-sm">{{ text.pickHintHelp }}</p>
+        <!-- 4 to 7 categories depending on the year: a card alone on the last row takes the
+             whole row, rather than look forgotten. -->
         <div
           class="mt-4 grid grid-cols-2 gap-2.5 sm:grid-cols-3"
           role="group"
@@ -62,7 +64,7 @@
             <button
               #category
               type="button"
-              class="card hover:border-accent aria-pressed:border-accent aria-pressed:bg-surface-2 flex flex-col items-start gap-2.5 p-4 text-left text-[15px] font-semibold disabled:opacity-50"
+              class="card hover:border-accent aria-pressed:border-accent aria-pressed:bg-surface-2 flex flex-col items-start gap-2.5 p-4 text-left text-[15px] font-semibold disabled:opacity-50 sm:[&:nth-child(3n+1):last-child]:col-span-3 max-sm:[&:nth-child(odd):last-child]:col-span-2"
               [attr.aria-pressed]="isPicked(category)"
               [disabled]="busy() || (pickComplete() && !isPicked(category))"
               (click)="toggle(category)"

@@ -216,6 +216,7 @@ export const CATEGORY_LABELS: Record<HintCategory, string> = {
   SCIENCE: $localize`:@@game.category.science:Science`,
   WORLD: $localize`:@@game.category.world:World events`,
   CELEBRITIES: $localize`:@@game.category.celebrities:Celebrities`,
+  LITERATURE: $localize`:@@game.category.literature:Literature`,
 };
 
 /** How far back the hint is: the answer itself, so only shown once the round is over. */

@@ -13,7 +13,9 @@ import java.util.List;
  *     feature/better-hints-gameplay): one hint, as then, so that an open tab is not stuck.
  *     To remove once no such page can be left open
  */
-public record RevealSeriesHintCommand(@Size(max = 6) List<@NotNull HintCategory> categories, HintCategory category) {
+public record RevealSeriesHintCommand(
+        // At most every category: 7 since Literature (V23), as RevealHintCommand.
+        @Size(max = 7) List<@NotNull HintCategory> categories, HintCategory category) {
 
     /** Sent by a page of before several hints. */
     public boolean legacy() {

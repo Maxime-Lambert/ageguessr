@@ -114,6 +114,18 @@ describe('Round', () => {
     expect(confirmButton().disabled).toBe(true);
   });
 
+  it('offers the seven categories, Literature included, and still asks for three', () => {
+    show(
+      awaitingHints({
+        categories: ['MUSIC', 'FILM', 'SPORT', 'SCIENCE', 'WORLD', 'CELEBRITIES', 'LITERATURE'],
+      }),
+    );
+
+    expect(leadButtons()).toHaveLength(7);
+    expect(leadButtons()[6].textContent?.trim()).toBe('Literature');
+    expect(page.textContent).toContain('Pick 3 leads');
+  });
+
   it('sends exactly the number of leads asked, in the order offered', () => {
     show(awaitingHints());
 

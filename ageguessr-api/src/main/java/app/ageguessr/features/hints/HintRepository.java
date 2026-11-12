@@ -22,9 +22,20 @@ public interface HintRepository extends JpaRepository<Hint, UUID> {
      * Sets or clears (null) the retirement of these keys; the caller keeps each batch small.
      * Clears the persistence context, as the other bulk updates do: no stale hint after it.
      */
-    @Modifying(clearAutomatically = true)
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("UPDATE Hint h SET h.retiredAt = :retiredAt WHERE h.dedupeKey IN :keys")
     int setRetiredAt(@Param("keys") Collection<String> keys, @Param("retiredAt") Instant retiredAt);
+
+    @Query("SELECT h.dedupeKey FROM Hint h WHERE h.subjectQid IS NULL")
+    Set<String> findDedupeKeysWithoutSubject();
+
+    /**
+     * Names the person of a hint imported before subjects existed outside CELEBRITIES (V24).
+     * Only an empty subject: a subject already set, or corrected by hand, stays.
+     */
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query("UPDATE Hint h SET h.subjectQid = :subject WHERE h.dedupeKey = :key AND h.subjectQid IS NULL")
+    int fillSubject(@Param("key") String key, @Param("subject") String subject);
 
     /**
      * Oldest first; the id breaks ties, an import giving a whole batch the same date. A

@@ -48,6 +48,31 @@ describe('AgeInput', () => {
     expect(control.getAttribute('aria-valuemax')).toBe('100');
   });
 
+  it('puts the caret in the field on a click on « years » or around the digits', () => {
+    const { page, control } = render();
+    const unit = page.querySelector('span')!;
+
+    unit.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true }));
+    expect(document.activeElement).toBe(control);
+
+    control.blur();
+    unit.parentElement!.dispatchEvent(
+      new MouseEvent('mousedown', { bubbles: true, cancelable: true }),
+    );
+    expect(document.activeElement).toBe(control);
+  });
+
+  it('leaves the focus alone on a click around a disabled field', () => {
+    const { fixture, guess, page, control } = render();
+    guess.disable();
+    fixture.detectChanges();
+
+    page
+      .querySelector('span')!
+      .dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true }));
+    expect(document.activeElement).not.toBe(control);
+  });
+
   it('asks with a « ? » while empty, which no one could take for an age', () => {
     const { control } = render();
 

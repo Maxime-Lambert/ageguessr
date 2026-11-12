@@ -14,7 +14,8 @@ export interface GuessRange {
   min: number;
   max: number;
 }
-export type HintCategory = 'MUSIC' | 'FILM' | 'SPORT' | 'SCIENCE' | 'WORLD' | 'CELEBRITIES';
+export type HintCategory =
+  'MUSIC' | 'FILM' | 'SPORT' | 'SCIENCE' | 'WORLD' | 'CELEBRITIES' | 'LITERATURE';
 
 /** The hint during the round: no year, it would give the answer away. */
 export interface ShownHint {

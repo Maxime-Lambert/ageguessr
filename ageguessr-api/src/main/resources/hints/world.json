@@ -63,7 +63,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q706684",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-fr-wikidata-notoriety-event-q706684",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q2667"
  },
  {
   "category": "WORLD",
@@ -129,7 +130,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q689220",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-fr-wikidata-notoriety-event-q689220",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q7320"
  },
  {
   "category": "WORLD",
@@ -140,7 +142,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q638389",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-fr-wikidata-notoriety-event-q638389",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q7320"
  },
  {
   "category": "WORLD",
@@ -283,7 +286,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q918378",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-fr-wikidata-notoriety-event-q918378",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q166635"
  },
  {
   "category": "WORLD",
@@ -338,7 +342,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q389024",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-fr-wikidata-notoriety-event-q389024",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q352"
  },
  {
   "category": "WORLD",
@@ -536,7 +541,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q447420",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-fr-wikidata-notoriety-event-q447420",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q352"
  },
  {
   "category": "WORLD",
@@ -1922,7 +1928,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q748667",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-fr-wikidata-notoriety-event-q748667",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q129006"
  },
  {
   "category": "WORLD",
@@ -2021,7 +2028,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q3531591",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-fr-wikidata-notoriety-event-q3531591",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q1047"
  },
  {
   "category": "WORLD",
@@ -2032,7 +2040,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q3722280",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-fr-wikidata-notoriety-event-q3722280",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q8016"
  },
  {
   "category": "WORLD",
@@ -2384,7 +2393,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q918412",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-fr-wikidata-notoriety-event-q918412",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q128995"
  },
  {
   "category": "WORLD",
@@ -2758,7 +2768,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q918420",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-fr-wikidata-notoriety-event-q918420",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q128985"
  },
  {
   "category": "WORLD",
@@ -3231,7 +3242,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q699646",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-fr-wikidata-notoriety-event-q699646",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q9640"
  },
  {
   "category": "WORLD",
@@ -3319,7 +3331,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q1450635",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-fr-wikidata-notoriety-event-q1450635",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q2042"
  },
  {
   "category": "WORLD",
@@ -3611,17 +3624,6 @@
   "category": "WORLD",
   "year": 1968,
   "audience": "FR",
-  "textFr": "Mai 68",
-  "textEn": null,
-  "sourceUrl": "https://www.wikidata.org/wiki/Q6743",
-  "sourceKind": "wikidata-notoriety",
-  "dedupeKey": "world-fr-wikidata-notoriety-event-q6743",
-  "translated": false
- },
- {
-  "category": "WORLD",
-  "year": 1968,
-  "audience": "FR",
   "textFr": "Création ou indépendance de l'État : Guinée équatoriale",
   "textEn": null,
   "sourceUrl": "https://www.wikidata.org/wiki/Q983",
@@ -3719,6 +3721,17 @@
  },
  {
   "category": "WORLD",
+  "year": 1968,
+  "audience": "FR",
+  "textFr": "Assassinat de Robert F. Kennedy",
+  "textEn": null,
+  "sourceUrl": "https://www.wikidata.org/wiki/Q1187550",
+  "sourceKind": "wikidata-notoriety",
+  "dedupeKey": "world-fr-wikidata-notoriety-event-q1187550",
+  "translated": false
+ },
+ {
+  "category": "WORLD",
   "year": 1969,
   "audience": "FR",
   "textFr": "Élection présidentielle française — vainqueur : Georges Pompidou",
@@ -3726,7 +3739,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q1450646",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-fr-wikidata-notoriety-event-q1450646",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q2185"
  },
  {
   "category": "WORLD",
@@ -3935,7 +3949,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q918442",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-fr-wikidata-notoriety-event-q918442",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q128967"
  },
  {
   "category": "WORLD",
@@ -4375,7 +4390,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q918508",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-fr-wikidata-notoriety-event-q918508",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q9626"
  },
  {
   "category": "WORLD",
@@ -4529,7 +4545,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q699693",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-fr-wikidata-notoriety-event-q699693",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q23685"
  },
  {
   "category": "WORLD",
@@ -5398,7 +5415,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q3532183",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-fr-wikidata-notoriety-event-q3532183",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q4593"
  },
  {
   "category": "WORLD",
@@ -5838,7 +5856,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q643015",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-fr-wikidata-notoriety-event-q643015",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q23505"
  },
  {
   "category": "WORLD",
@@ -6839,7 +6858,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q918503",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-fr-wikidata-notoriety-event-q918503",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q9545"
  },
  {
   "category": "WORLD",
@@ -7609,7 +7629,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q568458",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-fr-wikidata-notoriety-event-q568458",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q1459699"
  },
  {
   "category": "WORLD",
@@ -7785,7 +7806,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q977390",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-fr-wikidata-notoriety-event-q977390",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q152378"
  },
  {
   "category": "WORLD",
@@ -7796,7 +7818,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q779296",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-fr-wikidata-notoriety-event-q779296",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q753223"
  },
  {
   "category": "WORLD",
@@ -7851,7 +7874,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q245238",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-fr-wikidata-notoriety-event-q245238",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q329"
  },
  {
   "category": "WORLD",
@@ -7895,7 +7919,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q740550",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-fr-wikidata-notoriety-event-q740550",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q101410"
  },
  {
   "category": "WORLD",
@@ -8038,7 +8063,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q1120096",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-fr-wikidata-notoriety-event-q1120096",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q23530"
  },
  {
   "category": "WORLD",
@@ -8280,7 +8306,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q985172",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-fr-wikidata-notoriety-event-q985172",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q40722"
  },
  {
   "category": "WORLD",
@@ -8401,7 +8428,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q487666",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-fr-wikidata-notoriety-event-q487666",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q157"
  },
  {
   "category": "WORLD",
@@ -8456,7 +8484,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q1164616",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-fr-wikidata-notoriety-event-q1164616",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q7711"
  },
  {
   "category": "WORLD",
@@ -8566,7 +8595,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q6415351",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-fr-wikidata-notoriety-event-q6415351",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q58132"
  },
  {
   "category": "WORLD",
@@ -8599,7 +8629,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q4422669",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-fr-wikidata-notoriety-event-q4422669",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q450675"
  },
  {
   "category": "WORLD",
@@ -8918,7 +8949,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q706684",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-en-wikidata-notoriety-event-q706684",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q2667"
  },
  {
   "category": "WORLD",
@@ -8962,7 +8994,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q689220",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-en-wikidata-notoriety-event-q689220",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q7320"
  },
  {
   "category": "WORLD",
@@ -8973,7 +9006,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q638389",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-en-wikidata-notoriety-event-q638389",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q7320"
  },
  {
   "category": "WORLD",
@@ -9105,7 +9139,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q918378",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-en-wikidata-notoriety-event-q918378",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q166635"
  },
  {
   "category": "WORLD",
@@ -10656,7 +10691,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q748667",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-en-wikidata-notoriety-event-q748667",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q129006"
  },
  {
   "category": "WORLD",
@@ -10733,7 +10769,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q3531591",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-en-wikidata-notoriety-event-q3531591",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q1047"
  },
  {
   "category": "WORLD",
@@ -10755,7 +10792,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q3722280",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-en-wikidata-notoriety-event-q3722280",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q8016"
  },
  {
   "category": "WORLD",
@@ -11140,7 +11178,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q918412",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-en-wikidata-notoriety-event-q918412",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q128995"
  },
  {
   "category": "WORLD",
@@ -11382,7 +11421,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q936847",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-en-wikidata-notoriety-event-q936847",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q128614"
  },
  {
   "category": "WORLD",
@@ -11503,7 +11543,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q918420",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-en-wikidata-notoriety-event-q918420",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q128985"
  },
  {
   "category": "WORLD",
@@ -11987,7 +12028,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q699646",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-en-wikidata-notoriety-event-q699646",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q9640"
  },
  {
   "category": "WORLD",
@@ -12467,10 +12509,10 @@
   "year": 1968,
   "audience": "EN",
   "textFr": null,
-  "textEn": "May 68",
-  "sourceUrl": "https://www.wikidata.org/wiki/Q6743",
+  "textEn": "Tlatelolco massacre",
+  "sourceUrl": "https://www.wikidata.org/wiki/Q909737",
   "sourceKind": "wikidata-notoriety",
-  "dedupeKey": "world-en-wikidata-notoriety-event-q6743",
+  "dedupeKey": "world-en-wikidata-notoriety-event-q909737",
   "translated": false
  },
  {
@@ -12478,10 +12520,10 @@
   "year": 1968,
   "audience": "EN",
   "textFr": null,
-  "textEn": "Tlatelolco massacre",
-  "sourceUrl": "https://www.wikidata.org/wiki/Q909737",
+  "textEn": "Battle of Hue",
+  "sourceUrl": "https://www.wikidata.org/wiki/Q697053",
   "sourceKind": "wikidata-notoriety",
-  "dedupeKey": "world-en-wikidata-notoriety-event-q909737",
+  "dedupeKey": "world-en-wikidata-notoriety-event-q697053",
   "translated": false
  },
  {
@@ -12680,7 +12722,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q918442",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-en-wikidata-notoriety-event-q918442",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q128967"
  },
  {
   "category": "WORLD",
@@ -13098,7 +13141,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q918508",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-en-wikidata-notoriety-event-q918508",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q9626"
  },
  {
   "category": "WORLD",
@@ -13252,7 +13296,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q699693",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-en-wikidata-notoriety-event-q699693",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q23685"
  },
  {
   "category": "WORLD",
@@ -14044,7 +14089,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q3532183",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-en-wikidata-notoriety-event-q3532183",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q4593"
  },
  {
   "category": "WORLD",
@@ -14451,7 +14497,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q643015",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-en-wikidata-notoriety-event-q643015",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q23505"
  },
  {
   "category": "WORLD",
@@ -14935,7 +14982,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q543609",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-en-wikidata-notoriety-event-q543609",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q9559"
  },
  {
   "category": "WORLD",
@@ -15430,7 +15478,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q918503",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-en-wikidata-notoriety-event-q918503",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q9545"
  },
  {
   "category": "WORLD",
@@ -16277,7 +16326,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q568458",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-en-wikidata-notoriety-event-q568458",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q1459699"
  },
  {
   "category": "WORLD",
@@ -16453,7 +16503,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q779296",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-en-wikidata-notoriety-event-q779296",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q753223"
  },
  {
   "category": "WORLD",
@@ -16475,7 +16526,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q977390",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-en-wikidata-notoriety-event-q977390",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q152378"
  },
  {
   "category": "WORLD",
@@ -16596,7 +16648,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q245238",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-en-wikidata-notoriety-event-q245238",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q329"
  },
  {
   "category": "WORLD",
@@ -16706,7 +16759,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q1120096",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-en-wikidata-notoriety-event-q1120096",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q23530"
  },
  {
   "category": "WORLD",
@@ -17146,7 +17200,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q487666",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-en-wikidata-notoriety-event-q487666",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q157"
  },
  {
   "category": "WORLD",
@@ -17157,7 +17212,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q937607",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-en-wikidata-notoriety-event-q937607",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q4496"
  },
  {
   "category": "WORLD",
@@ -17256,7 +17312,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q6415351",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-en-wikidata-notoriety-event-q6415351",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q58132"
  },
  {
   "category": "WORLD",
@@ -17465,7 +17522,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q3586271",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "world-en-wikidata-notoriety-event-q3586271",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q138345"
  },
  {
   "category": "WORLD",

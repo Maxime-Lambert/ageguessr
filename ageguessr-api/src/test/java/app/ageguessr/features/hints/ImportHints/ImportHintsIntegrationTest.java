@@ -102,6 +102,27 @@ class ImportHintsIntegrationTest {
     }
 
     @Test
+    void aHintNamingThePersonToGuessIsNeverOfferedOnTheirPhoto() {
+        HintFileEntry book = new HintFileEntry(
+                "LITERATURE", 1976, "FR", "Parution : « Un roman » — Une autrice", null,
+                "https://www.wikidata.org/wiki/Q1", "wikidata-notoriety", null, "book", false);
+        handler.handle(List.of(book));
+        entityManager.flush();
+        assertThat(hints.findEligible(1976, List.of(HintAudience.FR), "Q42")).hasSize(1);
+
+        // Imported before subjects (V24): the next import names its author, nothing else changes.
+        HintFileEntry named = new HintFileEntry(
+                "LITERATURE", 1976, "FR", "Parution : « Un roman » — Une autrice", null,
+                "https://www.wikidata.org/wiki/Q1", "wikidata-notoriety", "Q42", "book", false);
+        assertThat(handler.handle(List.of(named)).named()).isEqualTo(1);
+        entityManager.flush();
+        entityManager.clear();
+
+        assertThat(hints.findEligible(1976, List.of(HintAudience.FR), "Q42")).isEmpty();
+        assertThat(hints.findEligible(1976, List.of(HintAudience.FR), "Q7")).hasSize(1);
+    }
+
+    @Test
     void everyLineOfTheShippedFilesIsAccepted() {
         List<HintFileEntry> entries = reader.readAll();
 
