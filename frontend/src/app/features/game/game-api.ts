@@ -39,8 +39,8 @@ export class GameApi {
     return this.http.post<RoundView>(roundUrl(date, position, 'first-guess'), { guess, language });
   }
 
-  hint(date: string, position: number, category: HintCategory): Observable<RoundView> {
-    return this.http.post<RoundView>(roundUrl(date, position, 'hint'), { category });
+  hint(date: string, position: number, categories: HintCategory[]): Observable<RoundView> {
+    return this.http.post<RoundView>(roundUrl(date, position, 'hint'), { categories });
   }
 
   /** 204, whether new or already sent from this round: nothing to read back. */

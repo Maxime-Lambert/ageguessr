@@ -18,8 +18,10 @@ test.describe('le jeu en français', () => {
     await page.getByLabel('Âge').fill('30');
     await page.getByRole('button', { name: 'Valider' }).click();
 
-    await expect(page.getByText('Plus de 30 ans')).toBeVisible();
-    await expect(page.getByText('Choisissez une piste')).toBeVisible();
+    await expect(page.getByText("Plus de 30 ans, de 6 à 15 ans d'écart")).toBeVisible();
+    await expect(page.getByText('Entre 36 et 45 ans')).toBeVisible();
+    await expect(page.getByText('Choisissez 3 pistes')).toBeVisible();
+    await expect(page.getByText('Choix : 0 sur 3')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Musique' })).toBeVisible();
     expect(sent).toEqual([{ guess: 30, language: 'FR' }]);
   });
@@ -35,7 +37,7 @@ test.describe('le jeu en français', () => {
     await page.getByLabel('Âge').fill('30');
     await page.getByRole('button', { name: 'Valider' }).click();
 
-    await expect(page.getByText('Plus de 30 ans')).toBeVisible();
+    await expect(page.getByText(/^Plus de 30 ans/)).toBeVisible();
     expect(sent).toEqual([{ guess: 30, language: 'EN' }]);
     // Remembered on this device.
     await page.reload();

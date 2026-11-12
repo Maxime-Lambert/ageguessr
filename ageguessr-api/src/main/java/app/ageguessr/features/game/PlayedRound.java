@@ -3,6 +3,7 @@ package app.ageguessr.features.game;
 import app.ageguessr.features.hints.HintCategory;
 import app.ageguessr.shared.i18n.Language;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -26,12 +27,16 @@ public interface PlayedRound {
         return progress().getFirstPoints();
     }
 
-    default HintCategory getHintCategory() {
-        return progress().getHintCategory();
+    default List<HintCategory> getHintCategories() {
+        return progress().getHintCategories();
     }
 
-    default UUID getHintId() {
-        return progress().getHintId();
+    default List<UUID> getHintIds() {
+        return progress().getHintIds();
+    }
+
+    default List<HintCategory> getReportedHintCategories() {
+        return progress().getReportedHintCategories();
     }
 
     default Integer getSecondGuess() {
@@ -58,8 +63,8 @@ public interface PlayedRound {
         return progress().acceptsSecondGuess(anyCategoryAvailable);
     }
 
-    default void revealHint(HintCategory category, UUID hintId) {
-        progress().revealHint(category, hintId);
+    default void revealHints(List<HintCategory> categories, List<UUID> hintIds) {
+        progress().revealHints(categories, hintIds);
     }
 
     default void finishWithSecondGuess(int guess, int age, Instant now) {
@@ -72,10 +77,6 @@ public interface PlayedRound {
 
     default boolean isPhotoReported() {
         return progress().isPhotoReported();
-    }
-
-    default boolean isHintReported() {
-        return progress().isHintReported();
     }
 
     default int points() {

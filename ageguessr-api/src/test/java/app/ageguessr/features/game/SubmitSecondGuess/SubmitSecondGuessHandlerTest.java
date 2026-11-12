@@ -15,6 +15,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import app.ageguessr.features.game.GameFixtures;
 import app.ageguessr.features.game.GamePlay;
 import app.ageguessr.features.game.GamePlayRepository;
 import app.ageguessr.features.game.GameRounds;
@@ -39,7 +40,7 @@ class SubmitSecondGuessHandlerTest {
     private final GamePlayRepository plays = mock(GamePlayRepository.class);
     private final HintRepository hintRepository = mock(HintRepository.class);
     private final SubmitSecondGuessHandler handler =
-            new SubmitSecondGuessHandler(rounds, plays, new RoundViews(new HintPicker(hintRepository)), CLOCK);
+            new SubmitSecondGuessHandler(rounds, plays, GameFixtures.views(hintRepository), CLOCK);
     private final PlayerKey guest = PlayerKey.guest(UUID.randomUUID());
 
     @BeforeEach
@@ -51,7 +52,7 @@ class SubmitSecondGuessHandlerTest {
     @Test
     void endsTheRoundAfterTheHintAndRevealsIt() {
         GamePlay play = withPlay(30);
-        play.revealHint(HintCategory.MUSIC, UUID.randomUUID());
+        play.revealHints(List.of(HintCategory.MUSIC), List.of(UUID.randomUUID()));
 
         RoundView view = handler.handle(guest, TODAY, (short) 1, new SubmitSecondGuessCommand(38));
 
@@ -79,7 +80,7 @@ class SubmitSecondGuessHandlerTest {
         RoundView view = handler.handle(guest, TODAY, (short) 1, new SubmitSecondGuessCommand(38));
 
         assertThat(view.step()).isEqualTo(RoundStep.FINISHED);
-        assertThat(view.result().hint()).isNull();
+        assertThat(view.result().hints()).isEmpty();
     }
 
     @Test
@@ -102,7 +103,7 @@ class SubmitSecondGuessHandlerTest {
 
     @Test
     void refusesTheLoserOfTwoSecondGuessesSentAtOnce() {
-        withPlay(30).revealHint(HintCategory.MUSIC, UUID.randomUUID());
+        withPlay(30).revealHints(List.of(HintCategory.MUSIC), List.of(UUID.randomUUID()));
         when(plays.saveAndFlush(any())).thenThrow(new ObjectOptimisticLockingFailureException(GamePlay.class, "id"));
 
         assertThatThrownBy(() -> handler.handle(guest, TODAY, (short) 1, new SubmitSecondGuessCommand(38)))

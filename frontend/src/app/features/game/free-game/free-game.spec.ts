@@ -140,7 +140,11 @@ describe('FreeGame', () => {
     fixture.detectChanges();
     page.querySelector('form')!.dispatchEvent(new Event('submit'));
     const report = http.expectOne('/api/game/series/series-1/rounds/1/report');
-    expect(report.request.body).toEqual({ target: 'HINT', reason: 'UNCLEAR' });
+    expect(report.request.body).toEqual({
+      target: 'HINT',
+      reason: 'UNCLEAR',
+      hintCategory: 'MUSIC',
+    });
     report.flush(null, { status: 204, statusText: 'No Content' });
     fixture.detectChanges();
 

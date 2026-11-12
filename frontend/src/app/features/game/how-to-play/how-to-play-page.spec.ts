@@ -12,7 +12,7 @@ describe('HowToPlayPage', () => {
 
     expect(page.querySelector('h1')?.textContent).toContain(GAME_TEXT.howToPlay);
     expect(page.querySelector('h2')).toBeNull();
-    expect(page.querySelectorAll('li')).toHaveLength(3);
+    expect(page.querySelectorAll('li')).toHaveLength(4);
     expect(page.querySelector('a')?.getAttribute('href')).toBe('/');
   });
 });

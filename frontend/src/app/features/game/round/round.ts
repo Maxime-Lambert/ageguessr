@@ -5,18 +5,29 @@ import {
   effect,
   input,
   output,
+  signal,
   untracked,
   viewChild,
   viewChildren,
 } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { LucideArrowDown, LucideArrowUp } from '@lucide/angular';
+import { LucideArrowDown, LucideArrowUp, LucideCheck } from '@lucide/angular';
 import { Button } from '../../../shared/ui/button/button';
 import { AgeInput } from '../../../shared/ui/age-input/age-input';
 import { Field } from '../../../shared/ui/field/field';
 import { CasePhoto } from '../case-photo/case-photo';
 import { CaseSteps } from '../case-steps/case-steps';
-import { CATEGORY_LABELS, GAME_TEXT, directionText, roundTitle } from '../game-vocabulary';
+import {
+  CATEGORY_LABELS,
+  GAME_TEXT,
+  directionText,
+  gapText,
+  pickHintsText,
+  pickedText,
+  ageOutOfRange,
+  rangeText,
+  roundTitle,
+} from '../game-vocabulary';
 import { LeadIcon } from '../lead-icon/lead-icon';
 import { HintCategory, MAX_AGE, MIN_AGE, RoundView } from '../models';
 
@@ -36,6 +47,7 @@ import { HintCategory, MAX_AGE, MIN_AGE, RoundView } from '../models';
     LeadIcon,
     LucideArrowDown,
     LucideArrowUp,
+    LucideCheck,
   ],
   selector: 'app-round',
   templateUrl: './round.html',
@@ -47,27 +59,42 @@ export class Round {
   readonly error = input<string | null>(null);
 
   readonly guessed = output<number>();
-  readonly hintPicked = output<HintCategory>();
+  readonly hintsPicked = output<HintCategory[]>();
   readonly imageFailed = output<void>();
 
   protected readonly text = GAME_TEXT;
   protected readonly categoryLabels = CATEGORY_LABELS;
-  protected readonly minAge = MIN_AGE;
-  protected readonly maxAge = MAX_AGE;
 
-  readonly guess = new FormControl<number | null>(null, [
-    Validators.required,
-    Validators.min(MIN_AGE),
-    Validators.max(MAX_AGE),
-    Validators.pattern(/^\d+$/),
-  ]);
+  readonly guess = new FormControl<number | null>(null, ageValidators(MIN_AGE, MAX_AGE));
 
   readonly title = computed(() => roundTitle(this.round().position, this.total()));
   readonly step = computed(() => this.round().step);
   readonly direction = computed(() => {
-    const { direction, firstGuess } = this.round();
-    return direction && firstGuess !== null ? directionText(direction, firstGuess) : null;
+    const { direction, gap, firstGuess } = this.round();
+    if (!direction || firstGuess === null) return null;
+    const side = directionText(direction, firstGuess);
+    return gap ? `${side}, ${gapText(gap)}` : side;
   });
+  readonly rangeLabel = computed(() => {
+    const range = this.round().range;
+    return range ? rangeText(range) : null;
+  });
+
+  protected readonly invalidText = computed(() => {
+    const range = this.round().range;
+    return range ? ageOutOfRange(range) : this.text.invalidAge;
+  });
+
+  /** The final guess stays within the ages the side and the band leave. */
+  protected readonly minAge = computed(() => this.round().range?.min ?? MIN_AGE);
+  protected readonly maxAge = computed(() => this.round().range?.max ?? MAX_AGE);
+
+  /** The categories picked so far, in the order they are offered. */
+  protected readonly picked = signal<readonly HintCategory[]>([]);
+  protected readonly toPick = computed(() => this.round().hintsToPick ?? 1);
+  protected readonly pickTitle = computed(() => pickHintsText(this.toPick()));
+  protected readonly pickedLabel = computed(() => pickedText(this.picked().length, this.toPick()));
+  protected readonly pickComplete = computed(() => this.picked().length === this.toPick());
 
   /** Large while the player reads it and picks a lead, compact above the final guess. */
   protected readonly directionStyle = computed(() =>
@@ -89,17 +116,29 @@ export class Round {
       const target =
         step === 'AWAITING_HINT' ? this.categoryButtons().at(0)?.nativeElement : this.guessInput();
       untracked(() => {
+        if (step === 'AWAITING_HINT') {
+          this.picked.set([]);
+        }
+        // The same component plays the next round: back to 18-100 until a first guess.
+        this.guess.setValidators(ageValidators(this.minAge(), this.maxAge()));
         if (step === 'AWAITING_SECOND_GUESS') {
           this.guess.reset(this.secondGuessStart());
+        } else {
+          this.guess.updateValueAndValidity();
         }
         target?.focus();
       });
     });
   }
 
+  /**
+   * The edge of the range nearest the first guess: − and + adjust from there, and Enter
+   * alone never sends an age already ruled out.
+   */
   private secondGuessStart(): number | null {
-    const { firstGuess, direction } = this.round();
+    const { firstGuess, direction, range } = this.round();
     if (firstGuess === null || direction === null) return null;
+    if (range) return direction === 'OLDER' ? range.min : range.max;
     const next = firstGuess + (direction === 'OLDER' ? 1 : -1);
     return Math.min(MAX_AGE, Math.max(MIN_AGE, next));
   }
@@ -112,9 +151,35 @@ export class Round {
     this.guessed.emit(Number(this.guess.value));
   }
 
-  pick(category: HintCategory): void {
-    if (!this.busy()) {
-      this.hintPicked.emit(category);
+  isPicked(category: HintCategory): boolean {
+    return this.picked().includes(category);
+  }
+
+  /** Picks or unpicks a lead; once enough are picked, the others wait for one to be unpicked. */
+  toggle(category: HintCategory): void {
+    if (this.busy()) return;
+    if (this.isPicked(category)) {
+      this.picked.update((picked) => picked.filter((one) => one !== category));
+    } else if (!this.pickComplete()) {
+      const offered = this.round().categories ?? [];
+      this.picked.update((picked) =>
+        offered.filter((one) => one === category || picked.includes(one)),
+      );
     }
   }
+
+  confirmHints(): void {
+    if (this.pickComplete() && !this.busy()) {
+      this.hintsPicked.emit([...this.picked()]);
+    }
+  }
+}
+
+function ageValidators(min: number, max: number) {
+  return [
+    Validators.required,
+    Validators.min(min),
+    Validators.max(max),
+    Validators.pattern(/^\d+$/),
+  ];
 }

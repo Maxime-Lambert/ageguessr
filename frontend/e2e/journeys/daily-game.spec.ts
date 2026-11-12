@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { BACKEND_URL, logIn, signUp, uniqueAccount } from './support';
+import { pickLeads } from '../component/game-mocks';
 
 // Both tests seed today's game, which deletes today's plays: they must not run at once.
 test.describe.configure({ mode: 'serial' });
@@ -23,15 +24,17 @@ test('a guest plays the three rounds of the day, through a reload, to the case r
   await expect(page.getByRole('heading', { name: 'Case 1 of 3' })).toBeVisible();
   await age.fill('30');
   await page.getByRole('button', { name: 'Guess', exact: true }).click();
-  await expect(page.getByText('Older than 30')).toBeVisible();
-  await page.getByRole('button', { name: 'Music' }).click();
+  await expect(page.getByText('Older than 30, by 6 to 15 years')).toBeVisible();
+  // The seed offers three categories: all three are picked.
+  await pickLeads(page);
   const hint = page.getByText(/E2E MUSIC hint|Indice E2E MUSIC/);
   await expect(hint).toBeVisible();
 
   await page.reload();
   await expect(page.getByRole('heading', { name: 'Case 1 of 3' })).toBeVisible();
-  await expect(page.getByText('Older than 30')).toBeVisible();
+  await expect(page.getByText('Older than 30, by 6 to 15 years')).toBeVisible();
   await expect(hint).toBeVisible();
+  await expect(page.getByText(/E2E SPORT hint|Indice E2E SPORT/)).toBeVisible();
 
   await age.fill('40');
   await page.getByRole('button', { name: 'Final guess' }).click();
@@ -50,7 +53,7 @@ test('a guest plays the three rounds of the day, through a reload, to the case r
   await expect(page.getByRole('heading', { name: 'Case 3 of 3' })).toBeVisible();
   await age.fill('20');
   await page.getByRole('button', { name: 'Guess', exact: true }).click();
-  await page.getByRole('button', { name: 'Film' }).click();
+  await pickLeads(page);
   await age.fill('30');
   await page.getByRole('button', { name: 'Final guess' }).click();
   await page.getByRole('button', { name: 'See the case report' }).click();

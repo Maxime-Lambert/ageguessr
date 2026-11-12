@@ -4,7 +4,7 @@ import { LucideFlag } from '@lucide/angular';
 import { Observable } from 'rxjs';
 import { Button } from '../../../shared/ui/button/button';
 import { GAME_TEXT, HINT_REPORT_REASONS, PHOTO_REPORT_REASONS } from '../game-vocabulary';
-import { ReportTarget, RoundReport } from '../models';
+import { HintCategory, ReportTarget, RoundReport } from '../models';
 
 /** Sends a report of the round on screen: given by the screen, which knows the round. */
 export type RoundReporter = (report: RoundReport) => Observable<void>;
@@ -12,7 +12,7 @@ export type RoundReporter = (report: RoundReport) => Observable<void>;
 /**
  * A discreet flag button by the photo or on the hint of a result, which opens a closed list of
  * reasons (no free text) and sends the one picked. Once sent, here or before a reload,
- * it says so instead of offering it again: one report per round.
+ * it says so instead of offering it again: one report per photo and per hint of a round.
  */
 @Component({
   imports: [Button, LucideFlag],
@@ -26,6 +26,8 @@ export class ReportButton {
   /** Already reported by this player (RoundReveal), or just now. */
   readonly reported = input(false);
   readonly reporter = input.required<RoundReporter>();
+  /** Which of the round's hints, for a HINT report: a result shows one button per hint. */
+  readonly hintCategory = input<HintCategory | null>(null);
   /** `paper` on the hint's newspaper clipping, whose colors are not the page's. */
   readonly tone = input<'page' | 'paper'>('page');
 
@@ -62,8 +64,12 @@ export class ReportButton {
       ([code, label]) => ({ code, label }),
     ),
   );
-  /** Ids unique per target: a result shows the photo's and the hint's lists together. */
-  readonly name = computed(() => `report-${this.target().toLowerCase()}`);
+  /** Ids unique per target and hint: a result shows the photo's and each hint's lists together. */
+  readonly name = computed(() =>
+    [`report-${this.target().toLowerCase()}`, this.hintCategory()?.toLowerCase()]
+      .filter(Boolean)
+      .join('-'),
+  );
 
   toggle(): void {
     this.open.update((open) => !open);
@@ -81,7 +87,12 @@ export class ReportButton {
     }
     this.sending.set(true);
     this.error.set(null);
-    this.reporter()({ target: this.target(), reason } as RoundReport).subscribe({
+    const report = (
+      this.target() === 'PHOTO'
+        ? { target: 'PHOTO', reason }
+        : { target: 'HINT', reason, hintCategory: this.hintCategory() }
+    ) as RoundReport;
+    this.reporter()(report).subscribe({
       next: () => {
         this.sending.set(false);
         this.sent.set(true);

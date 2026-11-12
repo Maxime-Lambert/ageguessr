@@ -4,6 +4,7 @@ import app.ageguessr.shared.i18n.Language;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import app.ageguessr.features.hints.Hint;
@@ -12,8 +13,8 @@ import app.ageguessr.features.hints.HintCategory;
 import app.ageguessr.features.hints.HintRepository;
 import app.ageguessr.features.hints.HintReviewStatus;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
@@ -32,32 +33,43 @@ class HintPickerTest {
     }
 
     @Test
-    void showsAHintInTheLanguageOfTheRoundWithItsYearAndSource() {
-        Hint hint = hint(HintReviewStatus.APPROVED);
-        when(hints.findById(hint.getId())).thenReturn(Optional.of(hint));
+    void showsTheHintsInTheLanguageOfTheRoundInTheirOrderWithYearAndSource() {
+        Hint music = hint(HintCategory.MUSIC, HintReviewStatus.APPROVED);
+        Hint film = hint(HintCategory.FILM, HintReviewStatus.APPROVED);
+        // The repository answers in any order: the round's order is kept.
+        when(hints.findAllById(List.of(music.getId(), film.getId()))).thenReturn(List.of(film, music));
 
-        assertThat(picker.shown(hint.getId(), Language.FR))
-                .contains(new GameHint(HintCategory.MUSIC, "Un tube.", 1986, "https://fr.wikipedia.org/wiki/Tube"));
-        assertThat(picker.shown(hint.getId(), Language.EN)).map(GameHint::text).contains("A hit.");
+        assertThat(picker.shown(List.of(music.getId(), film.getId()), Language.FR))
+                .containsExactly(
+                        new GameHint(HintCategory.MUSIC, "Un tube.", 1986, "https://fr.wikipedia.org/wiki/Tube"),
+                        new GameHint(HintCategory.FILM, "Un tube.", 1986, "https://fr.wikipedia.org/wiki/Tube"));
+        assertThat(picker.shown(List.of(music.getId(), film.getId()), Language.EN))
+                .extracting(GameHint::text)
+                .containsExactly("A hit.", "A hit.");
     }
 
     @Test
-    void showsNoHintOnceRejected() {
-        Hint hint = hint(HintReviewStatus.REJECTED);
-        when(hints.findById(hint.getId())).thenReturn(Optional.of(hint));
+    void leavesOutAHintRejectedOrDeletedSince() {
+        Hint kept = hint(HintCategory.MUSIC, HintReviewStatus.APPROVED);
+        Hint rejected = hint(HintCategory.FILM, HintReviewStatus.REJECTED);
+        UUID deleted = UUID.randomUUID();
+        when(hints.findAllById(List.of(rejected.getId(), deleted, kept.getId()))).thenReturn(List.of(rejected, kept));
+        // A null id: a hint deleted under the former ON DELETE SET NULL (V13, V20).
+        List<UUID> ids = Arrays.asList(rejected.getId(), null, deleted, kept.getId());
 
-        assertThat(picker.shown(hint.getId(), Language.EN)).isEmpty();
+        assertThat(picker.shown(ids, Language.EN)).extracting(GameHint::category).containsExactly(HintCategory.MUSIC);
     }
 
     @Test
     void showsNoHintWhenThereWasNone() {
-        assertThat(picker.shown(null, Language.EN)).isEmpty();
+        assertThat(picker.shown(List.of(), Language.EN)).isEmpty();
+        verifyNoInteractions(hints);
     }
 
-    private static Hint hint(HintReviewStatus status) {
+    private static Hint hint(HintCategory category, HintReviewStatus status) {
         return Hint.builder()
                 .id(UUID.randomUUID())
-                .category(HintCategory.MUSIC)
+                .category(category)
                 .year(1986)
                 .audience(HintAudience.ALL)
                 .textEn("A hit.")

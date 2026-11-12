@@ -8,7 +8,7 @@ describe('Round', () => {
   let fixture: ComponentFixture<Round>;
   let page: HTMLElement;
   let guesses: number[];
-  let hints: string[];
+  let picks: string[][];
 
   function show(view: RoundView): void {
     fixture.componentRef.setInput('round', view);
@@ -28,9 +28,9 @@ describe('Round', () => {
     fixture = TestBed.createComponent(Round);
     page = fixture.nativeElement as HTMLElement;
     guesses = [];
-    hints = [];
+    picks = [];
     fixture.componentInstance.guessed.subscribe((guess) => guesses.push(guess));
-    fixture.componentInstance.hintPicked.subscribe((category) => hints.push(category));
+    fixture.componentInstance.hintsPicked.subscribe((categories) => picks.push(categories));
   });
 
   it('asks for a first guess under the photo, aged like an archive', () => {
@@ -74,27 +74,108 @@ describe('Round', () => {
     expect(guesses).toEqual([]);
   });
 
-  it('tells the side after the first guess and offers the categories, focused', () => {
-    show(
-      round(1, {
-        step: 'AWAITING_HINT',
-        firstGuess: 30,
-        direction: 'OLDER',
-        categories: ['MUSIC', 'SPORT'],
-      }),
-    );
+  function leadButtons(): HTMLButtonElement[] {
+    return Array.from(page.querySelectorAll<HTMLButtonElement>('[role=group] button'));
+  }
 
-    expect(page.textContent).toContain('Older than 30');
+  function confirmButton(): HTMLButtonElement {
+    return Array.from(page.querySelectorAll<HTMLButtonElement>('button')).find(
+      (button) => button.textContent?.trim() === GAME_TEXT.showHints,
+    )!;
+  }
+
+  const awaitingHints = (overrides: Partial<RoundView> = {}) =>
+    round(1, {
+      step: 'AWAITING_HINT',
+      firstGuess: 30,
+      direction: 'OLDER',
+      gap: 'CLEARLY',
+      range: { min: 36, max: 45 },
+      categories: ['MUSIC', 'FILM', 'SPORT', 'WORLD'],
+      hintsToPick: 3,
+      ...overrides,
+    });
+
+  it('tells the side, the band and the ages left after the first guess, then offers the leads', () => {
+    show(awaitingHints());
+
+    expect(page.textContent).toContain('Older than 30, by 6 to 15 years');
+    expect(page.textContent).toContain('Between 36 and 45');
+    expect(page.textContent).toContain('Pick 3 leads');
+    expect(page.textContent).toContain('0 of 3 picked');
     expect(page.querySelector('app-age-input input')).toBeNull();
-    const buttons = Array.from(page.querySelectorAll<HTMLButtonElement>('button'));
-    expect(buttons.map((button) => button.textContent?.trim())).toEqual(['Music', 'Sport']);
-    expect(document.activeElement).toBe(buttons[0]);
-
-    buttons[1].click();
-    expect(hints).toEqual(['SPORT']);
+    expect(leadButtons().map((button) => button.textContent?.trim())).toEqual([
+      'Music',
+      'Film',
+      'Sport',
+      'World events',
+    ]);
+    expect(document.activeElement).toBe(leadButtons()[0]);
+    expect(confirmButton().disabled).toBe(true);
   });
 
-  it('shows the hint and starts the final guess one year past the first, on the side given', () => {
+  it('sends exactly the number of leads asked, in the order offered', () => {
+    show(awaitingHints());
+
+    leadButtons()[3].click();
+    leadButtons()[0].click();
+    fixture.detectChanges();
+    expect(confirmButton().disabled).toBe(true);
+    leadButtons()[2].click();
+    fixture.detectChanges();
+
+    expect(page.textContent).toContain('3 of 3 picked');
+    expect(leadButtons().map((button) => button.getAttribute('aria-pressed'))).toEqual([
+      'true',
+      'false',
+      'true',
+      'true',
+    ]);
+    // Enough picked: the last one waits for another to be unpicked.
+    expect(leadButtons()[1].disabled).toBe(true);
+    confirmButton().click();
+
+    expect(picks).toEqual([['MUSIC', 'SPORT', 'WORLD']]);
+  });
+
+  it('lets a lead be unpicked to pick another', () => {
+    show(awaitingHints());
+    for (const index of [0, 1, 2]) leadButtons()[index].click();
+    fixture.detectChanges();
+
+    leadButtons()[1].click();
+    fixture.detectChanges();
+    leadButtons()[3].click();
+    fixture.detectChanges();
+    confirmButton().click();
+
+    expect(picks).toEqual([['MUSIC', 'SPORT', 'WORLD']]);
+  });
+
+  it('asks for a single lead in the singular when only one is offered', () => {
+    show(awaitingHints({ categories: ['SPORT'], hintsToPick: 1 }));
+
+    expect(page.textContent).toContain(GAME_TEXT.pickHint);
+    expect(page.textContent).not.toContain('picked');
+    leadButtons()[0].click();
+    fixture.detectChanges();
+    confirmButton().click();
+
+    expect(picks).toEqual([['SPORT']]);
+  });
+
+  it('sends no leads while a request is on its way', () => {
+    show(awaitingHints({ categories: ['SPORT'], hintsToPick: 1 }));
+    leadButtons()[0].click();
+    fixture.componentRef.setInput('busy', true);
+    fixture.detectChanges();
+
+    fixture.componentInstance.confirmHints();
+
+    expect(picks).toEqual([]);
+  });
+
+  it('shows the leads and starts the final guess at the edge of the range nearest the first', () => {
     show(round(1));
     type('30');
     show(
@@ -102,34 +183,81 @@ describe('Round', () => {
         step: 'AWAITING_SECOND_GUESS',
         firstGuess: 30,
         direction: 'YOUNGER',
-        hint: { category: 'MUSIC', text: 'A hit.' },
+        gap: 'SLIGHTLY',
+        range: { min: 25, max: 29 },
+        hints: [
+          { category: 'MUSIC', text: 'A hit.' },
+          { category: 'FILM', text: 'A film.' },
+        ],
       }),
     );
 
-    expect(page.textContent).toContain('Younger than 30');
+    expect(page.textContent).toContain('Younger than 30, by 1 to 5 years');
     expect(page.textContent).toContain('A hit.');
-    expect(page.querySelector<HTMLInputElement>('app-age-input input')!.value).toBe('29');
+    expect(page.textContent).toContain('A film.');
+    const input = page.querySelector<HTMLInputElement>('app-age-input input')!;
+    expect(input.value).toBe('29');
+    expect(input.getAttribute('aria-valuemin')).toBe('25');
+    expect(input.getAttribute('aria-valuemax')).toBe('29');
     expect(page.querySelector('button[type=submit]')?.textContent?.trim()).toBe(
       GAME_TEXT.secondGuessButton,
     );
-    expect(document.activeElement).toBe(page.querySelector('app-age-input input'));
+    expect(document.activeElement).toBe(input);
   });
 
   it.each([
-    ['OLDER', 30, '31'],
-    ['OLDER', 100, '100'],
-    ['YOUNGER', 18, '18'],
+    ['OLDER', 30, { min: 36, max: 45 }, '36'],
+    ['OLDER', 98, { min: 99, max: 100 }, '99'],
+    ['YOUNGER', 40, { min: 18, max: 24 }, '24'],
   ] as const)(
-    'starts a final guess after %s than %i at %s, within the ages allowed',
-    (direction, first, expected) => {
+    'starts a final guess %s than %i at its range %o, at %s',
+    (direction, first, range, expected) => {
       show(round(1));
       show(
-        round(1, { step: 'AWAITING_SECOND_GUESS', firstGuess: first, direction, categories: [] }),
+        round(1, { step: 'AWAITING_SECOND_GUESS', firstGuess: first, direction, range, hints: [] }),
       );
 
       expect(page.querySelector<HTMLInputElement>('app-age-input input')!.value).toBe(expected);
     },
   );
+
+  it.each(['35', '46'])('refuses %j, out of the range left, without sending it', (value) => {
+    show(round(1));
+    show(
+      round(1, {
+        step: 'AWAITING_SECOND_GUESS',
+        firstGuess: 30,
+        direction: 'OLDER',
+        gap: 'CLEARLY',
+        range: { min: 36, max: 45 },
+        hints: [],
+      }),
+    );
+
+    type(value);
+
+    expect(guesses).toEqual([]);
+    expect(page.querySelector('app-field [aria-live="polite"]')?.textContent).toContain(
+      'Enter a whole age from 36 to 45.',
+    );
+  });
+
+  it('goes back to every age for the first guess of the next round', () => {
+    show(
+      round(1, {
+        step: 'AWAITING_SECOND_GUESS',
+        firstGuess: 30,
+        direction: 'OLDER',
+        range: { min: 36, max: 45 },
+        hints: [],
+      }),
+    );
+    show(round(2));
+
+    type('20');
+
+    expect(guesses).toEqual([20]);
+  });
 
   it('sends the prefilled final guess as is', () => {
     show(round(1));
@@ -138,7 +266,9 @@ describe('Round', () => {
         step: 'AWAITING_SECOND_GUESS',
         firstGuess: 40,
         direction: 'OLDER',
-        categories: [],
+        gap: 'SLIGHTLY',
+        range: { min: 41, max: 45 },
+        hints: [],
       }),
     );
 
@@ -153,7 +283,7 @@ describe('Round', () => {
         step: 'AWAITING_SECOND_GUESS',
         firstGuess: 30,
         direction: 'OLDER',
-        categories: [],
+        hints: [],
       }),
     );
 

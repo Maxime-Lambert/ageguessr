@@ -82,7 +82,7 @@ describe('RoundResult', () => {
         secondGuess: null,
         secondPoints: null,
         points: 1000,
-        hint: null,
+        hints: [],
       }),
     );
 
@@ -109,6 +109,36 @@ describe('RoundResult', () => {
     expect(next).toBe(1);
   });
 
+  it('shows every hint of the round with its year, and a report for each', () => {
+    show(
+      finished(1, {
+        hints: [
+          {
+            category: 'MUSIC',
+            text: 'A hit.',
+            year: 1986,
+            sourceUrl: 'https://en.wikipedia.org/wiki/Hit',
+          },
+          {
+            category: 'FILM',
+            text: 'A film.',
+            year: 1986,
+            sourceUrl: 'https://en.wikipedia.org/wiki/Film',
+          },
+        ],
+        reportedHints: ['FILM'],
+      }),
+    );
+
+    expect(page.textContent).toContain('A hit.');
+    expect(page.textContent).toContain('A film.');
+    expect(page.textContent?.match(/1986/g)).toHaveLength(2);
+    const buttons = Array.from(page.querySelectorAll('button')).map((b) => b.textContent?.trim());
+    // The film hint was already reported: only the music one is offered.
+    expect(buttons.filter((label) => label === GAME_TEXT.reportHint)).toHaveLength(1);
+    expect(page.textContent).toContain(GAME_TEXT.reportSent);
+  });
+
   it('offers to report the photo, and the hint when one was shown', () => {
     show(finished(1));
     const buttons = Array.from(page.querySelectorAll('button')).map((b) => b.textContent?.trim());
@@ -117,7 +147,7 @@ describe('RoundResult', () => {
   });
 
   it('offers no hint report without a hint, and says what was already reported', () => {
-    show(finished(1, { hint: null, photoReported: true }));
+    show(finished(1, { hints: [], photoReported: true }));
     const buttons = Array.from(page.querySelectorAll('button')).map((b) => b.textContent?.trim());
     expect(buttons).not.toContain(GAME_TEXT.reportPhoto);
     expect(buttons).not.toContain(GAME_TEXT.reportHint);

@@ -13,15 +13,23 @@ test.describe('daily game', () => {
 
     await page.getByLabel('Age').fill('30');
     await page.getByRole('button', { name: 'Guess', exact: true }).click();
-    await expect(page.getByText('Older than 30')).toBeVisible();
+    await expect(page.getByText('Older than 30, by 6 to 15 years')).toBeVisible();
+    await expect(page.getByText('Between 36 and 45')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Music' })).toBeFocused();
 
     await page.getByRole('button', { name: 'Music' }).click();
+    await page.getByRole('button', { name: 'Film' }).click();
+    await expect(page.getByRole('button', { name: 'Open these leads' })).toBeDisabled();
+    await page.getByRole('button', { name: 'Sport' }).click();
+    await expect(page.getByText('3 of 3 picked')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'World events' })).toBeDisabled();
+    await page.getByRole('button', { name: 'Open these leads' }).click();
     await expect(page.getByText('A hit topped the charts.')).toBeVisible();
+    await expect(page.getByText('A team won the cup.')).toBeVisible();
     await expect(page.getByLabel('Age')).toBeFocused();
 
-    // The final guess starts one year past the first, on the side given.
-    await expect(page.getByLabel('Age')).toHaveValue('31');
+    // The final guess starts at the edge of the range nearest the first guess.
+    await expect(page.getByLabel('Age')).toHaveValue('36');
     await page.getByLabel('Age').fill('38');
     await page.getByRole('button', { name: 'Final guess' }).click();
 
@@ -30,7 +38,7 @@ test.describe('daily game', () => {
     await expect(page.getByText('Jane Photographer')).toBeVisible();
     expect(sent).toEqual([
       { guess: 30, language: expect.stringMatching(/^(EN|FR)$/) },
-      { category: 'MUSIC' },
+      { categories: ['MUSIC', 'FILM', 'SPORT'] },
       { guess: 38 },
     ]);
 

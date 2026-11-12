@@ -146,15 +146,18 @@ class SeriesFunctionalTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.step").value("AWAITING_HINT"))
                 .andExpect(jsonPath("$.direction").value("OLDER"))
+                .andExpect(jsonPath("$.gap").value("CLEARLY"))
+                .andExpect(jsonPath("$.range.min").value(36))
+                .andExpect(jsonPath("$.range.max").value(45))
                 .andExpect(jsonPath("$.categories[0]").value("MUSIC"))
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
         assertNoAnswerIn(afterFirst);
-        perform(post(round(seriesId, 1, "hint")), "{\"category\":\"MUSIC\"}", guest)
+        perform(post(round(seriesId, 1, "hint")), "{\"categories\":[\"MUSIC\"]}", guest)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.step").value("AWAITING_SECOND_GUESS"))
-                .andExpect(jsonPath("$.hint.text").value("Un tube de cette année."));
+                .andExpect(jsonPath("$.hints[0].text").value("Un tube de cette année."));
         perform(post(round(seriesId, 1, "second-guess")), "{\"guess\":40}", guest)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.step").value("FINISHED"))
@@ -368,7 +371,7 @@ class SeriesFunctionalTest {
                             player)
                     .andExpect(status().isOk());
             if (firstGuess != AGE) {
-                perform(post(round(seriesId, position, "hint")), "{\"category\":\"MUSIC\"}", player)
+                perform(post(round(seriesId, position, "hint")), "{\"categories\":[\"MUSIC\"]}", player)
                         .andExpect(status().isOk());
                 perform(post(round(seriesId, position, "second-guess")), "{\"guess\":40}", player)
                         .andExpect(jsonPath("$.step").value("FINISHED"));

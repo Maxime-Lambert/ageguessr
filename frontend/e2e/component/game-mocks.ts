@@ -18,8 +18,11 @@ export function round(position: number, overrides: Record<string, unknown> = {})
     step: 'NOT_STARTED',
     firstGuess: null,
     direction: null,
+    gap: null,
+    range: null,
     categories: null,
-    hint: null,
+    hintsToPick: null,
+    hints: null,
     result: null,
     ...overrides,
   };
@@ -42,14 +45,16 @@ export const RESULT = {
     licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0',
     sourceUrl: 'https://commons.wikimedia.org/wiki/File:Jane.jpg',
   },
-  hint: {
-    category: 'MUSIC',
-    text: 'A hit topped the charts.',
-    year: 1986,
-    sourceUrl: 'https://en.wikipedia.org/wiki/Hit',
-  },
+  hints: [
+    {
+      category: 'MUSIC',
+      text: 'A hit topped the charts.',
+      year: 1986,
+      sourceUrl: 'https://en.wikipedia.org/wiki/Hit',
+    },
+  ],
   photoReported: false,
-  hintReported: false,
+  reportedHints: [],
 };
 
 function json(body: unknown) {
@@ -62,6 +67,18 @@ function json(body: unknown) {
  */
 export async function skipRules(page: Page): Promise<void> {
   await page.addInitScript(() => localStorage.setItem('ageguessr-rules-seen', '1'));
+}
+
+/** Picks the three leads of the mocked round, then opens them. */
+export async function pickLeads(
+  page: Page,
+  names = ['Music', 'Film', 'Sport'],
+  open = 'Open these leads',
+) {
+  for (const name of names) {
+    await page.getByRole('button', { name, exact: true }).click();
+  }
+  await page.getByRole('button', { name: open }).click();
 }
 
 /** Mocks the game API for one round played to the end; returns the bodies sent, in order. */
@@ -93,7 +110,10 @@ export async function mockGame(
             step: 'AWAITING_HINT',
             firstGuess: 30,
             direction: 'OLDER',
-            categories: ['MUSIC', 'FILM'],
+            gap: 'CLEARLY',
+            range: { min: 36, max: 45 },
+            categories: ['MUSIC', 'FILM', 'SPORT', 'WORLD'],
+            hintsToPick: 3,
           }),
         ),
       );
@@ -105,7 +125,13 @@ export async function mockGame(
             step: 'AWAITING_SECOND_GUESS',
             firstGuess: 30,
             direction: 'OLDER',
-            hint: { category: 'MUSIC', text: 'A hit topped the charts.' },
+            gap: 'CLEARLY',
+            range: { min: 36, max: 45 },
+            hints: [
+              { category: 'MUSIC', text: 'A hit topped the charts.' },
+              { category: 'FILM', text: 'A film filled the cinemas.' },
+              { category: 'SPORT', text: 'A team won the cup.' },
+            ],
           }),
         ),
       );

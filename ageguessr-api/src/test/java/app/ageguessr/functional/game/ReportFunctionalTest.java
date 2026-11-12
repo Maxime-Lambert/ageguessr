@@ -152,7 +152,7 @@ class ReportFunctionalTest {
                 .containsExactlyInAnyOrder("id", "photo_id", "reason", "status", "created_at", "closed_at");
         mockMvc.perform(get("/api/game/today").cookie(guest))
                 .andExpect(jsonPath("$.rounds[0].result.photoReported").value(true))
-                .andExpect(jsonPath("$.rounds[0].result.hintReported").value(false));
+                .andExpect(jsonPath("$.rounds[0].result.reportedHints.length()").value(0));
     }
 
     @Test
@@ -209,11 +209,19 @@ class ReportFunctionalTest {
         Cookie guest = guestCookie();
         perform(post(dailyRound("first-guess")), "{\"guess\":30,\"language\":\"EN\"}", guest)
                 .andExpect(status().isOk());
-        perform(post(dailyRound("hint")), "{\"category\":\"MUSIC\"}", guest).andExpect(status().isOk());
+        perform(post(dailyRound("hint")), "{\"categories\":[\"MUSIC\"]}", guest).andExpect(status().isOk());
         perform(post(dailyRound("second-guess")), "{\"guess\":40}", guest).andExpect(status().isOk());
 
-        report(dailyRound("report"), "{\"target\":\"HINT\",\"reason\":\"WRONG_YEAR\"}", guest)
+        report(dailyRound("report"), "{\"target\":\"HINT\",\"reason\":\"WRONG_YEAR\",\"hintCategory\":\"FILM\"}", guest)
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.errorCode").value("NOTHING_TO_REPORT"));
+        report(dailyRound("report"), "{\"target\":\"HINT\",\"reason\":\"WRONG_YEAR\",\"hintCategory\":\"MUSIC\"}", guest)
                 .andExpect(status().isNoContent());
+        // Once per hint: without naming it, the only hint of the round, already reported.
+        report(dailyRound("report"), "{\"target\":\"HINT\",\"reason\":\"FALSE\"}", guest)
+                .andExpect(status().isNoContent());
+        mockMvc.perform(get("/api/game/today").cookie(guest))
+                .andExpect(jsonPath("$.rounds[0].result.reportedHints[0]").value("MUSIC"));
 
         assertThat(emailSender.lastMessageTo(ADMIN_EMAIL).subject()).contains("Hint reported", "MUSIC");
         MvcResult queue = mockMvc.perform(asAdmin(get("/api/admin/hints/reported")))

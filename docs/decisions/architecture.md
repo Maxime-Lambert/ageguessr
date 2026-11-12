@@ -583,6 +583,13 @@ au joueur.
 - **Base pré-construite** : extraction en Python hors de l'application (`scripts/hints/`),
   sortie JSON versionnée, import idempotent par Java. Pas d'appel à un LLM, à Wikipédia
   ou à Wikidata depuis l'application.
+- **Formulation de Célébrités** (2026-11-12, V21) : « Sur la photo, cette personne a l'âge
+  qu'a (ou qu'aurait) cette année X, desc. » plutôt que « Personnalité née cette année-là : X ». L'âge
+  est exact, l'année de l'indice étant celle de la partie moins l'âge, et le joueur n'a
+  plus de calcul à faire. « Ou qu'aurait » parce que l'extraction ne filtre pas les
+  personnes décédées, nombreuses sur les années anciennes (revue du 2026-11-12). Le même
+  texte sort de `extract_wikidata.py`. Limite acceptée : une série créée en fin d'année et
+  jouée en janvier décale d'un an, puisque son année de référence est celle de sa création.
 - **Relance annuelle de Célébrités** : aucun mineur n'est cité, donc l'extraction se
   relance à la main vers mars pour ajouter les personnes qui viennent d'avoir 18 ans. Les
   indices étant rangés par année de naissance, les autres n'ont pas à être mis à jour.
@@ -687,15 +694,34 @@ sont tirées dans `daily_rounds` (V12), les mêmes pour tous les joueurs.
   après un signalement resterait dans le cache des navigateurs.
 
 ### Déroulé d'une manche
-**Décision** (2026-11-02) : un 1er essai, puis le jeu dit seulement **« plus jeune »
-ou « plus vieux »**, puis le joueur choisit une catégorie d'indice et fait un 2e essai.
-Saisie de 18 à 100 ans.
+**Décision** (2026-11-12, remplace celle du 2026-11-02, PR `feature/better-hints-gameplay`) :
+un 1er essai, puis le jeu donne **le sens et une tranche d'écart** : de 1 à 5 ans
+(`SLIGHTLY`), de 6 à 15 (`CLEARLY`) ou 16 et plus (`FAR`). Le joueur choisit ensuite
+**3 catégories d'indice** (`app.game.hints.per-round`, moins quand moins sont offertes),
+puis fait un 2e essai, que l'écran garde dans la plage laissée par le sens et la tranche
+(`RoundView.range`, bornée à 18-100). Saisie de 18 à 100 ans.
 
-**Raison** : le chaud/froid prévu au départ donnait trop d'aide. Savoir qu'on est à
-15-20 ans de la réponse en ayant dit 40 laisse 20-25 ou 55-60 ans, et la photo tranche
-presque toujours entre les deux : un très mauvais 1er essai menait quand même à la
-bonne réponse. Le sens seul ne dit rien de la distance. Il n'y a pas de bonus de
-proximité (« brûlant ») : il redonnerait une distance.
+**Raison** : les retours des joueurs disaient que les indices n'aidaient pas. Un seul fait,
+souvent obscur et daté à quelques années près, ne resserrait rien après un simple
+« plus vieux ».
+- **Pourquoi le chaud/froid revient** : le 2026-11-02, on l'avait écarté parce qu'une
+  distance **sans** le sens laisse deux zones (dire 40 à 15-20 ans de la réponse laisse
+  20-25 ou 55-60), et que la photo tranche presque toujours entre les deux. Avec le sens
+  en plus, il ne reste qu'un intervalle de 5 ou 10 ans, et les indices servent à choisir
+  dedans.
+- **Un mauvais 1er essai reste puni** par ses propres points : 16 ans d'écart valent
+  environ 100 points sur 500.
+- **Ce qui est calculé, ce qui est stocké** : la tranche et la plage sont recalculées à
+  chaque lecture, à partir du 1er essai et de l'âge, comme le sens, et rien n'est stocké.
+  Les manches en cours au moment du déploiement sont donc passées d'elles-mêmes au nouveau
+  système.
+- **La plage n'est pas imposée par le serveur** : un 2e essai hors de la plage reste
+  accepté de 18 à 100 (décision de l'utilisateur), puisque le joueur ne pénaliserait que
+  lui-même.
+- **Toujours pas de bonus de proximité** (« brûlant ») : la tranche la plus fine fait déjà
+  5 ans. Aux bords de 18-100, le bornage peut réduire la plage davantage (essai 19,
+  réponse 18 : plage [18, 18]). Ce n'est pas une fuite : le joueur le déduit lui-même du
+  sens, de la tranche et des bornes publiques.
 
 ### Système de points
 **Décision** (2026-11-02, remplace « l'essentiel des points sur le 2e essai ») : chaque
@@ -723,12 +749,19 @@ points.
   Un jeton envoyé mais invalide donne un 401, pas une partie invitée : le front
   rafraîchit le jeton et le compte garde sa partie.
 - **Étapes** : `NOT_STARTED → AWAITING_HINT → AWAITING_SECOND_GUESS → FINISHED`,
-  dérivées des colonnes. Un 1er essai exact termine la manche. L'indice est obligatoire,
-  sauf si aucune catégorie n'a au moins `Hint.MINIMUM_PER_CATEGORY` (5) indices
-  éligibles (année de référence, public `ALL` + langue, jamais la personne à deviner) :
-  le joueur passe alors directement au 2e essai.
+  dérivées des colonnes. Un 1er essai exact termine la manche. Le choix des pistes est
+  obligatoire, sauf si aucune catégorie n'a au moins `Hint.MINIMUM_PER_CATEGORY` (5)
+  indices éligibles (année de référence, public `ALL` + langue, jamais la personne à
+  deviner) : le joueur passe alors directement au 2e essai.
+- **Pistes** (2026-11-12) : le joueur choisit exactement `min(N, catégories offertes)`
+  catégories distinctes (`app.game.hints.per-round`, N = 3), sinon `400 HINT_COUNT`.
 - **Même indice pour tous** pour une même (jour, manche, catégorie, langue) : index
-  tiré d'un hash stable, id gardé dans `game_plays.hint_id`.
+  tiré d'un hash stable, quelles que soient les autres catégories choisies. Les
+  catégories et les ids sont gardés côte à côte dans `game_plays.hint_categories` et
+  `hint_ids` (tableaux PostgreSQL, V20, dans l'ordre de `HintCategory`). Un tableau ne
+  porte pas de clé étrangère : un indice n'est jamais supprimé (`REJECTED`), et le jeu
+  ignore un id inconnu ou rejeté. Une table fille aurait demandé une table par entité
+  (`RoundProgress` est embarqué dans deux tables) pour une liste de 6 éléments au plus.
 - **Points stockés à l'essai** : régler la formule ne réécrit pas les parties passées.
 - **Minuit** : seule la date du jour se joue (`409 GAME_CLOSED`). Une manche commencée
   à 23:59 se perd ; le front recharge la nouvelle partie.
@@ -744,11 +777,13 @@ points.
 
 **Endpoints** (publics, JWT facultatif) : `GET /api/game/today`, puis `POST
 /api/game/{date}/rounds/{position}/first-guess` (`{guess, language}`), `…/hint`
-(`{category}`) et `…/second-guess` (`{guess}`). Tous renvoient un `RoundView`, la seule
+(`{categories}`) et `…/second-guess` (`{guess}`). Tous renvoient un `RoundView`, la seule
 forme sous laquelle une manche sort de l'API. **Rien de la réponse avant la fin** : ni
 âge, ni identité, ni crédit (la page Commons nomme la personne), ni id interne de
-photo, ni **année de l'indice** (année du jour − âge). Pendant la manche, l'indice ne
-sort qu'avec sa catégorie et son texte. `GameFunctionalTest` vérifie le JSON brut à
+photo, ni **année des indices** (année du jour − âge). Pendant la manche, un indice ne
+sort qu'avec sa catégorie et son texte. La tranche d'écart et la plage (`gap`, `range`)
+donnent un intervalle de 5 ans au moins, sauf aux bords de 18-100 (voir « Déroulé d'une
+manche »). `GameFunctionalTest` vérifie le JSON brut à
 chaque étape.
 
 ### Réinitialisation quotidienne
@@ -861,9 +896,12 @@ d'une liste fermée. L'admin traite deux files triées par nombre de signalement
   faut donc l'avoir terminée (identité connue), et un script ne vise que des photos
   qu'il a jouées.
 - **Anonymat** : `photo_reports` / `hint_reports` (V16) ne gardent que la cible, le motif,
-  le statut et les dates. Le « un signalement par manche » est une marque sur la manche
-  jouée (`RoundProgress.photoReported` / `hintReported`), déjà liée au joueur et purgée
-  avec elle. Un second envoi ne change rien (204, idempotent).
+  le statut et les dates. Le « un signalement par cible » est une marque sur la manche
+  jouée (`RoundProgress.photoReported`, et depuis V20 `reportedHintCategories`, une fois
+  par indice montré), déjà liée au joueur et purgée avec elle. Un second envoi ne change
+  rien (204, idempotent). Un indice se désigne par sa catégorie (`hintCategory`),
+  facultative quand la manche n'en a montré qu'un (manches d'avant V20, page chargée avant
+  la release) ; sinon `400 HINT_CATEGORY_REQUIRED`.
 - **Motifs** (enums de chaque feature) : photo `TOO_SMALL`, `NOT_IDENTIFIABLE`,
   `WRONG_PERSON`, `LOOKS_MINOR`, `DISTURBING_PERSON`, `OTHER` ; indice `WRONG_YEAR`,
   `FALSE`, `UNCLEAR`, `DISTURBING`, `OTHER`. Pas de texte libre : rien à modérer.

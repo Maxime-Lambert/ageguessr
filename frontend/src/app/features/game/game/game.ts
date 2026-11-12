@@ -48,9 +48,9 @@ export class Game extends RoundsScreen<TodayGame> {
   protected sendHint(
     game: TodayGame,
     round: RoundView,
-    category: HintCategory,
+    categories: HintCategory[],
   ): Observable<RoundView> {
-    return this.api.hint(game.date, round.position, category);
+    return this.api.hint(game.date, round.position, categories);
   }
 
   protected sendReport(game: TodayGame, round: RoundView, report: RoundReport): Observable<void> {

@@ -13,7 +13,7 @@
     [busy]="busy()"
     [error]="error()"
     (guessed)="guessed($event)"
-    (hintPicked)="hintPicked.emit($event)"
+    (hintsPicked)="hintsPicked.emit($event)"
     (imageFailed)="imageError.emit()"
   />
   @if (imageFailed()) {

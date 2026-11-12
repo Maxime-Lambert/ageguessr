@@ -12,9 +12,12 @@ import lombok.Builder;
  *
  * @param imageUrl null when the round is neutralized, the photo being out for everyone
  * @param firstGuess the player's own guess, once made
- * @param direction after a wrong first guess, until the result
- * @param categories the hint categories to choose from, while awaiting the hint
- * @param hint the hint chosen, while awaiting the second guess
+ * @param direction after a wrong first guess, until the result, as {@code gap} and {@code range}
+ * @param gap how far the first guess is, by band: with the side, a span of 5 or 10 years
+ * @param range the ages that span leaves, within 18-100, for the screen to keep the final guess in
+ * @param categories the hint categories to choose from, while awaiting the hints
+ * @param hintsToPick how many of them to choose, as {@code categories}
+ * @param hints the hints of the categories chosen, while awaiting the second guess
  * @param result once finished, and only then
  */
 @Builder
@@ -25,8 +28,11 @@ public record RoundView(
         RoundStep step,
         Integer firstGuess,
         Direction direction,
+        GapBand gap,
+        GuessRange range,
         List<HintCategory> categories,
-        ShownHint hint,
+        Integer hintsToPick,
+        List<ShownHint> hints,
         RoundReveal result) {
 
     /** The hint during the round: its year would give the answer away, so it waits for the result. */

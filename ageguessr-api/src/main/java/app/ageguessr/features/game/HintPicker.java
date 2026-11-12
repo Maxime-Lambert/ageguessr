@@ -1,12 +1,15 @@
 package app.ageguessr.features.game;
 
 import app.ageguessr.shared.i18n.Language;
+import app.ageguessr.features.hints.Hint;
 import app.ageguessr.features.hints.HintAudience;
 import app.ageguessr.features.hints.HintRepository;
 import app.ageguessr.features.hints.HintReviewStatus;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -26,14 +29,22 @@ public class HintPicker {
         return new HintOffer(hints.findEligible(gameDate.getYear() - age, audiences(language), personQid));
     }
 
-    /** The hint a player was shown, unless it has been rejected or deleted since. */
-    public Optional<GameHint> shown(UUID hintId, Language language) {
-        if (hintId == null) {
-            return Optional.empty();
+    /**
+     * The hints a player was shown, in their order, without those rejected or deleted since.
+     * One query for the round rather than one per hint.
+     */
+    public List<GameHint> shown(List<UUID> hintIds, Language language) {
+        List<UUID> known = hintIds.stream().filter(Objects::nonNull).toList();
+        if (known.isEmpty()) {
+            return List.of();
         }
-        return hints.findById(hintId)
-                .filter(hint -> hint.getReviewStatus() == HintReviewStatus.APPROVED)
-                .map(hint -> GameHint.of(hint, language));
+        Map<UUID, Hint> found = new HashMap<>();
+        hints.findAllById(known).forEach(hint -> found.put(hint.getId(), hint));
+        return known.stream()
+                .map(found::get)
+                .filter(hint -> hint != null && hint.getReviewStatus() == HintReviewStatus.APPROVED)
+                .map(hint -> GameHint.of(hint, language))
+                .toList();
     }
 
     /** The hints a player of this language can read: those for everyone, and their own. */
