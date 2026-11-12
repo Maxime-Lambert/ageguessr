@@ -2038,17 +2038,6 @@
   "category": "SCIENCE",
   "year": 1952,
   "audience": "FR",
-  "textFr": "Premier vol : Boeing B-52 Stratofortress",
-  "textEn": null,
-  "sourceUrl": "https://www.wikidata.org/wiki/Q174534",
-  "sourceKind": "wikidata-notoriety",
-  "dedupeKey": "science-fr-wikidata-notoriety-flight-q174534",
-  "translated": false
- },
- {
-  "category": "SCIENCE",
-  "year": 1952,
-  "audience": "FR",
   "textFr": "Premier vol : Tupolev Tu-95",
   "textEn": null,
   "sourceUrl": "https://www.wikidata.org/wiki/Q181815",
@@ -2076,6 +2065,17 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q8353996",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-flight-q8353996",
+  "translated": false
+ },
+ {
+  "category": "SCIENCE",
+  "year": 1952,
+  "audience": "FR",
+  "textFr": "Premier vol : Avro Vulcan",
+  "textEn": null,
+  "sourceUrl": "https://www.wikidata.org/wiki/Q218931",
+  "sourceKind": "wikidata-notoriety",
+  "dedupeKey": "science-fr-wikidata-notoriety-flight-q218931",
   "translated": false
  },
  {
@@ -2351,6 +2351,17 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q1898",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-discovery-q1898",
+  "translated": false
+ },
+ {
+  "category": "SCIENCE",
+  "year": 1955,
+  "audience": "FR",
+  "textFr": "Prix Nobel de physique : Willis Lamb",
+  "textEn": null,
+  "sourceUrl": "https://www.wikidata.org/wiki/Q186497",
+  "sourceKind": "wikidata-notoriety",
+  "dedupeKey": "science-fr-wikidata-notoriety-nobel-q186497-q38104",
   "translated": false
  },
  {
@@ -6746,22 +6757,22 @@
   "category": "SCIENCE",
   "year": 1995,
   "audience": "FR",
-  "textFr": "Lancement : Windows 95",
+  "textFr": "Lancement : DirectX",
   "textEn": null,
-  "sourceUrl": "https://www.wikidata.org/wiki/Q83370",
+  "sourceUrl": "https://www.wikidata.org/wiki/Q188695",
   "sourceKind": "wikidata-notoriety",
-  "dedupeKey": "science-fr-wikidata-notoriety-launch-q83370",
+  "dedupeKey": "science-fr-wikidata-notoriety-launch-q188695",
   "translated": false
  },
  {
   "category": "SCIENCE",
   "year": 1995,
   "audience": "FR",
-  "textFr": "Lancement : DirectX",
+  "textFr": "Découverte ou invention : théorie M",
   "textEn": null,
-  "sourceUrl": "https://www.wikidata.org/wiki/Q188695",
+  "sourceUrl": "https://www.wikidata.org/wiki/Q232184",
   "sourceKind": "wikidata-notoriety",
-  "dedupeKey": "science-fr-wikidata-notoriety-launch-q188695",
+  "dedupeKey": "science-fr-wikidata-notoriety-discovery-q232184",
   "translated": false
  },
  {
@@ -10982,17 +10993,6 @@
   "year": 1952,
   "audience": "EN",
   "textFr": null,
-  "textEn": "First flight: Boeing B-52 Stratofortress",
-  "sourceUrl": "https://www.wikidata.org/wiki/Q174534",
-  "sourceKind": "wikidata-notoriety",
-  "dedupeKey": "science-en-wikidata-notoriety-flight-q174534",
-  "translated": false
- },
- {
-  "category": "SCIENCE",
-  "year": 1952,
-  "audience": "EN",
-  "textFr": null,
   "textEn": "First flight: Tupolev Tu-95",
   "sourceUrl": "https://www.wikidata.org/wiki/Q181815",
   "sourceKind": "wikidata-notoriety",
@@ -11019,6 +11019,17 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q218931",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-flight-q218931",
+  "translated": false
+ },
+ {
+  "category": "SCIENCE",
+  "year": 1952,
+  "audience": "EN",
+  "textFr": null,
+  "textEn": "First flight: Tupolev Tu-16",
+  "sourceUrl": "https://www.wikidata.org/wiki/Q192779",
+  "sourceKind": "wikidata-notoriety",
+  "dedupeKey": "science-en-wikidata-notoriety-flight-q192779",
   "translated": false
  },
  {
@@ -15635,17 +15646,6 @@
   "year": 1995,
   "audience": "EN",
   "textFr": null,
-  "textEn": "Launched: Windows 95",
-  "sourceUrl": "https://www.wikidata.org/wiki/Q83370",
-  "sourceKind": "wikidata-notoriety",
-  "dedupeKey": "science-en-wikidata-notoriety-launch-q83370",
-  "translated": false
- },
- {
-  "category": "SCIENCE",
-  "year": 1995,
-  "audience": "EN",
-  "textFr": null,
   "textEn": "First flight: Mitsubishi F-2",
   "sourceUrl": "https://www.wikidata.org/wiki/Q209480",
   "sourceKind": "wikidata-notoriety",
@@ -15705,6 +15705,17 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q721140",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-launch-q721140",
+  "translated": false
+ },
+ {
+  "category": "SCIENCE",
+  "year": 1995,
+  "audience": "EN",
+  "textFr": null,
+  "textEn": "Launched: DirectX",
+  "sourceUrl": "https://www.wikidata.org/wiki/Q188695",
+  "sourceKind": "wikidata-notoriety",
+  "dedupeKey": "science-en-wikidata-notoriety-launch-q188695",
   "translated": false
  },
  {

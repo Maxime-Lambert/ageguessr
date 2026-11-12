@@ -125,6 +125,17 @@ class ReviewHintHandlerTest {
     }
 
     @Test
+    void refusesACorrectedTextWithItsYearInTwoDigits() {
+        Hint french = stored(HintAudience.FR, null, "Un texte.", HintReviewStatus.PENDING);
+        french.setYear(1968);
+
+        assertRefused(
+                french,
+                new ReviewHintCommand(HintReviewStatus.APPROVED, null, "Mai 68"),
+                ReviewHintHandler.HINT_TEXT_CONTAINS_YEAR);
+    }
+
+    @Test
     void refusesABlankText() {
         Hint hint = stored(HintAudience.FR, null, "Un texte.", HintReviewStatus.PENDING);
 

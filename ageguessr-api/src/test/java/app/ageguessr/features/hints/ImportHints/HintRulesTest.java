@@ -92,6 +92,20 @@ class HintRulesTest {
         assertThat(check(withTexts("EN", null, text))).contains(HintRejection.YEAR_IN_TEXT);
     }
 
+    /** The fixtures date from 1976: its two digits give the answer too. */
+    @ParameterizedTest
+    @ValueSource(strings = {"Mai 76", "Launched: Windows 76", "Woodstock '76", "Woodstock ’76", "76"})
+    void refusesItsYearInTwoDigits(String text) {
+        assertThat(check(withTexts("FR", text, null))).contains(HintRejection.YEAR_IN_TEXT);
+        assertThat(check(withTexts("EN", null, text))).contains(HintRejection.YEAR_IN_TEXT);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"Release of the film \"12 Years a Slave\"", "Vol 1176", "Boeing 767", "Top 7.76", "Mai 68"})
+    void acceptsTwoDigitsThatAreNotItsYear(String text) {
+        assertThat(check(withTexts("FR", text, null))).isEmpty();
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {"In the Year 2525", "Boeing 1899", "Numéro 2100", "Code 19991", "Vol 12015", "Top 50"})
     void acceptsANumberThatCannotBeAYear(String text) {

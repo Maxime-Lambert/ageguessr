@@ -4513,6 +4513,17 @@
   "category": "MUSIC",
   "year": 1998,
   "audience": "FR",
+  "textFr": "Album « S'il suffisait d'aimer » — Céline Dion",
+  "textEn": null,
+  "sourceUrl": "https://www.wikidata.org/wiki/Q1824604",
+  "sourceKind": "wikidata-notoriety",
+  "dedupeKey": "music-fr-wikidata-notoriety-album-q1824604",
+  "translated": false
+ },
+ {
+  "category": "MUSIC",
+  "year": 1998,
+  "audience": "FR",
   "textFr": "Chanson « Blue (Da ba dee) » — Eiffel 65",
   "textEn": null,
   "sourceUrl": "https://www.wikidata.org/wiki/Q696600",
@@ -4606,17 +4617,6 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q1091500",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "music-fr-wikidata-notoriety-album-q1091500",
-  "translated": false
- },
- {
-  "category": "MUSIC",
-  "year": 1998,
-  "audience": "FR",
-  "textFr": "Chanson « Teardrop » — Massive Attack",
-  "textEn": null,
-  "sourceUrl": "https://www.wikidata.org/wiki/Q1027829",
-  "sourceKind": "wikidata-notoriety",
-  "dedupeKey": "music-fr-wikidata-notoriety-song-q1027829",
   "translated": false
  },
  {

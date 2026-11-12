@@ -36,11 +36,11 @@ public class ReviewHintHandler {
     public ReviewHintResponse handle(UUID adminId, UUID hintId, ReviewHintCommand command) {
         Hint hint = hints.findById(hintId).orElseThrow(() -> new NotFoundException("Hint not found"));
         if (command.textEn() != null) {
-            check(command.textEn(), hint.getAudience() != HintAudience.FR);
+            check(command.textEn(), hint.getAudience() != HintAudience.FR, hint.getYear());
             hint.setTextEn(command.textEn());
         }
         if (command.textFr() != null) {
-            check(command.textFr(), hint.getAudience() != HintAudience.EN);
+            check(command.textFr(), hint.getAudience() != HintAudience.EN, hint.getYear());
             hint.setTextFr(command.textFr());
         }
         hint.setReviewStatus(command.decision());
@@ -52,14 +52,14 @@ public class ReviewHintHandler {
         return new ReviewHintResponse(hint.getId(), hint.getReviewStatus(), hint.getTextEn(), hint.getTextFr());
     }
 
-    private static void check(String text, boolean audienceReadsThisLanguage) {
+    private static void check(String text, boolean audienceReadsThisLanguage, int year) {
         if (!audienceReadsThisLanguage) {
             throw new ValidationException(HINT_TEXT_WRONG_AUDIENCE, "This hint has no text in that language");
         }
         if (text.isBlank()) {
             throw new ValidationException(HINT_TEXT_BLANK, "The text cannot be empty");
         }
-        if (HintText.containsAYear(text)) {
+        if (HintText.containsAYear(text) || HintText.containsItsYear(text, year)) {
             throw new ValidationException(HINT_TEXT_CONTAINS_YEAR, "The text cannot contain a year");
         }
     }

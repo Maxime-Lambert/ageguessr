@@ -633,7 +633,9 @@ au joueur.
   source, `subject_qid` (Célébrités seulement), `dedupe_key` unique et statut de relecture.
   L'import (profil `import-hints`) n'ajoute que les clés inconnues : il n'écrase jamais une
   décision ni un texte corrigé. Tout nombre de 1900 à 2099 est refusé dans un texte, il
-  donnerait la réponse.
+  donnerait la réponse, de même que l'année de l'indice écrite en deux chiffres (« Mai 68 »,
+  « Windows 95 », « B-52 » en 1952 ; 2026-11-12, `HintText.containsItsYear`). Seule l'année
+  de l'indice : un autre nombre à deux chiffres (« 12 Years a Slave ») reste permis.
 - **Retrait d'une extraction** (V22, `retired_at`) : avec `app.hints.import.retire-absent`,
   l'import retire les clés absentes des fichiers, dans la même transaction que l'ajout des
   nouvelles, pour qu'aucune catégorie ne reste vide entre les deux. Un indice retiré n'est

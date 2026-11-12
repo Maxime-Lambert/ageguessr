@@ -69,6 +69,7 @@ BORN_NOTE = re.compile(r"\s*\((born|née?|naissance)[^)]*\)|,?\s*\b(born|née? e
 LEFT_OUT = {
     "Q12912943", "Q30325337",  # living people named, as victim or accused (review of 2026-11-12)
     "Q219141", "Q690158",  # a folklore figure and a sentence, dated as a discovery
+    "Q1052713",  # a pornographic film database, out of a family game
 }
 
 # Same criteria as EditorialLine.java (ageguessr-api), which documents them. Criteria only,
@@ -296,6 +297,12 @@ CELEBRITY = {"fr": "Sur la photo, cette personne a l'âge qu'a (ou qu'aurait) ce
              "en": "On the photo, this person is as old as this celebrity is (or would be) this year: {}, {}."}
 
 
+def gives_the_year(hint_text, year_value):
+    """Same rule as HintText (containsAYear, containsItsYear) on the Java side."""
+    own = re.compile(r"(?<![\d.,])['’]?%02d(?!\d|[.,]\d)" % (year_value % 100))
+    return bool(YEAR_IN_TEXT.search(hint_text) or own.search(hint_text))
+
+
 def year(value):
     return int(value[:4]) if value and re.match(r"^\d{4}", value) else None
 
@@ -465,8 +472,9 @@ def candidates(category, today):
     for item in values:
         for lang in LANGS:
             hint_text = text(item, lang)
-            # The import refuses a text with a year: it would give the answer.
-            item["text_" + lang] = hint_text if hint_text and not YEAR_IN_TEXT.search(hint_text) else None
+            # The import refuses a text with a year, four digits or its own in two: it would
+            # give the answer ("Mai 68", "Windows 95").
+            item["text_" + lang] = hint_text if hint_text and not gives_the_year(hint_text, item["year"]) else None
         if category == "CELEBRITIES" and NOT_A_CELEBRITY.search(f"{item['descEn']} {item['descFr']}"):
             continue
         if item["text_en"] or item["text_fr"]:
