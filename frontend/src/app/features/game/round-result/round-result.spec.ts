@@ -72,6 +72,18 @@ describe('RoundResult', () => {
     expect(page.textContent).toContain('1986');
     expect(page.textContent).toContain(yearsAgo(finished(1).result!.age));
     expect(link(GAME_TEXT.wikipedia).href).toBe('https://en.wikipedia.org/wiki/Hit');
+    expect(link(GAME_TEXT.wikipedia).parentElement!.textContent).toContain('(CC BY-SA)');
+  });
+
+  it('credits a hint from Wikidata under CC0', () => {
+    const round = finished(1);
+    const hint = { ...round.result!.hints[0], sourceUrl: 'https://www.wikidata.org/wiki/Q42' };
+    show({ ...round, result: { ...round.result!, hints: [hint] } });
+
+    const credit = link(GAME_TEXT.wikidata);
+    expect(credit.href).toBe('https://www.wikidata.org/wiki/Q42');
+    // The photo has its own licence: only the hint's line is read.
+    expect(credit.parentElement!.textContent).toContain('(CC0)');
   });
 
   it('closes an exact first guess without a second guess nor hint', () => {

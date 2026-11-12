@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import app.ageguessr.TestcontainersConfiguration;
 import app.ageguessr.features.hints.Hint;
+import app.ageguessr.features.hints.HintAudience;
+import app.ageguessr.features.hints.HintCount;
 import app.ageguessr.features.hints.HintRepository;
 import app.ageguessr.features.hints.HintReviewStatus;
 import jakarta.persistence.EntityManager;
@@ -66,6 +68,40 @@ class ImportHintsIntegrationTest {
     }
 
     @Test
+    void aRetiredHintIsNoLongerOfferedNorCounted() {
+        handler.handle(List.of(french("old")));
+        entityManager.flush();
+        Hint old = hints.findAll().getFirst();
+
+        ImportHintsReport report = handler.handle(List.of(french("new")), true);
+        entityManager.flush();
+        entityManager.clear();
+
+        assertThat(report.retired()).isEqualTo(1);
+        assertThat(hints.findById(old.getId()).orElseThrow().getRetiredAt()).isNotNull();
+        assertThat(hints.findEligible(1976, List.of(HintAudience.FR), "Q1"))
+                .extracting(Hint::getDedupeKey)
+                .containsExactly("new");
+        // Still shown where it was shown already: HintPickerTest (hints never reads the game).
+        assertThat(hints.countPlayable()).singleElement().extracting(HintCount::total).isEqualTo(1L);
+    }
+
+    @Test
+    void aRetiredKeyBackInTheFilesIsOfferedAgain() {
+        handler.handle(List.of(french("a")));
+        handler.handle(List.of(french("b")), true);
+        entityManager.flush();
+        entityManager.clear();
+
+        ImportHintsReport report = handler.handle(List.of(french("a"), french("b")), true);
+        entityManager.flush();
+        entityManager.clear();
+
+        assertThat(report.reactivated()).isEqualTo(1);
+        assertThat(hints.findAll()).extracting(Hint::getRetiredAt).containsOnlyNulls();
+    }
+
+    @Test
     void everyLineOfTheShippedFilesIsAccepted() {
         List<HintFileEntry> entries = reader.readAll();
 
@@ -83,8 +119,13 @@ class ImportHintsIntegrationTest {
                 .filteredOn(entry -> "CELEBRITIES".equals(entry.category()))
                 .isNotEmpty()
                 .allSatisfy(entry -> {
-                    assertThat(entry.textFr()).startsWith("Sur la photo, cette personne a l'âge qu'a (ou qu'aurait) cette année ");
-                    assertThat(entry.textEn()).startsWith("On the photo, this person is as old as this celebrity is (or would be) this year: ");
+                    // One text per hint since the extraction by fame (FR or EN audience).
+                    if (entry.textFr() != null) {
+                        assertThat(entry.textFr()).startsWith("Sur la photo, cette personne a l'âge qu'a (ou qu'aurait) cette année ");
+                    }
+                    if (entry.textEn() != null) {
+                        assertThat(entry.textEn()).startsWith("On the photo, this person is as old as this celebrity is (or would be) this year: ");
+                    }
                 });
     }
 }
