@@ -18,12 +18,12 @@ public class ListPendingHintsHandler {
     @Transactional(readOnly = true)
     public PendingHintsResponse handle(ListPendingHintsQuery query) {
         List<PendingHintsResponse.Item> items = hints
-                .findByReviewStatusOrderByCreatedAtAscIdAsc(
+                .findByReviewStatusAndRetiredAtIsNullOrderByCreatedAtAscIdAsc(
                         HintReviewStatus.PENDING, PageRequest.ofSize(query.limit()))
                 .stream()
                 .map(ListPendingHintsHandler::item)
                 .toList();
-        return new PendingHintsResponse(hints.countByReviewStatus(HintReviewStatus.PENDING), items);
+        return new PendingHintsResponse(hints.countByReviewStatusAndRetiredAtIsNull(HintReviewStatus.PENDING), items);
     }
 
     private static PendingHintsResponse.Item item(Hint hint) {

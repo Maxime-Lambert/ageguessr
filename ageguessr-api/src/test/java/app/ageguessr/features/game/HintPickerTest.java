@@ -12,6 +12,7 @@ import app.ageguessr.features.hints.HintAudience;
 import app.ageguessr.features.hints.HintCategory;
 import app.ageguessr.features.hints.HintRepository;
 import app.ageguessr.features.hints.HintReviewStatus;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -46,6 +47,16 @@ class HintPickerTest {
         assertThat(picker.shown(List.of(music.getId(), film.getId()), Language.EN))
                 .extracting(GameHint::text)
                 .containsExactly("A hit.", "A hit.");
+    }
+
+    @Test
+    void keepsShowingAHintRetiredSince() {
+        Hint retired = hint(HintCategory.MUSIC, HintReviewStatus.APPROVED);
+        retired.setRetiredAt(Instant.parse("2026-11-12T00:00:00Z"));
+        when(hints.findAllById(List.of(retired.getId()))).thenReturn(List.of(retired));
+
+        // Retired by a new extraction (V22): no longer offered, but a round that showed it keeps it.
+        assertThat(picker.shown(List.of(retired.getId()), Language.FR)).hasSize(1);
     }
 
     @Test

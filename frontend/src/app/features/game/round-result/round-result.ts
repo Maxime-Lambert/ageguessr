@@ -22,7 +22,7 @@ const GUESS_MAX = 500;
 /**
  * The verdict of a finished round: the real age, both guesses with their points (the
  * first guess's points appear here for the first time), who it was, the photo's credit
- * and the hint with its year and source (CC BY-SA attribution). The photo and the hint
+ * and the hint with its year and source (its attribution). The photo and the hint
  * can be reported from here, once the identity is known.
  */
 @Component({
@@ -44,7 +44,6 @@ export class RoundResult {
 
   readonly title = computed(() => roundTitle(this.round().position, this.total()));
   readonly result = computed(() => this.round().result as RoundReveal);
-  /** The hint is from (game year − age): how far back it is, the key to read it. */
   /** The same for every hint of the round: they all date from the game's year minus the age. */
   protected readonly yearsAgo = computed(() => yearsAgo(this.result().age));
   readonly exact = computed(() => this.result().secondGuess === null);
@@ -55,6 +54,16 @@ export class RoundResult {
   protected readonly secondBar = computed(
     () => (100 * (this.result().secondPoints ?? 0)) / GUESS_MAX,
   );
+
+  /**
+   * Where a hint comes from, by its URL: Wikidata (CC0) since the extraction by fame,
+   * Wikipedia (CC BY-SA) for the hints of the former one, still shown in past rounds.
+   */
+  protected source(url: string): { name: string; license: string } {
+    return URL.canParse(url) && new URL(url).hostname.endsWith('wikidata.org')
+      ? { name: this.text.wikidata, license: this.text.wikidataLicense }
+      : { name: this.text.wikipedia, license: this.text.hintLicense };
+  }
 
   private readonly heading = viewChild.required<ElementRef<HTMLElement>>('heading');
 

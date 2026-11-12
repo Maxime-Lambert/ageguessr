@@ -36,7 +36,7 @@ public class GetHintCoverageHandler {
 
     @Transactional(readOnly = true)
     public HintCoverageResponse handle() {
-        List<HintCount> counts = hints.countApproved();
+        List<HintCount> counts = hints.countPlayable();
         int lastYear = Year.now(clock).getValue() - YOUNGEST_AGE_ON_A_PHOTO;
         List<HintCoverageResponse.Row> rows = IntStream.rangeClosed(FIRST_YEAR, lastYear)
                 .mapToObj(year -> row(year, counts))
@@ -46,7 +46,7 @@ public class GetHintCoverageHandler {
                 .flatMapToInt(cell -> IntStream.of(cell.fr(), cell.en()))
                 .filter(total -> total < MINIMUM)
                 .count();
-        return new HintCoverageResponse(MINIMUM, hints.countByReviewStatus(HintReviewStatus.PENDING), gaps, rows);
+        return new HintCoverageResponse(MINIMUM, hints.countByReviewStatusAndRetiredAtIsNull(HintReviewStatus.PENDING), gaps, rows);
     }
 
     private static HintCoverageResponse.Row row(int year, List<HintCount> counts) {

@@ -24,7 +24,7 @@ class GetHintCoverageHandlerTest {
     private final HintRepository hints = mock(HintRepository.class);
 
     private HintCoverageResponse coverage(HintCount... counts) {
-        when(hints.countApproved()).thenReturn(List.of(counts));
+        when(hints.countPlayable()).thenReturn(List.of(counts));
         return new GetHintCoverageHandler(hints, Clock.fixed(NOW, ZoneOffset.UTC)).handle();
     }
 
@@ -78,7 +78,7 @@ class GetHintCoverageHandlerTest {
 
     @Test
     void reportsThePendingHints() {
-        when(hints.countByReviewStatus(HintReviewStatus.PENDING)).thenReturn(7L);
+        when(hints.countByReviewStatusAndRetiredAtIsNull(HintReviewStatus.PENDING)).thenReturn(7L);
 
         assertThat(coverage().pending()).isEqualTo(7);
     }
