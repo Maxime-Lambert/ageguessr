@@ -83,8 +83,8 @@ class ImportHintsIntegrationTest {
                 .filteredOn(entry -> "CELEBRITIES".equals(entry.category()))
                 .isNotEmpty()
                 .allSatisfy(entry -> {
-                    assertThat(entry.textFr()).startsWith("Sur la photo, cette personne a l'âge qu'a cette année ");
-                    assertThat(entry.textEn()).startsWith("On the photo, this person is as old as this celebrity turns this year: ");
+                    assertThat(entry.textFr()).startsWith("Sur la photo, cette personne a l'âge qu'a (ou qu'aurait) cette année ");
+                    assertThat(entry.textEn()).startsWith("On the photo, this person is as old as this celebrity is (or would be) this year: ");
                 });
     }
 }

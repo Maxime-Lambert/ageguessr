@@ -35,7 +35,7 @@ retirer une fois tous faits.
 - [ ] Pistes et chaud/froid (`feature/better-hints-gameplay`) : après un 1er essai faux,
       « Plus de 30 ans, de 6 à 15 ans d'écart » et « Entre 36 et 45 ans », saisie bornée ;
       choisir 3 pistes, puis voir 3 indices ; au résultat, chaque indice a son année et son
-      propre signalement ; un indice Célébrités dit « l'âge qu'a cette année X » (V21)
+      propre signalement ; un indice Célébrités dit « l'âge qu'a (ou qu'aurait) cette année X » (V21)
 - [ ] Parcours e2e `daily-game` mis à jour pour les 3 pistes : à lancer à la main, comme
       les autres
 - [ ] Retours du 2026-11-11 (`fix/smoke-test-feedback`) : connecté, finir la 1re manche

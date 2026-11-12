@@ -5,6 +5,7 @@ import app.ageguessr.features.game.GamePlay;
 import app.ageguessr.features.game.GamePlayRepository;
 import app.ageguessr.features.game.GameRound;
 import app.ageguessr.features.game.GameRounds;
+import app.ageguessr.features.game.HintOffer;
 import app.ageguessr.features.game.PlayerKey;
 import app.ageguessr.features.game.RoundStep;
 import app.ageguessr.features.game.RoundView;
@@ -32,8 +33,9 @@ public class RevealHintHandler {
         GamePlay play = plays.findOf(player, gameDate, position)
                 .filter(found -> found.step() == RoundStep.AWAITING_HINT)
                 .orElseThrow(GameErrors::wrongStep);
-        List<Hint> hints = views.offer(round, play.getLanguage())
-                .pickAll(round.hintKey(), command.categories(), play.getLanguage(), views.hintsPerRound());
+        HintOffer offer = views.offer(round, play.getLanguage());
+        int count = command.legacy() ? 1 : offer.required(views.hintsPerRound());
+        List<Hint> hints = offer.pickAll(round.hintKey(), command.chosen(), play.getLanguage(), count);
         play.revealHints(hints.stream().map(Hint::getCategory).toList(), hints.stream().map(Hint::getId).toList());
         try {
             plays.saveAndFlush(play);

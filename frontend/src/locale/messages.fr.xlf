@@ -997,8 +997,8 @@
         <target>Après le premier, vous savez si elle était plus âgée ou plus jeune, et de combien : de 1 à 5 ans, de 6 à 15, ou davantage.</target>
       </trans-unit>
       <trans-unit id="game.ruleHints" datatype="html">
-        <source>Then you pick 3 leads, each a fact from as many years ago as their age on the photo: a film released 40 years ago means they were 40 on it.</source>
-        <target>Puis vous choisissez 3 pistes, chacune un fait survenu il y a autant d'années que son âge sur la photo : un film sorti il y a 40 ans veut dire qu'elle y avait 40 ans.</target>
+        <source>Then you pick a few leads, each a fact from as many years ago as their age on the photo: a film released 40 years ago means they were 40 on it.</source>
+        <target>Puis vous choisissez quelques pistes, chacune un fait survenu il y a autant d'années que son âge sur la photo : un film sorti il y a 40 ans veut dire qu'elle y avait 40 ans.</target>
       </trans-unit>
       <trans-unit id="game.voice.showHints" datatype="html">
         <source>Open these leads</source>

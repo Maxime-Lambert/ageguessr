@@ -63,14 +63,16 @@ public final class HintOffer {
      *
      * @return in the order of {@link HintCategory}, whatever the order of the request, so
      *     that the hints never move between two loads of the round
-     * @throws app.ageguessr.shared.exceptions.ValidationException HINT_COUNT when not
-     *     exactly {@link #required} distinct categories
+     * @param count how many the round asks for: {@link #required}, or 1 for a page of before
+     *     several hints
+     * @throws app.ageguessr.shared.exceptions.ConflictException HINT_COUNT when not exactly
+     *     {@code count} distinct categories
      * @throws app.ageguessr.shared.exceptions.ConflictException CATEGORY_UNAVAILABLE when one is not offered
      */
-    public List<Hint> pickAll(String roundKey, Collection<HintCategory> chosen, Language language, int perRound) {
+    public List<Hint> pickAll(String roundKey, Collection<HintCategory> chosen, Language language, int count) {
         // EnumSet.copyOf refuses an empty collection; @NotEmpty already keeps one out of the handlers.
         EnumSet<HintCategory> distinct = chosen.isEmpty() ? EnumSet.noneOf(HintCategory.class) : EnumSet.copyOf(chosen);
-        if (distinct.size() != chosen.size() || chosen.size() != required(perRound)) {
+        if (distinct.size() != chosen.size() || chosen.size() != count) {
             throw GameErrors.wrongHintCount();
         }
         return distinct.stream()

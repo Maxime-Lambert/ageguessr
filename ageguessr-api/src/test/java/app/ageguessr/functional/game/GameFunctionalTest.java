@@ -282,10 +282,11 @@ class GameFunctionalTest {
 
         for (String wrong : List.of("[\"MUSIC\",\"FILM\"]", "[\"MUSIC\",\"FILM\",\"SPORT\",\"WORLD\"]", "[\"MUSIC\",\"MUSIC\",\"FILM\"]")) {
             perform(post(round(1, "hint")), "{\"categories\":" + wrong + "}", guest, null)
-                    .andExpect(status().isBadRequest())
+                    .andExpect(status().isConflict())
                     .andExpect(jsonPath("$.errorCode").value("HINT_COUNT"));
         }
         perform(post(round(1, "hint")), "{\"categories\":[]}", guest, null).andExpect(status().isBadRequest());
+        perform(post(round(1, "hint")), "{}", guest, null).andExpect(status().isBadRequest());
         perform(post(round(1, "hint")), "{\"categories\":[\"MUSIC\",\"FILM\",\"CELEBRITIES\"]}", guest, null)
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.errorCode").value("CATEGORY_UNAVAILABLE"));
@@ -314,6 +315,17 @@ class GameFunctionalTest {
                 .andExpect(jsonPath("$.result.hints.length()").value(3))
                 .andExpect(jsonPath("$.result.hints[*].year").value(contains(year, year, year)))
                 .andExpect(jsonPath("$.result.hints[2].sourceUrl").value("https://en.wikipedia.org/wiki/Hit"));
+    }
+
+    @Test
+    void aPageOfBeforeSeveralHintsStillGetsOneHint() throws Exception {
+        Cookie guest = guestCookie();
+        firstGuess(1, 30, guest).andExpect(status().isOk());
+
+        perform(post(round(1, "hint")), "{\"category\":\"MUSIC\"}", guest, null)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.hints.length()").value(1))
+                .andExpect(jsonPath("$.hints[0].category").value("MUSIC"));
     }
 
     @Test

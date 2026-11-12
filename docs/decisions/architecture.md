@@ -584,9 +584,12 @@ au joueur.
   sortie JSON versionnée, import idempotent par Java. Pas d'appel à un LLM, à Wikipédia
   ou à Wikidata depuis l'application.
 - **Formulation de Célébrités** (2026-11-12, V21) : « Sur la photo, cette personne a l'âge
-  qu'a cette année X, desc. » plutôt que « Personnalité née cette année-là : X ». L'âge
+  qu'a (ou qu'aurait) cette année X, desc. » plutôt que « Personnalité née cette année-là : X ». L'âge
   est exact, l'année de l'indice étant celle de la partie moins l'âge, et le joueur n'a
-  plus de calcul à faire. Le même texte sort de `extract_wikidata.py`.
+  plus de calcul à faire. « Ou qu'aurait » parce que l'extraction ne filtre pas les
+  personnes décédées, nombreuses sur les années anciennes (revue du 2026-11-12). Le même
+  texte sort de `extract_wikidata.py`. Limite acceptée : une série créée en fin d'année et
+  jouée en janvier décale d'un an, puisque son année de référence est celle de sa création.
 - **Relance annuelle de Célébrités** : aucun mineur n'est cité, donc l'extraction se
   relance à la main vers mars pour ajouter les personnes qui viennent d'avoir 18 ans. Les
   indices étant rangés par année de naissance, les autres n'ont pas à être mis à jour.

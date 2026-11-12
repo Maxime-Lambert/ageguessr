@@ -89,8 +89,8 @@ class HintMigrationsIntegrationTest {
 
         assertThat(textsOf(celebrity))
                 .containsExactly(
-                        "On the photo, this person is as old as this celebrity turns this year: Jane Doe, American actress, singer.",
-                        "Sur la photo, cette personne a l'âge qu'a cette année Jane Doe, actrice et chanteuse américaine.");
+                        "On the photo, this person is as old as this celebrity is (or would be) this year: Jane Doe, American actress, singer.",
+                        "Sur la photo, cette personne a l'âge qu'a (ou qu'aurait) cette année Jane Doe, actrice et chanteuse américaine.");
         assertThat(textsOf(corrected)).containsExactly("Jane Roe turns that age this year.", "Jane Roe a cet âge cette année.");
         assertThat(textsOf(music)).containsExactly(null, "Personnalité née cette année-là : pas une célébrité.");
     }

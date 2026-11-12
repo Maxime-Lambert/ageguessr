@@ -68,8 +68,8 @@ export const GAME_TEXT = {
   howToPlay: $localize`:@@game.howToPlay:How to play`,
   ruleGuess: $localize`:@@game.ruleGuess:Guess how old the person was on the photo. You get two guesses per case.`,
   ruleLead: $localize`:@@game.ruleLead:After the first, you learn whether they were older or younger, and by how much: 1 to 5 years, 6 to 15, or more.`,
-  // 3 is app.game.hints.per-round (HintProperties): to change with it.
-  ruleHints: $localize`:@@game.ruleHints:Then you pick 3 leads, each a fact from as many years ago as their age on the photo: a film released 40 years ago means they were 40 on it.`,
+  // No count: it is a setting (app.game.hints.per-round), and fewer when fewer turned up.
+  ruleHints: $localize`:@@game.ruleHints:Then you pick a few leads, each a fact from as many years ago as their age on the photo: a film released 40 years ago means they were 40 on it.`,
   rulePoints: $localize`:@@game.rulePoints:Each guess earns up to 500 points, more the closer it is; a spot-on first guess is worth 1000. A new file opens every day at midnight UTC.`,
   gotIt: $localize`:@@game.gotIt:Got it`,
   playToday: $localize`:@@game.playToday:Open today's file`,

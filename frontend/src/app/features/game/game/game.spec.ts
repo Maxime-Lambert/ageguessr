@@ -218,6 +218,39 @@ describe('Game', () => {
     expect(page.querySelector('h2')?.textContent).toContain(`${GAME_TEXT.round} 2 of 2`);
   });
 
+  it('reloads the round when the leads offered changed while picking', () => {
+    load(
+      today([
+        round(1, {
+          step: 'AWAITING_HINT',
+          firstGuess: 30,
+          direction: 'OLDER',
+          categories: ['MUSIC'],
+          hintsToPick: 1,
+        }),
+      ]),
+    );
+    button('Music').click();
+    fixture.detectChanges();
+    button(GAME_TEXT.showHints).click();
+
+    conflict('/api/game/2026-11-02/rounds/1/hint', 'HINT_COUNT');
+    load(
+      today([
+        round(1, {
+          step: 'AWAITING_HINT',
+          firstGuess: 30,
+          direction: 'OLDER',
+          categories: ['MUSIC', 'FILM'],
+          hintsToPick: 2,
+        }),
+      ]),
+    );
+
+    expect(page.textContent).toContain('Pick 2 leads');
+    expect(page.querySelector('[role=alert]')).toBeNull();
+  });
+
   it('reloads the state when the step was already played elsewhere', () => {
     load(today([round(1)]));
     guess('30');

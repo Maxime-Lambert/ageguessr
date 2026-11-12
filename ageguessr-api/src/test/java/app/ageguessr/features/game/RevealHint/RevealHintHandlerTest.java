@@ -113,6 +113,15 @@ class RevealHintHandlerTest {
     }
 
     @Test
+    void givesOneHintToAPageOfBeforeSeveralHints() {
+        GamePlay play = startedPlay();
+
+        handler.handle(guest, TODAY, (short) 1, new RevealHintCommand(null, HintCategory.FILM));
+
+        assertThat(play.getHintCategories()).containsExactly(HintCategory.FILM);
+    }
+
+    @Test
     void refusesHintsBeforeTheFirstGuess() {
         when(plays.findOf(guest, TODAY, (short) 1)).thenReturn(Optional.empty());
 
@@ -163,6 +172,6 @@ class RevealHintHandlerTest {
     }
 
     private static RevealHintCommand command(HintCategory... categories) {
-        return new RevealHintCommand(List.of(categories));
+        return new RevealHintCommand(List.of(categories), null);
     }
 }

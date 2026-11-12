@@ -219,8 +219,8 @@ Status: Complete
 ### Phase Summary
 Les formulations ne changent que le **préfixe** : dans le texte stocké, rien ne sépare de
 façon fiable le nom de la description, qui contient des virgules.
-- FR : « Sur la photo, cette personne a l'âge qu'a cette année X, desc. »
-- EN : « On the photo, this person is as old as this celebrity turns this year: X, desc. »
+- FR : « Sur la photo, cette personne a l'âge qu'a (ou qu'aurait) cette année X, desc. »
+- EN : « On the photo, this person is as old as this celebrity is (or would be) this year: X, desc. »
 
 C'est un écart avec la forme « (desc) » prévue. V21 réécrit les lignes qui commencent par
 l'ancien préfixe, ce qui la rend idempotente : une correction manuelle n'est pas touchée.
@@ -337,7 +337,17 @@ Revues : aucun point bloquant.
 - `code-reviewer` : la doc corrigeait mal le cas des bords. La plage peut faire moins de
   5 ans aux bornes 18-100, ce qui n'est pas une fuite.
 
-Backend : `./mvnw test`, 1 203 tests, 0 échec. Front : `pnpm test` (423), `pnpm lint`,
+Ultrareview (après l'ouverture de la PR) :
+- Célébrités décédées : la formulation devient « l'âge qu'a (ou qu'aurait) cette année X »,
+  dans V21 (pas encore appliquée hors des tests), le JSON et le script.
+- `HINT_COUNT` passe en 409, et le front recharge la manche sur `HINT_COUNT` et
+  `CATEGORY_UNAVAILABLE`, pour les cas où l'offre change pendant le choix.
+- L'ancien champ `{category}` est accepté comme un choix d'une seule piste (ancien
+  bundle encore ouvert au déploiement).
+- La règle ne donne plus de nombre (« quelques pistes »).
+- Le décalage d'une série jouée l'année suivante est accepté et documenté.
+
+Backend : `./mvnw test`, 1 205 tests, 0 échec. Front : `pnpm test` (424), `pnpm lint`,
 `pnpm format:check` et `pnpm build` passent. Specs Playwright mises à jour, non lancées en
 local.
 
@@ -348,7 +358,8 @@ local.
    manches en cours gardent leur indice) et V21 (textes Célébrités). Pas de réimport des
    indices : V21 réécrit déjà les lignes en base.
 3. Le front et le back partent ensemble. Une page déjà ouverte avec l'ancien bundle
-   enverra `{category}` et recevra un 400 : un rechargement suffit. Le signalement sans
-   `hintCategory` reste accepté pour une manche à indice unique.
+   envoie `{category}`, accepté comme un choix d'une piste, et le signalement sans
+   `hintCategory` reste accepté pour une manche à indice unique. Ces deux compatibilités
+   sont à retirer dans une PR ultérieure.
 4. Vérifier à la main en prod la liste « Pistes et chaud/froid » de `docs/roadmap.md`.
 5. Ensuite : planifier la PR 2/2 (sources d'indices classées selon les vues annuelles).
