@@ -27,7 +27,13 @@ import { Field } from '../field/field';
       >
         −
       </button>
-      <div class="border-border flex flex-1 items-baseline justify-center gap-1.5 border-x">
+      <!-- The digits are narrow: a click anywhere between the buttons, "years" included,
+           puts the caret in the field. A pointer-only shortcut, the field itself stays the
+           keyboard's and screen readers' target. -->
+      <div
+        class="border-border flex flex-1 cursor-text items-baseline justify-center gap-1.5 border-x"
+        (mousedown)="focusFrom($event)"
+      >
         <input
           #control
           type="text"
@@ -87,6 +93,15 @@ export class AgeInput implements ControlValueAccessor {
 
   focus(): void {
     this.control().nativeElement.focus();
+  }
+
+  /** Outside the field itself: no blur in between, and the caret goes after the digits. */
+  protected focusFrom(event: MouseEvent): void {
+    const input = this.control().nativeElement;
+    if (event.target === input || this.disabled()) return;
+    event.preventDefault();
+    input.focus();
+    input.setSelectionRange(input.value.length, input.value.length);
   }
 
   protected typed(text: string): void {
