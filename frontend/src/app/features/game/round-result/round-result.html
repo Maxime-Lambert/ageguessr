@@ -96,12 +96,13 @@
         <div
           class="text-paper-muted mt-2.5 flex flex-wrap items-center justify-between gap-2 text-xs"
         >
+          @let from = source(hint.sourceUrl);
           <p>
             {{ text.hintFrom }}
             <a [href]="hint.sourceUrl" target="_blank" rel="noopener" class="underline">{{
-              text.wikipedia
+              from.name
             }}</a>
-            ({{ text.hintLicense }})
+            ({{ from.license }})
           </p>
           <app-report-button
             target="HINT"

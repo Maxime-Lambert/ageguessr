@@ -38,6 +38,11 @@ retirer une fois tous faits.
       propre signalement ; un indice Célébrités dit « l'âge qu'a (ou qu'aurait) cette année X » (V21)
 - [ ] Parcours e2e `daily-game` mis à jour pour les 3 pistes : à lancer à la main, comme
       les autres
+- [ ] Indices par notoriété (`feature/hint-notoriety`) : en prod, lancer l'import avec
+      `--app.hints.import.retire-absent=true` (rapport : ~8 674 ajoutés, les anciens
+      retirés, 0 refus), puis dans `/admin/hints` aucune année sous 3 catégories ; en jeu,
+      un indice dit « Source : Wikidata (CC0) » et une manche passée garde ses anciens
+      indices
 - [ ] Retours du 2026-11-11 (`fix/smoke-test-feedback`) : connecté, finir la 1re manche
       du jour puis recharger (sur l'écran de score ou après « Affaire suivante ») →
       reprise à la 2e manche ; le lien d'un email d'alerte ouvre la file admin même avec un
@@ -245,11 +250,11 @@ retirer une fois tous faits.
       saisie limitée à la plage restante, 3 pistes de catégories différentes au lieu
       d'une, Célébrités qui donne l'âge directement (V21), règles avec un exemple chiffré,
       signalement indice par indice — PR `feature/better-hints-gameplay`
-- [ ] Indices plus connus : classer les faits selon les vues annuelles de l'article de
-      l'événement, Wikidata pour Sport, Techno/culture pop (à la place de Science) et
-      Monde, reclassement de Musique, Cinéma et Célébrités (mesures du spike du
-      2026-11-12 : Monde FR 3-7 faits connus par an, Science FR 1-3, Sport 0-4 avec les
-      pages d'année actuelles) — PR 2/2 à planifier
+- [x] Indices plus connus : faits Wikidata classés par les vues sur 12 mois de leur
+      propre article, les 10 plus vus par catégorie, année et langue au-dessus d'un
+      plancher par décennie ; 8 674 indices, au moins 3 catégories jouables chaque année
+      en FR comme en EN ; anciens indices retirés par l'import (V22) — PR
+      `feature/hint-notoriety`
 
 ## Semaine 8 — Stabilisation et déploiement
 - [ ] Tests d'intégration sur les endpoints critiques

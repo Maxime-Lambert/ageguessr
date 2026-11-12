@@ -6,7 +6,8 @@ import app.ageguessr.features.hints.HintCategory;
 
 /**
  * A hint as the player sees it: its text in the round's language, then, on the result,
- * its year and its source (Wikipedia, CC BY-SA attribution).
+ * its year and its source, for the attribution: Wikidata (CC0), or Wikipedia (CC BY-SA) for
+ * the hints shown before the extraction by fame (V22).
  */
 public record GameHint(HintCategory category, String text, int year, String sourceUrl) {
 

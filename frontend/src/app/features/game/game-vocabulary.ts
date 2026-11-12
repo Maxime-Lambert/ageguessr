@@ -83,8 +83,11 @@ export const GAME_TEXT = {
   points: $localize`:@@game.points:points`,
   outOf: $localize`:@@game.outOf:out of`,
   hintFrom: $localize`:@@game.hintFrom:From`,
+  // Names and licences, the same in every language.
   wikipedia: 'Wikipedia',
   hintLicense: 'CC BY-SA',
+  wikidata: 'Wikidata',
+  wikidataLicense: 'CC0',
   photoBy: $localize`:@@game.photoBy:Photo`,
   unknownAuthor: $localize`:@@game.unknownAuthor:Unknown author`,
   source: $localize`:@@game.source:Commons page`,

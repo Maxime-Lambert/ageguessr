@@ -578,52 +578,83 @@ au joueur.
 - **Catégories** : Musique, Cinéma, Sport, Science et techno, Monde, Célébrités. Au moins
   5 indices par catégorie, par année et par public ; en dessous, la catégorie est masquée
   pour cette année.
-- **Sources** : une source Wikipédia ou Wikidata précise par catégorie (classements,
-  box-office, palmarès, pages de l'année) plutôt que les seules pages `YYYY in …`.
 - **Base pré-construite** : extraction en Python hors de l'application (`scripts/hints/`),
   sortie JSON versionnée, import idempotent par Java. Pas d'appel à un LLM, à Wikipédia
   ou à Wikidata depuis l'application.
+- **Faits classés par notoriété** (2026-11-12, remplace les pages d'année Wikipédia,
+  PR `feature/hint-notoriety`). Retours des joueurs : les indices n'étaient pas connus.
+  - **Candidats Wikidata** par catégorie : éditions sportives avec vainqueur et pays hôte,
+    Jeux olympiques, Ballon d'or ; événements, États et organisations internationales ;
+    découvertes, Nobel scientifiques, lancements et premiers vols ; albums, chansons,
+    Eurovision, Grammy ; films, Oscars, Palme d'or, César ; personnes.
+  - **Notoriété** : vues sur 12 mois de l'article du fait lui-même, dans la Wikipédia de
+    la langue du joueur. Les premiers essais mesuraient la page la plus vue citée par une
+    ligne d'une page d'année, ce qui classait un fait obscur au niveau d'un pays cité.
+  - **Sélection** : par catégorie, année et langue, les 10 faits les plus vus au-dessus
+    d'un plancher égal à 2 % de la médiane des meilleurs faits de la décennie, jamais sous
+    500 vues (FR) ou 5 000 (EN). Un seuil unique laissait 18 années sur 84 jouables en
+    français, les vues des faits anciens étant bien plus faibles.
+  - **Complément du français** par les faits au-dessus du plancher anglais. Ce ne sont pas
+    des traductions : le texte reprend le libellé français de Wikidata, exigé par la
+    requête. Ils entrent donc approuvés, sans relecture.
+  - **Un indice par langue** (`audience` FR ou EN) : un fait peut être retenu dans une
+    langue et pas dans l'autre.
+  - **Un fait sur plusieurs années** (une guerre de plus d'un an) donne deux indices, son
+    début et sa fin ; ses moments marquants ont leur propre élément Wikidata.
+  - **Faits très durs gardés**, au titre du devoir de mémoire (décision du 2026-11-12).
+  - **Formulation** : gabarits par type (« Premier vol : X », « Création : X »,
+    « … — vainqueur : Y, pays hôte : Z »). Le pays hôte est écarté quand il a été créé
+    après le fait, Wikidata donnant le pays d'aujourd'hui. Un texte présent sur plusieurs
+    années (« Tour de France — vainqueur : Eddy Merckx ») est écarté, il ne date rien.
+  - **Mesure de référence** (extraction du 2026-11-12) : voir le tableau dans
+    `plans/done/hint-notoriety.md`.
 - **Formulation de Célébrités** (2026-11-12, V21) : « Sur la photo, cette personne a l'âge
   qu'a (ou qu'aurait) cette année X, desc. » plutôt que « Personnalité née cette année-là : X ». L'âge
   est exact, l'année de l'indice étant celle de la partie moins l'âge, et le joueur n'a
   plus de calcul à faire. « Ou qu'aurait » parce que l'extraction ne filtre pas les
-  personnes décédées, nombreuses sur les années anciennes (revue du 2026-11-12). Le même
-  texte sort de `extract_wikidata.py`. Limite acceptée : une série créée en fin d'année et
-  jouée en janvier décale d'un an, puisque son année de référence est celle de sa création.
+  personnes décédées, nombreuses sur les années anciennes (revue du 2026-11-12). Limite
+  acceptée : une série créée en fin d'année et jouée en janvier décale d'un an, puisque
+  son année de référence est celle de sa création.
 - **Relance annuelle de Célébrités** : aucun mineur n'est cité, donc l'extraction se
   relance à la main vers mars pour ajouter les personnes qui viennent d'avoir 18 ans. Les
   indices étant rangés par année de naissance, les autres n'ont pas à être mis à jour.
   Pas de job automatique : il écrirait en prod et devrait être surveillé pour ~2 % des
   photos (estimation) et une catégorie sur six. Un oubli ne fait que masquer la catégorie
   sur les photos de 18 ans.
-- **Relecture limitée aux traductions** : un indice tiré d'une page dans sa langue entre
-  directement en jeu, seul un indice traduit attend une validation. Tout relire serait
-  trop long.
+- **Relecture** : aucun texte n'est traduit, aucun indice n'attend donc de relecture. La
+  file de `/admin/hints` reste pour une source future qui en aurait besoin.
 - **Signalement par les joueurs** : c'est le filet de sécurité de ces indices. Depuis
   l'écran de résultat, sur le modèle des photos, sans retrait automatique.
-- **Noms à côté d'un crime** : Monde reste sans filtre, mais une personne vivante n'est pas
-  nommée à côté d'un crime ou d'une accusation, conformément à la ligne éditoriale. Ces
-  lignes sont écartées à la main dans `extract_events.py`, par empreinte du texte pour
-  qu'aucun nom n'y figure. Les personnes décédées et les faits historiques restent.
+- **Ligne éditoriale** : Célébrités applique les critères de `EditorialLine.java`, Cinéma
+  écarte les films de propagande. Une personne vivante n'est pas nommée à côté d'un crime :
+  ces faits sont écartés à la main dans `LEFT_OUT` (`extract_notoriety.py`), par élément
+  Wikidata.
 - **Stockage** (table `hints`, V11) : catégorie, année, public (`FR`, `EN`, `ALL`), textes,
   source, `subject_qid` (Célébrités seulement), `dedupe_key` unique et statut de relecture.
   L'import (profil `import-hints`) n'ajoute que les clés inconnues : il n'écrase jamais une
-  décision ni un texte corrigé, et un retrait passe par `REJECTED`, pas par une suppression.
-  Tout nombre de 1900 à 2099 est refusé dans un texte, il donnerait la réponse.
-- **Sport et Célébrités, écarts à la source prévue** : Sport lit les pages `Y en sport` /
-  `Y in sports`, car les palmarès Wikidata mêlent vainqueurs d'étape et de classement.
-  Célébrités part des listes de naissances Wikipédia, Wikidata seul ne tenant pas une année
-  entière dans le délai de requête.
+  décision ni un texte corrigé. Tout nombre de 1900 à 2099 est refusé dans un texte, il
+  donnerait la réponse.
+- **Retrait d'une extraction** (V22, `retired_at`) : avec `app.hints.import.retire-absent`,
+  l'import retire les clés absentes des fichiers, dans la même transaction que l'ajout des
+  nouvelles, pour qu'aucune catégorie ne reste vide entre les deux. Un indice retiré n'est
+  plus proposé, mais reste affiché là où il a déjà été montré, et sa décision de relecture
+  est conservée. `REJECTED` ne convenait pas : le jeu ne montre que les indices
+  `APPROVED`, l'historique et une manche en cours auraient perdu leurs indices. Retirer un
+  indice précis (demande d'une personne citée) passe toujours par `REJECTED`.
 
-**Raison** : Wikipédia et Wikidata restent l'écosystème déjà retenu pour les personnes,
-et les événements passés ne changent pas : un travail ponctuel, dont la sortie est
-contrôlée, suffit.
+**Raison** : Wikidata reste l'écosystème déjà retenu pour les personnes, et les faits
+passés ne changent pas : un travail ponctuel, dont la sortie est contrôlée, suffit. Les
+vues mesurent ce que les joueurs connaissent mieux que le nombre de langues d'un article.
 
 **Limites connues** :
-- Sans relecture, une erreur peut atteindre un joueur avant d'être signalée.
-- Les textes issus de Wikipédia sont sous CC BY-SA, hors de la licence MIT du dépôt :
-  `resources/hints/README.md` le précise, et chaque indice garde sa source pour
-  l'attribution sur l'écran de résultat.
+- Sans relecture, une erreur de Wikidata peut atteindre un joueur avant d'être signalée.
+- Les vues sont celles d'une fenêtre de 12 mois : une actualité peut gonfler un fait
+  ancien. Le plafond de 10 par an et le classement par décennie en limitent l'effet.
+- Sport avant 1950 et Musique avant 1955 restent sous 5 indices la plupart des années,
+  faute de faits connus dans Wikidata : ces catégories sont masquées ces années-là.
+- Les textes viennent de Wikidata (CC0). Les anciens indices tirés de Wikipédia (CC BY-SA),
+  encore affichés dans les manches passées, gardent leur attribution : l'écran de
+  résultat déduit la licence de `sourceUrl`.
 
 ### Anti-triche sur l'image
 **Décision** : les images ne sont jamais servies depuis l'URL Wikimedia Commons brute.

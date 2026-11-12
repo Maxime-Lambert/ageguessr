@@ -1,7 +1,7 @@
 package app.ageguessr.features.hints.ImportHints;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -18,20 +18,35 @@ import org.springframework.stereotype.Component;
  * <pre>
  * ./mvnw spring-boot:run -Dspring-boot.run.profiles=import-hints
  * </pre>
+ *
+ * <p>{@code app.hints.import.retire-absent=true} also retires the hints whose key the files
+ * no longer hold (see {@link ImportHintsHandler}), for an extraction that replaces the
+ * previous one.
  */
 @Slf4j
 @Component
 @Profile("import-hints")
-@RequiredArgsConstructor
 class ImportHintsRunner implements ApplicationRunner {
 
     private final HintFileReader reader;
     private final ImportHintsHandler handler;
     private final ConfigurableApplicationContext context;
+    private final boolean retireAbsent;
+
+    ImportHintsRunner(
+            HintFileReader reader,
+            ImportHintsHandler handler,
+            ConfigurableApplicationContext context,
+            @Value("${app.hints.import.retire-absent}") boolean retireAbsent) {
+        this.reader = reader;
+        this.handler = handler;
+        this.context = context;
+        this.retireAbsent = retireAbsent;
+    }
 
     @Override
     public void run(ApplicationArguments args) {
-        ImportHintsReport report = handler.handle(reader.readAll());
+        ImportHintsReport report = handler.handle(reader.readAll(), retireAbsent);
         log.info("Hint import finished: {}", report);
         // A failure above throws instead, and Spring Boot exits with a non-zero code.
         System.exit(SpringApplication.exit(context, () -> 0));

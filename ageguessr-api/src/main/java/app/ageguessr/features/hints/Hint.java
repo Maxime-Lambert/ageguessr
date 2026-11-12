@@ -73,4 +73,10 @@ public class Hint {
     private UUID reviewedBy;
 
     private Instant createdAt;
+
+    /**
+     * When an import retired the hint, its key being absent from the files: no longer
+     * offered to a round, still shown where it was shown already (V22).
+     */
+    private Instant retiredAt;
 }
