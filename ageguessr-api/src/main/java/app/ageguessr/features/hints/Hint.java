@@ -58,7 +58,10 @@ public class Hint {
     /** Kind of source ("chart", "category"...), to find the hints of a less reliable one. */
     private String sourceKind;
 
-    /** Wikidata id of the person cited, CELEBRITIES only. */
+    /**
+     * Wikidata id of the person the hint names, if any (always for CELEBRITIES; a laureate,
+     * author or winner elsewhere, V24): never offered on that person's own photo.
+     */
     private String subjectQid;
 
     /** Stable across extractions: importing again adds only the keys not seen yet. */

@@ -28,6 +28,7 @@ const CATEGORY_LABELS: Record<HintCategory, string> = {
   SCIENCE: 'Science',
   WORLD: 'World',
   CELEBRITIES: 'Celebrities',
+  LITERATURE: 'Literature',
 };
 
 const CATEGORIES = Object.keys(CATEGORY_LABELS) as HintCategory[];

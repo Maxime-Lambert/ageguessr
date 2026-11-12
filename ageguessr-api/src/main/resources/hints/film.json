@@ -52,7 +52,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q181819",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q181819-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q181819"
  },
  {
   "category": "FILM",
@@ -74,7 +75,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q369190",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q369190-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q369190"
  },
  {
   "category": "FILM",
@@ -96,7 +98,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q322179",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q322179-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q322179"
  },
  {
   "category": "FILM",
@@ -228,7 +231,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q56016",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q56016-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q56016"
  },
  {
   "category": "FILM",
@@ -239,7 +243,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q55264",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q55264-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q55264"
  },
  {
   "category": "FILM",
@@ -327,7 +332,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q28941",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q28941-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q28941"
  },
  {
   "category": "FILM",
@@ -338,7 +344,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q71243",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q71243-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q71243"
  },
  {
   "category": "FILM",
@@ -349,7 +356,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q203819",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q203819-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q203819"
  },
  {
   "category": "FILM",
@@ -360,7 +368,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q51492",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q51492-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q51492"
  },
  {
   "category": "FILM",
@@ -448,7 +457,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q71206",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q71206-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q71206"
  },
  {
   "category": "FILM",
@@ -459,7 +469,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q51114",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q51114-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q51114"
  },
  {
   "category": "FILM",
@@ -481,7 +492,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q329577",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q329577-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q329577"
  },
  {
   "category": "FILM",
@@ -580,7 +592,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q182292",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q182292-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q182292"
  },
  {
   "category": "FILM",
@@ -646,7 +659,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q18994",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q18994-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q18994"
  },
  {
   "category": "FILM",
@@ -668,7 +682,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q71275",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q71275-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q71275"
  },
  {
   "category": "FILM",
@@ -888,7 +903,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q129429",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q129429-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q129429"
  },
  {
   "category": "FILM",
@@ -899,7 +915,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q62503",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q62503-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q62503"
  },
  {
   "category": "FILM",
@@ -932,7 +949,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q116983",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q116983-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q116983"
  },
  {
   "category": "FILM",
@@ -998,7 +1016,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q102462",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q102462-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q102462"
  },
  {
   "category": "FILM",
@@ -1108,7 +1127,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q93957",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q93957-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q93957"
  },
  {
   "category": "FILM",
@@ -1130,7 +1150,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q95076",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q95076-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q95076"
  },
  {
   "category": "FILM",
@@ -1218,7 +1239,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q51495",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q51495-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q51495"
  },
  {
   "category": "FILM",
@@ -1229,7 +1251,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q94041",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q94041-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q94041"
  },
  {
   "category": "FILM",
@@ -1284,7 +1307,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q182486",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q182486-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q182486"
  },
  {
   "category": "FILM",
@@ -1438,7 +1462,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q43247",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q43247-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q43247"
  },
  {
   "category": "FILM",
@@ -1471,7 +1496,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q72984",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q72984-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q72984"
  },
  {
   "category": "FILM",
@@ -1548,7 +1574,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q51547",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q51547-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q51547"
  },
  {
   "category": "FILM",
@@ -1570,7 +1597,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q40475",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q40475-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q40475"
  },
  {
   "category": "FILM",
@@ -1581,7 +1609,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q181774",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q181774-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q181774"
  },
  {
   "category": "FILM",
@@ -1658,7 +1687,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q95068",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q95068-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q95068"
  },
  {
   "category": "FILM",
@@ -1768,7 +1798,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q72717",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q72717-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q72717"
  },
  {
   "category": "FILM",
@@ -1812,7 +1843,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q253384",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q253384-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q253384"
  },
  {
   "category": "FILM",
@@ -1878,7 +1910,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q55245",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q55245-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q55245"
  },
  {
   "category": "FILM",
@@ -1900,7 +1933,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q51575",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q51575-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q51575"
  },
  {
   "category": "FILM",
@@ -1944,7 +1978,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q95055",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q95055-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q95055"
  },
  {
   "category": "FILM",
@@ -2010,7 +2045,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q51583",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q51583-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q51583"
  },
  {
   "category": "FILM",
@@ -2428,7 +2464,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q42786",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q42786-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q42786"
  },
  {
   "category": "FILM",
@@ -2439,7 +2476,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q95002",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q95002-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q95002"
  },
  {
   "category": "FILM",
@@ -2538,7 +2576,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q34012",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q34012-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q34012"
  },
  {
   "category": "FILM",
@@ -2549,7 +2588,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q3925",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q3925-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q3925"
  },
  {
   "category": "FILM",
@@ -2890,7 +2930,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q103894",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q103894-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q103894"
  },
  {
   "category": "FILM",
@@ -2923,7 +2964,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q55260",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q55260-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q55260"
  },
  {
   "category": "FILM",
@@ -2934,7 +2976,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q1111542",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q1111542-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q1111542"
  },
  {
   "category": "FILM",
@@ -2978,7 +3021,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q181917",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q181917-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q181917"
  },
  {
   "category": "FILM",
@@ -3033,7 +3077,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q51535",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q51535-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q51535"
  },
  {
   "category": "FILM",
@@ -3198,7 +3243,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q34851",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q34851-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q34851"
  },
  {
   "category": "FILM",
@@ -3209,7 +3255,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q160528",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q160528-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q160528"
  },
  {
   "category": "FILM",
@@ -3308,7 +3355,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q43252",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q43252-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q43252"
  },
  {
   "category": "FILM",
@@ -3429,7 +3477,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q108366",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q108366-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q108366"
  },
  {
   "category": "FILM",
@@ -3495,7 +3544,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q183532",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q183532-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q183532"
  },
  {
   "category": "FILM",
@@ -3550,7 +3600,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q104049",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q104049-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q104049"
  },
  {
   "category": "FILM",
@@ -3638,7 +3689,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q161819",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q161819-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q161819"
  },
  {
   "category": "FILM",
@@ -3814,7 +3866,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q76895",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q76895-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q76895"
  },
  {
   "category": "FILM",
@@ -4012,7 +4065,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q273215",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q273215-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q273215"
  },
  {
   "category": "FILM",
@@ -4078,7 +4132,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q4636",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q4636-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q4636"
  },
  {
   "category": "FILM",
@@ -4166,7 +4221,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q181899",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q181899-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q181899"
  },
  {
   "category": "FILM",
@@ -4188,7 +4244,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q40531",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q40531-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q40531"
  },
  {
   "category": "FILM",
@@ -4364,7 +4421,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q182450",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q182450-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q182450"
  },
  {
   "category": "FILM",
@@ -4408,7 +4466,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q41142",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q41142-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q41142"
  },
  {
   "category": "FILM",
@@ -4419,7 +4478,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q150943",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q150943-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q150943"
  },
  {
   "category": "FILM",
@@ -4485,7 +4545,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q51582",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q51582-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q51582"
  },
  {
   "category": "FILM",
@@ -4540,7 +4601,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q14441",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q14441-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q14441"
  },
  {
   "category": "FILM",
@@ -4716,7 +4778,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q94123",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q94123-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q94123"
  },
  {
   "category": "FILM",
@@ -4738,7 +4801,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q56094",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q56094-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q56094"
  },
  {
   "category": "FILM",
@@ -4804,7 +4868,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q211144",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q211144-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q211144"
  },
  {
   "category": "FILM",
@@ -4848,7 +4913,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q39792",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q39792-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q39792"
  },
  {
   "category": "FILM",
@@ -4859,7 +4925,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q106482",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q106482-q900494",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q106482"
  },
  {
   "category": "FILM",
@@ -4958,7 +5025,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q347635",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q347635-q900494",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q347635"
  },
  {
   "category": "FILM",
@@ -4969,7 +5037,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q168721",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q168721-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q168721"
  },
  {
   "category": "FILM",
@@ -5068,7 +5137,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q102642",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q102642-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q102642"
  },
  {
   "category": "FILM",
@@ -5079,7 +5149,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q106555",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q106555-q900494",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q106555"
  },
  {
   "category": "FILM",
@@ -5134,7 +5205,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q181799",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q181799-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q181799"
  },
  {
   "category": "FILM",
@@ -5178,7 +5250,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q318088",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q318088-q900494",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q318088"
  },
  {
   "category": "FILM",
@@ -5189,7 +5262,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q167520",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q167520-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q167520"
  },
  {
   "category": "FILM",
@@ -5233,7 +5307,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q59129",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q59129-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q59129"
  },
  {
   "category": "FILM",
@@ -5288,7 +5363,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q106544",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q106544-q900494",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q106544"
  },
  {
   "category": "FILM",
@@ -5299,7 +5375,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q187033",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q187033-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q187033"
  },
  {
   "category": "FILM",
@@ -5398,7 +5475,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q106508",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q106508-q900494",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q106508"
  },
  {
   "category": "FILM",
@@ -5409,7 +5487,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q36949",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q36949-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q36949"
  },
  {
   "category": "FILM",
@@ -5420,7 +5499,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q59215",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q59215-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q59215"
  },
  {
   "category": "FILM",
@@ -5464,7 +5544,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q190994",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q190994-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q190994"
  },
  {
   "category": "FILM",
@@ -5519,7 +5600,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q19155",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q19155-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q19155"
  },
  {
   "category": "FILM",
@@ -5618,7 +5700,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q173158",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q173158-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q173158"
  },
  {
   "category": "FILM",
@@ -5750,7 +5833,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q95026",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q95026-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q95026"
  },
  {
   "category": "FILM",
@@ -5860,7 +5944,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q181936",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q181936-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q181936"
  },
  {
   "category": "FILM",
@@ -5948,7 +6033,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q105158",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q105158-q900494",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q105158"
  },
  {
   "category": "FILM",
@@ -5970,7 +6056,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q105825",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q105825-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q105825"
  },
  {
   "category": "FILM",
@@ -6025,7 +6112,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q51522",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q51522-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q51522"
  },
  {
   "category": "FILM",
@@ -6058,7 +6146,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q106303",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q106303-q900494",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q106303"
  },
  {
   "category": "FILM",
@@ -6069,7 +6158,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q41871",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q41871-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q41871"
  },
  {
   "category": "FILM",
@@ -6080,7 +6170,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q179497",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q179497-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q179497"
  },
  {
   "category": "FILM",
@@ -6124,7 +6215,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q213287",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q213287-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q213287"
  },
  {
   "category": "FILM",
@@ -6168,7 +6260,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q12003",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q12003-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q12003"
  },
  {
   "category": "FILM",
@@ -6223,7 +6316,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q53009",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q53009-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q53009"
  },
  {
   "category": "FILM",
@@ -6278,7 +6372,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q41351",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q41351-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q41351"
  },
  {
   "category": "FILM",
@@ -6289,7 +6384,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q106255",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q106255-q900494",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q106255"
  },
  {
   "category": "FILM",
@@ -6366,7 +6462,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q269692",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q269692-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q269692"
  },
  {
   "category": "FILM",
@@ -6388,7 +6485,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q166389",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q166389-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q166389"
  },
  {
   "category": "FILM",
@@ -6465,7 +6563,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q182104",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q182104-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q182104"
  },
  {
   "category": "FILM",
@@ -6498,7 +6597,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q11930",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q11930-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q11930"
  },
  {
   "category": "FILM",
@@ -6520,7 +6620,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q544465",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q544465-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q544465"
  },
  {
   "category": "FILM",
@@ -6531,7 +6632,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q171745",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q171745-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q171745"
  },
  {
   "category": "FILM",
@@ -6608,7 +6710,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q65932",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q65932-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q65932"
  },
  {
   "category": "FILM",
@@ -6718,7 +6821,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q41163",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q41163-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q41163"
  },
  {
   "category": "FILM",
@@ -6828,7 +6932,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q8877",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q8877-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q8877"
  },
  {
   "category": "FILM",
@@ -6839,7 +6944,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q2263",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q2263-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q2263"
  },
  {
   "category": "FILM",
@@ -6850,7 +6956,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q123135",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q123135-q900494",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q123135"
  },
  {
   "category": "FILM",
@@ -6905,7 +7012,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q105660",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q105660-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q105660"
  },
  {
   "category": "FILM",
@@ -6938,7 +7046,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q1558999",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q1558999-q900494",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q1558999"
  },
  {
   "category": "FILM",
@@ -6982,7 +7091,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q187364",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q187364-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q187364"
  },
  {
   "category": "FILM",
@@ -7048,7 +7158,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q42229",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q42229-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q42229"
  },
  {
   "category": "FILM",
@@ -7070,7 +7181,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q133050",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q133050-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q133050"
  },
  {
   "category": "FILM",
@@ -7158,7 +7270,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q204299",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q204299-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q204299"
  },
  {
   "category": "FILM",
@@ -7301,7 +7414,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q170574",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q170574-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q170574"
  },
  {
   "category": "FILM",
@@ -7378,7 +7492,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q267244",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q267244-q900494",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q267244"
  },
  {
   "category": "FILM",
@@ -7389,7 +7504,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q34460",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q34460-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q34460"
  },
  {
   "category": "FILM",
@@ -7455,7 +7571,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q23301",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q23301-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q23301"
  },
  {
   "category": "FILM",
@@ -7488,7 +7605,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q25144",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q25144-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q25144"
  },
  {
   "category": "FILM",
@@ -7510,7 +7628,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q93187",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q93187-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q93187"
  },
  {
   "category": "FILM",
@@ -7565,7 +7684,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q223233",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q223233-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q223233"
  },
  {
   "category": "FILM",
@@ -7664,7 +7784,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q103917",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q103917-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q103917"
  },
  {
   "category": "FILM",
@@ -7719,7 +7840,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q42101",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q42101-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q42101"
  },
  {
   "category": "FILM",
@@ -7730,7 +7852,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q1033016",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q1033016-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q1033016"
  },
  {
   "category": "FILM",
@@ -7818,7 +7941,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q51552",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q51552-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q51552"
  },
  {
   "category": "FILM",
@@ -7829,7 +7953,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q104514",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q104514-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q104514"
  },
  {
   "category": "FILM",
@@ -7840,7 +7965,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q104514",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q104514-q900494",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q104514"
  },
  {
   "category": "FILM",
@@ -7928,7 +8054,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q80046",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q80046-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q80046"
  },
  {
   "category": "FILM",
@@ -7939,7 +8066,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q44221",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q44221-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q44221"
  },
  {
   "category": "FILM",
@@ -7950,7 +8078,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q170515",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q170515-q900494",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q170515"
  },
  {
   "category": "FILM",
@@ -7961,7 +8090,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q4465",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q4465-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q4465"
  },
  {
   "category": "FILM",
@@ -8038,7 +8168,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q355835",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q355835-q900494",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q355835"
  },
  {
   "category": "FILM",
@@ -8049,7 +8180,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q171905",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q171905-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q171905"
  },
  {
   "category": "FILM",
@@ -8159,7 +8291,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q44063",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q44063-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q44063"
  },
  {
   "category": "FILM",
@@ -8258,7 +8391,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q600051",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q600051-q900494",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q600051"
  },
  {
   "category": "FILM",
@@ -8269,7 +8403,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q41148",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q41148-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q41148"
  },
  {
   "category": "FILM",
@@ -8280,7 +8415,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q349391",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q349391-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q349391"
  },
  {
   "category": "FILM",
@@ -8368,7 +8504,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q8927",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q8927-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q8927"
  },
  {
   "category": "FILM",
@@ -8478,7 +8615,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q193504",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q193504-q900494",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q193504"
  },
  {
   "category": "FILM",
@@ -8500,7 +8638,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q134867",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q134867-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q134867"
  },
  {
   "category": "FILM",
@@ -8610,7 +8749,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q34816",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q34816-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q34816"
  },
  {
   "category": "FILM",
@@ -8698,7 +8838,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q37876",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q37876-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q37876"
  },
  {
   "category": "FILM",
@@ -8709,7 +8850,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q162492",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q162492-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q162492"
  },
  {
   "category": "FILM",
@@ -8808,7 +8950,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q189422",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q189422-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q189422"
  },
  {
   "category": "FILM",
@@ -8918,7 +9061,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q106204",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q106204-q900494",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q106204"
  },
  {
   "category": "FILM",
@@ -9083,7 +9227,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q28028",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q28028-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q28028"
  },
  {
   "category": "FILM",
@@ -9138,7 +9283,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q28288",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q28288-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q28288"
  },
  {
   "category": "FILM",
@@ -9171,7 +9317,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q55215",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-fr-wikidata-notoriety-award-q55215-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q55215"
  },
  {
   "category": "FILM",
@@ -9270,7 +9417,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q181819",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q181819-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q181819"
  },
  {
   "category": "FILM",
@@ -9281,7 +9429,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q322179",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q322179-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q322179"
  },
  {
   "category": "FILM",
@@ -9468,7 +9617,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q56016",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q56016-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q56016"
  },
  {
   "category": "FILM",
@@ -9479,7 +9629,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q55264",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q55264-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q55264"
  },
  {
   "category": "FILM",
@@ -9578,7 +9729,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q71243",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q71243-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q71243"
  },
  {
   "category": "FILM",
@@ -9589,7 +9741,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q51492",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q51492-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q51492"
  },
  {
   "category": "FILM",
@@ -9611,7 +9764,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q203819",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q203819-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q203819"
  },
  {
   "category": "FILM",
@@ -9688,7 +9842,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q71206",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q71206-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q71206"
  },
  {
   "category": "FILM",
@@ -9699,7 +9854,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q51114",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q51114-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q51114"
  },
  {
   "category": "FILM",
@@ -9721,7 +9877,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q329577",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q329577-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q329577"
  },
  {
   "category": "FILM",
@@ -9798,7 +9955,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q182292",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q182292-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q182292"
  },
  {
   "category": "FILM",
@@ -9809,7 +9967,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q18994",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q18994-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q18994"
  },
  {
   "category": "FILM",
@@ -9908,7 +10067,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q71275",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q71275-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q71275"
  },
  {
   "category": "FILM",
@@ -10128,7 +10288,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q129429",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q129429-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q129429"
  },
  {
   "category": "FILM",
@@ -10150,7 +10311,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q116983",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q116983-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q116983"
  },
  {
   "category": "FILM",
@@ -10172,7 +10334,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q62503",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q62503-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q62503"
  },
  {
   "category": "FILM",
@@ -10238,7 +10401,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q102462",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q102462-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q102462"
  },
  {
   "category": "FILM",
@@ -10249,7 +10413,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q95089",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q95089-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q95089"
  },
  {
   "category": "FILM",
@@ -10359,7 +10524,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q93957",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q93957-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q93957"
  },
  {
   "category": "FILM",
@@ -10370,7 +10536,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q95076",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q95076-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q95076"
  },
  {
   "category": "FILM",
@@ -10458,7 +10625,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q94041",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q94041-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q94041"
  },
  {
   "category": "FILM",
@@ -10469,7 +10637,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q182486",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q182486-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q182486"
  },
  {
   "category": "FILM",
@@ -10480,7 +10649,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q51495",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q51495-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q51495"
  },
  {
   "category": "FILM",
@@ -10678,7 +10848,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q72984",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q72984-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q72984"
  },
  {
   "category": "FILM",
@@ -10689,7 +10860,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q43247",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q43247-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q43247"
  },
  {
   "category": "FILM",
@@ -10799,7 +10971,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q40475",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q40475-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q40475"
  },
  {
   "category": "FILM",
@@ -10810,7 +10983,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q51547",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q51547-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q51547"
  },
  {
   "category": "FILM",
@@ -10854,7 +11028,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q181774",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q181774-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q181774"
  },
  {
   "category": "FILM",
@@ -10898,7 +11073,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q95068",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q95068-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q95068"
  },
  {
   "category": "FILM",
@@ -11008,7 +11184,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q72717",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q72717-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q72717"
  },
  {
   "category": "FILM",
@@ -11019,7 +11196,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q253384",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q253384-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q253384"
  },
  {
   "category": "FILM",
@@ -11074,7 +11252,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q181786",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q181786-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q181786"
  },
  {
   "category": "FILM",
@@ -11118,7 +11297,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q55245",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q55245-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q55245"
  },
  {
   "category": "FILM",
@@ -11129,7 +11309,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q51575",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q51575-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q51575"
  },
  {
   "category": "FILM",
@@ -11140,7 +11321,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q95055",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q95055-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q95055"
  },
  {
   "category": "FILM",
@@ -11272,7 +11454,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q182349",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q182349-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q182349"
  },
  {
   "category": "FILM",
@@ -11382,7 +11565,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q253298",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q253298-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q253298"
  },
  {
   "category": "FILM",
@@ -11448,7 +11632,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q16390",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q16390-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q16390"
  },
  {
   "category": "FILM",
@@ -11558,7 +11743,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q253308",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q253308-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q253308"
  },
  {
   "category": "FILM",
@@ -11668,7 +11854,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q42786",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q42786-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q42786"
  },
  {
   "category": "FILM",
@@ -11679,7 +11866,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q95002",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q95002-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q95002"
  },
  {
   "category": "FILM",
@@ -11778,7 +11966,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q34012",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q34012-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q34012"
  },
  {
   "category": "FILM",
@@ -11789,7 +11978,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q3925",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q3925-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q3925"
  },
  {
   "category": "FILM",
@@ -12108,7 +12298,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q103894",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q103894-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q103894"
  },
  {
   "category": "FILM",
@@ -12119,7 +12310,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q1111542",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q1111542-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q1111542"
  },
  {
   "category": "FILM",
@@ -12141,7 +12333,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q55260",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q55260-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q55260"
  },
  {
   "category": "FILM",
@@ -12218,7 +12411,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q181917",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q181917-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q181917"
  },
  {
   "category": "FILM",
@@ -12229,7 +12423,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q51535",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q51535-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q51535"
  },
  {
   "category": "FILM",
@@ -12251,7 +12446,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q248837",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q248837-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q248837"
  },
  {
   "category": "FILM",
@@ -12438,7 +12634,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q34851",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q34851-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q34851"
  },
  {
   "category": "FILM",
@@ -12449,7 +12646,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q160528",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q160528-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q160528"
  },
  {
   "category": "FILM",
@@ -12548,7 +12746,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q43252",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q43252-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q43252"
  },
  {
   "category": "FILM",
@@ -12614,7 +12813,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q153018",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q153018-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q153018"
  },
  {
   "category": "FILM",
@@ -12658,7 +12858,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q108366",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q108366-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q108366"
  },
  {
   "category": "FILM",
@@ -12669,7 +12870,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q183532",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q183532-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q183532"
  },
  {
   "category": "FILM",
@@ -12768,7 +12970,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q104049",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q104049-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q104049"
  },
  {
   "category": "FILM",
@@ -12779,7 +12982,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q191027",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q191027-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q191027"
  },
  {
   "category": "FILM",
@@ -12812,7 +13016,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q52411",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q52411-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q52411"
  },
  {
   "category": "FILM",
@@ -12878,7 +13083,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q161819",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q161819-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q161819"
  },
  {
   "category": "FILM",
@@ -12911,7 +13117,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q181887",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q181887-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q181887"
  },
  {
   "category": "FILM",
@@ -12977,7 +13184,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q56014",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q56014-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q56014"
  },
  {
   "category": "FILM",
@@ -13010,7 +13218,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q76895",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q76895-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q76895"
  },
  {
   "category": "FILM",
@@ -13197,7 +13406,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q223988",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q223988-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q223988"
  },
  {
   "category": "FILM",
@@ -13318,7 +13528,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q4636",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q4636-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q4636"
  },
  {
   "category": "FILM",
@@ -13340,7 +13551,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q181899",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q181899-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q181899"
  },
  {
   "category": "FILM",
@@ -13428,7 +13640,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q40531",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q40531-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q40531"
  },
  {
   "category": "FILM",
@@ -13560,7 +13773,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q182450",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q182450-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q182450"
  },
  {
   "category": "FILM",
@@ -13648,7 +13862,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q41142",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q41142-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q41142"
  },
  {
   "category": "FILM",
@@ -13659,7 +13874,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q150943",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q150943-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q150943"
  },
  {
   "category": "FILM",
@@ -13692,7 +13908,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q51582",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q51582-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q51582"
  },
  {
   "category": "FILM",
@@ -13758,7 +13975,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q14441",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q14441-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q14441"
  },
  {
   "category": "FILM",
@@ -13780,7 +13998,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q313256",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q313256-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q313256"
  },
  {
   "category": "FILM",
@@ -13879,7 +14098,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q94123",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q94123-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q94123"
  },
  {
   "category": "FILM",
@@ -13989,7 +14209,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q56094",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q56094-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q56094"
  },
  {
   "category": "FILM",
@@ -14022,7 +14243,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q211144",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q211144-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q211144"
  },
  {
   "category": "FILM",
@@ -14088,7 +14310,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q39792",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q39792-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q39792"
  },
  {
   "category": "FILM",
@@ -14121,7 +14344,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q182372",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q182372-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q182372"
  },
  {
   "category": "FILM",
@@ -14198,7 +14422,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q168721",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q168721-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q168721"
  },
  {
   "category": "FILM",
@@ -14297,7 +14522,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q294454",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q294454-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q294454"
  },
  {
   "category": "FILM",
@@ -14308,7 +14534,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q102642",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q102642-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q102642"
  },
  {
   "category": "FILM",
@@ -14319,7 +14546,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q181799",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q181799-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q181799"
  },
  {
   "category": "FILM",
@@ -14418,7 +14646,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q167520",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q167520-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q167520"
  },
  {
   "category": "FILM",
@@ -14506,7 +14735,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q59129",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q59129-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q59129"
  },
  {
   "category": "FILM",
@@ -14528,7 +14758,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q187033",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q187033-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q187033"
  },
  {
   "category": "FILM",
@@ -14638,7 +14869,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q36949",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q36949-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q36949"
  },
  {
   "category": "FILM",
@@ -14649,7 +14881,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q59215",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q59215-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q59215"
  },
  {
   "category": "FILM",
@@ -14660,7 +14893,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q190994",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q190994-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q190994"
  },
  {
   "category": "FILM",
@@ -14682,7 +14916,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q106508",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q106508-q900494",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q106508"
  },
  {
   "category": "FILM",
@@ -14759,7 +14994,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q19155",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q19155-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q19155"
  },
  {
   "category": "FILM",
@@ -14858,7 +15094,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q173158",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q173158-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q173158"
  },
  {
   "category": "FILM",
@@ -14968,7 +15205,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q95026",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q95026-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q95026"
  },
  {
   "category": "FILM",
@@ -15111,7 +15349,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q181936",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q181936-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q181936"
  },
  {
   "category": "FILM",
@@ -15188,7 +15427,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q105825",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q105825-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q105825"
  },
  {
   "category": "FILM",
@@ -15232,7 +15472,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q105158",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q105158-q900494",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q105158"
  },
  {
   "category": "FILM",
@@ -15254,7 +15495,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q51522",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q51522-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q51522"
  },
  {
   "category": "FILM",
@@ -15298,7 +15540,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q41871",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q41871-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q41871"
  },
  {
   "category": "FILM",
@@ -15320,7 +15563,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q179497",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q179497-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q179497"
  },
  {
   "category": "FILM",
@@ -15331,7 +15575,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q213287",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q213287-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q213287"
  },
  {
   "category": "FILM",
@@ -15408,7 +15653,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q12003",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q12003-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q12003"
  },
  {
   "category": "FILM",
@@ -15518,7 +15764,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q41351",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q41351-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q41351"
  },
  {
   "category": "FILM",
@@ -15617,7 +15864,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q269692",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q269692-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q269692"
  },
  {
   "category": "FILM",
@@ -15628,7 +15876,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q166389",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q166389-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q166389"
  },
  {
   "category": "FILM",
@@ -15694,7 +15943,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q182104",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q182104-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q182104"
  },
  {
   "category": "FILM",
@@ -15738,7 +15988,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q11930",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q11930-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q11930"
  },
  {
   "category": "FILM",
@@ -15760,7 +16011,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q171745",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q171745-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q171745"
  },
  {
   "category": "FILM",
@@ -15771,7 +16023,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q544465",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q544465-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q544465"
  },
  {
   "category": "FILM",
@@ -15848,7 +16101,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q65932",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q65932-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q65932"
  },
  {
   "category": "FILM",
@@ -15958,7 +16212,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q41163",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q41163-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q41163"
  },
  {
   "category": "FILM",
@@ -16068,7 +16323,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q8877",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q8877-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q8877"
  },
  {
   "category": "FILM",
@@ -16079,7 +16335,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q2263",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q2263-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q2263"
  },
  {
   "category": "FILM",
@@ -16123,7 +16380,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q105660",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q105660-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q105660"
  },
  {
   "category": "FILM",
@@ -16211,7 +16469,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q187364",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q187364-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q187364"
  },
  {
   "category": "FILM",
@@ -16288,7 +16547,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q42229",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q42229-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q42229"
  },
  {
   "category": "FILM",
@@ -16299,7 +16559,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q133050",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q133050-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q133050"
  },
  {
   "category": "FILM",
@@ -16409,7 +16670,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q204299",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q204299-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q204299"
  },
  {
   "category": "FILM",
@@ -16519,7 +16781,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q170574",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q170574-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q170574"
  },
  {
   "category": "FILM",
@@ -16618,7 +16881,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q34460",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q34460-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q34460"
  },
  {
   "category": "FILM",
@@ -16728,7 +16992,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q25144",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q25144-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q25144"
  },
  {
   "category": "FILM",
@@ -16761,7 +17026,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q93187",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q93187-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q93187"
  },
  {
   "category": "FILM",
@@ -16783,7 +17049,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q223233",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q223233-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q223233"
  },
  {
   "category": "FILM",
@@ -16915,7 +17182,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q103917",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q103917-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q103917"
  },
  {
   "category": "FILM",
@@ -16959,7 +17227,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q42101",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q42101-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q42101"
  },
  {
   "category": "FILM",
@@ -16970,7 +17239,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q1033016",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q1033016-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q1033016"
  },
  {
   "category": "FILM",
@@ -17058,7 +17328,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q37459",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q37459-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q37459"
  },
  {
   "category": "FILM",
@@ -17069,7 +17340,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q51552",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q51552-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q51552"
  },
  {
   "category": "FILM",
@@ -17080,7 +17352,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q104514",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q104514-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q104514"
  },
  {
   "category": "FILM",
@@ -17091,7 +17364,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q104514",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q104514-q900494",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q104514"
  },
  {
   "category": "FILM",
@@ -17168,7 +17442,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q80046",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q80046-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q80046"
  },
  {
   "category": "FILM",
@@ -17201,7 +17476,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q4465",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q4465-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q4465"
  },
  {
   "category": "FILM",
@@ -17245,7 +17521,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q170515",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q170515-q900494",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q170515"
  },
  {
   "category": "FILM",
@@ -17278,7 +17555,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q171905",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q171905-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q171905"
  },
  {
   "category": "FILM",
@@ -17399,7 +17677,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q44063",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q44063-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q44063"
  },
  {
   "category": "FILM",
@@ -17498,7 +17777,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q41148",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q41148-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q41148"
  },
  {
   "category": "FILM",
@@ -17509,7 +17789,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q349391",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q349391-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q349391"
  },
  {
   "category": "FILM",
@@ -17630,7 +17911,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q8927",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q8927-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q8927"
  },
  {
   "category": "FILM",
@@ -17751,7 +18033,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q193504",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q193504-q900494",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q193504"
  },
  {
   "category": "FILM",
@@ -17773,7 +18056,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q134867",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q134867-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q134867"
  },
  {
   "category": "FILM",
@@ -17883,7 +18167,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q34816",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q34816-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q34816"
  },
  {
   "category": "FILM",
@@ -17938,7 +18223,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q37876",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q37876-q103618",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q37876"
  },
  {
   "category": "FILM",
@@ -17949,7 +18235,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q162492",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q162492-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q162492"
  },
  {
   "category": "FILM",
@@ -18367,7 +18654,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q28028",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q28028-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q28028"
  },
  {
   "category": "FILM",
@@ -18411,7 +18699,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q28288",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q28288-q103916",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q28288"
  },
  {
   "category": "FILM",
@@ -18433,7 +18722,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q55215",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "film-en-wikidata-notoriety-award-q55215-q103360",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q55215"
  },
  {
   "category": "FILM",

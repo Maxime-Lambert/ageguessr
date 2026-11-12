@@ -56,6 +56,15 @@ class HintRulesTest {
     }
 
     @Test
+    void acceptsALiteratureHintWithoutSubject() {
+        HintFileEntry book = new HintFileEntry(
+                "LITERATURE", 1976, "FR", "Parution : « Un roman » — Une autrice", null,
+                "https://www.wikidata.org/wiki/Q1", "wikidata-notoriety", null, "key", false);
+
+        assertThat(check(book)).isEmpty();
+    }
+
+    @Test
     void refusesAYearOutOfRange() {
         assertThat(check(withYear(null))).contains(HintRejection.YEAR_OUT_OF_RANGE);
         assertThat(check(withYear(1899))).contains(HintRejection.YEAR_OUT_OF_RANGE);
@@ -125,13 +134,17 @@ class HintRulesTest {
     }
 
     @Test
-    void aCelebrityNamesItsSubjectAndNoOtherHintDoes() {
+    void aCelebrityAlwaysNamesItsSubjectAndAnotherHintMay() {
         HintFileEntry musicWithSubject = new HintFileEntry(
                 "MUSIC", 1976, "FR", "Un texte.", null, "https://fr.wikipedia.org/wiki/P", "chart", "Q42", "key", false);
+        HintFileEntry musicWithBadSubject = new HintFileEntry(
+                "MUSIC", 1976, "FR", "Un texte.", null, "https://fr.wikipedia.org/wiki/P", "chart", "42", "key", false);
 
         assertThat(check(celebrity("Q42"))).isEmpty();
         assertThat(check(celebrity(null))).contains(HintRejection.INVALID_SUBJECT);
         assertThat(check(celebrity("42"))).contains(HintRejection.INVALID_SUBJECT);
-        assertThat(check(musicWithSubject)).contains(HintRejection.INVALID_SUBJECT);
+        // V24: an author, a laureate, a winner is named so as never to be shown on their photo.
+        assertThat(check(musicWithSubject)).isEmpty();
+        assertThat(check(musicWithBadSubject)).contains(HintRejection.INVALID_SUBJECT);
     }
 }

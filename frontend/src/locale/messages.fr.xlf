@@ -568,6 +568,10 @@
         <source>Celebrities</source>
         <target>Célébrités</target>
       </trans-unit>
+      <trans-unit id="game.category.literature" datatype="html">
+        <source>Literature</source>
+        <target>Littérature</target>
+      </trans-unit>
       <trans-unit id="game.roundTitle" datatype="html">
         <source><x id="round" equiv-text="GAME_TEXT.round"/> <x id="position" equiv-text="position"/> of <x id="total" equiv-text="total"/></source>
         <target><x id="round" equiv-text="GAME_TEXT.round"/> <x id="position" equiv-text="position"/> sur <x id="total" equiv-text="total"/></target>

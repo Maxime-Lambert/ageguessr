@@ -575,7 +575,9 @@ voulu :
 permettre de calculer l'âge sur la photo. Son **année de référence est l'année du jour −
 `age_at_photo`**, pas l'année de naissance, puisque l'année de la photo n'est pas montrée
 au joueur.
-- **Catégories** : Musique, Cinéma, Sport, Science et techno, Monde, Célébrités. Au moins
+- **Catégories** : Musique, Cinéma, Sport, Science et techno, Monde, Célébrités, et
+  Littérature depuis le 2026-11-12 (V23 : parutions avec leur auteur, Nobel de
+  littérature, Goncourt, Booker, Pulitzer de la fiction). Au moins
   5 indices par catégorie, par année et par public ; en dessous, la catégorie est masquée
   pour cette année.
 - **Base pré-construite** : extraction en Python hors de l'application (`scripts/hints/`),
@@ -586,7 +588,8 @@ au joueur.
   - **Candidats Wikidata** par catégorie : éditions sportives avec vainqueur et pays hôte,
     Jeux olympiques, Ballon d'or ; événements, États et organisations internationales ;
     découvertes, Nobel scientifiques, lancements et premiers vols ; albums, chansons,
-    Eurovision, Grammy ; films, Oscars, Palme d'or, César ; personnes.
+    Eurovision, Grammy ; films, Oscars, Palme d'or, César ; personnes ; romans, pièces,
+    poèmes, nouvelles et BD, prix littéraires.
   - **Notoriété** : vues sur 12 mois de l'article du fait lui-même, dans la Wikipédia de
     la langue du joueur. Les premiers essais mesuraient la page la plus vue citée par une
     ligne d'une page d'année, ce qui classait un fait obscur au niveau d'un pays cité.
@@ -630,7 +633,13 @@ au joueur.
   ces faits sont écartés à la main dans `LEFT_OUT` (`extract_notoriety.py`), par élément
   Wikidata.
 - **Stockage** (table `hints`, V11) : catégorie, année, public (`FR`, `EN`, `ALL`), textes,
-  source, `subject_qid` (Célébrités seulement), `dedupe_key` unique et statut de relecture.
+  source, `subject_qid`, `dedupe_key` unique et statut de relecture.
+- **Personne nommée par un indice** (`subject_qid`, V24, 2026-11-12) : obligatoire en
+  Célébrités, renseignée ailleurs dès qu'un indice nomme une personne (lauréat, auteur,
+  interprète, vainqueur). Le jeu ne propose jamais un indice qui nomme la personne de la
+  photo (`findEligible`) : « Parution : Harry Potter — J. K. Rowling » tombait sinon
+  l'année de ses 32 ans sur sa propre photo. L'import complète ce champ sur un indice déjà
+  importé qui ne l'avait pas, seule exception à « jamais touché » (ni texte ni décision).
   L'import (profil `import-hints`) n'ajoute que les clés inconnues : il n'écrase jamais une
   décision ni un texte corrigé. Tout nombre de 1900 à 2099 est refusé dans un texte, il
   donnerait la réponse, de même que l'année de l'indice écrite en deux chiffres (« Mai 68 »,

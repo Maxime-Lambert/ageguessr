@@ -61,7 +61,7 @@ class ImportHintsHandlerTest {
         assertThat(hint.getSourceUrl()).isEqualTo("https://fr.wikipedia.org/wiki/Page");
         assertThat(hint.getSourceKind()).isEqualTo("chart");
         assertThat(hint.getDedupeKey()).isEqualTo("a");
-        assertThat(report).isEqualTo(new ImportHintsReport(1, 1, 0, 0, 0, Map.of(), List.of()));
+        assertThat(report).isEqualTo(new ImportHintsReport(1, 1, 0, 0, 0, 0, Map.of(), List.of()));
     }
 
     @Test
@@ -109,7 +109,7 @@ class ImportHintsHandlerTest {
         ImportHintsReport report = handler.handle(List.of());
 
         verify(hints).saveAll(anyList());
-        assertThat(report).isEqualTo(new ImportHintsReport(0, 0, 0, 0, 0, Map.of(), List.of()));
+        assertThat(report).isEqualTo(new ImportHintsReport(0, 0, 0, 0, 0, 0, Map.of(), List.of()));
     }
 
     @Test
@@ -169,5 +169,23 @@ class ImportHintsHandlerTest {
         handler.handle(List.of(), true);
 
         verify(hints, times(2)).setRetiredAt(anyCollection(), eq(NOW));
+    }
+
+    @Test
+    void namesTheSubjectOfAHintImportedWithoutOne() {
+        HintFileEntry book = new HintFileEntry(
+                "LITERATURE", 1976, "FR", "Parution : « Un roman » — Une autrice", null,
+                "https://www.wikidata.org/wiki/Q1", "wikidata-notoriety", "Q42", "book", false);
+        when(hints.findAllDedupeKeys()).thenReturn(Set.of("book", "other"));
+        when(hints.findDedupeKeysWithoutSubject()).thenReturn(Set.of("book", "other"));
+        when(hints.fillSubject("book", "Q42")).thenReturn(1);
+
+        ImportHintsReport report = handler.handle(List.of(book, french("other")));
+
+        verify(hints).fillSubject("book", "Q42");
+        // A line without subject leaves the hint as it is.
+        verify(hints, never()).fillSubject(eq("other"), any());
+        assertThat(report.named()).isEqualTo(1);
+        assertThat(report.alreadyImported()).isEqualTo(2);
     }
 }

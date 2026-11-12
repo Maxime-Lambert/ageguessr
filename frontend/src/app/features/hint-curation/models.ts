@@ -3,7 +3,8 @@ import { HintReportReason } from '../../shared/reports/report-reasons';
 /** Mirrors of the /api/admin/hints responses (ageguessr-api features/hints). */
 
 export type HintReviewStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
-export type HintCategory = 'MUSIC' | 'FILM' | 'SPORT' | 'SCIENCE' | 'WORLD' | 'CELEBRITIES';
+export type HintCategory =
+  'MUSIC' | 'FILM' | 'SPORT' | 'SCIENCE' | 'WORLD' | 'CELEBRITIES' | 'LITERATURE';
 export type HintAudience = 'ALL' | 'FR' | 'EN';
 
 export interface PendingHint {
