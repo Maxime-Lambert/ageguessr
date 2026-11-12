@@ -251,8 +251,8 @@ def celebrity_hints(years, today):
     for year in years:
         for person in [p for p in candidates[year] if p["item"] not in excluded][:TARGET]:
             hints.append(hint("CELEBRITIES", year, "ALL",
-                              text_fr=f"Personnalité née cette année-là : {person['fr']}, {person['descFr']}.",
-                              text_en=f"Born that year: {person['en']}, {person['descEn']}.",
+                              text_fr=f"Sur la photo, cette personne a l'âge qu'a (ou qu'aurait) cette année {person['fr']}, {person['descFr']}.",
+                              text_en=f"On the photo, this person is as old as this celebrity is (or would be) this year: {person['en']}, {person['descEn']}.",
                               source=wikidata_url(person["item"]), kind="wikidata", key_parts=[person["item"]],
                               subject=person["item"]))
     return hints

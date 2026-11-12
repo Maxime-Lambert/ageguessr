@@ -2,16 +2,23 @@ package app.ageguessr.features.game;
 
 import app.ageguessr.features.hints.HintCategory;
 import app.ageguessr.shared.i18n.Language;
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 /**
  * How far a player is in one round, whatever the game: the daily game ({@link GamePlay})
@@ -35,11 +42,25 @@ public class RoundProgress {
 
     private int firstPoints;
 
+    /**
+     * The categories chosen, in the order of {@link HintCategory}; empty until then (V20).
+     * PostgreSQL arrays: a list of at most six, written once and read with the round.
+     */
     @Enumerated(EnumType.STRING)
-    private HintCategory hintCategory;
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Column(columnDefinition = "varchar(16)[]")
+    @Builder.Default
+    private List<HintCategory> hintCategories = new ArrayList<>();
 
-    /** The hint shown, so that the player always sees the same one again. */
-    private UUID hintId;
+    /**
+     * The hints shown, one per category and in the same order, so that the player always
+     * sees the same ones again. An id may be null: a hint deleted under the former
+     * {@code ON DELETE SET NULL}.
+     */
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Column(columnDefinition = "uuid[]")
+    @Builder.Default
+    private List<UUID> hintIds = new ArrayList<>();
 
     private Integer secondGuess;
 
@@ -52,8 +73,12 @@ public class RoundProgress {
     /** The player reported the photo of this round: once per round (V16). */
     private boolean photoReported;
 
-    /** The player reported the hint of this round: once per round (V16). */
-    private boolean hintReported;
+    /** The categories whose hint the player reported: once per hint (V20, was V16's flag). */
+    @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Column(columnDefinition = "varchar(16)[]")
+    @Builder.Default
+    private List<HintCategory> reportedHintCategories = new ArrayList<>();
 
     /** Starts the round with its first guess; an exact one ends it at once. */
     public static RoundProgress start(Language language, int guess, int age, Instant now) {
@@ -70,7 +95,7 @@ public class RoundProgress {
         if (finishedAt != null) {
             return RoundStep.FINISHED;
         }
-        return hintCategory == null ? RoundStep.AWAITING_HINT : RoundStep.AWAITING_SECOND_GUESS;
+        return hintCategories.isEmpty() ? RoundStep.AWAITING_HINT : RoundStep.AWAITING_SECOND_GUESS;
     }
 
     /**
@@ -83,12 +108,35 @@ public class RoundProgress {
         return step == RoundStep.AWAITING_SECOND_GUESS || (step == RoundStep.AWAITING_HINT && !anyCategoryAvailable);
     }
 
-    public void revealHint(HintCategory category, UUID hintId) {
+    /** @param hintIds one per category, in the same order */
+    public void revealHints(List<HintCategory> categories, List<UUID> hintIds) {
         if (step() != RoundStep.AWAITING_HINT) {
-            throw new IllegalStateException("The hint of a round is chosen once, after the first guess");
+            throw new IllegalStateException("The hints of a round are chosen once, after the first guess");
         }
-        this.hintCategory = category;
-        this.hintId = hintId;
+        if (categories.isEmpty() || categories.size() != hintIds.size()) {
+            throw new IllegalArgumentException("One hint per category, at least one");
+        }
+        this.hintCategories = new ArrayList<>(categories);
+        this.hintIds = new ArrayList<>(hintIds);
+    }
+
+    /** The categories chosen and their hints, side by side. */
+    public List<HintCategory> getHintCategories() {
+        return List.copyOf(hintCategories);
+    }
+
+    public List<UUID> getHintIds() {
+        return Collections.unmodifiableList(hintIds);
+    }
+
+    public List<HintCategory> getReportedHintCategories() {
+        return List.copyOf(reportedHintCategories);
+    }
+
+    /** The hint shown for this category, if the player chose it. */
+    public Optional<UUID> hintIdOf(HintCategory category) {
+        int index = hintCategories.indexOf(category);
+        return index < 0 ? Optional.empty() : Optional.ofNullable(hintIds.get(index));
     }
 
     public void finishWithSecondGuess(int guess, int age, Instant now) {
@@ -115,13 +163,20 @@ public class RoundProgress {
         return true;
     }
 
-    /** As {@link #reportPhoto()}, for the hint shown during the round. */
-    public boolean reportHint() {
+    /** As {@link #reportPhoto()}, for the hint of one category shown during the round. */
+    public boolean reportHint(HintCategory category) {
         requireFinished();
-        if (hintReported) {
+        if (!hintCategories.contains(category)) {
+            throw new IllegalArgumentException("Only a hint shown is reported");
+        }
+        if (reportedHintCategories.contains(category)) {
             return false;
         }
-        hintReported = true;
+        // A new list rather than add(): the dirty check of a basic array compares values, and
+        // the list read from the database may not be mutable.
+        List<HintCategory> reported = new ArrayList<>(reportedHintCategories);
+        reported.add(category);
+        reportedHintCategories = reported;
         return true;
     }
 

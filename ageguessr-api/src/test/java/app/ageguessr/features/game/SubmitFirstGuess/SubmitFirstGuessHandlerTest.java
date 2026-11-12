@@ -15,6 +15,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import app.ageguessr.features.game.GameFixtures;
 import app.ageguessr.features.game.Direction;
 import app.ageguessr.features.game.GamePlay;
 import app.ageguessr.features.game.GamePlayRepository;
@@ -27,6 +28,7 @@ import app.ageguessr.features.game.RoundView;
 import app.ageguessr.features.game.RoundViews;
 import app.ageguessr.features.hints.HintCategory;
 import app.ageguessr.features.hints.HintRepository;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,7 +42,7 @@ class SubmitFirstGuessHandlerTest {
     private final GamePlayRepository plays = mock(GamePlayRepository.class);
     private final HintRepository hintRepository = mock(HintRepository.class);
     private final SubmitFirstGuessHandler handler =
-            new SubmitFirstGuessHandler(rounds, plays, new RoundViews(new HintPicker(hintRepository)), CLOCK);
+            new SubmitFirstGuessHandler(rounds, plays, GameFixtures.views(hintRepository), CLOCK);
     private final PlayerKey guest = PlayerKey.guest(UUID.randomUUID());
 
     @BeforeEach
@@ -70,7 +72,7 @@ class SubmitFirstGuessHandlerTest {
 
         assertThat(view.step()).isEqualTo(RoundStep.FINISHED);
         assertThat(view.result().points()).isEqualTo(1000);
-        assertThat(view.result().hint()).isNull();
+        assertThat(view.result().hints()).isEmpty();
         verify(hintRepository, never()).findEligible(anyInt(), any(), any());
     }
 

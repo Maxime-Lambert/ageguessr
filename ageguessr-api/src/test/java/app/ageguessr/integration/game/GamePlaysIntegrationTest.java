@@ -37,7 +37,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * The constraints and cascades of V13__create_game_plays.sql, and the hint query of the
+ * The constraints and cascades of V13__create_game_plays.sql (hints as arrays since V20), and the hint query of the
  * game, against a real Postgres.
  */
 @SpringBootTest
@@ -102,8 +102,15 @@ class GamePlaysIntegrationTest {
                 "INSERT INTO game_plays (" + VALID_COLUMNS + ") VALUES ('2026-11-02', 1, gen_random_uuid(), 'EN', 101, 0)",
                 "INSERT INTO game_plays (" + VALID_COLUMNS + ") VALUES ('2026-11-02', 1, gen_random_uuid(), 'EN', 30, 501)",
                 "INSERT INTO game_plays (" + VALID_COLUMNS + ") VALUES ('2026-11-02', 1, gen_random_uuid(), 'EN', 30, -1)",
-                "INSERT INTO game_plays (" + VALID_COLUMNS + ", hint_category)"
-                        + " VALUES ('2026-11-02', 1, gen_random_uuid(), 'EN', 30, 184, 'COOKING')",
+                "INSERT INTO game_plays (" + VALID_COLUMNS + ", hint_categories, hint_ids)"
+                        + " VALUES ('2026-11-02', 1, gen_random_uuid(), 'EN', 30, 184, '{COOKING}', ARRAY[gen_random_uuid()])",
+                // Categories and hints go together (V20).
+                "INSERT INTO game_plays (" + VALID_COLUMNS + ", hint_categories)"
+                        + " VALUES ('2026-11-02', 1, gen_random_uuid(), 'EN', 30, 184, '{MUSIC}')",
+                // Only a hint shown is reported.
+                "INSERT INTO game_plays (" + VALID_COLUMNS + ", hint_categories, hint_ids, reported_hint_categories)"
+                        + " VALUES ('2026-11-02', 1, gen_random_uuid(), 'EN', 30, 184, '{MUSIC}', ARRAY[gen_random_uuid()],"
+                        + " '{FILM}')",
                 // A second guess without its points, then without the end of the round.
                 "INSERT INTO game_plays (" + VALID_COLUMNS + ", second_guess, finished_at)"
                         + " VALUES ('2026-11-02', 1, gen_random_uuid(), 'EN', 30, 184, 38, now())",
@@ -137,6 +144,29 @@ class GamePlaysIntegrationTest {
 
         assertThatThrownBy(() -> plays.saveAndFlush(start(guest, (short) 1)))
                 .isInstanceOf(DataIntegrityViolationException.class);
+    }
+
+    @Test
+    void keepsTheHintsOfARoundAndTheirReportsInTheirOrder() {
+        GamePlay play = start(PlayerKey.guest(UUID.randomUUID()), (short) 1);
+        List<UUID> ids = List.of(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID());
+        play.revealHints(List.of(HintCategory.MUSIC, HintCategory.SPORT, HintCategory.CELEBRITIES), ids);
+        play.finishWithSecondGuess(38, 40, NOW);
+        play.progress().reportHint(HintCategory.SPORT);
+        plays.saveAndFlush(play);
+        entityManager.clear();
+
+        GamePlay read = plays.findById(play.getId()).orElseThrow();
+        assertThat(read.getHintCategories()).containsExactly(HintCategory.MUSIC, HintCategory.SPORT, HintCategory.CELEBRITIES);
+        assertThat(read.getHintIds()).containsExactlyElementsOf(ids);
+        assertThat(read.getReportedHintCategories()).containsExactly(HintCategory.SPORT);
+
+        // A report after reading it back is saved too: the dirty check sees the new list.
+        read.progress().reportHint(HintCategory.MUSIC);
+        plays.saveAndFlush(read);
+        entityManager.clear();
+        assertThat(plays.findById(play.getId()).orElseThrow().getReportedHintCategories())
+                .containsExactly(HintCategory.SPORT, HintCategory.MUSIC);
     }
 
     @Test
@@ -189,19 +219,20 @@ class GamePlaysIntegrationTest {
     }
 
     @Test
-    void deletingTheHintKeepsTheRoundWithoutIt() {
+    void deletingAHintKeepsTheRoundWhichNoLongerShowsIt() {
         Hint hint = saveHint(HintCategory.MUSIC, 1986, HintAudience.ALL, HintReviewStatus.APPROVED, null);
         GamePlay play = start(PlayerKey.guest(UUID.randomUUID()), (short) 1);
-        play.revealHint(HintCategory.MUSIC, hint.getId());
+        play.revealHints(List.of(HintCategory.MUSIC), List.of(hint.getId()));
         plays.saveAndFlush(play);
 
+        // No foreign key on an array (V20): the id stays, and the game skips an unknown one.
         hints.delete(hint);
         hints.flush();
         entityManager.clear();
 
         GamePlay reloaded = plays.findById(play.getId()).orElseThrow();
-        assertThat(reloaded.getHintId()).isNull();
-        assertThat(reloaded.getHintCategory()).isEqualTo(HintCategory.MUSIC);
+        assertThat(reloaded.getHintCategories()).containsExactly(HintCategory.MUSIC);
+        assertThat(new HintPicker(hints).shown(reloaded.getHintIds(), Language.EN)).isEmpty();
     }
 
     @Test

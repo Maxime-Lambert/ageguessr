@@ -17,16 +17,17 @@ describe('HowToPlay', () => {
 
     expect(page.querySelector('h2#rules-x')?.textContent).toContain(GAME_TEXT.howToPlay);
     const rules = Array.from(page.querySelectorAll('li')).map((li) => li.textContent);
-    expect(rules).toHaveLength(3);
+    expect(rules).toHaveLength(4);
     expect(rules[0]).toContain(GAME_TEXT.ruleGuess);
     expect(rules[1]).toContain(GAME_TEXT.ruleLead);
-    expect(rules[2]).toContain(GAME_TEXT.rulePoints);
+    expect(rules[2]).toContain(GAME_TEXT.ruleHints);
+    expect(rules[3]).toContain(GAME_TEXT.rulePoints);
   });
 
   it('leaves the heading to the page when told to', () => {
     const page = render({ heading: false });
 
     expect(page.querySelector('h2')).toBeNull();
-    expect(page.querySelectorAll('li')).toHaveLength(3);
+    expect(page.querySelectorAll('li')).toHaveLength(4);
   });
 });

@@ -1,8 +1,10 @@
 package app.ageguessr.features.game;
 
 import app.ageguessr.shared.i18n.Language;
+import app.ageguessr.features.hints.HintCategory;
 import app.ageguessr.features.people.Person;
 import app.ageguessr.features.people.PersonPhoto;
+import java.util.List;
 
 /**
  * What a finished round reveals: the answer, the points, who it was and the photo's
@@ -10,9 +12,10 @@ import app.ageguessr.features.people.PersonPhoto;
  * API. The points of the first guess appear here for the first time.
  *
  * @param secondGuess null after an exact first guess, as {@code secondPoints}
- * @param hint null without a hint, or when it was rejected since
- * @param photoReported the player already reported the photo, as {@code hintReported} the
- *     hint: the screen shows it as sent rather than offering it again
+ * @param hints the hints shown, in their order, without those rejected since; empty without any
+ * @param photoReported the player already reported the photo: the screen shows it as sent
+ *     rather than offering it again
+ * @param reportedHints as {@code photoReported}, the categories whose hint the player reported
  */
 public record RoundReveal(
         int age,
@@ -23,9 +26,9 @@ public record RoundReveal(
         int points,
         Identity person,
         Credit credit,
-        GameHint hint,
+        List<GameHint> hints,
         boolean photoReported,
-        boolean hintReported) {
+        List<HintCategory> reportedHints) {
 
     /**
      * The Wikipedia article in the player's language, without storing its title: Wikidata
@@ -40,7 +43,7 @@ public record RoundReveal(
     /** @param author null when Commons names none, the screen then says so */
     public record Credit(String author, String license, String licenseUrl, String sourceUrl) {}
 
-    public static RoundReveal of(PlayedRound play, PersonPhoto photo, Person person, GameHint hint) {
+    public static RoundReveal of(PlayedRound play, PersonPhoto photo, Person person, List<GameHint> hints) {
         Language language = play.getLanguage();
         return new RoundReveal(
                 photo.getAgeAtPhoto(),
@@ -51,9 +54,9 @@ public record RoundReveal(
                 play.points(),
                 new Identity(name(person, language), WIKIPEDIA_LINK.formatted(language.code(), person.getWikidataId())),
                 new Credit(photo.getAuthorText(), photo.getLicenseShortName(), photo.getLicenseUrl(), photo.getSourceUrl()),
-                hint,
+                hints,
                 play.isPhotoReported(),
-                play.isHintReported());
+                play.getReportedHintCategories());
     }
 
     /** In the round's language, else the other one: ingestion keeps a person with either. */

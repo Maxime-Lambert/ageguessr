@@ -31,6 +31,15 @@ public final class GameErrors {
         return new ConflictException("CATEGORY_UNAVAILABLE", "No hint of this category for this round");
     }
 
+    /**
+     * Not the number of categories the round asks for, or the same one twice. A 409: the
+     * number follows the hints offered, which a curation decision may change while the
+     * player picks, and the screen reloads the round on it.
+     */
+    public static ConflictException wrongHintCount() {
+        return new ConflictException("HINT_COUNT", "Pick the number of distinct hint categories the round asks for");
+    }
+
     /** Unknown, purged, or not one of the player's series: the same answer for all three. */
     public static NotFoundException seriesNotFound() {
         return new NotFoundException("No such series");
@@ -72,6 +81,11 @@ public final class GameErrors {
     /** The round showed no hint, or the hint was rejected since: nothing left to report. */
     public static ConflictException nothingToReport() {
         return new ConflictException("NOTHING_TO_REPORT", "This round has nothing of this kind to report");
+    }
+
+    /** A hint reported without saying which, in a round that showed several. */
+    public static ValidationException hintCategoryRequired() {
+        return new ValidationException("HINT_CATEGORY_REQUIRED", "Say which hint of the round is reported");
     }
 
     /** A reason of the other target, or none of the list. */

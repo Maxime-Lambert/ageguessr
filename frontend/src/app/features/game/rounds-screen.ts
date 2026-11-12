@@ -51,7 +51,7 @@ export abstract class RoundsScreen<T extends PlayedRounds> {
   protected abstract sendHint(
     game: T,
     round: RoundView,
-    category: HintCategory,
+    categories: HintCategory[],
   ): Observable<RoundView>;
   protected abstract sendSecondGuess(
     game: T,
@@ -76,7 +76,9 @@ export abstract class RoundsScreen<T extends PlayedRounds> {
           ...round,
           result: {
             ...round.result!,
-            ...(report.target === 'PHOTO' ? { photoReported: true } : { hintReported: true }),
+            ...(report.target === 'PHOTO'
+              ? { photoReported: true }
+              : { reportedHints: [...round.result!.reportedHints, report.hintCategory] }),
           },
         }),
       ),
@@ -103,8 +105,8 @@ export abstract class RoundsScreen<T extends PlayedRounds> {
     this.play((game, round) => this.sendFirstGuess(game, round, guess, this.hintLanguage.value()));
   }
 
-  pickHint(category: HintCategory): void {
-    this.play((game, round) => this.sendHint(game, round, category));
+  pickHints(categories: HintCategory[]): void {
+    this.play((game, round) => this.sendHint(game, round, categories));
   }
 
   secondGuess(guess: number): void {
@@ -157,8 +159,9 @@ export abstract class RoundsScreen<T extends PlayedRounds> {
 
   private handle(error: HttpErrorResponse): void {
     const code = error.status === 409 ? (error.error as ApiErrorResponse | null)?.errorCode : null;
-    if (code === 'GAME_CLOSED' || code === 'ROUND_NEUTRALIZED' || code === 'WRONG_STEP') {
-      // The server knows better (midnight passed, photo withdrawn, played in another tab).
+    if (code && RELOAD_ON.includes(code)) {
+      // The server knows better (midnight passed, photo withdrawn, played in another tab,
+      // or the leads offered changed since the page loaded).
       this.notice.set(
         code === 'GAME_CLOSED'
           ? GAME_TEXT.closed
@@ -195,3 +198,12 @@ export abstract class RoundsScreen<T extends PlayedRounds> {
     return round?.position ?? null;
   }
 }
+
+/** The refusals after which the round on screen is out of date: it is loaded again. */
+const RELOAD_ON = [
+  'GAME_CLOSED',
+  'ROUND_NEUTRALIZED',
+  'WRONG_STEP',
+  'HINT_COUNT',
+  'CATEGORY_UNAVAILABLE',
+];

@@ -37,11 +37,11 @@ describe('GameApi', () => {
     req.flush(round(1));
   });
 
-  it('asks for the hint of a category', () => {
-    api.hint('2026-11-02', 2, 'MUSIC').subscribe();
+  it('asks for the hints of the categories picked', () => {
+    api.hint('2026-11-02', 2, ['MUSIC', 'SPORT', 'WORLD']).subscribe();
 
     const req = http.expectOne('/api/game/2026-11-02/rounds/2/hint');
-    expect(req.request.body).toEqual({ category: 'MUSIC' });
+    expect(req.request.body).toEqual({ categories: ['MUSIC', 'SPORT', 'WORLD'] });
     req.flush(round(2));
   });
 

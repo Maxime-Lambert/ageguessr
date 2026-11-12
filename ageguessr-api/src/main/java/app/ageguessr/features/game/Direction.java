@@ -1,7 +1,7 @@
 package app.ageguessr.features.game;
 
 /**
- * What the player learns after a wrong first guess: only the side, never how far
+ * The side of a wrong first guess, told with its {@link GapBand}
  * (docs/decisions/architecture.md, « Déroulé d'une manche »).
  */
 public enum Direction {

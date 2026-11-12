@@ -45,6 +45,7 @@ export class RoundResult {
   readonly title = computed(() => roundTitle(this.round().position, this.total()));
   readonly result = computed(() => this.round().result as RoundReveal);
   /** The hint is from (game year − age): how far back it is, the key to read it. */
+  /** The same for every hint of the round: they all date from the game's year minus the age. */
   protected readonly yearsAgo = computed(() => yearsAgo(this.result().age));
   readonly exact = computed(() => this.result().secondGuess === null);
   /** How full each guess's bar is, in percent of what that guess could earn. */

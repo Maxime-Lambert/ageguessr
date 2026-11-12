@@ -1,11 +1,11 @@
 import { Page, expect, test } from '@playwright/test';
-import { mockGame } from './game-mocks';
+import { mockGame, pickLeads } from './game-mocks';
 
 /** Plays the first round of the mocked day to its verdict. */
 async function toTheVerdict(page: Page) {
   await page.getByLabel('Age').fill('30');
   await page.getByRole('button', { name: 'Guess', exact: true }).click();
-  await page.getByRole('button', { name: 'Music' }).click();
+  await pickLeads(page);
   await page.getByLabel('Age').fill('38');
   await page.getByRole('button', { name: 'Final guess' }).click();
   await expect(page.getByRole('link', { name: 'Jane Doe' })).toBeVisible();

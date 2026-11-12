@@ -43,6 +43,7 @@ import app.ageguessr.shared.exceptions.NotFoundException;
 import app.ageguessr.shared.i18n.Language;
 import app.ageguessr.shared.reports.ReportStatus;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -90,12 +91,16 @@ class ReportRoundHandlerTest {
         return play;
     }
 
-    private GamePlay finishedPlayWithHint(Hint hint) {
+    private GamePlay finishedPlayWithHint(Hint... shown) {
         GamePlay play = started(guest, POSITION, 30);
-        play.revealHint(hint.getCategory(), hint.getId());
+        play.revealHints(
+                Arrays.stream(shown).map(Hint::getCategory).toList(),
+                Arrays.stream(shown).map(Hint::getId).toList());
         play.finishWithSecondGuess(38, AGE, NOW);
         when(dailyPlays.findOf(guest, TODAY, POSITION)).thenReturn(Optional.of(play));
-        when(hintRepository.findById(hint.getId())).thenReturn(Optional.of(hint));
+        for (Hint hint : shown) {
+            when(hintRepository.findById(hint.getId())).thenReturn(Optional.of(hint));
+        }
         return play;
     }
 
@@ -104,11 +109,16 @@ class ReportRoundHandlerTest {
     }
 
     private static ReportRoundCommand photo(PhotoReportReason reason) {
-        return new ReportRoundCommand(ReportTarget.PHOTO, reason.name());
+        return new ReportRoundCommand(ReportTarget.PHOTO, reason.name(), null);
     }
 
+    /** Without saying which hint: accepted when the round showed one only. */
     private static ReportRoundCommand hintReport(HintReportReason reason) {
-        return new ReportRoundCommand(ReportTarget.HINT, reason.name());
+        return hintReport(reason, null);
+    }
+
+    private static ReportRoundCommand hintReport(HintReportReason reason, HintCategory category) {
+        return new ReportRoundCommand(ReportTarget.HINT, reason.name(), category);
     }
 
     private void openPhotoReports(long all, long forReason) {
@@ -170,11 +180,11 @@ class ReportRoundHandlerTest {
         finishedPlay();
 
         assertThatThrownBy(() -> handler.handleDaily(
-                        guest, TODAY, POSITION, new ReportRoundCommand(ReportTarget.PHOTO, "WRONG_YEAR")))
+                        guest, TODAY, POSITION, new ReportRoundCommand(ReportTarget.PHOTO, "WRONG_YEAR", null)))
                 .extracting("errorCode")
                 .isEqualTo("INVALID_REASON");
         assertThatThrownBy(() -> handler.handleDaily(
-                        guest, TODAY, POSITION, new ReportRoundCommand(ReportTarget.HINT, "LOOKS_MINOR")))
+                        guest, TODAY, POSITION, new ReportRoundCommand(ReportTarget.HINT, "LOOKS_MINOR", HintCategory.MUSIC)))
                 .extracting("errorCode")
                 .isEqualTo("INVALID_REASON");
     }
@@ -208,12 +218,51 @@ class ReportRoundHandlerTest {
 
         handler.handleDaily(guest, TODAY, POSITION, hintReport(HintReportReason.WRONG_YEAR));
 
-        assertThat(play.isHintReported()).isTrue();
+        assertThat(play.getReportedHintCategories()).containsExactly(HintCategory.MUSIC);
         assertThat(play.isPhotoReported()).isFalse();
         ArgumentCaptor<HintReport> saved = ArgumentCaptor.forClass(HintReport.class);
         verify(hintReports).save(saved.capture());
         assertThat(saved.getValue().getHintId()).isEqualTo(hint.getId());
         assertThat(saved.getValue().getReason()).isEqualTo(HintReportReason.WRONG_YEAR);
+    }
+
+    @Test
+    void reportsTheHintOfTheCategoryNamedAmongSeveralOncePerHint() {
+        Hint music = hint();
+        Hint film = hints(HintCategory.FILM, 1).getFirst();
+        GamePlay play = finishedPlayWithHint(music, film);
+
+        handler.handleDaily(guest, TODAY, POSITION, hintReport(HintReportReason.FALSE, HintCategory.FILM));
+        handler.handleDaily(guest, TODAY, POSITION, hintReport(HintReportReason.FALSE, HintCategory.FILM));
+
+        assertThat(play.getReportedHintCategories()).containsExactly(HintCategory.FILM);
+        ArgumentCaptor<HintReport> saved = ArgumentCaptor.forClass(HintReport.class);
+        verify(hintReports).save(saved.capture());
+        assertThat(saved.getValue().getHintId()).isEqualTo(film.getId());
+
+        handler.handleDaily(guest, TODAY, POSITION, hintReport(HintReportReason.FALSE, HintCategory.MUSIC));
+        assertThat(play.getReportedHintCategories()).containsExactly(HintCategory.FILM, HintCategory.MUSIC);
+    }
+
+    @Test
+    void asksWhichHintWhenTheRoundShowedSeveral() {
+        finishedPlayWithHint(hint(), hints(HintCategory.FILM, 1).getFirst());
+
+        assertThatThrownBy(() -> handler.handleDaily(guest, TODAY, POSITION, hintReport(HintReportReason.FALSE)))
+                .extracting("errorCode")
+                .isEqualTo("HINT_CATEGORY_REQUIRED");
+        verify(hintReports, never()).save(any());
+    }
+
+    @Test
+    void reportsNoHintOfACategoryNotShown() {
+        finishedPlayWithHint(hint());
+
+        assertThatThrownBy(() -> handler.handleDaily(
+                        guest, TODAY, POSITION, hintReport(HintReportReason.FALSE, HintCategory.SPORT)))
+                .extracting("errorCode")
+                .isEqualTo("NOTHING_TO_REPORT");
+        verify(hintReports, never()).save(any());
     }
 
     @Test

@@ -80,8 +80,11 @@
       </dl>
     </div>
 
-    @if (result().hint; as hint) {
-      <div class="bg-paper text-paper-foreground mt-5 rounded-md px-5 py-4">
+    @for (hint of result().hints; track hint.category; let first = $first) {
+      <div
+        class="bg-paper text-paper-foreground rounded-md px-5 py-4"
+        [class]="first ? 'mt-5' : 'mt-3'"
+      >
         <p
           class="text-paper-muted flex items-center gap-2 text-xs font-bold tracking-[0.08em] uppercase"
         >
@@ -103,7 +106,8 @@
           <app-report-button
             target="HINT"
             tone="paper"
-            [reported]="result().hintReported"
+            [hintCategory]="hint.category"
+            [reported]="result().reportedHints.includes(hint.category)"
             [reporter]="reporter()"
           />
         </div>

@@ -7,6 +7,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import app.ageguessr.features.hints.HintCategory;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
@@ -39,11 +41,15 @@ class GamePlayTest {
     @Test
     void goesThroughTheHintThenTheSecondGuess() {
         GamePlay play = start(30);
-        UUID hintId = UUID.randomUUID();
+        UUID music = UUID.randomUUID();
+        UUID film = UUID.randomUUID();
 
-        play.revealHint(HintCategory.MUSIC, hintId);
+        play.revealHints(List.of(HintCategory.MUSIC, HintCategory.FILM), List.of(music, film));
         assertThat(play.step()).isEqualTo(RoundStep.AWAITING_SECOND_GUESS);
-        assertThat(play.getHintId()).isEqualTo(hintId);
+        assertThat(play.getHintCategories()).containsExactly(HintCategory.MUSIC, HintCategory.FILM);
+        assertThat(play.getHintIds()).containsExactly(music, film);
+        assertThat(play.progress().hintIdOf(HintCategory.FILM)).contains(film);
+        assertThat(play.progress().hintIdOf(HintCategory.SPORT)).isEmpty();
 
         play.finishWithSecondGuess(38, AGE, END);
         assertThat(play.step()).isEqualTo(RoundStep.FINISHED);
@@ -56,7 +62,7 @@ class GamePlayTest {
     @Test
     void anExactSecondGuessIsWorthItsFiveHundredPointsOnly() {
         GamePlay play = start(30);
-        play.revealHint(HintCategory.MUSIC, UUID.randomUUID());
+        reveal(play, HintCategory.MUSIC);
 
         play.finishWithSecondGuess(AGE, AGE, END);
 
@@ -70,7 +76,7 @@ class GamePlayTest {
         assertThat(play.acceptsSecondGuess(true)).isFalse();
         assertThat(play.acceptsSecondGuess(false)).isTrue();
 
-        play.revealHint(HintCategory.MUSIC, UUID.randomUUID());
+        reveal(play, HintCategory.MUSIC);
         assertThat(play.acceptsSecondGuess(true)).isTrue();
     }
 
@@ -85,41 +91,65 @@ class GamePlayTest {
     @Test
     void refusesASecondHint() {
         GamePlay play = start(30);
-        play.revealHint(HintCategory.MUSIC, UUID.randomUUID());
+        reveal(play, HintCategory.MUSIC);
 
-        assertThatThrownBy(() -> play.revealHint(HintCategory.FILM, UUID.randomUUID()))
-                .isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(() -> reveal(play, HintCategory.FILM)).isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    void refusesHintsWithoutOneIdPerCategory() {
+        GamePlay play = start(30);
+
+        assertThatThrownBy(() -> play.revealHints(List.of(), List.of())).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> play.revealHints(List.of(HintCategory.MUSIC), List.of()))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThat(play.step()).isEqualTo(RoundStep.AWAITING_HINT);
     }
 
     @Test
     void refusesAHintAfterAnExactFirstGuess() {
         GamePlay play = start(AGE);
 
-        assertThatThrownBy(() -> play.revealHint(HintCategory.MUSIC, UUID.randomUUID()))
-                .isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(() -> reveal(play, HintCategory.MUSIC)).isInstanceOf(IllegalStateException.class);
     }
 
     @Test
     void isReportedOnceFinishedAndOnlyOncePerTarget() {
-        GamePlay play = start(AGE);
+        GamePlay play = start(30);
+        reveal(play, HintCategory.MUSIC, HintCategory.FILM);
+        play.finishWithSecondGuess(38, AGE, END);
 
         assertThat(play.progress().reportPhoto()).isTrue();
         assertThat(play.progress().reportPhoto()).isFalse();
         assertThat(play.isPhotoReported()).isTrue();
-        assertThat(play.isHintReported()).isFalse();
-        assertThat(play.progress().reportHint()).isTrue();
-        assertThat(play.progress().reportHint()).isFalse();
-        assertThat(play.isHintReported()).isTrue();
+        assertThat(play.getReportedHintCategories()).isEmpty();
+        assertThat(play.progress().reportHint(HintCategory.FILM)).isTrue();
+        assertThat(play.progress().reportHint(HintCategory.FILM)).isFalse();
+        assertThat(play.progress().reportHint(HintCategory.MUSIC)).isTrue();
+        assertThat(play.getReportedHintCategories()).containsExactly(HintCategory.FILM, HintCategory.MUSIC);
+    }
+
+    @Test
+    void reportsOnlyAHintShown() {
+        GamePlay play = start(30);
+        reveal(play, HintCategory.MUSIC);
+        play.finishWithSecondGuess(38, AGE, END);
+
+        assertThatThrownBy(() -> play.progress().reportHint(HintCategory.SPORT))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThat(play.getReportedHintCategories()).isEmpty();
     }
 
     @Test
     void isNotReportedBeforeTheEnd() {
         GamePlay play = start(30);
+        reveal(play, HintCategory.MUSIC);
 
         assertThatThrownBy(() -> play.progress().reportPhoto()).isInstanceOf(IllegalStateException.class);
-        assertThatThrownBy(() -> play.progress().reportHint()).isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(() -> play.progress().reportHint(HintCategory.MUSIC))
+                .isInstanceOf(IllegalStateException.class);
         assertThat(play.isPhotoReported()).isFalse();
-        assertThat(play.isHintReported()).isFalse();
+        assertThat(play.getReportedHintCategories()).isEmpty();
     }
 
     @Test
@@ -154,5 +184,9 @@ class GamePlayTest {
 
     private static GamePlay start(int guess) {
         return GamePlay.start(DAY, (short) 1, PlayerKey.guest(UUID.randomUUID()), Language.EN, guess, AGE, START);
+    }
+
+    private static void reveal(GamePlay play, HintCategory... categories) {
+        play.revealHints(List.of(categories), Arrays.stream(categories).map(c -> UUID.randomUUID()).toList());
     }
 }

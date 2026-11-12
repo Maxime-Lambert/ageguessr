@@ -9,8 +9,11 @@ export function round(position: number, overrides: Partial<RoundView> = {}): Rou
     step: 'NOT_STARTED',
     firstGuess: null,
     direction: null,
+    gap: null,
+    range: null,
     categories: null,
-    hint: null,
+    hintsToPick: null,
+    hints: null,
     result: null,
     ...overrides,
   };
@@ -34,14 +37,16 @@ export function reveal(overrides: Partial<RoundReveal> = {}): RoundReveal {
       licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0',
       sourceUrl: 'https://commons.wikimedia.org/wiki/File:Jane.jpg',
     },
-    hint: {
-      category: 'MUSIC',
-      text: 'A hit.',
-      year: 1986,
-      sourceUrl: 'https://en.wikipedia.org/wiki/Hit',
-    },
+    hints: [
+      {
+        category: 'MUSIC',
+        text: 'A hit.',
+        year: 1986,
+        sourceUrl: 'https://en.wikipedia.org/wiki/Hit',
+      },
+    ],
     photoReported: false,
-    hintReported: false,
+    reportedHints: [],
     ...overrides,
   };
 }

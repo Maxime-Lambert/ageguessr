@@ -37,8 +37,8 @@ export class SeriesApi {
     return this.http.post<RoundView>(roundUrl(id, position, 'first-guess'), { guess, language });
   }
 
-  hint(id: string, position: number, category: HintCategory): Observable<RoundView> {
-    return this.http.post<RoundView>(roundUrl(id, position, 'hint'), { category });
+  hint(id: string, position: number, categories: HintCategory[]): Observable<RoundView> {
+    return this.http.post<RoundView>(roundUrl(id, position, 'hint'), { categories });
   }
 
   /** 204, whether new or already sent from this round: nothing to read back. */

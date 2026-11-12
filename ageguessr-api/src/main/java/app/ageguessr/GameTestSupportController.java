@@ -57,7 +57,8 @@ public class GameTestSupportController {
 
     private static final int FREE_POOL_SIZE = 5;
 
-    private static final List<HintCategory> CATEGORIES = List.of(HintCategory.MUSIC, HintCategory.FILM);
+    // As many as app.game.hints.per-round (3): the e2e journeys pick them all (pickLeads).
+    private static final List<HintCategory> CATEGORIES = List.of(HintCategory.MUSIC, HintCategory.FILM, HintCategory.SPORT);
 
     private final PersonRepository people;
     private final PersonPhotoRepository photos;
@@ -153,7 +154,7 @@ public class GameTestSupportController {
         return photo;
     }
 
-    /** Exactly the minimum per category, so that both are offered. */
+    /** Exactly the minimum per category, so that all three are offered: a full pick of 3. */
     private void saveHints(int year) {
         for (HintCategory category : CATEGORIES) {
             for (int i = 0; i < Hint.MINIMUM_PER_CATEGORY; i++) {

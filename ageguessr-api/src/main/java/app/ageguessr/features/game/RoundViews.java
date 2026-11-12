@@ -14,6 +14,7 @@ public class RoundViews {
     static final String IMAGE_PATH = "/api/images/";
 
     private final HintPicker hints;
+    private final HintProperties hintProperties;
 
     /** @param play null when the player has not started the round */
     public RoundView of(GameRound round, PlayedRound play) {
@@ -41,22 +42,34 @@ public class RoundViews {
      * player is never stuck on a hint they cannot get.
      */
     private RoundView inProgress(RoundView.RoundViewBuilder view, GameRound round, PlayedRound play) {
-        view.firstGuess(play.getFirstGuess()).direction(Direction.of(play.getFirstGuess(), round.age()));
+        int guess = play.getFirstGuess();
+        view.firstGuess(guess)
+                .direction(Direction.of(guess, round.age()))
+                .gap(GapBand.of(guess, round.age()))
+                .range(GuessRange.of(guess, round.age()));
         if (play.step() == RoundStep.AWAITING_HINT) {
-            List<HintCategory> categories = offer(round, play.getLanguage()).categories();
-            return view.step(categories.isEmpty() ? RoundStep.AWAITING_SECOND_GUESS : RoundStep.AWAITING_HINT)
-                    .categories(categories)
+            HintOffer offer = offer(round, play.getLanguage());
+            List<HintCategory> categories = offer.categories();
+            if (categories.isEmpty()) {
+                return view.step(RoundStep.AWAITING_SECOND_GUESS).hints(List.of()).build();
+            }
+            return view.categories(categories)
+                    .hintsToPick(offer.required(hintProperties.perRound()))
                     .build();
         }
-        return view.hint(hints.shown(play.getHintId(), play.getLanguage())
+        return view.hints(hints.shown(play.getHintIds(), play.getLanguage()).stream()
                         .map(shown -> new RoundView.ShownHint(shown.category(), shown.text()))
-                        .orElse(null))
+                        .toList())
                 .build();
     }
 
     private RoundReveal reveal(GameRound round, PlayedRound play) {
-        GameHint hint = hints.shown(play.getHintId(), play.getLanguage()).orElse(null);
-        return RoundReveal.of(play, round.photo(), round.person(), hint);
+        return RoundReveal.of(play, round.photo(), round.person(), hints.shown(play.getHintIds(), play.getLanguage()));
+    }
+
+    /** How many categories a player picks in this round, fewer when fewer are offered. */
+    public int hintsPerRound() {
+        return hintProperties.perRound();
     }
 
     /** The hints the round can show in this language, never citing its own person. */
