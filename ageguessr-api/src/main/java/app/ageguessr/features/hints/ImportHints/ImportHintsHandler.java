@@ -26,6 +26,10 @@ import org.springframework.transaction.annotation.Transactional;
  * touched: it may carry a curation decision or a text corrected by hand. A bad line is
  * refused and reported, the others still go in.
  *
+ * <p>One exception to "never touched": an imported hint without a subject gets the one the
+ * files now give (V24), so that it is never offered on the photo of the person it names.
+ * Neither its text nor its decision changes.
+ *
  * <p>With {@code retireAbsent}, the files become the whole set of hints offered to a round:
  * a key absent from them is retired, a retired key back in them is offered again (V22).
  * Nothing is deleted. The same transaction as the additions, so that no category is left
@@ -51,7 +55,9 @@ class ImportHintsHandler {
         Instant now = clock.instant();
         int currentYear = Year.now(clock).getValue();
         Set<String> existing = hints.findAllDedupeKeys();
+        Set<String> withoutSubject = hints.findDedupeKeysWithoutSubject();
         Set<String> seen = new HashSet<>();
+        List<HintFileEntry> toName = new ArrayList<>();
         List<Hint> toAdd = new ArrayList<>();
         Map<HintRejection, Integer> refused = new EnumMap<>(HintRejection.class);
         List<String> refusedLines = new ArrayList<>();
@@ -68,11 +74,18 @@ class ImportHintsHandler {
                 refusedLines.add(label(entry, i) + ": " + rejection.get());
             } else if (existing.contains(entry.dedupeKey())) {
                 alreadyImported++;
+                if (entry.subjectQid() != null && withoutSubject.contains(entry.dedupeKey())) {
+                    toName.add(entry);
+                }
             } else {
                 toAdd.add(toHint(entry, now));
             }
         }
         hints.saveAll(toAdd);
+        int named = 0;
+        for (HintFileEntry entry : toName) {
+            named += hints.fillSubject(entry.dedupeKey(), entry.subjectQid());
+        }
         int retired = 0;
         int reactivated = 0;
         if (retireAbsent) {
@@ -92,7 +105,7 @@ class ImportHintsHandler {
             reactivated = setRetiredAt(toReactivate, null);
         }
         return new ImportHintsReport(
-                entries.size(), toAdd.size(), alreadyImported, retired, reactivated, refused, refusedLines);
+                entries.size(), toAdd.size(), alreadyImported, named, retired, reactivated, refused, refusedLines);
     }
 
     private int setRetiredAt(List<String> keys, Instant retiredAt) {

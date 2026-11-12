@@ -34,22 +34,23 @@ WORKERS = 32
 LANGS = ("fr", "en")
 SOURCE_KIND = "wikidata-notoriety"
 FILES = {"SPORT": "sport", "WORLD": "world", "SCIENCE": "science", "MUSIC": "music", "FILM": "film",
-         "CELEBRITIES": "celebrities"}
+         "CELEBRITIES": "celebrities", "LITERATURE": "literature"}
 
 # The floor of a category and decade: a share of the median of the best known fact of each
 # year, never under the absolute floor of the language. A floor per decade follows the
 # decline of old facts in views; a single floor would empty the thirties in French.
 DECADE_FLOOR_SHARE = 0.02
 DECADE_ABSOLUTE = {"fr": 500, "en": 5000}
-# Albums and songs of one artist the same year: two at most, so that a year is not one name.
+# Albums and songs of one artist, works of one author, the same year: two at most, so that
+# a year is not one name.
 PER_ARTIST = 2
 # First flights of aircraft the same year: four at most. Aviation articles are much read,
 # military prototypes would otherwise fill Science while few players know them.
 PER_YEAR_OF_KIND = {"flight": 4}
 
-SITELINKS = {"SPORT": 12, "WORLD": 15, "SCIENCE": 15, "MUSIC": 12, "FILM": 15, "CELEBRITIES": 40}
+SITELINKS = {"SPORT": 12, "WORLD": 15, "SCIENCE": 15, "MUSIC": 12, "FILM": 15, "CELEBRITIES": 40, "LITERATURE": 12}
 # How many candidates per year go on to the views, by sitelinks: more where the pool is thin.
-TOP = {"SPORT": 80, "WORLD": 80, "SCIENCE": 80, "MUSIC": 80, "FILM": 60, "CELEBRITIES": 40}
+TOP = {"SPORT": 80, "WORLD": 80, "SCIENCE": 80, "MUSIC": 80, "FILM": 60, "CELEBRITIES": 40, "LITERATURE": 80}
 
 # No minor in a public file: only people already 18 on the day of the extraction.
 ADULT_AGE = 18
@@ -70,6 +71,8 @@ LEFT_OUT = {
     "Q12912943", "Q30325337",  # living people named, as victim or accused (review of 2026-11-12)
     "Q219141", "Q690158",  # a folklore figure and a sentence, dated as a discovery
     "Q1052713",  # a pornographic film database, out of a family game
+    "Q1367374",  # "The Story of Ferdinand", credited to the wrong author in Wikidata (2026-11)
+    "Q784683", "Q17439649", "Q20064904",  # a religious text, a wiki, an encyclical: not literature
 }
 
 # Same criteria as EditorialLine.java (ageguessr-api), which documents them. Criteria only,
@@ -124,8 +127,13 @@ AWARD = """
       }"""
 
 
+# The prizes awarded to a person: their laureate is named by the hint (see `subject_of`).
+HUMAN_PRIZES = set()
+
+
 def award(*prizes):
     """Each prize as (item, type of its laureate)."""
+    HUMAN_PRIZES.update(prize for prize, laureate in prizes if laureate == HUMAN)
     return AWARD % {"prizes": " ".join(f"(wd:{prize} {laureate})" for prize, laureate in prizes)}
 
 
@@ -228,6 +236,16 @@ QUERIES = {
         ("award", award(("Q102427", FILM_WORK), ("Q103360", HUMAN), ("Q103916", HUMAN), ("Q103618", HUMAN),
                         ("Q179808", FILM_WORK), ("Q645595", FILM_WORK), ("Q900494", HUMAN))),
     ],
+    # A work published, with its author: novels, plays, poems, short stories, comics. Not
+    # "written work" (Q47461344): it brings treaties and dictionaries.
+    "LITERATURE": [("book", """
+      SELECT ?i ?n ?en ?fr ?p ?ten ?tfr ?w ?wn ?wen ?wfr WHERE {
+        VALUES ?c { wd:Q8261 wd:Q7725634 wd:Q571 wd:Q25379 wd:Q5185279 wd:Q49084 wd:Q1004 }
+        ?i wdt:P31 ?c ; wikibase:sitelinks ?n ; wdt:P577 ?p . FILTER(?n >= %(n)d)
+        OPTIONAL { ?i wdt:P50 ?w . %(winner)s } %(labels)s %(titles)s
+      }"""),
+        ("award", award(("Q37922", HUMAN), ("Q187300", HUMAN), ("Q160082", HUMAN), ("Q833633", HUMAN))),
+    ],
     # The birth date to the day, so that the adult rule holds on the day of the extraction.
     "CELEBRITIES": [("person", """
       SELECT ?i ?n ?en ?fr ?p ?ten ?tfr ?descEn ?descFr WHERE {
@@ -290,6 +308,7 @@ WORK = {"fr": "Œuvre « {} »", "en": "Work \"{}\""}
 DISCOVERY = {"fr": "Découverte ou invention : {}", "en": "Discovered or invented: {}"}
 LAUNCH = {"fr": "Lancement : {}", "en": "Launched: {}"}
 FILM = {"fr": "Sortie du film « {} »", "en": "Release of the film \"{}\""}
+BOOK = {"fr": ("Parution : « {} » — {}", "Parution : « {} »"), "en": ("Published: \"{}\" — {}", "Published: \"{}\"")}
 ALBUM = {"fr": ("Album « {} » — {}", "Album éponyme — {}", "Album « {} »"),
          "en": ("Album \"{}\" — {}", "Self-titled album — {}", "Album \"{}\"")}
 SONG = {"fr": ("Chanson « {} » — {}", "Chanson « {} »"), "en": ("Song \"{}\" — {}", "Song \"{}\"")}
@@ -395,6 +414,8 @@ def text(item, lang):
         return ALBUM[lang][1].format(winner) if label.casefold() == winner.casefold() else ALBUM[lang][0].format(label, winner)
     if kind == "song":
         return SONG[lang][0].format(label, winner) if winner else SONG[lang][1].format(label)
+    if kind == "book":
+        return BOOK[lang][0].format(label, winner) if winner else BOOK[lang][1].format(label)
     if kind == "person":
         return CELEBRITY[lang].format(label, item["desc" + lang.capitalize()])
     return capital
@@ -449,7 +470,8 @@ def candidates(category, today):
                         item.setdefault(field, set()).add(row[field])
                 if row.get("wn") and int(row["wn"]) > item["wn"]:
                     english_name = qid(row["w"]) in ENGLISH_NAME
-                    item.update(wn=int(row["wn"]), wen=row["wen"], wfr=row["wen"] if english_name else row["wfr"])
+                    item.update(wn=int(row["wn"]), wen=row["wen"], wfr=row["wen"] if english_name else row["wfr"],
+                                wq=qid(row["w"]))
     values = list(items.values())
     for kind, cls, action in CLASS_CHECKS.get(category, []):
         found = members(category, kind, cls, sorted({i["item"] for i in values if i["kind"] == kind}))
@@ -618,7 +640,7 @@ def top(pool, count, category, artists=None):
             if artists.get(("kind", item["kind"]), 0) >= limit:
                 continue
             artists[("kind", item["kind"])] = artists.get(("kind", item["kind"]), 0) + 1
-        artist = item.get("wen") if category == "MUSIC" and item["kind"] in ("album", "song") else None
+        artist = item.get("wen") if item["kind"] in ("album", "song", "book") else None
         if artist and artists.get(artist, 0) >= PER_ARTIST:
             continue
         if artist:
@@ -661,6 +683,21 @@ def years_of(category, today):
     return range(FIRST_YEAR, min(LAST_YEAR, today.year - ADULT_AGE) + 1 if category == "CELEBRITIES" else LAST_YEAR + 1)
 
 
+def subject_of(item):
+    """The person a hint names, if any: never offered on that person's own photo.
+
+    The celebrity, the laureate of a prize given to a person, the winner, author or
+    performer. A team or a country as winner is harmless: it is never on a photo.
+    """
+    if item["kind"] == "person":
+        return item["item"]
+    if item.get("wq"):
+        return item["wq"]
+    if item["kind"] in ("award", "nobel") and item["prize"] in HUMAN_PRIZES:
+        return item["item"]
+    return None
+
+
 def hints_of(category, chosen):
     """The entries of the hint file: one per language, keyed by item (and start or end)."""
     entries = []
@@ -672,7 +709,7 @@ def hints_of(category, chosen):
                 texts = {"text_fr": item["text_fr"]} if lang == "fr" else {"text_en": item["text_en"]}
                 entries.append(hint(category, y, lang.upper(), **texts, source=wikidata_url(item["item"]),
                                     kind=SOURCE_KIND, key_parts=parts,
-                                    subject=item["item"] if category == "CELEBRITIES" else None))
+                                    subject=subject_of(item)))
     return entries
 
 

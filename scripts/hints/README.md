@@ -27,6 +27,7 @@ calculés et les années sous 3 catégories jouables.
    | Musique | Albums, chansons, Eurovision, Grammy, œuvres composées |
    | Cinéma | Films, Oscars, Palme d'or, César |
    | Célébrités | Personnes, date de naissance au jour près, majeures le jour de l'extraction |
+   | Littérature | Parutions (romans, pièces, poèmes, nouvelles, BD) avec leur auteur, Nobel de littérature, Goncourt, Booker, Pulitzer de la fiction |
 
 2. **Notoriété** : les vues sur 12 mois (`VIEWS_FROM`, `VIEWS_TO`) de l'article de
    l'élément lui-même, sur fr.wikipedia pour un indice français, sur en.wikipedia pour un
@@ -35,6 +36,7 @@ calculés et les années sous 3 catégories jouables.
 3. **Sélection**, par catégorie, année et langue : les 10 plus vus au-dessus d'un plancher
    égal à 2 % de la médiane des meilleurs faits de la décennie, jamais sous 500 vues (FR)
    ou 5 000 (EN). Un plancher par décennie suit la baisse des vues des faits anciens.
+   Au plus 2 albums ou chansons par artiste, 2 œuvres par auteur et 4 premiers vols par an.
 4. **Complément du français** : une année française sous 10 est complétée par les faits
    au-dessus du plancher anglais. Leur texte utilise le libellé français de Wikidata :
    rien n'est traduit, l'indice entre directement en jeu.

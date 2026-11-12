@@ -89,11 +89,15 @@ final class HintRules {
                 && entry.sourceKind().length() <= MAX_SOURCE_KIND_LENGTH;
     }
 
+    /**
+     * A celebrity always names its person. Any other hint may name one (a laureate, an
+     * author, a winner, V24): that person is then never offered a hint on their own photo.
+     */
     private static boolean validSubject(HintFileEntry entry) {
-        if (HintCategory.CELEBRITIES.name().equals(entry.category())) {
-            return entry.subjectQid() != null && QID.matcher(entry.subjectQid()).matches();
+        if (entry.subjectQid() != null) {
+            return QID.matcher(entry.subjectQid()).matches();
         }
-        return entry.subjectQid() == null;
+        return !HintCategory.CELEBRITIES.name().equals(entry.category());
     }
 
     private static boolean isBlank(String value) {

@@ -67,7 +67,6 @@ class HintConstraintsIntegrationTest {
                 refused("EN with French", h -> h.audience(HintAudience.EN).textEn("A text.")),
                 refused("year too early", h -> h.year(1899)),
                 refused("year too late", h -> h.year(2100)),
-                refused("subject outside the celebrities", h -> h.subjectQid("Q42")),
                 refused("celebrity without a subject", h -> h.category(HintCategory.CELEBRITIES)));
     }
 
@@ -80,7 +79,7 @@ class HintConstraintsIntegrationTest {
     }
 
     @Test
-    void theDatabaseAcceptsAHintOfEachAudienceAndACelebrity() {
+    void theDatabaseAcceptsAHintOfEachAudienceACelebrityANamedPersonAndLiterature() {
         List<Hint> saved = hints.saveAllAndFlush(List.of(
                 valid().dedupeKey("fr").build(),
                 valid().dedupeKey("en").audience(HintAudience.EN).textFr(null).textEn("A text.").build(),
@@ -88,9 +87,13 @@ class HintConstraintsIntegrationTest {
                 valid().dedupeKey("celebrity")
                         .category(HintCategory.CELEBRITIES)
                         .subjectQid("Q42")
-                        .build()));
+                        .build(),
+                // V24: a hint naming an author, a laureate, a winner keeps that person.
+                valid().dedupeKey("performer").subjectQid("Q42").build(),
+                // V23.
+                valid().dedupeKey("book").category(HintCategory.LITERATURE).build()));
 
-        assertThat(saved).hasSize(4);
+        assertThat(saved).hasSize(6);
     }
 
     @Test

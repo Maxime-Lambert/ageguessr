@@ -63,7 +63,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q184286",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q184286-q44585",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q184286"
  },
  {
   "category": "SCIENCE",
@@ -74,7 +75,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q213504",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q213504-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q213504"
  },
  {
   "category": "SCIENCE",
@@ -107,7 +109,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q9130",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q9130-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q9130"
  },
  {
   "category": "SCIENCE",
@@ -118,7 +121,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q47480",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q47480-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q47480"
  },
  {
   "category": "SCIENCE",
@@ -173,7 +177,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q177681",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q177681-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q177681"
  },
  {
   "category": "SCIENCE",
@@ -283,7 +288,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q179777",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q179777-q44585",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q179777"
  },
  {
   "category": "SCIENCE",
@@ -294,7 +300,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q273238",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q273238-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q273238"
  },
  {
   "category": "SCIENCE",
@@ -305,7 +312,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q7504",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q7504-q44585",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q7504"
  },
  {
   "category": "SCIENCE",
@@ -316,7 +324,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q150989",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q150989-q44585",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q150989"
  },
  {
   "category": "SCIENCE",
@@ -393,7 +402,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q80884",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q80884-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q80884"
  },
  {
   "category": "SCIENCE",
@@ -514,7 +524,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q169366",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q169366-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q169366"
  },
  {
   "category": "SCIENCE",
@@ -602,7 +613,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q180468",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q180468-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q180468"
  },
  {
   "category": "SCIENCE",
@@ -624,7 +636,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q133846",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q133846-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q133846"
  },
  {
   "category": "SCIENCE",
@@ -646,7 +659,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q8753",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q8753-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q8753"
  },
  {
   "category": "SCIENCE",
@@ -712,7 +726,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q78483",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q78483-q44585",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q78483"
  },
  {
   "category": "SCIENCE",
@@ -1163,7 +1178,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q57072",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q57072-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q57072"
  },
  {
   "category": "SCIENCE",
@@ -1174,7 +1190,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q76951",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q76951-q44585",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q76951"
  },
  {
   "category": "SCIENCE",
@@ -1240,7 +1257,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q57065",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q57065-q44585",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q57065"
  },
  {
   "category": "SCIENCE",
@@ -1317,7 +1335,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q37064",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q37064-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q37064"
  },
  {
   "category": "SCIENCE",
@@ -1471,7 +1490,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q172118",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q172118-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q172118"
  },
  {
   "category": "SCIENCE",
@@ -1482,7 +1502,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q83598",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q83598-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q83598"
  },
  {
   "category": "SCIENCE",
@@ -1757,7 +1778,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q273219",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q273219-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q273219"
  },
  {
   "category": "SCIENCE",
@@ -1801,7 +1823,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q115470",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q115470-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q115470"
  },
  {
   "category": "SCIENCE",
@@ -2021,7 +2044,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q48973",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q48973-q44585",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q48973"
  },
  {
   "category": "SCIENCE",
@@ -2032,7 +2056,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q62897",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q62897-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q62897"
  },
  {
   "category": "SCIENCE",
@@ -2362,7 +2387,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q186497",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q186497-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q186497"
  },
  {
   "category": "SCIENCE",
@@ -2450,7 +2476,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q949",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q949-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q949"
  },
  {
   "category": "SCIENCE",
@@ -3044,7 +3071,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q83333",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q83333-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q83333"
  },
  {
   "category": "SCIENCE",
@@ -3110,7 +3138,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q123280",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q123280-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q123280"
  },
  {
   "category": "SCIENCE",
@@ -3132,7 +3161,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q133267",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q133267-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q133267"
  },
  {
   "category": "SCIENCE",
@@ -3231,7 +3261,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q155790",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q155790-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q155790"
  },
  {
   "category": "SCIENCE",
@@ -3341,7 +3372,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q7487",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q7487-q44585",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q7487"
  },
  {
   "category": "SCIENCE",
@@ -3418,7 +3450,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q231402",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q231402-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q231402"
  },
  {
   "category": "SCIENCE",
@@ -3462,7 +3495,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q218311",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q218311-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q218311"
  },
  {
   "category": "SCIENCE",
@@ -3539,7 +3573,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q71023",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q71023-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q71023"
  },
  {
   "category": "SCIENCE",
@@ -3737,7 +3772,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q178344",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q178344-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q178344"
  },
  {
   "category": "SCIENCE",
@@ -3770,7 +3806,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q107405",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q107405-q44585",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q107405"
  },
  {
   "category": "SCIENCE",
@@ -3792,7 +3829,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q107462",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q107462-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q107462"
  },
  {
   "category": "SCIENCE",
@@ -4265,7 +4303,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q78496",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q78496-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q78496"
  },
  {
   "category": "SCIENCE",
@@ -4320,7 +4359,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q60060",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q60060-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q60060"
  },
  {
   "category": "SCIENCE",
@@ -4342,7 +4382,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q153890",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q153890-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q153890"
  },
  {
   "category": "SCIENCE",
@@ -4463,7 +4504,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q234590",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q234590-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q234590"
  },
  {
   "category": "SCIENCE",
@@ -4749,7 +4791,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q183509",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q183509-q44585",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q183509"
  },
  {
   "category": "SCIENCE",
@@ -4980,7 +5023,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q28189",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q28189-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q28189"
  },
  {
   "category": "SCIENCE",
@@ -4991,7 +5035,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q179282",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q179282-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q179282"
  },
  {
   "category": "SCIENCE",
@@ -5090,7 +5135,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q152760",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q152760-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q152760"
  },
  {
   "category": "SCIENCE",
@@ -5728,7 +5774,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q185007",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q185007-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q185007"
  },
  {
   "category": "SCIENCE",
@@ -5893,7 +5940,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q107690",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q107690-q44585",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q107690"
  },
  {
   "category": "SCIENCE",
@@ -5970,7 +6018,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q35703",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q35703-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q35703"
  },
  {
   "category": "SCIENCE",
@@ -6278,7 +6327,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q187224",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q187224-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q187224"
  },
  {
   "category": "SCIENCE",
@@ -6355,7 +6405,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q153178",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q153178-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q153178"
  },
  {
   "category": "SCIENCE",
@@ -6938,7 +6989,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q190697",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q190697-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q190697"
  },
  {
   "category": "SCIENCE",
@@ -8093,7 +8145,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q153219",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q153219-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q153219"
  },
  {
   "category": "SCIENCE",
@@ -8143,23 +8196,13 @@
   "category": "SCIENCE",
   "year": 2008,
   "audience": "FR",
-  "textFr": "Lancement : Fondation SCP",
-  "textEn": null,
-  "sourceUrl": "https://www.wikidata.org/wiki/Q17439649",
-  "sourceKind": "wikidata-notoriety",
-  "dedupeKey": "science-fr-wikidata-notoriety-launch-q17439649",
-  "translated": false
- },
- {
-  "category": "SCIENCE",
-  "year": 2008,
-  "audience": "FR",
   "textFr": "Prix Nobel de physiologie ou médecine : Luc Montagnier",
   "textEn": null,
   "sourceUrl": "https://www.wikidata.org/wiki/Q103598",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q103598-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q103598"
  },
  {
   "category": "SCIENCE",
@@ -8170,7 +8213,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q103844",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q103844-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q103844"
  },
  {
   "category": "SCIENCE",
@@ -8203,6 +8247,17 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q27764876",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-launch-q27764876",
+  "translated": false
+ },
+ {
+  "category": "SCIENCE",
+  "year": 2008,
+  "audience": "FR",
+  "textFr": "Premier vol : Soukhoï Superjet 100",
+  "textEn": null,
+  "sourceUrl": "https://www.wikidata.org/wiki/Q486066",
+  "sourceKind": "wikidata-notoriety",
+  "dedupeKey": "science-fr-wikidata-notoriety-flight-q486066",
   "translated": false
  },
  {
@@ -8599,7 +8654,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q109588",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q109588-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q109588"
  },
  {
   "category": "SCIENCE",
@@ -8962,7 +9018,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q462843",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-fr-wikidata-notoriety-nobel-q462843-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q462843"
  },
  {
   "category": "SCIENCE",
@@ -9039,7 +9096,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q184286",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q184286-q44585",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q184286"
  },
  {
   "category": "SCIENCE",
@@ -9061,7 +9119,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q213504",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q213504-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q213504"
  },
  {
   "category": "SCIENCE",
@@ -9072,7 +9131,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q9130",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q9130-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q9130"
  },
  {
   "category": "SCIENCE",
@@ -9083,7 +9143,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q47480",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q47480-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q47480"
  },
  {
   "category": "SCIENCE",
@@ -9149,7 +9210,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q177681",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q177681-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q177681"
  },
  {
   "category": "SCIENCE",
@@ -9248,7 +9310,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q179777",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q179777-q44585",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q179777"
  },
  {
   "category": "SCIENCE",
@@ -9259,7 +9322,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q273238",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q273238-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q273238"
  },
  {
   "category": "SCIENCE",
@@ -9314,7 +9378,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q7504",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q7504-q44585",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q7504"
  },
  {
   "category": "SCIENCE",
@@ -9347,7 +9412,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q80884",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q80884-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q80884"
  },
  {
   "category": "SCIENCE",
@@ -9358,7 +9424,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q150989",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q150989-q44585",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q150989"
  },
  {
   "category": "SCIENCE",
@@ -9479,7 +9546,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q103835",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q103835-q44585",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q103835"
  },
  {
   "category": "SCIENCE",
@@ -9556,7 +9624,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q180468",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q180468-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q180468"
  },
  {
   "category": "SCIENCE",
@@ -9567,7 +9636,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q133846",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q133846-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q133846"
  },
  {
   "category": "SCIENCE",
@@ -9589,7 +9659,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q133222",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q133222-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q133222"
  },
  {
   "category": "SCIENCE",
@@ -9600,7 +9671,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q8753",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q8753-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q8753"
  },
  {
   "category": "SCIENCE",
@@ -9688,7 +9760,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q78483",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q78483-q44585",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q78483"
  },
  {
   "category": "SCIENCE",
@@ -10117,7 +10190,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q76951",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q76951-q44585",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q76951"
  },
  {
   "category": "SCIENCE",
@@ -10128,7 +10202,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q57072",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q57072-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q57072"
  },
  {
   "category": "SCIENCE",
@@ -10238,7 +10313,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q57065",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q57065-q44585",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q57065"
  },
  {
   "category": "SCIENCE",
@@ -10260,7 +10336,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q37064",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q37064-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q37064"
  },
  {
   "category": "SCIENCE",
@@ -10414,7 +10491,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q83598",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q83598-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q83598"
  },
  {
   "category": "SCIENCE",
@@ -10436,7 +10514,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q172118",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q172118-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q172118"
  },
  {
   "category": "SCIENCE",
@@ -10722,7 +10801,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q273219",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q273219-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q273219"
  },
  {
   "category": "SCIENCE",
@@ -10766,7 +10846,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q115470",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q115470-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q115470"
  },
  {
   "category": "SCIENCE",
@@ -10953,7 +11034,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q48973",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q48973-q44585",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q48973"
  },
  {
   "category": "SCIENCE",
@@ -10986,7 +11068,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q62897",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q62897-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q62897"
  },
  {
   "category": "SCIENCE",
@@ -11360,7 +11443,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q163415",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q163415-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q163415"
  },
  {
   "category": "SCIENCE",
@@ -11371,7 +11455,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q949",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q949-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q949"
  },
  {
   "category": "SCIENCE",
@@ -11833,7 +11918,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q214209",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q214209-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q214209"
  },
  {
   "category": "SCIENCE",
@@ -11987,7 +12073,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q83333",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q83333-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q83333"
  },
  {
   "category": "SCIENCE",
@@ -12020,7 +12107,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q123280",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q123280-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q123280"
  },
  {
   "category": "SCIENCE",
@@ -12075,7 +12163,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q133267",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q133267-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q133267"
  },
  {
   "category": "SCIENCE",
@@ -12163,7 +12252,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q155790",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q155790-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q155790"
  },
  {
   "category": "SCIENCE",
@@ -12295,7 +12385,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q7487",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q7487-q44585",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q7487"
  },
  {
   "category": "SCIENCE",
@@ -12658,7 +12749,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q178344",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q178344-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q178344"
  },
  {
   "category": "SCIENCE",
@@ -12680,7 +12772,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q107462",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q107462-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q107462"
  },
  {
   "category": "SCIENCE",
@@ -12724,7 +12817,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q107405",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q107405-q44585",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q107405"
  },
  {
   "category": "SCIENCE",
@@ -13241,7 +13335,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q78496",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q78496-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q78496"
  },
  {
   "category": "SCIENCE",
@@ -13494,7 +13589,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q103854",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q103854-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q103854"
  },
  {
   "category": "SCIENCE",
@@ -13505,7 +13601,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q234949",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q234949-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q234949"
  },
  {
   "category": "SCIENCE",
@@ -13571,7 +13668,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q108576",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q108576-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q108576"
  },
  {
   "category": "SCIENCE",
@@ -13890,7 +13988,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q28189",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q28189-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q28189"
  },
  {
   "category": "SCIENCE",
@@ -13923,7 +14022,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q179282",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q179282-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q179282"
  },
  {
   "category": "SCIENCE",
@@ -13956,7 +14056,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q107420",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q107420-q38104",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q107420"
  },
  {
   "category": "SCIENCE",
@@ -14704,7 +14805,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q185007",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q185007-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q185007"
  },
  {
   "category": "SCIENCE",
@@ -15452,7 +15554,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q157224",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q157224-q44585",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q157224"
  },
  {
   "category": "SCIENCE",
@@ -16794,7 +16897,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q202136",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q202136-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q202136"
  },
  {
   "category": "SCIENCE",
@@ -17065,17 +17169,6 @@
   "year": 2008,
   "audience": "EN",
   "textFr": null,
-  "textEn": "Launched: SCP Foundation",
-  "sourceUrl": "https://www.wikidata.org/wiki/Q17439649",
-  "sourceKind": "wikidata-notoriety",
-  "dedupeKey": "science-en-wikidata-notoriety-launch-q17439649",
-  "translated": false
- },
- {
-  "category": "SCIENCE",
-  "year": 2008,
-  "audience": "EN",
-  "textFr": null,
   "textEn": "Launched: Archive of Our Own",
   "sourceUrl": "https://www.wikidata.org/wiki/Q27764876",
   "sourceKind": "wikidata-notoriety",
@@ -17146,6 +17239,17 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q44654",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-flight-q44654",
+  "translated": false
+ },
+ {
+  "category": "SCIENCE",
+  "year": 2008,
+  "audience": "EN",
+  "textFr": null,
+  "textEn": "First flight: Yakovlev SJ-100",
+  "sourceUrl": "https://www.wikidata.org/wiki/Q486066",
+  "sourceKind": "wikidata-notoriety",
+  "dedupeKey": "science-en-wikidata-notoriety-flight-q486066",
   "translated": false
  },
  {
@@ -17905,7 +18009,8 @@
   "sourceUrl": "https://www.wikidata.org/wiki/Q462843",
   "sourceKind": "wikidata-notoriety",
   "dedupeKey": "science-en-wikidata-notoriety-nobel-q462843-q80061",
-  "translated": false
+  "translated": false,
+  "subjectQid": "Q462843"
  },
  {
   "category": "SCIENCE",

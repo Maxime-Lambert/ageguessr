@@ -2,7 +2,15 @@ import { TestBed } from '@angular/core/testing';
 import { HintCategory } from '../models';
 import { LeadIcon } from './lead-icon';
 
-const CATEGORIES: HintCategory[] = ['MUSIC', 'FILM', 'SPORT', 'SCIENCE', 'WORLD', 'CELEBRITIES'];
+const CATEGORIES: HintCategory[] = [
+  'MUSIC',
+  'FILM',
+  'SPORT',
+  'SCIENCE',
+  'WORLD',
+  'CELEBRITIES',
+  'LITERATURE',
+];
 
 describe('LeadIcon', () => {
   function render(category: HintCategory, size?: number) {
