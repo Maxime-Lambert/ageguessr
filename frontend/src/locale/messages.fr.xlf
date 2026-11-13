@@ -572,6 +572,74 @@
         <source>Literature</source>
         <target>Littérature</target>
       </trans-unit>
+      <trans-unit id="game.leadHelp.rule" datatype="html">
+        <source>The fact dates from as many years ago as the person's age on the photo.</source>
+        <target>Le fait date d'autant d'années que l'âge de la personne sur la photo.</target>
+      </trans-unit>
+      <trans-unit id="game.leadHelp.celebrities.rule" datatype="html">
+        <source>This famous person is as old this year as the person on the photo.</source>
+        <target>Cette célébrité a cette année l'âge qu'avait la personne sur la photo.</target>
+      </trans-unit>
+      <trans-unit id="game.leadHelp.music.kind" datatype="html">
+        <source>An album, a song, a Eurovision or a Grammy win.</source>
+        <target>Un album, une chanson, une victoire à l'Eurovision ou aux Grammy.</target>
+      </trans-unit>
+      <trans-unit id="game.leadHelp.music.hint" datatype="html">
+        <source>Album &quot;Thriller&quot; — Michael Jackson</source>
+        <target>Album « Thriller » — Michael Jackson</target>
+      </trans-unit>
+      <trans-unit id="game.leadHelp.film.kind" datatype="html">
+        <source>A film released, or an Oscar, Palme d'or or César.</source>
+        <target>La sortie d'un film, ou un Oscar, une Palme d'or, un César.</target>
+      </trans-unit>
+      <trans-unit id="game.leadHelp.film.hint" datatype="html">
+        <source>Release of the film &quot;Titanic&quot;</source>
+        <target>Sortie du film « Titanic »</target>
+      </trans-unit>
+      <trans-unit id="game.leadHelp.sport.kind" datatype="html">
+        <source>A competition and its winner, a Ballon d'Or, the Olympics.</source>
+        <target>Une compétition et son vainqueur, un Ballon d'or, les Jeux olympiques.</target>
+      </trans-unit>
+      <trans-unit id="game.leadHelp.sport.hint" datatype="html">
+        <source>World Cup, host: France — winner: France</source>
+        <target>Coupe du monde, pays hôte : France — vainqueur : France</target>
+      </trans-unit>
+      <trans-unit id="game.leadHelp.science.kind" datatype="html">
+        <source>A discovery or invention, a Nobel, a launch, a first flight.</source>
+        <target>Une découverte ou une invention, un Nobel, un lancement, un premier vol.</target>
+      </trans-unit>
+      <trans-unit id="game.leadHelp.science.hint" datatype="html">
+        <source>First flight: Concorde</source>
+        <target>Premier vol : Concorde</target>
+      </trans-unit>
+      <trans-unit id="game.leadHelp.world.kind" datatype="html">
+        <source>An event, a treaty, an election, a new state.</source>
+        <target>Un événement, un traité, une élection, un nouvel État.</target>
+      </trans-unit>
+      <trans-unit id="game.leadHelp.world.hint" datatype="html">
+        <source>Fall of the Berlin Wall</source>
+        <target>Chute du mur de Berlin</target>
+      </trans-unit>
+      <trans-unit id="game.leadHelp.literature.kind" datatype="html">
+        <source>A work published, or a literary prize.</source>
+        <target>La parution d'une œuvre, ou un prix littéraire.</target>
+      </trans-unit>
+      <trans-unit id="game.leadHelp.literature.hint" datatype="html">
+        <source>Published: &quot;Harry Potter and the Philosopher's Stone&quot; — J. K. Rowling</source>
+        <target>Parution : « Harry Potter à l'école des sorciers » — J. K. Rowling</target>
+      </trans-unit>
+      <trans-unit id="game.leadHelp.celebrities.kind" datatype="html">
+        <source>A famous person, as old this year as the person on the photo.</source>
+        <target>Une personne célèbre, qui a cette année l'âge de la personne sur la photo.</target>
+      </trans-unit>
+      <trans-unit id="game.leadHelp.celebrities.example" datatype="html">
+        <source><x id="name" equiv-text="name"/>, born in <x id="year" equiv-text="year"/>: <x id="years" equiv-text="years"/> this year → <x id="age" equiv-text="age"/> on the photo.</source>
+        <target><x id="name" equiv-text="name"/>, né en <x id="year" equiv-text="year"/> : <x id="years" equiv-text="years"/> ans cette année → <x id="age" equiv-text="age"/> ans sur la photo.</target>
+      </trans-unit>
+      <trans-unit id="game.leadHelp.example" datatype="html">
+        <source><x id="hint" equiv-text="hint"/>: <x id="years" equiv-text="years"/> years ago → <x id="age" equiv-text="age"/> on the photo.</source>
+        <target><x id="hint" equiv-text="hint"/> : il y a <x id="years" equiv-text="years"/> ans → <x id="age" equiv-text="age"/> ans sur la photo.</target>
+      </trans-unit>
       <trans-unit id="game.roundTitle" datatype="html">
         <source><x id="round" equiv-text="GAME_TEXT.round"/> <x id="position" equiv-text="position"/> of <x id="total" equiv-text="total"/></source>
         <target><x id="round" equiv-text="GAME_TEXT.round"/> <x id="position" equiv-text="position"/> sur <x id="total" equiv-text="total"/></target>
