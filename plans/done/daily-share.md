@@ -122,24 +122,40 @@ dans `game.spec.ts`. Playwright : `mockPlayedDay`, `captureShare` et `sharedText
 attendu vient du `baseURL` du projet.
 
 ## Phase 3 : documentation, revues et PR
-Status: Not started
+Status: Complete
 
-- [ ] `docs/roadmap.md` : cocher « Partage de résultat façon Wordle », ajouter la
+- [x] `docs/roadmap.md` : cocher « Partage de résultat façon Wordle », ajouter la
       vérification en prod (téléphone : feuille de partage ; ordinateur : copie, coller
       dans un message).
-- [ ] `docs/decisions/architecture.md` : une ligne près de `SHARE_TARGET` (texte du jour,
+- [x] `docs/decisions/architecture.md` : une ligne près de `SHARE_TARGET` (texte du jour,
       🎯 réservé au jour, `shareOrCopy`).
-- [ ] Revues `architecture-reviewer` et `code-reviewer` (imposé par `/pr` ; contenu
+- [x] Revues `architecture-reviewer` et `code-reviewer` (imposé par `/pr` ; contenu
       partagé hors du site : vérifier qu'aucune réponse ne fuit), puis `/pr`.
 
 ### Verification Plan
 - `pnpm test` et `./mvnw test` passent ; revues sans 🔴 ni 🟠 ouvert ; CI verte.
+- Résultat (2026-11-13) : `code-reviewer` sans aucun point. `architecture-reviewer` (deux
+  lancements perdus sur une erreur d'API 403, relancé après `/login`) : un 🟠 corrigé, deux
+  🟡. 458 tests frontend verts, lint OK, `./mvnw test` vert. CI : sur la PR.
 
 ### Phase Summary
-_(write when phase completes)_
+- 🟠 corrigé : sur la page défi, une copie refusée posait `RoundsScreen.error`, affiché
+  seulement par le lecteur de manche, absent du récapitulatif : le joueur ne voyait rien
+  (bug antérieur à la PR). La page défi a maintenant le même signal `shared` que la
+  partie du jour, avec l'erreur en `role="alert"` sous le bouton, et un test.
+- 🟡 corrigé : test « leads from the summary of the day to the free investigation » en
+  double dans `game.spec.ts` (antérieur), le second retiré.
+- 🟡 laissé : `dailyShareUrl` renvoie son argument. Il est gardé, symétrique de
+  `challengeUrl`, pour nommer la décision « lien = racine du site ».
 
 ## Final Recap
-_(write when all phases complete)_
+Sur le récapitulatif du jour, « Partager mon résultat » produit « AgeGuessr · date · points
+/ max », une case par manche (🎯 pour un 1er essai exact, jour seulement) et la racine du
+site. Feuille de partage sur téléphone, copie ailleurs, via `shareOrCopy`, commun avec la
+page défi. Bug de fuseau attrapé en phase 2 (`formatDate` et une date seule) et testé
+dans 4 fuseaux. La page défi affiche désormais l'échec d'une copie (bug antérieur).
 
 ## Deployment Plan
-_(write when all phases complete)_
+Frontend seul : pas de migration, pas de variable. Après la release `develop` → `main`
+(merge commit), vérifier en prod la ligne « Partage du résultat du jour » de
+`docs/roadmap.md` (téléphone et ordinateur).

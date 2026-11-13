@@ -52,7 +52,8 @@ export class ChallengePage extends RoundsScreen<Series> {
   readonly lookup = signal<'loading' | 'ready' | 'notFound' | 'error'>('loading');
   readonly joining = signal(false);
   readonly joinError = signal<string | null>(null);
-  readonly copied = signal(false);
+  /** What became of the last share: copied says so, a refused copy says it failed. */
+  readonly shared = signal<'shared' | 'copied' | 'failed' | null>(null);
 
   readonly nickname = new FormControl('', [
     Validators.required,
@@ -122,9 +123,11 @@ export class ChallengePage extends RoundsScreen<Series> {
       squares(series.rounds),
       challengeUrl(this.target.origin(), challenge.code),
     );
+    this.shared.set(null);
+    // Not the round's error: the round player is gone once the summary is on screen.
     shareOrCopy(this.target, text).then(
-      (how) => this.copied.set(how === 'copied'),
-      () => this.error.set(this.text.genericError),
+      (how) => this.shared.set(how),
+      () => this.shared.set('failed'),
     );
   }
 

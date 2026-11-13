@@ -320,15 +320,6 @@ describe('Game', () => {
     expect(page.textContent).toContain(GAME_TEXT.summary);
   });
 
-  it('leads from the summary of the day to the free investigation', () => {
-    load(today([finished(1)]));
-
-    const link = Array.from(page.querySelectorAll('a')).find(
-      (a) => a.textContent?.trim() === GAME_TEXT.tryFree,
-    );
-    expect(link?.getAttribute('href')).toBe('/free');
-  });
-
   it('keeps the round on screen after any other error', () => {
     load(today([round(1)]));
     guess('30');
