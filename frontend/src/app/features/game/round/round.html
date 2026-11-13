@@ -60,23 +60,20 @@
           role="group"
           aria-labelledby="pick-title"
         >
-          @for (category of round().categories; track category) {
-            <button
-              #category
-              type="button"
-              class="card hover:border-accent aria-pressed:border-accent aria-pressed:bg-surface-2 flex flex-col items-start gap-2.5 p-4 text-left text-[15px] font-semibold disabled:opacity-50 sm:[&:nth-child(3n+1):last-child]:col-span-3 max-sm:[&:nth-child(odd):last-child]:col-span-2"
-              [attr.aria-pressed]="isPicked(category)"
+          @for (category of round().categories; track category; let i = $index) {
+            <app-lead-card
+              class="sm:[&:nth-child(3n+1):last-child]:col-span-3 max-sm:[&:nth-child(odd):last-child]:col-span-2"
+              [category]="category"
+              [gameYear]="gameYear"
+              [picked]="isPicked(category)"
               [disabled]="busy() || (pickComplete() && !isPicked(category))"
-              (click)="toggle(category)"
-            >
-              <span class="flex w-full items-center justify-between">
-                <app-lead-icon class="text-accent" [category]="category" />
-                @if (isPicked(category)) {
-                  <svg lucideCheck class="text-accent" [size]="18" aria-hidden="true"></svg>
-                }
-              </span>
-              {{ categoryLabels[category] }}
-            </button>
+              [open]="openHelp() === category"
+              [rightOnMobile]="i % 2 === 1"
+              [rightOnWide]="i % 3 === 2"
+              (toggled)="toggle(category)"
+              (helpOpened)="openHelp.set(category)"
+              (helpClosed)="closeHelp(category)"
+            />
           }
         </div>
         <button
