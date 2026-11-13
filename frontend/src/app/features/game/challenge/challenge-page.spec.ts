@@ -152,6 +152,21 @@ describe('ChallengePage', () => {
     ]);
   });
 
+  it('says so on the summary when the result cannot be copied', async () => {
+    share.target.copy = () => Promise.reject(new DOMException('', 'NotAllowedError'));
+    opened(challenge({ status: 'FINISHED', seriesId: 'series-1' }));
+    http
+      .expectOne('/api/game/series/series-1')
+      .flush(series([finished(1, { points: 1000 })], { creator: false }));
+    fixture.detectChanges();
+
+    button(GAME_TEXT.shareResult).click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(page.querySelector('[role="alert"]')?.textContent).toContain(GAME_TEXT.genericError);
+  });
+
   it('says when the challenge does not exist or has expired', () => {
     http
       .expectOne('/api/game/challenges/K7F2QX9M')

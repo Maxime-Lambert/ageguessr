@@ -5,7 +5,8 @@ import { provideRouter } from '@angular/router';
 import { Auth } from '../../auth/auth';
 import { GAME_TEXT } from '../game-vocabulary';
 import { TodayGame } from '../models';
-import { finished, round, today } from '../testing';
+import { SHARE_TARGET } from '../../../shared/share-target';
+import { fakeShareTarget, finished, round, today } from '../testing';
 import { HintLanguage } from '../hint-language';
 import { Game } from './game';
 
@@ -13,13 +14,20 @@ describe('Game', () => {
   let fixture: ComponentFixture<Game>;
   let http: HttpTestingController;
   let page: HTMLElement;
+  let share: ReturnType<typeof fakeShareTarget>;
 
   beforeEach(() => {
+    share = fakeShareTarget();
     localStorage.clear();
     // The first-visit rules card is covered on its own (rules-card.spec.ts).
     localStorage.setItem('ageguessr-rules-seen', '1');
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        { provide: SHARE_TARGET, useValue: share.target },
+      ],
     });
     http = TestBed.inject(HttpTestingController);
     fixture = TestBed.createComponent(Game);
@@ -157,6 +165,57 @@ describe('Game', () => {
     expect(link?.getAttribute('href')).toBe('/free');
   });
 
+  const playedDay = () =>
+    today(
+      [
+        finished(1, { points: 1000, secondGuess: null, secondPoints: null }),
+        finished(2, { points: 920 }),
+        round(3, { status: 'NEUTRALIZED', imageUrl: null }),
+        finished(4, { points: 420 }),
+      ],
+      { date: '2026-11-13' },
+    );
+  const expectedText = 'AgeGuessr · Nov 13, 2026 · 2340 / 3000\n🎯🟩⬛🟥\nhttps://ageguessr.app';
+
+  it('offers to share the result only once the day is played', () => {
+    load(today([finished(1), round(2)]));
+    expect(button(GAME_TEXT.shareResult)).toBeUndefined();
+  });
+
+  it('copies the result of the day where there is no share sheet, and says so', async () => {
+    load(playedDay());
+
+    button(GAME_TEXT.shareResult).click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(share.handed.copied).toEqual([expectedText]);
+    expect(page.querySelector('[role="status"]')?.textContent).toContain(GAME_TEXT.copied);
+  });
+
+  it('hands the result of the day to the share sheet when there is one', async () => {
+    share.target.canShare = () => true;
+    load(playedDay());
+
+    button(GAME_TEXT.shareResult).click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(share.handed.shared).toEqual([expectedText]);
+    expect(page.textContent).not.toContain(GAME_TEXT.copied);
+  });
+
+  it('says so when the result cannot be copied', async () => {
+    share.target.copy = () => Promise.reject(new DOMException('', 'NotAllowedError'));
+    load(playedDay());
+
+    button(GAME_TEXT.shareResult).click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(page.querySelector('[role="alert"]')?.textContent).toContain(GAME_TEXT.genericError);
+  });
+
   it('offers a signed-in player to compare the day with their friends', () => {
     const link = () =>
       Array.from(page.querySelectorAll('a')).find(
@@ -259,15 +318,6 @@ describe('Game', () => {
     load(today([finished(1)]));
 
     expect(page.textContent).toContain(GAME_TEXT.summary);
-  });
-
-  it('leads from the summary of the day to the free investigation', () => {
-    load(today([finished(1)]));
-
-    const link = Array.from(page.querySelectorAll('a')).find(
-      (a) => a.textContent?.trim() === GAME_TEXT.tryFree,
-    );
-    expect(link?.getAttribute('href')).toBe('/free');
   });
 
   it('keeps the round on screen after any other error', () => {

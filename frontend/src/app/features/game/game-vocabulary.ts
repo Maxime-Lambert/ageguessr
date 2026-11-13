@@ -1,3 +1,4 @@
+import { formatDate } from '@angular/common';
 import { COMMON_MESSAGES } from '../../shared/common-messages';
 import {
   Direction,
@@ -248,6 +249,29 @@ export function challengeIntro(creator: string | null, rounds: number): string {
 export function shareText(points: number, max: number, squares: string, url: string): string {
   return (
     $localize`:@@game.shareText:AgeGuessr · ${GAME_TEXT.challenge}:challenge: · ${points}:points: / ${max}:max:` +
+    `\n${squares}\n${url}`
+  );
+}
+
+/**
+ * The text a player shares at the end of the daily game: the day, the score, one square
+ * per round, the site. The day is the game's UTC day (YYYY-MM-DD), formatted in UTC so
+ * that it never moves with the player's time zone, in a format of its language.
+ */
+export function dailyShareText(
+  date: string,
+  points: number,
+  max: number,
+  squares: string,
+  url: string,
+  locale: string,
+): string {
+  // Midnight UTC of that day: formatDate would read 'YYYY-MM-DD' alone as local midnight,
+  // the day before in UTC east of Greenwich.
+  const midnightUtc = new Date(`${date}T00:00:00Z`);
+  const day = formatDate(midnightUtc, $localize`:@@game.shareDateFormat:MMM d, y`, locale, 'UTC');
+  return (
+    $localize`:@@game.dailyShareText:AgeGuessr · ${day}:day: · ${points}:points: / ${max}:max:` +
     `\n${squares}\n${url}`
   );
 }

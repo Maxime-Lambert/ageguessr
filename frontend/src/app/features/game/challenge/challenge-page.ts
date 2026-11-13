@@ -18,7 +18,7 @@ import { RoundPlayer } from '../round-player/round-player';
 import { RoundsScreen } from '../rounds-screen';
 import { SeriesApi } from '../series-api';
 import { SHARE_TARGET } from '../../../shared/share-target';
-import { NICKNAME_PATTERN, challengeUrl, squares } from '../share';
+import { NICKNAME_PATTERN, challengeUrl, shareOrCopy, squares } from '../share';
 
 /**
  * A challenge, at /challenge/:code: who sent it, then, once joined, its series played with
@@ -52,7 +52,8 @@ export class ChallengePage extends RoundsScreen<Series> {
   readonly lookup = signal<'loading' | 'ready' | 'notFound' | 'error'>('loading');
   readonly joining = signal(false);
   readonly joinError = signal<string | null>(null);
-  readonly copied = signal(false);
+  /** What became of the last share: copied says so, a refused copy says it failed. */
+  readonly shared = signal<'shared' | 'copied' | 'failed' | null>(null);
 
   readonly nickname = new FormControl('', [
     Validators.required,
@@ -63,7 +64,6 @@ export class ChallengePage extends RoundsScreen<Series> {
     const challenge = this.challenge();
     return challenge ? challengeIntro(challenge.creatorName, challenge.rounds) : '';
   });
-  readonly canShare = this.target.canShare();
 
   constructor() {
     super();
@@ -123,13 +123,11 @@ export class ChallengePage extends RoundsScreen<Series> {
       squares(series.rounds),
       challengeUrl(this.target.origin(), challenge.code),
     );
-    if (this.canShare) {
-      void this.target.share(text).catch(() => undefined);
-      return;
-    }
-    this.target.copy(text).then(
-      () => this.copied.set(true),
-      () => this.error.set(this.text.genericError),
+    this.shared.set(null);
+    // Not the round's error: the round player is gone once the summary is on screen.
+    shareOrCopy(this.target, text).then(
+      (how) => this.shared.set(how),
+      () => this.shared.set('failed'),
     );
   }
 
