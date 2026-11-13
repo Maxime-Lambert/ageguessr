@@ -75,7 +75,7 @@ describe('Round', () => {
   });
 
   function leadButtons(): HTMLButtonElement[] {
-    return Array.from(page.querySelectorAll<HTMLButtonElement>('[role=group] button'));
+    return Array.from(page.querySelectorAll<HTMLButtonElement>('[role=group] button[aria-pressed]'));
   }
 
   function confirmButton(): HTMLButtonElement {
@@ -185,6 +185,70 @@ describe('Round', () => {
     fixture.componentInstance.confirmHints();
 
     expect(picks).toEqual([]);
+  });
+
+  function help(category: string): HTMLElement {
+    return page.querySelector<HTMLElement>(`#lead-help-${category}`)!;
+  }
+
+  function infoButton(index: number): HTMLButtonElement {
+    return page.querySelectorAll<HTMLButtonElement>('[role=group] button[aria-expanded]')[index];
+  }
+
+  it('opens one lead help at a time', () => {
+    show(awaitingHints());
+
+    infoButton(0).click();
+    fixture.detectChanges();
+    expect(help('music').hidden).toBe(false);
+    infoButton(1).click();
+    fixture.detectChanges();
+
+    expect(help('music').hidden).toBe(true);
+    expect(help('film').hidden).toBe(false);
+  });
+
+  it('closes the lead help on a tap elsewhere, or on Escape', () => {
+    show(awaitingHints());
+    infoButton(0).click();
+    fixture.detectChanges();
+
+    help('music').dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+    fixture.detectChanges();
+    expect(help('music').hidden).toBe(false);
+    page.querySelector('#pick-title')!.dispatchEvent(
+      new PointerEvent('pointerdown', { bubbles: true }),
+    );
+    fixture.detectChanges();
+    expect(help('music').hidden).toBe(true);
+
+    infoButton(0).click();
+    fixture.detectChanges();
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    fixture.detectChanges();
+    expect(help('music').hidden).toBe(true);
+  });
+
+  it('picks the leads the same with a help open, and keeps ⓘ on the cards left', () => {
+    show(awaitingHints());
+    infoButton(3).click();
+    for (const index of [0, 1, 2]) leadButtons()[index].click();
+    fixture.detectChanges();
+
+    expect(leadButtons()[3].disabled).toBe(true);
+    expect(infoButton(3).disabled).toBe(false);
+    confirmButton().click();
+    expect(picks).toEqual([['MUSIC', 'FILM', 'SPORT']]);
+  });
+
+  it('puts the help of the last column on the right edge, the lone last card on the left', () => {
+    show(awaitingHints({ categories: ['MUSIC', 'FILM', 'SPORT', 'SCIENCE', 'WORLD'] }));
+
+    // 2 columns on a phone, 3 beyond: the 5th card is alone on a phone row, left-aligned.
+    expect(help('film').classList).toContain('max-sm:right-0');
+    expect(help('world').classList).toContain('max-sm:left-0');
+    expect(help('sport').classList).toContain('sm:right-0');
+    expect(help('world').classList).toContain('sm:left-0');
   });
 
   it('shows the leads and starts the final guess at the edge of the range nearest the first', () => {

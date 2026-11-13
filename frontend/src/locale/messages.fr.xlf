@@ -572,6 +572,10 @@
         <source>Literature</source>
         <target>Littérature</target>
       </trans-unit>
+      <trans-unit id="game.leadHelp.button" datatype="html">
+        <source>How the <x id="category" equiv-text="category"/> lead works</source>
+        <target>Comment marche la piste <x id="category" equiv-text="category"/></target>
+      </trans-unit>
       <trans-unit id="game.leadHelp.rule" datatype="html">
         <source>The fact dates from as many years ago as the person's age on the photo.</source>
         <target>Le fait date d'autant d'années que l'âge de la personne sur la photo.</target>

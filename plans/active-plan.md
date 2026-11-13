@@ -77,18 +77,18 @@ phase 2 (vérifier « né en » dans `dist/frontend/browser/fr`). Année de la p
 du jour a `TodayGame.date` (YYYY-MM-DD) ; une série libre n'a pas de date → année UTC courante.
 
 ## Phase 2 : composant et intégration
-Status: Not started
+Status: Complete
 
-- [ ] Composant `LeadCard` (`features/game/lead-card/`) : carte bascule + ⓘ + bulle,
+- [x] Composant `LeadCard` (`features/game/lead-card/`) : carte bascule + ⓘ + bulle,
       entrées `category`, `picked`, `disabled`, `open`, sorties `toggled`, `helpOpened`,
       `helpClosed`. Délai de survol 400 ms, `pointerType`, Échap, focus clavier.
-- [ ] `Round` : remplace la carte actuelle par `LeadCard`, garde l'état « quelle bulle est
+- [x] `Round` : remplace la carte actuelle par `LeadCard`, garde l'état « quelle bulle est
       ouverte » (une seule), ferme au tap hors bulle (`document:pointerdown`) et quand
       l'étape change. Le focus initial reste sur la première carte, la sélection et
       l'envoi ne changent pas.
-- [ ] Placement : dernière colonne alignée à droite (2 colonnes mobile, 3 au-delà de
+- [x] Placement : dernière colonne alignée à droite (2 colonnes mobile, 3 au-delà de
       `sm`), y compris la carte seule en dernière ligne (pleine largeur, alignée à gauche).
-- [ ] Tests :
+- [x] Tests :
   - interface (`lead-card.spec.ts`) : souris → ouverte après 400 ms (faux minuteurs),
     fermée à la sortie, pas d'ouverture si la souris repart avant ; doigt → tap ⓘ ouvre,
     second tap ferme ; Échap ferme ; `aria-expanded`, `aria-controls`,
@@ -101,9 +101,32 @@ Status: Not started
 - `cd frontend && pnpm test` et `pnpm exec ng lint` → tout passe.
 - Capture d'écran unique (`shoot.mjs`, un seul navigateur) en largeur mobile, une bulle
   ouverte en colonne droite, pour vérifier qu'elle reste dans l'écran.
+- Résultat (2026-11-13) : 66 fichiers, 448 tests verts ; lint OK ; `ng build --localize`
+  OK, « né en … » et « Comment marche la piste » présents dans le bundle FR. Capture :
+  pas de serveur de dev (WSL), donc page statique avec le balisage de la grille et le CSS
+  compilé, à 360 px : bulle de la 2e carte de 56 à 344 px, pas de scroll horizontal,
+  au-dessus des cartes suivantes.
 
 ### Phase Summary
-_(write when phase completes)_
+`LeadCard` (`features/game/lead-card/`) : la carte bascule et le ⓘ sont frères dans
+l'hôte `relative`, la bulle est toujours dans le DOM (`hidden` quand fermée) pour
+`aria-describedby`. Écarts au plan :
+- **Clavier** : ouverture sur `keyup` de Tab/Maj+Tab sur la carte, pas sur
+  `:focus-visible`. Le focus programmatique de la 1re carte (après le 1er essai validé au
+  clavier) aurait sinon ouvert une bulle à chaque manche.
+- **Clic souris sur ⓘ** : ouvre seulement, ne referme pas. Le survol l'a souvent déjà
+  ouverte en chemin, le clic ne doit pas fermer ce qu'il vient chercher. Doigt et clavier :
+  bascule.
+- **Échap** : écouté par `Round` sur `document`, quelle que soit l'origine de l'ouverture.
+- **Année** : `Round.gameYear` = année UTC courante (le `RoundView` ne porte pas la date ;
+  l'API tire depuis `round.gameDate()`), faux seulement dans un exemple, pour une partie
+  commencée avant le Nouvel An.
+- La sélection des pistes est `[role=group] button[aria-pressed]` dans les tests (le ⓘ
+  est aussi un bouton du groupe).
+⚠️ Budget : le bundle initial passe de 547,34 à 551,45 kB, au-dessus de l'avertissement à
+550 kB (l'erreur est à 1 MB). Les icônes Lucide sont toutes dans `main` ; `LucideInfo` et
+les nouvelles classes CSS suffisent à franchir le seuil. Décision à prendre avec
+l'utilisateur (relever le seuil ou alléger).
 
 ## Phase 3 : documentation, revues et PR
 Status: Not started

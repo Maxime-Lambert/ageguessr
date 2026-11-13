@@ -11,7 +11,7 @@ import {
   viewChildren,
 } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { LucideArrowDown, LucideArrowUp, LucideCheck } from '@lucide/angular';
+import { LucideArrowDown, LucideArrowUp } from '@lucide/angular';
 import { Button } from '../../../shared/ui/button/button';
 import { AgeInput } from '../../../shared/ui/age-input/age-input';
 import { Field } from '../../../shared/ui/field/field';
@@ -28,6 +28,7 @@ import {
   rangeText,
   roundTitle,
 } from '../game-vocabulary';
+import { LeadCard } from '../lead-card/lead-card';
 import { LeadIcon } from '../lead-icon/lead-icon';
 import { HintCategory, MAX_AGE, MIN_AGE, RoundView } from '../models';
 
@@ -44,13 +45,17 @@ import { HintCategory, MAX_AGE, MIN_AGE, RoundView } from '../models';
     CasePhoto,
     CaseSteps,
     Field,
+    LeadCard,
     LeadIcon,
     LucideArrowDown,
     LucideArrowUp,
-    LucideCheck,
   ],
   selector: 'app-round',
   templateUrl: './round.html',
+  host: {
+    '(document:pointerdown)': 'pointedAt($event)',
+    '(document:keydown.escape)': 'openHelp.set(null)',
+  },
 })
 export class Round {
   readonly round = input.required<RoundView>();
@@ -96,6 +101,16 @@ export class Round {
   protected readonly pickedLabel = computed(() => pickedText(this.picked().length, this.toPick()));
   protected readonly pickComplete = computed(() => this.picked().length === this.toPick());
 
+  /** The lead card whose help is open: one at a time (LeadCard). */
+  protected readonly openHelp = signal<HintCategory | null>(null);
+  /**
+   * The help's examples count from this year. The API picks the hints from the game's
+   * date (today for the daily game, the start for a series), which the round does not
+   * carry: the current UTC year, wrong only for a game started before New Year's night,
+   * and then only in an example.
+   */
+  protected readonly gameYear = new Date().getUTCFullYear();
+
   /** Large while the player reads it and picks a lead, compact above the final guess. */
   protected readonly directionStyle = computed(() =>
     this.step() === 'AWAITING_HINT'
@@ -104,7 +119,7 @@ export class Round {
   );
 
   private readonly guessInput = viewChild(AgeInput);
-  private readonly categoryButtons = viewChildren<ElementRef<HTMLButtonElement>>('category');
+  private readonly leadCards = viewChildren(LeadCard, { read: ElementRef<HTMLElement> });
 
   constructor() {
     // Each step moves the focus to what is to be done next, so a keyboard or screen reader
@@ -114,11 +129,14 @@ export class Round {
     effect(() => {
       const step = this.step();
       const target =
-        step === 'AWAITING_HINT' ? this.categoryButtons().at(0)?.nativeElement : this.guessInput();
+        step === 'AWAITING_HINT'
+          ? this.leadCards().at(0)?.nativeElement.querySelector('button')
+          : this.guessInput();
       untracked(() => {
         if (step === 'AWAITING_HINT') {
           this.picked.set([]);
         }
+        this.openHelp.set(null);
         // The same component plays the next round: back to 18-100 until a first guess.
         this.guess.setValidators(ageValidators(this.minAge(), this.maxAge()));
         if (step === 'AWAITING_SECOND_GUESS') {
@@ -166,6 +184,18 @@ export class Round {
         offered.filter((one) => one === category || picked.includes(one)),
       );
     }
+  }
+
+  protected closeHelp(category: HintCategory): void {
+    if (this.openHelp() === category) this.openHelp.set(null);
+  }
+
+  /** A tap anywhere but on the open card or its help closes it. */
+  protected pointedAt(event: PointerEvent): void {
+    const open = this.openHelp();
+    if (open === null) return;
+    const card = (event.target as Element | null)?.closest('app-lead-card');
+    if (card?.getAttribute('data-lead') !== open) this.openHelp.set(null);
   }
 
   confirmHints(): void {
