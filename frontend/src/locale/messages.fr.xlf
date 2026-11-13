@@ -920,6 +920,14 @@
         <source>A friend challenges you on <x id="length" equiv-text="seriesLength(rounds)"/>.</source>
         <target>Un ami vous défie sur <x id="length" equiv-text="seriesLength(rounds)"/>.</target>
       </trans-unit>
+      <trans-unit id="game.shareDateFormat" datatype="html">
+        <source>MMM d, y</source>
+        <target>dd/MM/yyyy</target>
+      </trans-unit>
+      <trans-unit id="game.dailyShareText" datatype="html">
+        <source>AgeGuessr · <x id="day" equiv-text="day"/> · <x id="points" equiv-text="points"/> / <x id="max" equiv-text="max"/></source>
+        <target>AgeGuessr · <x id="day" equiv-text="day"/> · <x id="points" equiv-text="points"/> / <x id="max" equiv-text="max"/></target>
+      </trans-unit>
       <trans-unit id="game.shareText" datatype="html">
         <source>AgeGuessr · <x id="challenge" equiv-text="GAME_TEXT.challenge"/> · <x id="points" equiv-text="points"/> / <x id="max" equiv-text="max"/></source>
         <target>AgeGuessr · <x id="challenge" equiv-text="GAME_TEXT.challenge"/> · <x id="points" equiv-text="points"/> / <x id="max" equiv-text="max"/></target>

@@ -18,7 +18,7 @@ import { RoundPlayer } from '../round-player/round-player';
 import { RoundsScreen } from '../rounds-screen';
 import { SeriesApi } from '../series-api';
 import { SHARE_TARGET } from '../../../shared/share-target';
-import { NICKNAME_PATTERN, challengeUrl, squares } from '../share';
+import { NICKNAME_PATTERN, challengeUrl, shareOrCopy, squares } from '../share';
 
 /**
  * A challenge, at /challenge/:code: who sent it, then, once joined, its series played with
@@ -63,7 +63,6 @@ export class ChallengePage extends RoundsScreen<Series> {
     const challenge = this.challenge();
     return challenge ? challengeIntro(challenge.creatorName, challenge.rounds) : '';
   });
-  readonly canShare = this.target.canShare();
 
   constructor() {
     super();
@@ -123,12 +122,8 @@ export class ChallengePage extends RoundsScreen<Series> {
       squares(series.rounds),
       challengeUrl(this.target.origin(), challenge.code),
     );
-    if (this.canShare) {
-      void this.target.share(text).catch(() => undefined);
-      return;
-    }
-    this.target.copy(text).then(
-      () => this.copied.set(true),
+    shareOrCopy(this.target, text).then(
+      (how) => this.copied.set(how === 'copied'),
       () => this.error.set(this.text.genericError),
     );
   }
