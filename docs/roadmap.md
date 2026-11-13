@@ -57,6 +57,10 @@ retirer une fois tous faits.
       dans l'écran ; sur ordinateur, la bulle s'ouvre après un court survol de la carte et
       se ferme en sortant, le clic choisit toujours la piste ; Tab sur une carte l'ouvre,
       Échap la ferme ; l'exemple dit « il y a 29 ans » pour Titanic en 2026
+- [ ] Partage du résultat du jour (`feature/daily-share`) : partie finie, « Partager mon
+      résultat » ; sur téléphone la feuille de partage s'ouvre, sur ordinateur « Copié. »
+      puis coller dans un message : date du jour en français (13/11/2026), le score, une
+      case par manche, 🎯 pour une manche trouvée du 1er coup, le lien du site
 
 ## Semaine 1 — Fondations
 - [x] Initialisation projet Spring Boot (Java 25) + Angular (Claude Code)
@@ -254,7 +258,10 @@ retirer une fois tous faits.
       enregistré) — bandeau non bloquant, PR `feature/terms-reacceptance`
 - [ ] Double authentification (TOTP), seule protection si la boîte mail d'un joueur est
       compromise (voir `docs/decisions/architecture.md`, « Récupération du compte »)
-- [ ] Partage de résultat façon Wordle (grille/emoji, pas de compte requis)
+- [x] Partage de résultat façon Wordle (grille/emoji, pas de compte requis) : sur le
+      récapitulatif du jour, date, score, une case par manche (🎯 pour un 1er essai exact)
+      et le lien du site ; feuille de partage sur téléphone, copie ailleurs — PR
+      `feature/daily-share`
 - [x] Aider davantage pour le 2e essai (retours des joueurs : les indices n'aidaient pas) :
       sens + tranche d'écart (1-5 / 6-15 / 16+ ans) à la place du simple plus/moins,
       saisie limitée à la plage restante, 3 pistes de catégories différentes au lieu

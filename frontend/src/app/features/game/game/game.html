@@ -50,11 +50,19 @@
               <svg lucideClock [size]="16" aria-hidden="true"></svg>{{ text.comeBack }}
             </p>
             <div class="mt-5 flex flex-wrap gap-3">
+              <button appButton type="button" (click)="shareResult(game)">
+                <svg lucideShare2 [size]="18" aria-hidden="true"></svg>{{ text.shareResult }}
+              </button>
               @if (auth.isAuthenticated()) {
                 <a appButton routerLink="/friends">{{ text.compareFriends }}</a>
               }
               <a appButton variant="secondary" routerLink="/free">{{ text.tryFree }}</a>
             </div>
+            @if (shared() === 'copied') {
+              <p class="text-muted mt-2 text-sm" role="status">{{ text.copied }}</p>
+            } @else if (shared() === 'failed') {
+              <p class="text-danger mt-2 text-sm" role="alert">{{ text.genericError }}</p>
+            }
           </app-day-summary>
         }
       }

@@ -86,8 +86,10 @@
                 </button>
                 <a appButton variant="secondary" routerLink="/free">{{ text.freeMode }}</a>
               </div>
-              @if (copied()) {
+              @if (shared() === 'copied') {
                 <p class="text-muted mt-2 text-sm" role="status">{{ text.copied }}</p>
+              } @else if (shared() === 'failed') {
+                <p class="text-danger mt-2 text-sm" role="alert">{{ text.genericError }}</p>
               }
             </app-day-summary>
           }

@@ -891,6 +891,14 @@ un classement.
     sienne ;
   - exception front **`game → auth`** : le défi lit `Auth.isAuthenticated` pour savoir
     s'il faut demander un pseudo (même raison que `layout → auth`).
+  - **partage du résultat du jour** (2026-11-13, PR `feature/daily-share`) : sur le
+    récapitulatif du jour, un texte « AgeGuessr · date · points / max », une case par
+    manche (`squares`) et la racine du site. Jamais une réponse, un nom ou un âge. La date
+    est le jour UTC de la partie (minuit UTC construit à la main : `formatDate` lirait
+    « YYYY-MM-DD » seul comme minuit local), dans un format traduit
+    (`@@game.shareDateFormat`). 🎯 marque un 1er essai exact, pour le jour seulement : la
+    grille des défis ne change pas. Partager sinon copier : `shareOrCopy` (`game/share.ts`),
+    commun au défi et au jour.
 
 **Raison** : le jeu quotidien ne se joue qu'une fois par jour. Ce mode donne de quoi
 jouer plus, et de quoi comparer ses scores entre amis sans attendre la feature Amis.

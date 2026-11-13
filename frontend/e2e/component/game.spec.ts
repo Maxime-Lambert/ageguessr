@@ -1,7 +1,19 @@
 import { expect, test } from '@playwright/test';
-import { mockGame, round } from './game-mocks';
+import { captureShare, mockGame, mockPlayedDay, round, sharedTexts } from './game-mocks';
 
 test.describe('daily game', () => {
+  test('shares the result of the day, without any answer', async ({ page, baseURL }) => {
+    await captureShare(page);
+    await mockPlayedDay(page);
+    await page.goto('/en/');
+
+    await page.getByRole('button', { name: 'Share my result' }).click();
+
+    await expect
+      .poll(() => sharedTexts(page))
+      .toEqual([`AgeGuessr · Nov 13, 2026 · 2340 / 3000\n🎯🟩⬛🟥\n${new URL(baseURL!).origin}`]);
+  });
+
   test('a guest plays a round from the photo to the verdict', async ({ page }) => {
     const sent = await mockGame(page);
     await page.goto('/en/');

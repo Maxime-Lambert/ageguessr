@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { mockGame } from '../component/game-mocks';
+import { captureShare, mockGame, mockPlayedDay, sharedTexts } from '../component/game-mocks';
 
 test.describe('le jeu en français', () => {
   test('se joue en français, avec les indices en français par défaut', async ({ page }) => {
@@ -56,5 +56,17 @@ test.describe('le jeu en français', () => {
     await page.getByRole('button', { name: 'Valider' }).click();
 
     await expect(page.getByText('Saisissez un âge entier entre 18 et 100.')).toBeVisible();
+  });
+
+  test('partage le résultat du jour avec la date en français', async ({ page, baseURL }) => {
+    await captureShare(page);
+    await mockPlayedDay(page);
+    await page.goto('/fr/');
+
+    await page.getByRole('button', { name: 'Partager mon résultat' }).click();
+
+    await expect
+      .poll(() => sharedTexts(page))
+      .toEqual([`AgeGuessr · 13/11/2026 · 2340 / 3000\n🎯🟩⬛🟥\n${new URL(baseURL!).origin}`]);
   });
 });
