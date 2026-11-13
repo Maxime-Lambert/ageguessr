@@ -129,9 +129,9 @@ les nouvelles classes CSS suffisent à franchir le seuil. Décision à prendre a
 l'utilisateur (relever le seuil ou alléger).
 
 ## Phase 3 : documentation, revues et PR
-Status: Not started
+Status: In progress
 
-- [ ] `docs/roadmap.md` (ligne cochée + vérification en prod sur mobile et ordinateur),
+- [x] `docs/roadmap.md` (ligne cochée + vérification en prod sur mobile et ordinateur),
       `docs/decisions/architecture.md` si une règle d'interface y a sa place (« Déroulé
       d'une manche »).
 - [ ] Revue `architecture-reviewer` (pas de `code-reviewer` : ni auth, ni données, ni
@@ -139,6 +139,9 @@ Status: Not started
 
 ### Verification Plan
 - `pnpm test` passe ; revue sans 🔴 ni 🟠 ouvert.
+- Résultat (2026-11-13) : revue `architecture-reviewer` sans 🔴 ni 🟠 ; deux 🟡 corrigés
+  (`$count` inutilisé dans `round.html`, test direct de `leadHelpLabel`). 449 tests verts,
+  lint OK. Seuil d'avertissement du bundle initial relevé à 600 kB (accord utilisateur).
 
 ### Phase Summary
 _(write when phase completes)_

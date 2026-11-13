@@ -1,4 +1,4 @@
-import { leadHelp } from './lead-help-texts';
+import { leadHelp, leadHelpLabel } from './lead-help-texts';
 import { HintCategory } from './models';
 
 const CATEGORIES: HintCategory[] = [
@@ -46,5 +46,9 @@ describe('lead help texts', () => {
       (category) => leadHelp(category, 2026).rule,
     );
     expect(new Set(rules).size).toBe(1);
+  });
+
+  it('names the ⓘ button after the card it explains', () => {
+    expect(leadHelpLabel('World events')).toBe('How the World events lead works');
   });
 });

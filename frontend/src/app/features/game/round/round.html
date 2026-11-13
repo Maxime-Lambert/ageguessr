@@ -60,7 +60,7 @@
           role="group"
           aria-labelledby="pick-title"
         >
-          @for (category of round().categories; track category; let i = $index, count = $count) {
+          @for (category of round().categories; track category; let i = $index) {
             <app-lead-card
               class="sm:[&:nth-child(3n+1):last-child]:col-span-3 max-sm:[&:nth-child(odd):last-child]:col-span-2"
               [category]="category"
