@@ -129,12 +129,12 @@ les nouvelles classes CSS suffisent à franchir le seuil. Décision à prendre a
 l'utilisateur (relever le seuil ou alléger).
 
 ## Phase 3 : documentation, revues et PR
-Status: In progress
+Status: Complete
 
 - [x] `docs/roadmap.md` (ligne cochée + vérification en prod sur mobile et ordinateur),
       `docs/decisions/architecture.md` si une règle d'interface y a sa place (« Déroulé
       d'une manche »).
-- [ ] Revue `architecture-reviewer` (pas de `code-reviewer` : ni auth, ni données, ni
+- [x] Revue `architecture-reviewer` (pas de `code-reviewer` : ni auth, ni données, ni
       sourcing), puis `/pr`.
 
 ### Verification Plan
@@ -142,12 +142,23 @@ Status: In progress
 - Résultat (2026-11-13) : revue `architecture-reviewer` sans 🔴 ni 🟠 ; deux 🟡 corrigés
   (`$count` inutilisé dans `round.html`, test direct de `leadHelpLabel`). 449 tests verts,
   lint OK. Seuil d'avertissement du bundle initial relevé à 600 kB (accord utilisateur).
+  `/pr` impose aussi `code-reviewer` : lancé quand même, aucun 🔴 ni 🟠 (🟡 : noms de
+  personnes et marques cités comme exemples, usage descriptif). `./mvnw test` : 1 227
+  tests, 0 échec.
 
 ### Phase Summary
-_(write when phase completes)_
+Roadmap (ligne cochée en semaine 7 + vérification à la main en prod), décision ajoutée
+dans « Déroulé d'une manche ». Deux revues propres, PR ouverte vers `develop`.
 
 ## Final Recap
-_(write when all phases complete)_
+Chaque carte de piste a une bulle (genre d'indice, règle, exemple chiffré depuis l'année
+de la partie) : `lead-help-texts.ts` pour les textes, `LeadCard` pour la carte, le ⓘ et
+la bulle, `Round` pour « une seule ouverte » et les fermetures (tap ailleurs, Échap,
+changement d'étape). Écarts au plan, voulus : ouverture clavier à l'arrivée par Tab (pas
+`:focus-visible`), clic souris sur ⓘ qui ouvre sans refermer, année UTC courante faute
+de date dans `RoundView`. Seuil d'avertissement du bundle initial : 550 → 600 kB.
 
 ## Deployment Plan
-_(write when all phases complete)_
+Frontend seul : pas de migration, pas de variable. Après la release `develop` → `main`
+(merge commit), vérifier en prod la ligne « Explication des pistes » de
+`docs/roadmap.md` (téléphone et ordinateur).
