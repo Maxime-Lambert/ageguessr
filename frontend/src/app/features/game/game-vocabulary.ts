@@ -266,7 +266,10 @@ export function dailyShareText(
   url: string,
   locale: string,
 ): string {
-  const day = formatDate(date, $localize`:@@game.shareDateFormat:MMM d, y`, locale, 'UTC');
+  // Midnight UTC of that day: formatDate would read 'YYYY-MM-DD' alone as local midnight,
+  // the day before in UTC east of Greenwich.
+  const midnightUtc = new Date(`${date}T00:00:00Z`);
+  const day = formatDate(midnightUtc, $localize`:@@game.shareDateFormat:MMM d, y`, locale, 'UTC');
   return (
     $localize`:@@game.dailyShareText:AgeGuessr · ${day}:day: · ${points}:points: / ${max}:max:` +
     `\n${squares}\n${url}`

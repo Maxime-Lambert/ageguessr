@@ -79,13 +79,13 @@ ses propres ids (`@@game.dailyShareText`, `@@game.shareDateFormat`). Les tests u
 sont tous dans `share.spec.ts` (rien ajouté à `game-vocabulary.spec.ts`).
 
 ## Phase 2 : bouton sur le résumé du jour
-Status: Not started
+Status: Complete
 
-- [ ] `game/game.ts` + `game.html` : bouton « Partager mon résultat » (`GAME_TEXT.shareResult`,
+- [x] `game/game.ts` + `game.html` : bouton « Partager mon résultat » (`GAME_TEXT.shareResult`,
       icône `LucideShare2` comme le défi) dans le résumé, avant « Comparer avec vos amis » ;
       « Copié. » en `role="status"` après une copie ; erreur générique si la copie échoue.
       Visible en invité comme connecté.
-- [ ] Tests :
+- [x] Tests :
   - **unitaire** (`game.spec.ts`, `SHARE_TARGET` remplacé) : bouton absent tant que la
     partie n'est pas finie ; feuille de partage avec le bon texte quand elle existe ;
     sinon copie et « Copied. » ; copie refusée → erreur ; une photo retirée → ⬛ ;
@@ -93,7 +93,7 @@ Status: Not started
     la date et le texte français, seul endroit où la build FR est testée) :
     `navigator.share` remplacé par `addInitScript` qui garde le texte ; partie finie
     mockée → le texte reçu est exactement celui attendu (emojis compris).
-- [ ] Capture : non nécessaire (un bouton de plus dans une rangée existante, déjà
+- [x] Capture : non nécessaire (un bouton de plus dans une rangée existante, déjà
       couverte par le test d'interface).
 
 **Catégories omises** : pas d'intégration, de fonctionnel, d'architecture ni de mutation
@@ -105,9 +105,21 @@ n'est pas changé, le partage est un bouton terminal sans appel réseau).
 - `pnpm exec ng build --localize` puis « Partager mon résultat » et `dd/MM/yyyy` présents
   dans `dist/frontend/browser/fr`.
 - Playwright : en CI seulement (WSL), vert sur la PR.
+- Résultat (2026-11-13) : 458 tests verts dans 4 fuseaux (`TZ=Europe/Paris`,
+  `America/Los_Angeles`, `Pacific/Kiritimati` +14, `Pacific/Pago_Pago` −11) ; lint et
+  Prettier OK ; build FR : « Partager mon résultat » et `dd/MM/yyyy` présents. Les specs
+  Playwright passent `tsc` ; leur exécution se fera en CI.
 
 ### Phase Summary
-_(write when phase completes)_
+**Bug attrapé** : `formatDate('2026-11-13', …, 'UTC')` lit une date seule comme minuit
+*local*, donc le 12 en UTC à l'est de Greenwich. La suite de la phase 1, lancée à Los
+Angeles, ne pouvait pas le voir. Correctif : `new Date(`${date}T00:00:00Z`)`. D'où les
+4 fuseaux ci-dessus, à refaire si ce code change.
+`Game` : `shareResult(game)`, signal `shared` (`'shared' | 'copied' | 'failed' | null`),
+« Copié. » en `role="status"`, erreur en `role="alert"`. `SHARE_TARGET` fourni par un faux
+dans `game.spec.ts`. Playwright : `mockPlayedDay`, `captureShare` et `sharedTexts` dans
+`e2e/component/game-mocks.ts` (feuille de partage remplacée par `addInitScript`) ; le lien
+attendu vient du `baseURL` du projet.
 
 ## Phase 3 : documentation, revues et PR
 Status: Not started

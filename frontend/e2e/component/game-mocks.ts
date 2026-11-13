@@ -248,3 +248,47 @@ export async function mockChallenge(page: Page, count = 5): Promise<unknown[]> {
   });
   return joined;
 }
+
+/**
+ * Today's game already played: a first guess spot on, a round in two guesses, a withdrawn
+ * photo, a poor round (2 340 points out of 3 000), on 2026-11-13.
+ */
+export async function mockPlayedDay(page: Page): Promise<void> {
+  const finished = (position: number, result: Record<string, unknown>) =>
+    round(position, { step: 'FINISHED', firstGuess: 30, result: { ...RESULT, ...result } });
+  const rounds = [
+    finished(1, { points: 1000, secondGuess: null, secondPoints: null }),
+    finished(2, { points: 920 }),
+    round(3, { status: 'NEUTRALIZED', imageUrl: null }),
+    finished(4, { points: 420 }),
+  ];
+  await skipRules(page);
+  await asGuest(page);
+  await page.route('**/api/game/today', (route) =>
+    route.fulfill(
+      json({ date: '2026-11-13', rounds, score: { points: 2340, max: 3000, complete: true } }),
+    ),
+  );
+  await page.route('**/api/images/*', (route) =>
+    route.fulfill({ status: 200, contentType: 'image/png', body: PIXEL }),
+  );
+}
+
+/** A share sheet that keeps what it is handed, read back with `sharedTexts`. */
+export async function captureShare(page: Page): Promise<void> {
+  await page.addInitScript(() => {
+    const shared: string[] = [];
+    (window as unknown as { sharedTexts: string[] }).sharedTexts = shared;
+    Object.defineProperty(navigator, 'share', {
+      configurable: true,
+      value: (data: ShareData) => {
+        shared.push(data.text ?? '');
+        return Promise.resolve();
+      },
+    });
+  });
+}
+
+export function sharedTexts(page: Page): Promise<string[]> {
+  return page.evaluate(() => (window as unknown as { sharedTexts: string[] }).sharedTexts);
+}
