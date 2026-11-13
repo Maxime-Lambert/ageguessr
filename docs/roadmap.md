@@ -52,6 +52,11 @@ retirer une fois tous faits.
       du jour puis recharger (sur l'écran de score ou après « Affaire suivante ») →
       reprise à la 2e manche ; le lien d'un email d'alerte ouvre la file admin même avec un
       compte en français ; « Envoyer » du signalement d'indice lisible en thème sombre
+- [ ] Explication des pistes (`feature/lead-help`) : sur téléphone, un tap sur ⓘ ouvre la
+      bulle d'une carte, un tap ailleurs la ferme, la bulle de la colonne de droite reste
+      dans l'écran ; sur ordinateur, la bulle s'ouvre après un court survol de la carte et
+      se ferme en sortant, le clic choisit toujours la piste ; Tab sur une carte l'ouvre,
+      Échap la ferme ; l'exemple dit « il y a 29 ans » pour Titanic en 2026
 
 ## Semaine 1 — Fondations
 - [x] Initialisation projet Spring Boot (Java 25) + Angular (Claude Code)
@@ -263,6 +268,10 @@ retirer une fois tous faits.
       plancher par décennie ; 8 674 indices, au moins 3 catégories jouables chaque année
       en FR comme en EN ; anciens indices retirés par l'import (V22) — PR
       `feature/hint-notoriety`
+- [x] Explication des pistes (retours des joueurs : indices pas assez clairs) : chaque
+      carte a une bulle avec le genre d'indice, la règle et un exemple calculé depuis
+      l'année de la partie ; survol à la souris, ⓘ au doigt, Tab au clavier — PR
+      `feature/lead-help`
 
 ## Semaine 8 — Stabilisation et déploiement
 - [ ] Tests d'intégration sur les endpoints critiques

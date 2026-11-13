@@ -15,14 +15,14 @@ test.describe('daily game', () => {
     await page.getByRole('button', { name: 'Guess', exact: true }).click();
     await expect(page.getByText('Older than 30, by 6 to 15 years')).toBeVisible();
     await expect(page.getByText('Between 36 and 45')).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Music' })).toBeFocused();
+    await expect(page.getByRole('button', { name: 'Music', exact: true })).toBeFocused();
 
-    await page.getByRole('button', { name: 'Music' }).click();
-    await page.getByRole('button', { name: 'Film' }).click();
+    await page.getByRole('button', { name: 'Music', exact: true }).click();
+    await page.getByRole('button', { name: 'Film', exact: true }).click();
     await expect(page.getByRole('button', { name: 'Open these leads' })).toBeDisabled();
-    await page.getByRole('button', { name: 'Sport' }).click();
+    await page.getByRole('button', { name: 'Sport', exact: true }).click();
     await expect(page.getByText('3 of 3 picked')).toBeVisible();
-    await expect(page.getByRole('button', { name: 'World events' })).toBeDisabled();
+    await expect(page.getByRole('button', { name: 'World events', exact: true })).toBeDisabled();
     await page.getByRole('button', { name: 'Open these leads' }).click();
     await expect(page.getByText('A hit topped the charts.')).toBeVisible();
     await expect(page.getByText('A team won the cup.')).toBeVisible();

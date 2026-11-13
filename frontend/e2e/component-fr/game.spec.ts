@@ -22,7 +22,7 @@ test.describe('le jeu en français', () => {
     await expect(page.getByText('Entre 36 et 45 ans')).toBeVisible();
     await expect(page.getByText('Choisissez 3 pistes')).toBeVisible();
     await expect(page.getByText('Choix : 0 sur 3')).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Musique' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Musique', exact: true })).toBeVisible();
     expect(sent).toEqual([{ guess: 30, language: 'FR' }]);
   });
 
