@@ -143,7 +143,7 @@ Status: Complete
   (`$count` inutilisé dans `round.html`, test direct de `leadHelpLabel`). 449 tests verts,
   lint OK. Seuil d'avertissement du bundle initial relevé à 600 kB (accord utilisateur).
   `/pr` impose aussi `code-reviewer` : lancé quand même, aucun 🔴 ni 🟠 (🟡 : noms de
-  personnes et marques cités comme exemples, usage descriptif). `./mvnw test` : 1 227
+  personnes et marques cités comme exemples, usage descriptif). `./mvnw test` : 1 069
   tests, 0 échec.
 
 ### Phase Summary

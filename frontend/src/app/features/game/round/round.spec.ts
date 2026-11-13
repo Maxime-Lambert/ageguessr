@@ -75,7 +75,9 @@ describe('Round', () => {
   });
 
   function leadButtons(): HTMLButtonElement[] {
-    return Array.from(page.querySelectorAll<HTMLButtonElement>('[role=group] button[aria-pressed]'));
+    return Array.from(
+      page.querySelectorAll<HTMLButtonElement>('[role=group] button[aria-pressed]'),
+    );
   }
 
   function confirmButton(): HTMLButtonElement {
@@ -216,9 +218,9 @@ describe('Round', () => {
     help('music').dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
     fixture.detectChanges();
     expect(help('music').hidden).toBe(false);
-    page.querySelector('#pick-title')!.dispatchEvent(
-      new PointerEvent('pointerdown', { bubbles: true }),
-    );
+    page
+      .querySelector('#pick-title')!
+      .dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
     fixture.detectChanges();
     expect(help('music').hidden).toBe(true);
 
