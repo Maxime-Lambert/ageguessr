@@ -924,9 +924,49 @@
         <source>MMM d, y</source>
         <target>dd/MM/yyyy</target>
       </trans-unit>
-      <trans-unit id="game.dailyShareText" datatype="html">
-        <source>AgeGuessr · <x id="day" equiv-text="day"/> · <x id="points" equiv-text="points"/> / <x id="max" equiv-text="max"/></source>
-        <target>AgeGuessr · <x id="day" equiv-text="day"/> · <x id="points" equiv-text="points"/> / <x id="max" equiv-text="max"/></target>
+      <trans-unit id="game.share.legend.exact" datatype="html">
+        <source>first try</source>
+        <target>du 1er coup</target>
+      </trans-unit>
+      <trans-unit id="game.share.legend.close" datatype="html">
+        <source>very close</source>
+        <target>tout près</target>
+      </trans-unit>
+      <trans-unit id="game.share.legend.near" datatype="html">
+        <source>close</source>
+        <target>pas loin</target>
+      </trans-unit>
+      <trans-unit id="game.share.legend.far" datatype="html">
+        <source>far off</source>
+        <target>loin</target>
+      </trans-unit>
+      <trans-unit id="game.share.legend.removed" datatype="html">
+        <source>photo withdrawn</source>
+        <target>photo retirée</target>
+      </trans-unit>
+      <trans-unit id="game.share.brilliant" datatype="html">
+        <source>Case of <x id="day" equiv-text="day"/> cracked brilliantly!</source>
+        <target>Enquête du <x id="day" equiv-text="day"/> résolue avec brio !</target>
+      </trans-unit>
+      <trans-unit id="game.share.flair" datatype="html">
+        <source>Case of <x id="day" equiv-text="day"/> cracked with flair!</source>
+        <target>Enquête du <x id="day" equiv-text="day"/> résolue avec panache !</target>
+      </trans-unit>
+      <trans-unit id="game.share.solved" datatype="html">
+        <source>Case of <x id="day" equiv-text="day"/> wrapped up!</source>
+        <target>Enquête du <x id="day" equiv-text="day"/> bouclée !</target>
+      </trans-unit>
+      <trans-unit id="game.share.whisker" datatype="html">
+        <source>Case of <x id="day" equiv-text="day"/> solved by a whisker!</source>
+        <target>Enquête du <x id="day" equiv-text="day"/> résolue de justesse !</target>
+      </trans-unit>
+      <trans-unit id="game.share.cold" datatype="html">
+        <source>Case of <x id="day" equiv-text="day"/>: the trail went cold… see you tomorrow!</source>
+        <target>Enquête du <x id="day" equiv-text="day"/> : la piste s'est refroidie… à demain !</target>
+      </trans-unit>
+      <trans-unit id="game.share.invite" datatype="html">
+        <source>Take on today's case at <x id="url" equiv-text="url"/></source>
+        <target>Toi aussi, mène l'enquête sur <x id="url" equiv-text="url"/></target>
       </trans-unit>
       <trans-unit id="game.shareText" datatype="html">
         <source>AgeGuessr · <x id="challenge" equiv-text="GAME_TEXT.challenge"/> · <x id="points" equiv-text="points"/> / <x id="max" equiv-text="max"/></source>
