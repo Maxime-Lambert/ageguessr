@@ -149,7 +149,15 @@ Vérifié : `pnpm test` 459 verts, `./mvnw test` vert.
 - Disque plein : `pg_dump` échoue, même chemin que l'échec ci-dessus.
 
 ## Final Recap
-_(write when all phases complete)_
+Dump quotidien de la base de prod (`pg-backup.sh`, service `backup`, 7 quotidiens +
+hebdomadaires jusqu'à 30 jours, disque du VPS), testé en CI contre un vrai PostgreSQL 18 ;
+logs Docker bornés à 3 × 10 Mo par conteneur ; `/privacy` EN + FR annonce les 30 jours et
+leur base légale ; restauration et limites documentées dans `architecture.md`.
+Revues : code-reviewer (0 bloquant/important ; corrigés : image shellcheck par digest et
+`:ro`, conteneur `read_only`, base légale), architecture-reviewer (0 bloquant/important ;
+corrigés : commentaire CI déplacé, rotation même si le dump échoue). Restent hors PR :
+journal des suppressions à rejouer, copie hors VPS (lignes de la roadmap), et l'ajout du
+test en prod à la liste « À vérifier » après fusion de #70/#71.
 
 ## Deployment Plan
 Merge `develop` → `main` (merge commit) : le job deploy copie le script, crée

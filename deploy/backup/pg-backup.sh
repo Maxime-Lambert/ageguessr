@@ -74,9 +74,13 @@ seconds_until_3am() {
 }
 
 # Un echec est logue, la boucle continue : le healthcheck du service passe "unhealthy"
-# quand le dernier dump a plus de 26 h.
+# quand le dernier dump a plus de 26 h. La rotation tourne quand meme, pour que les vieux
+# dumps ne restent pas au-dela des 30 jours annonces pendant une panne de la base.
 backup_once() {
-  dump || return 1
+  if ! dump; then
+    prune
+    return 1
+  fi
   prune
 }
 
