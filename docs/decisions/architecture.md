@@ -766,12 +766,13 @@ souvent obscur et daté à quelques années près, ne resserrait rien après un 
   sens, de la tranche et des bornes publiques.
 - **Chaque carte de piste s'explique** (2026-11-13, PR `feature/lead-help`) : une bulle
   donne le genre d'indice, la règle et un exemple dont l'écart est calculé depuis l'année
-  de la partie (jamais écrit en dur). Elle s'ouvre selon la façon d'interagir
-  (`pointerType`), pas selon la taille d'écran : survol de 400 ms à la souris, tap sur ⓘ
-  au doigt, arrivée par Tab au clavier (pas sur `:focus-visible`, que le focus
-  automatique de la 1re carte déclencherait à chaque manche). Une seule ouverte à la
-  fois ; la carte la référence par `aria-describedby`, donc un lecteur d'écran l'entend
-  sans l'ouvrir.
+  de la partie (jamais écrit en dur). Seul ⓘ l'ouvre (2026-11-14, PR
+  `fix/lead-help-on-info-only` : au survol de la carte entière ou à l'arrivée par Tab,
+  la bulle surgissait par-dessus les autres cartes sans qu'on l'ait demandée) : survol de
+  200 ms de ⓘ à la souris, tap au doigt, Entrée au clavier une fois ⓘ atteint par Tab.
+  Elle se ferme quand la souris quitte la carte (bulle comprise, pour pouvoir la lire),
+  au tap ailleurs ou sur Échap. Une seule ouverte à la fois ; la carte la référence par
+  `aria-describedby`, donc un lecteur d'écran l'entend sans l'ouvrir.
 
 ### Système de points
 **Décision** (2026-11-02, remplace « l'essentiel des points sur le 2e essai ») : chaque
