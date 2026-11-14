@@ -103,6 +103,16 @@ describe('LeadCard', () => {
     expect(events).toEqual([]);
   });
 
+  it('toggles on Enter once Tab reached ⓘ (a click that no pointer made)', () => {
+    info().dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    expect(events).toEqual(['opened']);
+
+    set({ open: true });
+    info().dispatchEvent(new MouseEvent('click', { bubbles: true }));
+
+    expect(events).toEqual(['opened', 'closed']);
+  });
+
   it('toggles the lead on a click of the card, without opening its help', () => {
     card().click();
 
