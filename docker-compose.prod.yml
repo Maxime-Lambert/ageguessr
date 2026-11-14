@@ -1,11 +1,21 @@
 name: ageguessr-prod
 
+# Logs Docker bornes par conteneur : 3 fichiers de 10 Mo, puis les plus anciens sont
+# ecrases (sans max-size, json-file garde tout, jusqu'a remplir le disque). Ici et pas
+# dans /etc/docker/daemon.json : le VPS est partage avec un autre projet.
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
 networks:
   gateway:
     external: true
 
 services:
   postgres:
+    logging: *logging
     image: postgres:18-alpine
     restart: unless-stopped
     environment:
@@ -24,6 +34,7 @@ services:
       retries: 10
 
   redis:
+    logging: *logging
     image: redis:8-alpine
     restart: unless-stopped
     volumes:
@@ -39,6 +50,7 @@ services:
   # (~4 Go au pic) sur une machine partagee avec un autre projet en prod.
   # IMAGE_TAG = SHA du commit deploye, ecrit dans .env par le job deploy.
   backend:
+    logging: *logging
     image: ghcr.io/maxime-lambert/ageguessr-api:${IMAGE_TAG:?IMAGE_TAG manquant}
     restart: unless-stopped
     depends_on:
@@ -63,6 +75,7 @@ services:
       ADMIN_EMAIL: ${ADMIN_EMAIL:-}
 
   edge:
+    logging: *logging
     image: ghcr.io/maxime-lambert/ageguessr-edge:${IMAGE_TAG:?IMAGE_TAG manquant}
     restart: unless-stopped
     depends_on:
@@ -72,6 +85,34 @@ services:
     networks:
       - default
       - gateway
+
+  # Sauvegarde quotidienne de la base (deploy/backup/pg-backup.sh, copie sur le VPS par le
+  # job deploy) : 03:00 UTC, 7 quotidiens + hebdomadaires jusqu'a 30 jours, dans
+  # /opt/ageguessr/backups (disque du VPS seulement, voir docs/decisions/architecture.md,
+  # « Sauvegardes et logs »). Meme image que la base : pg_dump de la meme version majeure.
+  backup:
+    image: postgres:18-alpine
+    logging: *logging
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    entrypoint: ["sh", "/backup/pg-backup.sh", "loop"]
+    environment:
+      PGHOST: postgres
+      PGUSER: ageguessr
+      PGDATABASE: ageguessr
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      TZ: UTC
+    volumes:
+      - ./backup:/backup:ro
+      - ./backups:/backups
+    # "unhealthy" dans docker ps quand le dernier dump quotidien a plus de 26 h.
+    healthcheck:
+      test: ["CMD-SHELL", "find /backups/daily -name '*.dump' -mmin -1560 | grep -q ."]
+      interval: 15m
+      timeout: 10s
+      start_period: 10m
 
 volumes:
   postgres_data_prod:
