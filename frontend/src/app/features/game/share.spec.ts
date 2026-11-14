@@ -50,11 +50,11 @@ describe('share', () => {
         'en-US',
       ),
     ).toBe(
-      'AgeGuessr · Case of Nov 13, 2026 cracked with flair!\n' +
+      'AgeGuessr · Nov 13, 2026: well played!\n' +
         '2340 / 3000 points\n' +
         '🎯🟩🟥\n' +
         '🎯 first try · 🟩 very close · 🟥 far off\n' +
-        "Take on today's case at https://ageguessr.app",
+        "Play today's game at https://ageguessr.app",
     );
   });
 
@@ -67,15 +67,13 @@ describe('share', () => {
 
   it('words the headline by the share of the points won, never mocking', () => {
     const day = 'Nov 13, 2026';
-    expect(dailyShareHeadline(day, 2700, 3000)).toBe('Case of Nov 13, 2026 cracked brilliantly!');
-    expect(dailyShareHeadline(day, 2699, 3000)).toBe('Case of Nov 13, 2026 cracked with flair!');
-    expect(dailyShareHeadline(day, 1500, 3000)).toBe('Case of Nov 13, 2026 wrapped up!');
-    expect(dailyShareHeadline(day, 900, 3000)).toBe('Case of Nov 13, 2026 solved by a whisker!');
-    expect(dailyShareHeadline(day, 899, 3000)).toBe(
-      'Case of Nov 13, 2026: the trail went cold… see you tomorrow!',
-    );
+    expect(dailyShareHeadline(day, 2700, 3000)).toBe('Nov 13, 2026: brilliant!');
+    expect(dailyShareHeadline(day, 2699, 3000)).toBe('Nov 13, 2026: well played!');
+    expect(dailyShareHeadline(day, 1500, 3000)).toBe('Nov 13, 2026: not bad!');
+    expect(dailyShareHeadline(day, 900, 3000)).toBe('Nov 13, 2026: a tough one!');
+    expect(dailyShareHeadline(day, 899, 3000)).toBe('Nov 13, 2026: better luck tomorrow!');
     // Every photo withdrawn: nothing to win, nothing to divide by.
-    expect(dailyShareHeadline(day, 0, 0)).toContain('the trail went cold');
+    expect(dailyShareHeadline(day, 0, 0)).toContain('better luck tomorrow');
   });
 
   it('keeps the UTC day of the game, whatever the time zone', () => {

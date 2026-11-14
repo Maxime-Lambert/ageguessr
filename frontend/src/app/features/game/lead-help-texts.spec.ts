@@ -49,6 +49,6 @@ describe('lead help texts', () => {
   });
 
   it('names the ⓘ button after the card it explains', () => {
-    expect(leadHelpLabel('World events')).toBe('How the World events lead works');
+    expect(leadHelpLabel('World events')).toBe('How the World events hint works');
   });
 });

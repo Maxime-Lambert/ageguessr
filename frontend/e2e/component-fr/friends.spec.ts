@@ -36,9 +36,9 @@ test.describe('amis', () => {
 
     await expect(page.getByRole('heading', { name: 'Demandes reçues (1)' })).toBeVisible();
     await expect(
-      page.getByText('Terminez le dossier du jour pour voir les scores de vos amis.'),
+      page.getByText('Terminez la partie du jour pour voir les scores de vos amis.'),
     ).toBeVisible();
-    await expect(page.getByText('Aucun dossier')).toBeVisible();
+    await expect(page.getByText('Aucune partie')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Envoyer la demande' })).toBeVisible();
     await expect(page.getByText("Pas encore d'ami.")).toBeVisible();
   });

@@ -43,7 +43,7 @@ describe('game vocabulary', () => {
 
   it('asks for one lead in the singular, several with a count', () => {
     expect(pickHintsText(1)).toBe(GAME_TEXT.pickHint);
-    expect(pickHintsText(3)).toBe('Pick 3 leads');
+    expect(pickHintsText(3)).toBe('Pick 3 hints');
     expect(pickedText(2, 3)).toBe('2 of 3 picked');
   });
 

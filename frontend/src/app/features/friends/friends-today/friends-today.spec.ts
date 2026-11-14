@@ -21,7 +21,7 @@ describe('FriendsToday', () => {
   it('asks to finish today’s file first', () => {
     const page = render(lockedToday());
 
-    expect(page.textContent).toContain("Finish today's file to see your friends' scores.");
+    expect(page.textContent).toContain("Finish today's game to see your friends' scores.");
     expect(page.querySelector('a')?.getAttribute('href')).toBe('/');
     expect(page.querySelectorAll('[data-player]')).toHaveLength(0);
   });

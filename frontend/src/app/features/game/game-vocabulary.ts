@@ -14,9 +14,9 @@ import {
 /**
  * Every word of the game screens comes from here, never from a template
  * (docs/decisions/design.md, « Voix dossier d'enquête »), translated with Angular i18n
- * ($localize, src/locale/messages.fr.xlf). The investigation voice is on trial: if a
- * first playtest shows a player hesitating on "case" or "lead", switch VOICE to
- * NEUTRAL_VOICE, without touching any screen. Both voices exist in both languages.
+ * ($localize, src/locale/messages.fr.xlf). The neutral voice is on trial (2026-11-14,
+ * feature/neutral-voice): the investigation voice stays below only to switch back by
+ * setting VOICE. Both voices exist in both languages.
  */
 export const INVESTIGATION_VOICE = {
   round: $localize`:@@game.voice.round:Case`,
@@ -56,7 +56,7 @@ export const NEUTRAL_VOICE: typeof INVESTIGATION_VOICE = {
   reportHint: $localize`:@@game.neutral.reportHint:Report this hint`,
 };
 
-const VOICE = INVESTIGATION_VOICE;
+const VOICE = NEUTRAL_VOICE;
 
 export const GAME_TEXT = {
   ...VOICE,
@@ -67,13 +67,13 @@ export const GAME_TEXT = {
   pickHintHelp: $localize`:@@game.pickHintHelp:Each one is a fact from as many years ago as this person's age on the photo: a song from 40 years ago means they were 40.`,
   guessLabel: $localize`:@@game.guessLabel:Age`,
   howToPlay: $localize`:@@game.howToPlay:How to play`,
-  ruleGuess: $localize`:@@game.ruleGuess:Guess how old the person was on the photo. You get two guesses per case.`,
+  ruleGuess: $localize`:@@game.ruleGuess:Guess how old the person was on the photo. You get two guesses per round.`,
   ruleLead: $localize`:@@game.ruleLead:After the first, you learn whether they were older or younger, and by how much: 1 to 5 years, 6 to 15, or more.`,
   // No count: it is a setting (app.game.hints.per-round), and fewer when fewer turned up.
-  ruleHints: $localize`:@@game.ruleHints:Then you pick a few leads, each a fact from as many years ago as their age on the photo: a film released 40 years ago means they were 40 on it.`,
-  rulePoints: $localize`:@@game.rulePoints:Each guess earns up to 500 points, more the closer it is; a spot-on first guess is worth 1000. A new file opens every day at midnight UTC.`,
+  ruleHints: $localize`:@@game.ruleHints:Then you pick a few hints, each a fact from as many years ago as their age on the photo: a film released 40 years ago means they were 40 on it.`,
+  rulePoints: $localize`:@@game.rulePoints:Each guess earns up to 500 points, more the closer it is; a spot-on first guess is worth 1000. A new game starts every day at midnight UTC.`,
   gotIt: $localize`:@@game.gotIt:Got it`,
-  playToday: $localize`:@@game.playToday:Open today's file`,
+  playToday: $localize`:@@game.playToday:Play today's game`,
   firstGuessButton: $localize`:@@game.firstGuessButton:Guess`,
   secondGuessButton: $localize`:@@game.secondGuessButton:Final guess`,
   yourGuess: $localize`:@@game.yourGuess:Your guess`,
@@ -92,15 +92,15 @@ export const GAME_TEXT = {
   photoBy: $localize`:@@game.photoBy:Photo`,
   unknownAuthor: $localize`:@@game.unknownAuthor:Unknown author`,
   source: $localize`:@@game.source:Commons page`,
-  loading: $localize`:@@game.loading:Opening the file…`,
-  noGame: $localize`:@@game.noGame:No case today. Come back tomorrow.`,
+  loading: $localize`:@@game.loading:Loading…`,
+  noGame: $localize`:@@game.noGame:No game today. Come back tomorrow.`,
   retry: $localize`:@@game.retry:Try again`,
   invalidAge: $localize`:@@game.invalidAge:Enter a whole age from ${MIN_AGE}:min: to ${MAX_AGE}:max:.`,
   imageFailed: $localize`:@@game.imageFailed:The photo could not load.`,
   removedExplained: $localize`:@@game.removedExplained:This photo was withdrawn for everyone. It does not count in your score.`,
-  closed: $localize`:@@game.closed:Today's file is closed. Here is the new one.`,
+  closed: $localize`:@@game.closed:Today's game is over. Here is the new one.`,
   genericError: COMMON_MESSAGES.genericError,
-  comeBack: $localize`:@@game.comeBack:A new file opens at midnight UTC.`,
+  comeBack: $localize`:@@game.comeBack:A new game starts at midnight UTC.`,
   compareFriends: $localize`:@@game.compareFriends:Compare with your friends`,
   hintLanguage: $localize`:@@game.hintLanguage:Hints in`,
   freeIntro: $localize`:@@game.freeIntro:Same rules as the daily game, as many as you like. Nothing here counts toward the daily game.`,
@@ -266,18 +266,16 @@ const SQUARE_LEGEND: [string, string][] = [
 ];
 
 /**
- * The headline of the daily share: the day, then how well the case went, by the share of
+ * The headline of the daily share: the day, then how well the game went, by the share of
  * the points won. Never mocking: the lowest tier says to come back, not that it was bad.
  */
 export function dailyShareHeadline(day: string, points: number, max: number): string {
   const ratio = max > 0 ? points / max : 0;
-  if (ratio >= 0.9)
-    return $localize`:@@game.share.brilliant:Case of ${day}:day: cracked brilliantly!`;
-  if (ratio >= 0.7) return $localize`:@@game.share.flair:Case of ${day}:day: cracked with flair!`;
-  if (ratio >= 0.5) return $localize`:@@game.share.solved:Case of ${day}:day: wrapped up!`;
-  if (ratio >= 0.3)
-    return $localize`:@@game.share.whisker:Case of ${day}:day: solved by a whisker!`;
-  return $localize`:@@game.share.cold:Case of ${day}:day:: the trail went cold… see you tomorrow!`;
+  if (ratio >= 0.9) return $localize`:@@game.share.brilliant:${day}:day:: brilliant!`;
+  if (ratio >= 0.7) return $localize`:@@game.share.wellPlayed:${day}:day:: well played!`;
+  if (ratio >= 0.5) return $localize`:@@game.share.notBad:${day}:day:: not bad!`;
+  if (ratio >= 0.3) return $localize`:@@game.share.tough:${day}:day:: a tough one!`;
+  return $localize`:@@game.share.tomorrow:${day}:day:: better luck tomorrow!`;
 }
 
 /**
@@ -307,7 +305,7 @@ export function dailyShareText(
     `${points} / ${max} ${GAME_TEXT.points}`,
     squares,
     legend,
-    $localize`:@@game.share.invite:Take on today's case at ${url}:url:`,
+    $localize`:@@game.share.invite:Play today's game at ${url}:url:`,
   ].join('\n');
 }
 

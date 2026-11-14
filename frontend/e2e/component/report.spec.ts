@@ -26,7 +26,7 @@ test.describe('reports from the verdict', () => {
     await expect(page.getByText('Reported, thank you. We will take a look.')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Report this photo' })).toHaveCount(0);
     // The hint keeps its own report, with its own reasons.
-    await page.getByRole('button', { name: 'Report this lead' }).click();
+    await page.getByRole('button', { name: 'Report this hint' }).click();
     await expect(page.getByLabel('The year is wrong')).toBeVisible();
     expect(sent.at(-1)).toEqual({ target: 'PHOTO', reason: 'WRONG_PERSON' });
   });

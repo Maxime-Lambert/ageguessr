@@ -6,8 +6,8 @@ test.describe('le jeu en français', () => {
     const sent = await mockGame(page);
     await page.goto('/fr/');
 
-    await expect(page.getByRole('heading', { name: 'Le dossier du jour' })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Affaire 1 sur 3' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'La partie du jour' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Manche 1 sur 3' })).toBeVisible();
     // The language of the hints is a preference, in the header's menu.
     await page.getByRole('banner').getByRole('button', { name: 'Préférences' }).click();
     await expect(
@@ -20,7 +20,7 @@ test.describe('le jeu en français', () => {
 
     await expect(page.getByText("Plus de 30 ans, de 6 à 15 ans d'écart")).toBeVisible();
     await expect(page.getByText('Entre 36 et 45 ans')).toBeVisible();
-    await expect(page.getByText('Choisissez 3 pistes')).toBeVisible();
+    await expect(page.getByText('Choisissez 3 indices')).toBeVisible();
     await expect(page.getByText('Choix : 0 sur 3')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Musique', exact: true })).toBeVisible();
     expect(sent).toEqual([{ guess: 30, language: 'FR' }]);
@@ -68,7 +68,7 @@ test.describe('le jeu en français', () => {
     await expect
       .poll(() => sharedTexts(page))
       .toEqual([
-        `AgeGuessr · Enquête du 13/11/2026 résolue avec panache\u00a0!\n2340 / 3000 points\n🎯🟩⬛🟥\n🎯 du 1er coup · 🟩 tout près · 🟥 loin · ⬛ photo retirée\nToi aussi, mène l'enquête sur ${new URL(baseURL!).origin}`,
+        `AgeGuessr · Partie du 13/11/2026\u00a0: bien joué\u00a0!\n2340 / 3000 points\n🎯🟩⬛🟥\n🎯 du 1er coup · 🟩 tout près · 🟥 loin · ⬛ photo retirée\nToi aussi, joue sur ${new URL(baseURL!).origin}`,
       ]);
   });
 });
