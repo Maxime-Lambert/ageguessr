@@ -1268,6 +1268,37 @@ ce qui contredit l'effacement promis. Il n'y a pas encore de journal des suppres
 rejouer après une restauration (ligne de la roadmap, Semaine 8) : d'ici là, restaurer
 est réservé à un incident grave.
 
+### Monitoring
+**Décision** (2026-11-14, PR `feature/monitoring`) : être prévenu par email sans rien
+regarder.
+
+| Panne | Qui la voit | Alerte |
+|---|---|---|
+| Site, VPS ou réseau en panne | UptimeRobot sur `/api/health` (5 min) | email UptimeRobot |
+| PostgreSQL ou Redis en panne | `/api/health` répond 503 | email UptimeRobot |
+| Backup arrêté ou en échec | `/api/health/backup` répond 503 après 26 h sans dump réussi | email UptimeRobot |
+| Erreur du backend (tirage du jour raté, exception non gérée…) | appender Logback | email à `ADMIN_EMAIL` via Resend |
+
+- **UptimeRobot**, plan gratuit (compte existant de l'utilisateur) : surveillances HTTP
+  seulement, le heartbeat est payant ; d'où la fraîcheur du backup exposée en HTTP. Aucun
+  secret dans le dépôt.
+- **Endpoints publics, muets** : `200 OK` ou `503 UNAVAILABLE`, jamais quelle brique a
+  échoué. L'échec de `/api/health` est logué en `WARN` (pas `ERROR`) : UptimeRobot alerte
+  déjà, un email d'erreur toutes les 5 min le répéterait.
+- **Fraîcheur du backup** : `pg-backup.sh` écrit l'epoch de son dernier succès dans le
+  volume `backup_status`, monté en lecture seule dans le backend (`BackupStatus`). Le
+  backend ne voit jamais les dumps.
+- **Emails d'erreur** (`shared/alerting`) : chaque log `ERROR` du backend, branché sur le
+  logger racine à `ApplicationReadyEvent`. Le premier part tout de suite, les suivants
+  sont regroupés : au plus un email par 15 min (nombre + les 5 premiers). Contenu limité
+  à l'heure, au logger, à la classe de l'exception et au message tronqué à 300
+  caractères — pas de pile, pas de requête, pour ne pas copier de données de joueurs
+  chez Resend. Envoi sur un thread dédié ; les logs du code d'email et d'alerte sont
+  ignorés (Resend en panne ne boucle pas). Désactivé dans les tests
+  (`app.alerts.errors-enabled=false`) et sans `ADMIN_EMAIL`.
+- Hors périmètre : métriques et tableaux de bord, journal centralisé, alerte sur
+  l'espace disque.
+
 ### Variables d'environnement
 - **Local** : fichier `.env` (gitignored)
 - **Prod** : secrets GitHub Actions injectés dans le VPS au déploiement
