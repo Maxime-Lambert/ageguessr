@@ -6,6 +6,7 @@ import ch.qos.logback.classic.LoggerContext;
 import java.time.Clock;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,7 +61,16 @@ class ErrorAlertsWiring {
             context.getLogger(Logger.ROOT_LOGGER_NAME).detachAppender(appender);
             appender.stop();
         }
+        // A few seconds for an alert being sent, then no more waiting on shutdown.
         executor.shutdown();
+        try {
+            if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
+                executor.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            executor.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
     }
 
     @Scheduled(fixedDelay = 60_000)

@@ -1,6 +1,6 @@
 package app.ageguessr.shared.alerting;
 
-import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.filter.ThresholdFilter;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.core.AppenderBase;
@@ -19,11 +19,16 @@ class ErrorAlertAppender extends AppenderBase<ILoggingEvent> {
     ErrorAlertAppender(ErrorAlerts alerts) {
         this.alerts = alerts;
         setName("error-alerts");
+        // Logback drops the lower levels before append(): the root logger sees them all.
+        ThresholdFilter errorsOnly = new ThresholdFilter();
+        errorsOnly.setLevel("ERROR");
+        errorsOnly.start();
+        addFilter(errorsOnly);
     }
 
     @Override
     protected void append(ILoggingEvent event) {
-        if (!event.getLevel().isGreaterOrEqual(Level.ERROR) || ignored(event.getLoggerName())) {
+        if (ignored(event.getLoggerName())) {
             return;
         }
         IThrowableProxy thrown = event.getThrowableProxy();

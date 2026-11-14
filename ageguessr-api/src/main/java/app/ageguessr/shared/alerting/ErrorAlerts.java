@@ -28,7 +28,7 @@ import org.springframework.web.util.HtmlUtils;
  * whose logs the appender ignores: no loop when the email provider is down.
  */
 @Slf4j
-public class ErrorAlerts {
+class ErrorAlerts {
 
     static final Duration COOLDOWN = Duration.ofMinutes(15);
     static final int MAX_LISTED = 5;
@@ -47,7 +47,7 @@ public class ErrorAlerts {
     private final List<String> pending = new ArrayList<>();
     private int pendingCount;
 
-    public ErrorAlerts(EmailSender emailSender, String adminEmail, Clock clock, Executor executor) {
+    ErrorAlerts(EmailSender emailSender, String adminEmail, Clock clock, Executor executor) {
         this.emailSender = emailSender;
         this.adminEmail = adminEmail;
         this.clock = clock;
@@ -55,7 +55,7 @@ public class ErrorAlerts {
     }
 
     /** One error logged: sent now, or kept for the next summary while cooling down. */
-    public void report(LoggedError error) {
+    void report(LoggedError error) {
         String line = line(error);
         synchronized (lock) {
             Instant now = clock.instant();
@@ -74,7 +74,7 @@ public class ErrorAlerts {
     }
 
     /** Sends the errors kept during the cooldown, once it has ended. Called every minute. */
-    public void flush() {
+    void flush() {
         synchronized (lock) {
             if (pendingCount == 0 || clock.instant().isBefore(lastSent.plus(COOLDOWN))) {
                 return;

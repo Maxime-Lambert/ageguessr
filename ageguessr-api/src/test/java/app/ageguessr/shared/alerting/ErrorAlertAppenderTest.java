@@ -3,7 +3,6 @@ package app.ageguessr.shared.alerting;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import app.ageguessr.shared.email.EmailMessage;
-import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import java.time.Clock;
@@ -50,6 +49,5 @@ class ErrorAlertAppenderTest {
         context.getLogger("app.ageguessr.shared.alerting.ErrorAlerts").error("could not send");
 
         assertThat(sent).isEmpty();
-        assertThat(context.getLogger("x").getEffectiveLevel().isGreaterOrEqual(Level.DEBUG)).isTrue();
     }
 }

@@ -13,10 +13,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
-/** An error logged anywhere in the running application reaches the admin by email. */
+/**
+ * An error logged anywhere in the running application reaches the admin by email. Its
+ * context is closed after the class: the appender sits on the JVM-wide Logback root, and
+ * must not catch the errors other tests log on purpose.
+ */
 @SpringBootTest(properties = "app.alerts.errors-enabled=true")
 @Import({TestcontainersConfiguration.class, AuthFunctionalTestConfig.class})
+@DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 class ErrorAlertsFunctionalTest {
 
     @Autowired
