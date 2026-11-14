@@ -156,7 +156,7 @@ describe('Game', () => {
     expect(page.textContent).toContain(GAME_TEXT.summary);
   });
 
-  it('leads from the summary of the day to the free investigation', () => {
+  it('leads from the summary of the day to the series', () => {
     load(today([finished(1)]));
 
     const link = Array.from(page.querySelectorAll('a')).find(

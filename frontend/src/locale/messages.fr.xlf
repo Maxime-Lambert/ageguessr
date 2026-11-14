@@ -732,6 +732,14 @@
         <source>No photo is available right now. Try again later.</source>
         <target>Aucune photo n'est disponible pour le moment. Réessayez plus tard.</target>
       </trans-unit>
+      <trans-unit id="game.voice.lengthOne" datatype="html">
+        <source>1 case</source>
+        <target>1 affaire</target>
+      </trans-unit>
+      <trans-unit id="game.neutral.lengthOne" datatype="html">
+        <source>1 round</source>
+        <target>1 manche</target>
+      </trans-unit>
       <trans-unit id="game.voice.length" datatype="html">
         <source><x id="count" equiv-text="count"/> cases</source>
         <target><x id="count" equiv-text="count"/> affaires</target>

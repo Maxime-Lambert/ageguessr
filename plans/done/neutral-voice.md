@@ -49,22 +49,27 @@ plus aucune cible FR avec enquête/dossier/affaire/piste hors `game.voice.*` ; `
 (journeys jamais lancés).
 
 ## Phase 2: Docs et PR
-Status: Not started
+Status: Complete
 
 - [x] `docs/decisions/design.md` : l'essai neutre (date, branche, périmètre mots seuls)
 - [ ] ~~Captures EN/FR~~ abandonné : shoot.mjs ne sait capturer que les maquettes ou la
       prod, et un serveur de dev local fait planter WSL ; l'utilisateur juge en lançant
       l'app ou sur la liste des textes de la PR
-- [ ] Revue architecture-reviewer, PR vers `develop` marquée « essai »
+- [x] Revue architecture-reviewer, PR vers `develop` marquée « essai »
 
 ### Verification Plan
 - `cd frontend && pnpm test` → vert ; `cd ageguessr-api && ./mvnw test` → vert
 
 ### Phase Summary
-_(write when phase completes)_
+`design.md` documente l'essai. Revue architecture : 0 bloquant/important ; corrigés :
+titres de tests encore en vocabulaire enquête, « 1 rounds »/« 1 manches » → singulier
+(`game.*.lengthOne`). Vérifié : `pnpm test` 464 verts, `ng build` sans traduction
+manquante. PR en brouillon vers `develop`.
 
 ## Final Recap
-_(write when all phases complete)_
+Le jeu tourne en vocabulaire neutre (EN + FR), visuel enquête inchangé. PR brouillon : à
+fusionner seulement si l'utilisateur garde l'essai ; dans ce cas, PR de suivi pour
+supprimer `INVESTIGATION_VOICE` et les cibles `game.voice.*`.
 
 ## Deployment Plan
-_(write when all phases complete)_
+Rien de spécial : frontend seul, déployé avec la prochaine release si la PR est fusionnée.

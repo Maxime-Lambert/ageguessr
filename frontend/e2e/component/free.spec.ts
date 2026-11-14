@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { mockChallenge, mockSeries } from './game-mocks';
 
-test.describe('free investigation', () => {
+test.describe('series', () => {
   test.describe('on a phone', () => {
     test.use({ viewport: { width: 375, height: 667 }, hasTouch: true, isMobile: true });
 
@@ -27,7 +27,7 @@ test.describe('free investigation', () => {
       const joined = await mockChallenge(page, 1);
       await page.goto('/en/challenge/K7F2QX9M');
 
-      await expect(page.getByText('Sherlock challenges you on 1 rounds.')).toBeVisible();
+      await expect(page.getByText('Sherlock challenges you on 1 round.')).toBeVisible();
       await page.getByLabel('Your name in the challenge').fill('Watson');
       await page.getByRole('button', { name: 'Take up the challenge' }).click();
 

@@ -9,7 +9,7 @@ test.describe.configure({ mode: 'serial' });
  * Today's game against the full app, as a guest: the e2e-profiled backend replaces
  * today's rounds with three known people (GameTestSupportController), aged 40, 55 and 30.
  */
-test('a guest plays the three rounds of the day, through a reload, to the case report', async ({
+test('a guest plays the three rounds of the day, through a reload, to the summary', async ({
   page,
   request,
 }) => {

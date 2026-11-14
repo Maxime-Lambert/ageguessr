@@ -155,8 +155,13 @@ export const HINT_REPORT_REASONS: Record<HintReportReason, string> = {
   OTHER: $localize`:@@game.report.hint.other:Something else`,
 };
 
-/** A length of series to choose, in the voice of the game. */
+/** A length of series, in the voice of the game: a challenge can hold a single round. */
 export function seriesLength(count: number): string {
+  if (count === 1) {
+    return VOICE === INVESTIGATION_VOICE
+      ? $localize`:@@game.voice.lengthOne:1 case`
+      : $localize`:@@game.neutral.lengthOne:1 round`;
+  }
   return VOICE === INVESTIGATION_VOICE
     ? $localize`:@@game.voice.length:${count}:count: cases`
     : $localize`:@@game.neutral.length:${count}:count: rounds`;

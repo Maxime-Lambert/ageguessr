@@ -1,13 +1,13 @@
 import { expect, test } from '@playwright/test';
 import { mockChallenge, mockSeries } from '../component/game-mocks';
 
-test.describe('enquête libre en français', () => {
+test.describe('série en français', () => {
   test('se choisit et se joue en français', async ({ page }) => {
     const started = await mockSeries(page);
     await page.goto('/fr/free');
 
     await expect(page.getByRole('heading', { name: 'Série', level: 1 })).toBeVisible();
-    await expect(page.getByText("Combien de manches ?")).toBeVisible();
+    await expect(page.getByText('Combien de manches ?')).toBeVisible();
     await page.getByRole('button', { name: '5 manches' }).click();
 
     await expect(page.getByRole('heading', { name: 'Manche 1 sur 5' })).toBeVisible();

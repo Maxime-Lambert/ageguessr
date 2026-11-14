@@ -16,7 +16,7 @@ describe('FriendsLeaderboard', () => {
     return fixture.nativeElement as HTMLElement;
   };
 
-  it('ranks by average, shares a tie and puts a player without a file last', () => {
+  it('ranks by average, shares a tie and puts a player without a game last', () => {
     const page = render({
       players: [
         {
