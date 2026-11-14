@@ -21,6 +21,15 @@ retirer une fois tous faits.
       survoler une carte n'ouvre rien, survoler ⓘ ouvre sa bulle, qui se ferme en quittant
       la carte ; Tab n'ouvre plus rien, Entrée sur ⓘ l'ouvre, Échap la ferme ; sur
       téléphone, rien ne change (tap sur ⓘ)
+- [ ] Partage expliqué (`fix/daily-share-explained`) : partie du jour finie, « Partager
+      mon résultat », coller : « Enquête du <date> » et un qualificatif selon les points,
+      le score, la grille, une légende des seules cases présentes, « Toi aussi, mène
+      l'enquête sur <site> » ; pareil en anglais (« Case of … »)
+- [ ] Backup et logs (`chore/backup-and-log-rotation`) : `sudo ls -l
+      /opt/ageguessr/backups/daily` montre un dump `-rw-------` ; `docker ps` montre
+      `ageguessr-prod-backup-1` `healthy` ; `docker inspect ageguessr-prod-backend-1
+      --format '{{json .HostConfig.LogConfig}}'` donne `max-size 10m`, `max-file 3` ; le
+      lendemain, `docker logs ageguessr-prod-backup-1` montre le dump de 03:00 UTC
 
 ## Semaine 1 — Fondations
 - [x] Initialisation projet Spring Boot (Java 25) + Angular (Claude Code)
