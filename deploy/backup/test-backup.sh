@@ -9,7 +9,8 @@ image="postgres:18-alpine"
 name="ageguessr-backup-test-$$"
 work="$(mktemp -d)"
 backups="$work/backups"
-mkdir -p "$backups"
+status="$work/status"
+mkdir -p "$backups" "$status"
 
 cleanup() {
   docker rm -f "$name" >/dev/null 2>&1 || true
@@ -49,7 +50,8 @@ run_backup() {
   docker run --rm --network "$name" --user "$(id -u):$(id -g)" \
     -e PGHOST="$name" -e PGUSER=ageguessr -e PGDATABASE=ageguessr -e PGPASSWORD=test \
     -e WEEKLY_DAY="$(date -u +%u)" \
-    -v "$here:/backup:ro" -v "$backups:/backups" \
+    -e STATUS_DIR=/status \
+    -v "$here:/backup:ro" -v "$backups:/backups" -v "$status:/status" \
     "$image" sh /backup/pg-backup.sh "$@"
 }
 
@@ -61,6 +63,9 @@ today="ageguessr-$(date -u +%Y-%m-%d).dump"
 [ "$(stat -c %a "$backups/daily/$today")" = 600 ] || fail "le dump n'est pas en 600"
 [ "$(stat -c %a "$backups/daily")" = 700 ] || fail "le dossier n'est pas en 700"
 [ -z "$(find "$backups/daily" -name '*.tmp')" ] || fail "un .tmp est reste"
+
+last=$(cat "$status/last-success")
+[ $(( $(date -u +%s) - last )) -lt 60 ] || fail "l'heure du dernier succes n'est pas notee"
 
 echo "== restauration dans une base vide"
 psql_in -d ageguessr -c "create database restored"
@@ -92,7 +97,9 @@ daily=$(find "$backups/daily" -name '*.dump' | wc -l)
 echo "== echec de pg_dump"
 psql_in -d ageguessr -c "alter user ageguessr password 'changed'"
 rm "$backups/daily/$today"
+echo 1000 >"$status/last-success"
 if run_backup once; then fail "un pg_dump refuse doit faire echouer once"; fi
+[ "$(cat "$status/last-success")" = 1000 ] || fail "un dump rate a touche l'heure du dernier succes"
 [ ! -f "$backups/daily/$today" ] || fail "un dump rate a laisse un fichier"
 [ -z "$(find "$backups/daily" -name '*.tmp')" ] || fail "un dump rate a laisse un .tmp"
 
