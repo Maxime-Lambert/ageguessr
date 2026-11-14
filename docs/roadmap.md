@@ -261,7 +261,8 @@ retirer une fois tous faits.
 - [x] Partage de résultat façon Wordle (grille/emoji, pas de compte requis) : sur le
       récapitulatif du jour, date, score, une case par manche (🎯 pour un 1er essai exact)
       et le lien du site ; feuille de partage sur téléphone, copie ailleurs — PR
-      `feature/daily-share`
+      `feature/daily-share` ; puis un titre qualifiant le résultat, une légende des cases
+      et une invitation à jouer — PR `fix/daily-share-explained`
 - [x] Aider davantage pour le 2e essai (retours des joueurs : les indices n'aidaient pas) :
       sens + tranche d'écart (1-5 / 6-15 / 16+ ans) à la place du simple plus/moins,
       saisie limitée à la plage restante, 3 pistes de catégories différentes au lieu

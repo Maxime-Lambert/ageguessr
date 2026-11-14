@@ -254,8 +254,37 @@ export function shareText(points: number, max: number, squares: string, url: str
 }
 
 /**
- * The text a player shares at the end of the daily game: the day, the score, one square
- * per round, the site. The day is the game's UTC day (YYYY-MM-DD), formatted in UTC so
+ * What each square of the daily share means, in the order of the legend. Only the squares
+ * a result holds are explained: a friend who never played reads the grid without guessing.
+ */
+const SQUARE_LEGEND: [string, string][] = [
+  ['🎯', $localize`:@@game.share.legend.exact:first try`],
+  ['🟩', $localize`:@@game.share.legend.close:very close`],
+  ['🟨', $localize`:@@game.share.legend.near:close`],
+  ['🟥', $localize`:@@game.share.legend.far:far off`],
+  ['⬛', $localize`:@@game.share.legend.removed:photo withdrawn`],
+];
+
+/**
+ * The headline of the daily share: the day, then how well the case went, by the share of
+ * the points won. Never mocking: the lowest tier says to come back, not that it was bad.
+ */
+export function dailyShareHeadline(day: string, points: number, max: number): string {
+  const ratio = max > 0 ? points / max : 0;
+  if (ratio >= 0.9)
+    return $localize`:@@game.share.brilliant:Case of ${day}:day: cracked brilliantly!`;
+  if (ratio >= 0.7) return $localize`:@@game.share.flair:Case of ${day}:day: cracked with flair!`;
+  if (ratio >= 0.5) return $localize`:@@game.share.solved:Case of ${day}:day: wrapped up!`;
+  if (ratio >= 0.3)
+    return $localize`:@@game.share.whisker:Case of ${day}:day: solved by a whisker!`;
+  return $localize`:@@game.share.cold:Case of ${day}:day:: the trail went cold… see you tomorrow!`;
+}
+
+/**
+ * The text a player shares at the end of the daily game (« Partage façon Wordle »): a
+ * headline with the day and a word on the result, the score, one square per round, what
+ * the squares mean, then an invitation to the site. The players found the bare grid
+ * unclear (2026-11-14). The day is the game's UTC day (YYYY-MM-DD), formatted in UTC so
  * that it never moves with the player's time zone, in a format of its language.
  */
 export function dailyShareText(
@@ -270,10 +299,16 @@ export function dailyShareText(
   // the day before in UTC east of Greenwich.
   const midnightUtc = new Date(`${date}T00:00:00Z`);
   const day = formatDate(midnightUtc, $localize`:@@game.shareDateFormat:MMM d, y`, locale, 'UTC');
-  return (
-    $localize`:@@game.dailyShareText:AgeGuessr · ${day}:day: · ${points}:points: / ${max}:max:` +
-    `\n${squares}\n${url}`
-  );
+  const legend = SQUARE_LEGEND.filter(([square]) => squares.includes(square))
+    .map(([square, meaning]) => `${square} ${meaning}`)
+    .join(' · ');
+  return [
+    `AgeGuessr · ${dailyShareHeadline(day, points, max)}`,
+    `${points} / ${max} ${GAME_TEXT.points}`,
+    squares,
+    legend,
+    $localize`:@@game.share.invite:Take on today's case at ${url}:url:`,
+  ].join('\n');
 }
 
 /** Why a nickname was refused (400): taken by an account, or not in the format. */

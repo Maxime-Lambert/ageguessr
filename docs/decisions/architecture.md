@@ -898,7 +898,12 @@ un classement.
     « YYYY-MM-DD » seul comme minuit local), dans un format traduit
     (`@@game.shareDateFormat`). 🎯 marque un 1er essai exact, pour le jour seulement : la
     grille des défis ne change pas. Partager sinon copier : `shareOrCopy` (`game/share.ts`),
-    commun au défi et au jour.
+    commun au défi et au jour. Depuis le 2026-11-14 (PR `fix/daily-share-explained`, la
+    grille seule n'était pas claire pour qui n'a pas joué), le texte s'explique : un titre
+    « Enquête du <date> » suivi d'un qualificatif selon la part des points (brio ≥ 90 %,
+    panache ≥ 70 %, bouclée ≥ 50 %, de justesse ≥ 30 %, sinon « la piste s'est
+    refroidie… à demain », jamais moqueur), le score, la grille, une légende des seules
+    cases présentes, puis une invitation avec le lien.
 
 **Raison** : le jeu quotidien ne se joue qu'une fois par jour. Ce mode donne de quoi
 jouer plus, et de quoi comparer ses scores entre amis sans attendre la feature Amis.
