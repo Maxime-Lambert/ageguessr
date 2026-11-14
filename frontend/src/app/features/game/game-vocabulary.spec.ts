@@ -2,8 +2,6 @@ import {
   seriesLength,
   CATEGORY_LABELS,
   GAME_TEXT,
-  INVESTIGATION_VOICE,
-  NEUTRAL_VOICE,
   ageOutOfRange,
   directionText,
   gapText,
@@ -19,13 +17,6 @@ describe('game vocabulary', () => {
       expect(value.trim(), key).not.toBe('');
     });
     Object.values(CATEGORY_LABELS).forEach((label) => expect(label.trim()).not.toBe(''));
-  });
-
-  it('has a neutral word for every word of the investigation voice', () => {
-    expect(Object.keys(NEUTRAL_VOICE).sort()).toEqual(Object.keys(INVESTIGATION_VOICE).sort());
-    Object.entries(NEUTRAL_VOICE).forEach(([key, value]) => {
-      expect(value.trim(), key).not.toBe('');
-    });
   });
 
   it('gives the side, then the band of years apart', () => {
