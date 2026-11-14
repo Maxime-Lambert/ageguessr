@@ -65,13 +65,31 @@ jobs:
       - name: Interface (Playwright)
         run: pnpm test:e2e
 
+  # Le script de sauvegarde de la base de prod : shellcheck, puis dump, restauration et
+  # rotation contre un vrai PostgreSQL 18 (deploy/backup/test-backup.sh).
+  backup-script:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Shellcheck
+        # Image epinglee par digest (v0.10.0), montee en lecture seule : elle ne peut pas
+        # modifier le script que l'etape suivante execute.
+        run: >-
+          docker run --rm -v "$PWD/deploy/backup:/mnt:ro"
+          koalaman/shellcheck@sha256:2097951f02e735b613f4a34de20c40f937a6c8f18ecb170612c88c34517221fb
+          /mnt/pg-backup.sh /mnt/test-backup.sh
+
+      - name: Dump, restauration, rotation
+        run: bash deploy/backup/test-backup.sh
+
   # Les images sont buildees ici (runner GitHub, 16 Go de RAM) et non sur le VPS :
   # ng build monte a ~4 Go a cause de @lucide/angular (toutes les icones dans un seul
   # fichier de 12 Mo a passer au linker Angular), ce qui faisait tuer le build sur un
   # VPS partage avec un autre projet en prod.
   publish-images:
     runs-on: ubuntu-latest
-    needs: [backend-test, frontend-test]
+    needs: [backend-test, frontend-test, backup-script]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     permissions:
       contents: read
@@ -135,6 +153,20 @@ jobs:
           ARGS: "-az"
           REMOTE_PORT: 2222
 
+      # Le script lu par le service "backup" du compose (monte en lecture seule).
+      - name: Copier le script de sauvegarde sur le VPS
+        uses: easingthemes/ssh-deploy@922253577e23ce0edbfdbf819f0e1ceaecabc61a # v5.1.2
+        with:
+          SSH_PRIVATE_KEY: ${{ secrets.VPS_SSH_KEY }}
+          REMOTE_HOST: ${{ secrets.VPS_HOST }}
+          REMOTE_USER: ${{ secrets.VPS_USER }}
+          SOURCE: "deploy/backup/pg-backup.sh"
+          TARGET: /opt/ageguessr/backup/
+          ARGS: "-az"
+          # Avant le 1er up -d : sinon Docker cree ./backup vide (root) et le service echoue.
+          SCRIPT_BEFORE: mkdir -p /opt/ageguessr/backup
+          REMOTE_PORT: 2222
+
       - name: Écrire le .env de prod et déployer
         uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
         env:
@@ -171,6 +203,8 @@ jobs:
             IMAGE_TAG=$IMAGE_TAG
             ENVEOF
             chmod 600 .env
+            # Les dumps de la base (service backup) : lisibles du seul proprietaire.
+            mkdir -p backups && chmod 700 backups
             docker compose -f docker-compose.prod.yml up -d
             # Uniquement nos images (taguees par SHA, donc jamais "dangling") : un prune
             # global toucherait aussi celles de l'autre projet du VPS.
