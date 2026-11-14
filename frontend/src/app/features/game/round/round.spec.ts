@@ -103,7 +103,7 @@ describe('Round', () => {
 
     expect(page.textContent).toContain('Older than 30, by 6 to 15 years');
     expect(page.textContent).toContain('Between 36 and 45');
-    expect(page.textContent).toContain('Pick 3 leads');
+    expect(page.textContent).toContain('Pick 3 hints');
     expect(page.textContent).toContain('0 of 3 picked');
     expect(page.querySelector('app-age-input input')).toBeNull();
     expect(leadButtons().map((button) => button.textContent?.trim())).toEqual([
@@ -125,7 +125,7 @@ describe('Round', () => {
 
     expect(leadButtons()).toHaveLength(7);
     expect(leadButtons()[6].textContent?.trim()).toBe('Literature');
-    expect(page.textContent).toContain('Pick 3 leads');
+    expect(page.textContent).toContain('Pick 3 hints');
   });
 
   it('sends exactly the number of leads asked, in the order offered', () => {

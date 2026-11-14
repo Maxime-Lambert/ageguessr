@@ -1,4 +1,5 @@
 import {
+  seriesLength,
   CATEGORY_LABELS,
   GAME_TEXT,
   INVESTIGATION_VOICE,
@@ -41,13 +42,18 @@ describe('game vocabulary', () => {
     expect(ageOutOfRange({ min: 36, max: 45 })).toBe('Enter a whole age from 36 to 45.');
   });
 
-  it('asks for one lead in the singular, several with a count', () => {
+  it('asks for one hint in the singular, several with a count', () => {
     expect(pickHintsText(1)).toBe(GAME_TEXT.pickHint);
-    expect(pickHintsText(3)).toBe('Pick 3 leads');
+    expect(pickHintsText(3)).toBe('Pick 3 hints');
     expect(pickedText(2, 3)).toBe('2 of 3 picked');
   });
 
   it('numbers the rounds of the day', () => {
     expect(roundTitle(2, 3)).toBe(`${GAME_TEXT.round} 2 of 3`);
+  });
+
+  it('counts a single round in the singular', () => {
+    expect(seriesLength(1)).toBe('1 round');
+    expect(seriesLength(5)).toBe('5 rounds');
   });
 });

@@ -90,10 +90,10 @@ test.describe('header', () => {
 
     await page.getByRole('button', { name: 'Menu' }).click();
     const panel = page.getByRole('dialog', { name: 'Menu' });
-    await expect(panel.getByRole('link', { name: 'Free investigation' })).toBeVisible();
+    await expect(panel.getByRole('link', { name: 'Series' })).toBeVisible();
     await expect(panel.getByRole('button', { name: 'Log out' })).toBeVisible();
 
-    await panel.getByRole('link', { name: 'Free investigation' }).click();
+    await panel.getByRole('link', { name: 'Series' }).click();
 
     await expect(page).toHaveURL(/\/en\/free$/);
     await expect(panel).toHaveCount(0);

@@ -38,7 +38,7 @@ describe('LeadCard', () => {
     expect(help().hidden).toBe(true);
     expect(help().textContent).toContain('A film released');
     expect(help().textContent).toContain('29 years ago → 29 on the photo.');
-    expect(info().getAttribute('aria-label')).toBe('How the Film lead works');
+    expect(info().getAttribute('aria-label')).toBe('How the Film hint works');
     expect(info().getAttribute('aria-controls')).toBe('lead-help-film');
     expect(info().getAttribute('aria-expanded')).toBe('false');
 

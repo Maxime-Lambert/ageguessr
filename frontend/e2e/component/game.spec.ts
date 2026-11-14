@@ -12,7 +12,7 @@ test.describe('daily game', () => {
     await expect
       .poll(() => sharedTexts(page))
       .toEqual([
-        `AgeGuessr · Case of Nov 13, 2026 cracked with flair!\n2340 / 3000 points\n🎯🟩⬛🟥\n🎯 first try · 🟩 very close · 🟥 far off · ⬛ photo withdrawn\nTake on today's case at ${new URL(baseURL!).origin}`,
+        `AgeGuessr · Nov 13, 2026: well played!\n2340 / 3000 points\n🎯🟩⬛🟥\n🎯 first try · 🟩 very close · 🟥 far off · ⬛ photo withdrawn\nPlay today's game at ${new URL(baseURL!).origin}`,
       ]);
   });
 
@@ -33,11 +33,11 @@ test.describe('daily game', () => {
 
     await page.getByRole('button', { name: 'Music', exact: true }).click();
     await page.getByRole('button', { name: 'Film', exact: true }).click();
-    await expect(page.getByRole('button', { name: 'Open these leads' })).toBeDisabled();
+    await expect(page.getByRole('button', { name: 'Show these hints' })).toBeDisabled();
     await page.getByRole('button', { name: 'Sport', exact: true }).click();
     await expect(page.getByText('3 of 3 picked')).toBeVisible();
     await expect(page.getByRole('button', { name: 'World events', exact: true })).toBeDisabled();
-    await page.getByRole('button', { name: 'Open these leads' }).click();
+    await page.getByRole('button', { name: 'Show these hints' }).click();
     await expect(page.getByText('A hit topped the charts.')).toBeVisible();
     await expect(page.getByText('A team won the cup.')).toBeVisible();
     await expect(page.getByLabel('Age')).toBeFocused();
@@ -56,8 +56,8 @@ test.describe('daily game', () => {
       { guess: 38 },
     ]);
 
-    await page.getByRole('button', { name: 'Next case' }).click();
-    await expect(page.getByRole('heading', { name: 'Case 2 of 3' })).toBeVisible();
+    await page.getByRole('button', { name: 'Next round' }).click();
+    await expect(page.getByRole('heading', { name: 'Round 2 of 3' })).toBeVisible();
   });
 
   test('refuses an age outside 18 to 100 without sending it', async ({ page }) => {
@@ -75,7 +75,7 @@ test.describe('daily game', () => {
     await mockGame(page, [round(1, { status: 'NEUTRALIZED', imageUrl: null }), round(2)]);
     await page.goto('/en/');
 
-    await expect(page.getByRole('heading', { name: 'Case 2 of 2' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Round 2 of 2' })).toBeVisible();
   });
 
   test.describe('on a phone', () => {

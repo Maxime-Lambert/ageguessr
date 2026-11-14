@@ -156,7 +156,7 @@ describe('Game', () => {
     expect(page.textContent).toContain(GAME_TEXT.summary);
   });
 
-  it('leads from the summary of the day to the free investigation', () => {
+  it('leads from the summary of the day to the series', () => {
     load(today([finished(1)]));
 
     const link = Array.from(page.querySelectorAll('a')).find(
@@ -176,7 +176,7 @@ describe('Game', () => {
       { date: '2026-11-13' },
     );
   const expectedText =
-    "AgeGuessr · Case of Nov 13, 2026 cracked with flair!\n2340 / 3000 points\n🎯🟩⬛🟥\n🎯 first try · 🟩 very close · 🟥 far off · ⬛ photo withdrawn\nTake on today's case at https://ageguessr.app";
+    "AgeGuessr · Nov 13, 2026: well played!\n2340 / 3000 points\n🎯🟩⬛🟥\n🎯 first try · 🟩 very close · 🟥 far off · ⬛ photo withdrawn\nPlay today's game at https://ageguessr.app";
 
   it('offers to share the result only once the day is played', () => {
     load(today([finished(1), round(2)]));
@@ -307,7 +307,7 @@ describe('Game', () => {
       ]),
     );
 
-    expect(page.textContent).toContain('Pick 2 leads');
+    expect(page.textContent).toContain('Pick 2 hints');
     expect(page.querySelector('[role=alert]')).toBeNull();
   });
 

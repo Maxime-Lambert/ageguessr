@@ -12,7 +12,7 @@ export const routes: Routes = [
   },
   {
     path: 'free',
-    title: $localize`:@@title.free:Free investigation · AgeGuessr`,
+    title: $localize`:@@title.free:Series · AgeGuessr`,
     loadComponent: () => import('./features/game/free-game/free-game').then((m) => m.FreeGame),
   },
   {

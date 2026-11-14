@@ -50,6 +50,6 @@ test.describe('profil', () => {
     await expect(day).toContainText('Jane Doe · 52 ans');
     await expect(day).toContainText('Vos essais : 45 → 50');
     await expect(day).toContainText('Pas terminé');
-    await expect(page.getByRole('button', { name: 'Dossiers plus anciens' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Parties plus anciennes' })).toBeVisible();
   });
 });

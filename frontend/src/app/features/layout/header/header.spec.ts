@@ -62,7 +62,7 @@ describe('Header', () => {
   };
 
   it('links to both game modes, in the game vocabulary', () => {
-    expect(texts(header(), 'nav a')).toEqual(["Today's file", 'Free investigation']);
+    expect(texts(header(), 'nav a')).toEqual(['Daily game', 'Series']);
   });
 
   it('shows nothing account-related until the session restore has settled', () => {
@@ -176,7 +176,7 @@ describe('Header', () => {
       const panel = open();
 
       expect(panel.getAttribute('aria-label')).toBe('Menu');
-      expect(texts(panel, 'nav a')).toEqual(["Today's file", 'Free investigation']);
+      expect(texts(panel, 'nav a')).toEqual(['Daily game', 'Series']);
       expect(named(panel, 'a', 'Sign up')).toBeDefined();
       expect(panel.querySelector('app-preferences')).not.toBeNull();
     });

@@ -7,9 +7,9 @@ import { BACKEND_URL } from './support';
  * photos at random from the whole pool, so the journey cannot know them in advance.
  */
 async function playRound(page: Page): Promise<void> {
-  const closed = page.getByRole('button', { name: /^(Next case|See the case report)$/ });
+  const closed = page.getByRole('button', { name: /^(Next round|See the summary)$/ });
   const finalGuess = page.getByRole('button', { name: 'Final guess' });
-  const lead = page.getByText('Pick a lead');
+  const lead = page.getByText('Pick a hint');
   await page.getByLabel('Age').fill('40');
   await page.getByRole('button', { name: 'Guess', exact: true }).click();
   await expect(closed.or(finalGuess).or(lead)).toBeVisible();
@@ -28,10 +28,10 @@ async function playRound(page: Page): Promise<void> {
 
 async function playSeries(page: Page, rounds: number): Promise<void> {
   for (let i = 1; i <= rounds; i++) {
-    await expect(page.getByRole('heading', { name: `Case ${i} of ${rounds}` })).toBeVisible();
+    await expect(page.getByRole('heading', { name: `Round ${i} of ${rounds}` })).toBeVisible();
     await playRound(page);
   }
-  await expect(page.getByRole('heading', { name: 'Case report' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Summary' })).toBeVisible();
 }
 
 /**
@@ -47,7 +47,7 @@ test('a guest plays a series, challenges a friend, and both see the leaderboard'
   expect(seeded.ok()).toBe(true);
 
   await page.goto('/en/free');
-  await page.getByRole('button', { name: '5 cases' }).click();
+  await page.getByRole('button', { name: '5 rounds' }).click();
   await playSeries(page, 5);
 
   await page.getByRole('button', { name: 'Challenge friends' }).click();
@@ -61,7 +61,7 @@ test('a guest plays a series, challenges a friend, and both see the leaderboard'
   const friendContext = await browser.newContext({ baseURL: test.info().project.use.baseURL });
   const friend = await friendContext.newPage();
   await friend.goto(`/en/challenge/${code}`);
-  await expect(friend.getByText('Sherlock challenges you on 5 cases.')).toBeVisible();
+  await expect(friend.getByText('Sherlock challenges you on 5 rounds.')).toBeVisible();
   await friend.getByLabel('Your name in the challenge').fill('Watson');
   await friend.getByRole('button', { name: 'Take up the challenge' }).click();
   await playSeries(friend, 5);

@@ -64,7 +64,7 @@ test.describe('profile page', () => {
     const day = page.getByRole('article', { name: 'Sunday, November 8, 2026' });
     await expect(day).toContainText('1,734 out of 3,000');
     await expect(day).toContainText('Jane Doe');
-    await expect(day).toContainText('Withdrawn from the file');
+    await expect(day).toContainText('Photo removed');
     await expect(day.locator('img')).toHaveCount(0);
   });
 
