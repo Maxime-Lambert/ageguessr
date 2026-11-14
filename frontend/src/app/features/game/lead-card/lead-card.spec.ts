@@ -48,9 +48,9 @@ describe('LeadCard', () => {
     expect(info().getAttribute('aria-expanded')).toBe('true');
   });
 
-  it('opens after the mouse rests on the card, and closes when it leaves', () => {
+  it('opens after the mouse rests on ⓘ, and closes when it leaves the card', () => {
     vi.useFakeTimers();
-    pointer('pointerenter', 'mouse');
+    pointer('pointerenter', 'mouse', info());
     vi.advanceTimersByTime(HOVER_DELAY_MS - 1);
     expect(events).toEqual([]);
     vi.advanceTimersByTime(1);
@@ -62,9 +62,18 @@ describe('LeadCard', () => {
     expect(events).toEqual(['opened', 'closed']);
   });
 
-  it('does not open when the mouse only crosses the card', () => {
+  it('does not open when the mouse rests on the card itself', () => {
     vi.useFakeTimers();
+    pointer('pointerenter', 'mouse', card());
     pointer('pointerenter', 'mouse');
+    vi.advanceTimersByTime(HOVER_DELAY_MS * 5);
+
+    expect(events).toEqual([]);
+  });
+
+  it('does not open when the mouse only brushes past ⓘ', () => {
+    vi.useFakeTimers();
+    pointer('pointerenter', 'mouse', info());
     vi.advanceTimersByTime(HOVER_DELAY_MS / 2);
     pointer('pointerleave', 'mouse');
     vi.advanceTimersByTime(HOVER_DELAY_MS);
@@ -74,7 +83,7 @@ describe('LeadCard', () => {
 
   it('ignores a finger on the card: the help opens from ⓘ', () => {
     vi.useFakeTimers();
-    pointer('pointerenter', 'touch');
+    pointer('pointerenter', 'touch', info());
     vi.advanceTimersByTime(HOVER_DELAY_MS);
     expect(events).toEqual([]);
 
@@ -86,7 +95,7 @@ describe('LeadCard', () => {
     expect(events).toEqual(['opened', 'closed']);
   });
 
-  it('keeps open on a mouse click of ⓘ: the rest on the way there opened it', () => {
+  it('keeps open on a mouse click of ⓘ: the rest on it opened it', () => {
     set({ open: true });
 
     info().dispatchEvent(new PointerEvent('click', { pointerType: 'mouse', bubbles: true }));
@@ -109,18 +118,18 @@ describe('LeadCard', () => {
     expect(events).toEqual(['opened']);
   });
 
-  it('opens when the card is reached with Tab, and closes when the focus leaves it', () => {
+  it('does not open when the card is reached with Tab, and closes when the focus leaves it', () => {
     card().dispatchEvent(new KeyboardEvent('keyup', { key: 'Tab', bubbles: true }));
-    expect(events).toEqual(['opened']);
+    expect(events).toEqual([]);
 
     set({ open: true });
     card().dispatchEvent(new FocusEvent('focusout', { relatedTarget: info(), bubbles: true }));
-    expect(events).toEqual(['opened']);
+    expect(events).toEqual([]);
     card().dispatchEvent(
       new FocusEvent('focusout', { relatedTarget: document.body, bubbles: true }),
     );
 
-    expect(events).toEqual(['opened', 'closed']);
+    expect(events).toEqual(['closed']);
   });
 
   it('aligns its help on the right edge in the last column only', () => {

@@ -9,58 +9,18 @@ la suivante).
 Tests que seuls un compte et la boîte mail admin permettent de faire. À cocher, puis à
 retirer une fois tous faits.
 
-- [x] Bandeau de ré-acceptation des CGU (release #39, confirmé le 2026-11-09)
 - [ ] Signaler une photo et un indice depuis l'écran de résultat d'une manche terminée
 - [ ] Retrouver ces signalements dans `/admin/curation` (photos) et `/admin/hints`
       (indices), puis rejeter, garder ou exclure
 - [ ] Recevoir l'email d'alerte admin quand plusieurs joueurs signalent la même photo
       (`ADMIN_EMAIL` du `.env` de prod)
-- [ ] Indices musique corrigés par la migration V17 (release #45) : dans `/admin/hints`,
-      1989, « Pour toi Arménie » de Charles Aznavour et divers artistes
-- [ ] Profil (release #48) : jouer la partie du jour en invité, se connecter sur le même
-      navigateur, ouvrir « Mon profil » : la partie y est, série de 1
-- [ ] Profil : une manche non terminée ne montre ni nom, ni âge, ni points ; « Dossiers
-      plus anciens » charge la page suivante quand il y a plus de 30 jours
-- [ ] Politique de confidentialité (EN + FR) : date du 2026-11-10, paragraphe sur les
-      parties invité rattachées au compte et ce que voient les amis
-- [ ] Parcours e2e « invité → compte → profil » (`e2e/journeys/daily-game.spec.ts`) :
-      jamais lancé, les parcours ne tournent dans aucune CI — à lancer à la main
-- [ ] Amis (release de `feature/friends`) : deux comptes, une demande par pseudo, le
-      compteur dans le menu de l'autre, accepter ; la comparaison du jour reste fermée tant
-      que sa propre partie n'est pas finie, puis montre les points de l'ami
-- [ ] Amis : plus de lien d'invitation sur `/friends` ; un ancien lien
-      `/friends/invite/…` ouvre la page Amis
-- [ ] Parcours e2e « amis » (`e2e/journeys/daily-game.spec.ts`, dernier test) : jamais
-      lancé, comme les autres parcours — à lancer à la main
-- [ ] Pistes et chaud/froid (`feature/better-hints-gameplay`) : après un 1er essai faux,
-      « Plus de 30 ans, de 6 à 15 ans d'écart » et « Entre 36 et 45 ans », saisie bornée ;
-      choisir 3 pistes, puis voir 3 indices ; au résultat, chaque indice a son année et son
-      propre signalement ; un indice Célébrités dit « l'âge qu'a (ou qu'aurait) cette année X » (V21)
-- [ ] Parcours e2e `daily-game` mis à jour pour les 3 pistes : à lancer à la main, comme
-      les autres
-- [ ] Littérature, année en deux chiffres, personne nommée (`feature/literature-hints`,
-      `fix/two-digit-year-in-hints`) : en prod, un seul import avec
-      `--app.hints.import.retire-absent=true` ; rapport attendu `read=10263`, `added=1598`,
-      `named=2592`, `retired=9`, `refused={}` ; la piste Littérature apparaît (icône livre),
-      « Mai 68 » n'est plus proposé, `/admin/hints` a une colonne Littérature
-- [ ] Indices par notoriété (`feature/hint-notoriety`) : en prod, lancer l'import avec
-      `--app.hints.import.retire-absent=true` (rapport : ~8 674 ajoutés, les anciens
-      retirés, 0 refus), puis dans `/admin/hints` aucune année sous 3 catégories ; en jeu,
-      un indice dit « Source : Wikidata (CC0) » et une manche passée garde ses anciens
-      indices
-- [ ] Retours du 2026-11-11 (`fix/smoke-test-feedback`) : connecté, finir la 1re manche
-      du jour puis recharger (sur l'écran de score ou après « Affaire suivante ») →
-      reprise à la 2e manche ; le lien d'un email d'alerte ouvre la file admin même avec un
-      compte en français ; « Envoyer » du signalement d'indice lisible en thème sombre
-- [ ] Explication des pistes (`feature/lead-help`) : sur téléphone, un tap sur ⓘ ouvre la
-      bulle d'une carte, un tap ailleurs la ferme, la bulle de la colonne de droite reste
-      dans l'écran ; sur ordinateur, la bulle s'ouvre après un court survol de la carte et
-      se ferme en sortant, le clic choisit toujours la piste ; Tab sur une carte l'ouvre,
-      Échap la ferme ; l'exemple dit « il y a 29 ans » pour Titanic en 2026
-- [ ] Partage du résultat du jour (`feature/daily-share`) : partie finie, « Partager mon
-      résultat » ; sur téléphone la feuille de partage s'ouvre, sur ordinateur « Copié. »
-      puis coller dans un message : date du jour en français (13/11/2026), le score, une
-      case par manche, 🎯 pour une manche trouvée du 1er coup, le lien du site
+- [ ] Parcours e2e (`e2e/journeys/daily-game.spec.ts`, dont « invité → compte → profil »,
+      « amis » et les 3 pistes) : jamais lancés, ils ne tournent dans aucune CI — à lancer
+      à la main
+- [ ] Bulle des pistes sur ⓘ seulement (`fix/lead-help-on-info-only`) : sur ordinateur,
+      survoler une carte n'ouvre rien, survoler ⓘ ouvre sa bulle, qui se ferme en quittant
+      la carte ; Tab n'ouvre plus rien, Entrée sur ⓘ l'ouvre, Échap la ferme ; sur
+      téléphone, rien ne change (tap sur ⓘ)
 
 ## Semaine 1 — Fondations
 - [x] Initialisation projet Spring Boot (Java 25) + Angular (Claude Code)
@@ -277,8 +237,8 @@ retirer une fois tous faits.
       `feature/hint-notoriety`
 - [x] Explication des pistes (retours des joueurs : indices pas assez clairs) : chaque
       carte a une bulle avec le genre d'indice, la règle et un exemple calculé depuis
-      l'année de la partie ; survol à la souris, ⓘ au doigt, Tab au clavier — PR
-      `feature/lead-help`
+      l'année de la partie, ouverte par ⓘ seul (survol, tap ou Entrée) — PR
+      `feature/lead-help`, puis `fix/lead-help-on-info-only`
 
 ## Semaine 8 — Stabilisation et déploiement
 - [ ] Tests d'intégration sur les endpoints critiques
