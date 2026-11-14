@@ -175,7 +175,8 @@ describe('Game', () => {
       ],
       { date: '2026-11-13' },
     );
-  const expectedText = 'AgeGuessr · Nov 13, 2026 · 2340 / 3000\n🎯🟩⬛🟥\nhttps://ageguessr.app';
+  const expectedText =
+    "AgeGuessr · Case of Nov 13, 2026 cracked with flair!\n2340 / 3000 points\n🎯🟩⬛🟥\n🎯 first try · 🟩 very close · 🟥 far off · ⬛ photo withdrawn\nTake on today's case at https://ageguessr.app";
 
   it('offers to share the result only once the day is played', () => {
     load(today([finished(1), round(2)]));

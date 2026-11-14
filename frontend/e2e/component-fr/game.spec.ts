@@ -67,6 +67,8 @@ test.describe('le jeu en français', () => {
 
     await expect
       .poll(() => sharedTexts(page))
-      .toEqual([`AgeGuessr · 13/11/2026 · 2340 / 3000\n🎯🟩⬛🟥\n${new URL(baseURL!).origin}`]);
+      .toEqual([
+        `AgeGuessr · Enquête du 13/11/2026 résolue avec panache\u00a0!\n2340 / 3000 points\n🎯🟩⬛🟥\n🎯 du 1er coup · 🟩 tout près · 🟥 loin · ⬛ photo retirée\nToi aussi, mène l'enquête sur ${new URL(baseURL!).origin}`,
+      ]);
   });
 });

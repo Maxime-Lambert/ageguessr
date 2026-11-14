@@ -11,7 +11,9 @@ test.describe('daily game', () => {
 
     await expect
       .poll(() => sharedTexts(page))
-      .toEqual([`AgeGuessr · Nov 13, 2026 · 2340 / 3000\n🎯🟩⬛🟥\n${new URL(baseURL!).origin}`]);
+      .toEqual([
+        `AgeGuessr · Case of Nov 13, 2026 cracked with flair!\n2340 / 3000 points\n🎯🟩⬛🟥\n🎯 first try · 🟩 very close · 🟥 far off · ⬛ photo withdrawn\nTake on today's case at ${new URL(baseURL!).origin}`,
+      ]);
   });
 
   test('a guest plays a round from the photo to the verdict', async ({ page }) => {

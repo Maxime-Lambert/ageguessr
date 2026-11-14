@@ -1,4 +1,4 @@
-import { dailyShareText, shareText } from './game-vocabulary';
+import { dailyShareHeadline, dailyShareText, shareText } from './game-vocabulary';
 import { challengeUrl, dailyShareUrl, shareOrCopy, squares } from './share';
 import { fakeShareTarget, finished, round } from './testing';
 
@@ -39,7 +39,7 @@ describe('share', () => {
     expect(squares(rounds)).toBe('🟩🟩🟥⬛');
   });
 
-  it('puts the day, the score, the squares and the site in the daily text', () => {
+  it('tells the day, how it went, the score, the squares and what they mean, then invites', () => {
     expect(
       dailyShareText(
         '2026-11-13',
@@ -49,7 +49,33 @@ describe('share', () => {
         dailyShareUrl('https://ageguessr.app'),
         'en-US',
       ),
-    ).toBe('AgeGuessr · Nov 13, 2026 · 2340 / 3000\n🎯🟩🟥\nhttps://ageguessr.app');
+    ).toBe(
+      'AgeGuessr · Case of Nov 13, 2026 cracked with flair!\n' +
+        '2340 / 3000 points\n' +
+        '🎯🟩🟥\n' +
+        '🎯 first try · 🟩 very close · 🟥 far off\n' +
+        "Take on today's case at https://ageguessr.app",
+    );
+  });
+
+  it('explains only the squares the result holds, in a fixed order', () => {
+    const text = dailyShareText('2026-11-13', 1000, 3000, '🟥⬛🟨', '', 'en-US');
+
+    expect(text).toContain('\n🟨 close · 🟥 far off · ⬛ photo withdrawn\n');
+    expect(text).not.toContain('first try');
+  });
+
+  it('words the headline by the share of the points won, never mocking', () => {
+    const day = 'Nov 13, 2026';
+    expect(dailyShareHeadline(day, 2700, 3000)).toBe('Case of Nov 13, 2026 cracked brilliantly!');
+    expect(dailyShareHeadline(day, 2699, 3000)).toBe('Case of Nov 13, 2026 cracked with flair!');
+    expect(dailyShareHeadline(day, 1500, 3000)).toBe('Case of Nov 13, 2026 wrapped up!');
+    expect(dailyShareHeadline(day, 900, 3000)).toBe('Case of Nov 13, 2026 solved by a whisker!');
+    expect(dailyShareHeadline(day, 899, 3000)).toBe(
+      'Case of Nov 13, 2026: the trail went cold… see you tomorrow!',
+    );
+    // Every photo withdrawn: nothing to win, nothing to divide by.
+    expect(dailyShareHeadline(day, 0, 0)).toContain('the trail went cold');
   });
 
   it('keeps the UTC day of the game, whatever the time zone', () => {
