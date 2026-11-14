@@ -31,12 +31,12 @@ set its status to `Complete` and write its **Phase Summary**; run the phase's
   l'espace disque.
 
 ## Phase 1: Santé réelle
-Status: Not started
+Status: Complete
 
-- [ ] `HealthController` : DB (`JdbcTemplate`) + Redis (`StringRedisTemplate`), 503 sinon
-- [ ] `/api/health/backup` : lit `app.backup.status-file`, seuil `app.backup.max-age`
+- [x] `HealthController` : DB (`JdbcTemplate`) + Redis (`StringRedisTemplate`), 503 sinon
+- [x] `/api/health/backup` : lit `app.backup.status-file`, seuil `app.backup.max-age`
       (26 h) ; permis sans authentification dans `SecurityConfig`
-- [ ] Tests : intégration (200 base et Redis up ; 503 Redis coupé si faisable, sinon
+- [x] Tests : intégration (200 base et Redis up ; 503 Redis coupé si faisable, sinon
       unitaire avec mocks) ; unitaire de la fraîcheur (fichier absent, vieux, récent,
       illisible) avec une `Clock`
 
@@ -44,15 +44,18 @@ Status: Not started
 - `cd ageguessr-api && ./mvnw test` → vert
 
 ### Phase Summary
-_(write when phase completes)_
+`HealthController` vérifie `SELECT 1` + `PING` Redis (503 sinon, résultat réutilisé 5 s
+après la revue sécurité), `/api/health/backup` via `BackupStatus` (fichier d'epoch, seuil
+26 h, `Clock`). Tests : `BackupStatusTest`, `HealthControllerTest` (base/Redis coupés,
+réutilisation), `HealthFunctionalTest` (backup public, 503 sans fichier).
 
 ## Phase 2: Backup → statut
-Status: Not started
+Status: Complete
 
-- [ ] `pg-backup.sh` : après un dump réussi, écrit `date +%s` dans
+- [x] `pg-backup.sh` : après un dump réussi, écrit `date +%s` dans
       `$STATUS_DIR/last-success` (écriture atomique, optionnel si `STATUS_DIR` vide)
-- [ ] `test-backup.sh` : vérifie le fichier après `once`, et qu'un échec ne le touche pas
-- [ ] `docker-compose.prod.yml` : volume `backup_status` (rw dans backup, ro dans
+- [x] `test-backup.sh` : vérifie le fichier après `once`, et qu'un échec ne le touche pas
+- [x] `docker-compose.prod.yml` : volume `backup_status` (rw dans backup, ro dans
       backend), `APP_BACKUP_STATUS_FILE` pour le backend
 
 ### Verification Plan
@@ -60,38 +63,49 @@ Status: Not started
 - `docker compose -f docker-compose.prod.yml config -q` → valide
 
 ### Phase Summary
-_(write when phase completes)_
+`pg-backup.sh` écrit `last-success` (atomique) si `STATUS_DIR` ; volume `backup_status`
+rw dans backup, ro dans backend (`BACKUP_STATUS_FILE`). Vérifié : shellcheck, `test-backup.sh`
+→ OK (fichier écrit, intact après un échec) ; compose local : l'uid 10001 du backend lit le
+fichier.
 
 ## Phase 3: Emails d'erreur
-Status: Not started
+Status: Complete
 
-- [ ] `shared/alerting/ErrorAlerts` (regroupement, cadence, contenu limité, `Clock`) et
+- [x] `shared/alerting/ErrorAlerts` (regroupement, cadence, contenu limité, `Clock`) et
       `ErrorAlertAppender` (Logback, filtre ERROR, exclusions), branché sur
       `ApplicationReadyEvent`, débranché à l'arrêt
-- [ ] Tests unitaires : 1er email immédiat, regroupement pendant 15 min puis résumé,
+- [x] Tests unitaires : 1er email immédiat, regroupement pendant 15 min puis résumé,
       troncature, échappement HTML, rien sans `ADMIN_EMAIL`, logs d'email ignorés
-- [ ] Test d'intégration : `log.error` dans un bean → un email dans `RecordingEmailSender`
+- [x] Test d'intégration : `log.error` dans un bean → un email dans `RecordingEmailSender`
 
 ### Verification Plan
 - `cd ageguessr-api && ./mvnw test` → vert
 
 ### Phase Summary
-_(write when phase completes)_
+`shared/alerting` : `ErrorAlerts` (1er email immédiat, puis 1 / 15 min regroupé, 5
+lignes, message tronqué à 300, échappé en UTF-8), `ErrorAlertAppender` (ThresholdFilter
+ERROR, ignore email/alerting/`com.resend.`), `ErrorAlertsWiring` (branché à
+ApplicationReadyEvent, débranché + attente 5 s à l'arrêt, flush chaque minute, désactivé en
+tests). Tests unitaires + `ErrorAlertsFunctionalTest` (`@DirtiesContext`).
 
 ## Phase 4: Docs et réglage UptimeRobot
-Status: Not started
+Status: Complete
 
-- [ ] `architecture.md` : section « Monitoring » (décisions, ce qui alerte quoi)
-- [ ] Roadmap : cocher Monitoring ; « À vérifier » : les deux surveillances UptimeRobot
+- [x] `architecture.md` : section « Monitoring » (décisions, ce qui alerte quoi)
+- [x] Roadmap : cocher Monitoring ; « À vérifier » : les deux surveillances UptimeRobot
       créées, une alerte reçue en coupant… (procédure de test sans casser la prod)
-- [ ] Instructions UptimeRobot pour l'utilisateur dans la PR (2 monitors HTTP)
-- [ ] Revues code-reviewer + architecture-reviewer
+- [x] Instructions UptimeRobot pour l'utilisateur dans la PR (2 monitors HTTP)
+- [x] Revues code-reviewer + architecture-reviewer
 
 ### Verification Plan
 - `cd frontend && pnpm test` → vert (pas de changement attendu)
 
 ### Phase Summary
-_(write when phase completes)_
+`architecture.md` « Monitoring » (tableau panne → alerte, règle sur `log.error`), roadmap
+(Monitoring coché, vérification UptimeRobot ajoutée). Revues : architecture (0 bloquant ;
+corrigés : appender qui fuyait entre contextes de test, plan, awaitTermination,
+ThresholdFilter, visibilité) et sécurité (0 bloquant/important ; corrigés : cache 5 s,
+`com.resend.` ignoré, règle documentée). Vérifié : `./mvnw test` 1242 verts.
 
 ## Tests par catégorie
 - **Unitaire** : fraîcheur du backup, regroupement/cadence/contenu des alertes.
@@ -110,7 +124,12 @@ _(write when phase completes)_
   côtés).
 
 ## Final Recap
-_(write when all phases complete)_
+Site, base, Redis et backup surveillés par UptimeRobot via deux endpoints publics muets ;
+erreurs du backend envoyées par email à l'admin, regroupées, sans données de joueur.
+Reste à l'utilisateur : créer les deux surveillances UptimeRobot.
 
 ## Deployment Plan
-_(write when all phases complete)_
+Release `develop` → `main` (merge commit). Au déploiement : volume `backup_status` créé,
+`backup` recréé (nouvelle variable) et dump immédiat → `/api/health/backup` passe à 200 en
+quelques secondes. Puis, dans UptimeRobot : deux monitors HTTP(S), 5 min,
+`https://ageguessr.app/api/health` et `https://ageguessr.app/api/health/backup`.

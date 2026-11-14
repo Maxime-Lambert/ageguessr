@@ -47,6 +47,7 @@ class ErrorAlertAppenderTest {
         context.getLogger("app.ageguessr.features.game.Foo").warn("only a warning");
         context.getLogger("app.ageguessr.shared.email.ResendEmailSender").error("Resend down");
         context.getLogger("app.ageguessr.shared.alerting.ErrorAlerts").error("could not send");
+        context.getLogger("com.resend.services.emails.Emails").error("HTTP 503");
 
         assertThat(sent).isEmpty();
     }

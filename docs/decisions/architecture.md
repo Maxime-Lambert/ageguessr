@@ -1296,6 +1296,10 @@ regarder.
   chez Resend. Envoi sur un thread dédié ; les logs du code d'email et d'alerte sont
   ignorés (Resend en panne ne boucle pas). Désactivé dans les tests
   (`app.alerts.errors-enabled=false`) et sans `ADMIN_EMAIL`.
+- **Règle pour tout nouveau code** : un message de `log.error` part par email chez Resend.
+  Jamais d'email, d'adresse IP, de token ni de pseudo de joueur dedans (les messages
+  existants n'en ont pas, vérifié le 2026-11-14) : un identifiant technique suffit.
+- `/api/health` réutilise son résultat 5 s : le marteler ne martèle pas la base.
 - Hors périmètre : métriques et tableaux de bord, journal centralisé, alerte sur
   l'espace disque.
 

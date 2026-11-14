@@ -8,11 +8,14 @@ import java.time.Instant;
 
 /**
  * Hands every ERROR log line to {@link ErrorAlerts}. The logs of the email and alerting
- * code are left out: an alert that cannot be sent must not raise another alert.
+ * code, and of the email provider's SDK, are left out: an alert that cannot be sent must
+ * not raise another alert.
  */
 class ErrorAlertAppender extends AppenderBase<ILoggingEvent> {
 
-    private static final String[] IGNORED = {"app.ageguessr.shared.email.", "app.ageguessr.shared.alerting."};
+    private static final String[] IGNORED = {
+        "app.ageguessr.shared.email.", "app.ageguessr.shared.alerting.", "com.resend."
+    };
 
     private final ErrorAlerts alerts;
 

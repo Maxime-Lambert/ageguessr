@@ -1,5 +1,8 @@
 package app.ageguessr.config;
 
+import java.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.RedisConnection;
@@ -24,14 +27,26 @@ public class HealthController {
     private static final ResponseEntity<String> UNAVAILABLE =
             ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("UNAVAILABLE");
 
+    /** A check reused this long: hammering this public endpoint never hammers the database. */
+    static final Duration REUSE = Duration.ofSeconds(5);
+
     private final JdbcTemplate jdbc;
     private final StringRedisTemplate redis;
     private final BackupStatus backupStatus;
+    private final Clock clock;
+
+    private volatile Instant checkedAt = Instant.EPOCH;
+    private volatile boolean answered;
 
     /** Up only when PostgreSQL and Redis both answer: without them no request works. */
     @GetMapping("/api/health")
     ResponseEntity<String> health() {
-        return dependenciesAnswer() ? ResponseEntity.ok("OK") : UNAVAILABLE;
+        Instant now = clock.instant();
+        if (!now.isBefore(checkedAt.plus(REUSE))) {
+            answered = dependenciesAnswer();
+            checkedAt = now;
+        }
+        return answered ? ResponseEntity.ok("OK") : UNAVAILABLE;
     }
 
     /** Up when the last successful database dump is recent (the backup service writes it). */
