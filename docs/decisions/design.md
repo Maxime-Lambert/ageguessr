@@ -296,6 +296,13 @@ modifier ce fichier, sans toucher aux écrans.
 `INVESTIGATION_VOICE` et `NEUTRAL_VOICE` ont les mêmes clés (vérifié par un test), et la
 constante `VOICE` choisit entre les deux.
 
+**Essai inverse** (2026-11-14, branche `feature/neutral-voice`) : `VOICE =
+NEUTRAL_VOICE`, et les textes qui contournaient `VOICE` (règles, chargement, profil,
+amis, partage du jour, bulles des indices, titre de la série) réécrits en neutre, en
+anglais et en français. **Les mots seulement** : le visuel archives (coupures de journal,
+sépia, typographie) reste. Gardé, cet essai entraînera la suppression de
+`INVESTIGATION_VOICE` ; abandonné, la branche n'est pas fusionnée.
+
 **Périmètre** : seulement les écrans de jeu. Compte, connexion et inscription restent
 en vocabulaire neutre (*Sign in* reste *Sign in*) : ce sont des parcours standards où
 l'on cherche des repères familiers.

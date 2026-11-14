@@ -18,10 +18,10 @@ describe('FriendsToday', () => {
     return fixture.nativeElement as HTMLElement;
   };
 
-  it('asks to finish today’s file first', () => {
+  it('asks to finish today’s game first', () => {
     const page = render(lockedToday());
 
-    expect(page.textContent).toContain("Finish today's file to see your friends' scores.");
+    expect(page.textContent).toContain("Finish today's game to see your friends' scores.");
     expect(page.querySelector('a')?.getAttribute('href')).toBe('/');
     expect(page.querySelectorAll('[data-player]')).toHaveLength(0);
   });

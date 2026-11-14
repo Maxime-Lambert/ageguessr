@@ -501,12 +501,12 @@
         <target>Page Commons</target>
       </trans-unit>
       <trans-unit id="game.loading" datatype="html">
-        <source>Opening the file…</source>
-        <target>Ouverture du dossier…</target>
+        <source>Loading…</source>
+        <target>Chargement…</target>
       </trans-unit>
       <trans-unit id="game.noGame" datatype="html">
-        <source>No case today. Come back tomorrow.</source>
-        <target>Pas d'affaire aujourd'hui. Revenez demain.</target>
+        <source>No game today. Come back tomorrow.</source>
+        <target>Pas de partie aujourd'hui. Revenez demain.</target>
       </trans-unit>
       <trans-unit id="game.retry" datatype="html">
         <source>Try again</source>
@@ -525,12 +525,12 @@
         <target>Cette photo a été retirée pour tout le monde. Elle ne compte pas dans votre score.</target>
       </trans-unit>
       <trans-unit id="game.closed" datatype="html">
-        <source>Today&apos;s file is closed. Here is the new one.</source>
-        <target>Le dossier du jour est clos. Voici le nouveau.</target>
+        <source>Today's game is over. Here is the new one.</source>
+        <target>La partie du jour est terminée. Voici la nouvelle.</target>
       </trans-unit>
       <trans-unit id="game.comeBack" datatype="html">
-        <source>A new file opens at midnight UTC.</source>
-        <target>Un nouveau dossier s'ouvre à minuit UTC.</target>
+        <source>A new game starts at midnight UTC.</source>
+        <target>Une nouvelle partie commence à minuit UTC.</target>
       </trans-unit>
       <trans-unit id="game.hintLanguage" datatype="html">
         <source>Hints in</source>
@@ -573,8 +573,8 @@
         <target>Littérature</target>
       </trans-unit>
       <trans-unit id="game.leadHelp.button" datatype="html">
-        <source>How the <x id="category" equiv-text="category"/> lead works</source>
-        <target>Comment marche la piste <x id="category" equiv-text="category"/></target>
+        <source>How the <x id="category" equiv-text="category"/> hint works</source>
+        <target>Comment marche l'indice <x id="category" equiv-text="category"/></target>
       </trans-unit>
       <trans-unit id="game.leadHelp.rule" datatype="html">
         <source>The fact dates from as many years ago as the person's age on the photo.</source>
@@ -689,8 +689,8 @@
         <target>Trop de tentatives. Attendez une minute, puis réessayez.</target>
       </trans-unit>
       <trans-unit id="title.free" datatype="html">
-        <source>Free investigation · AgeGuessr</source>
-        <target>Enquête libre · AgeGuessr</target>
+        <source>Series · AgeGuessr</source>
+        <target>Série · AgeGuessr</target>
       </trans-unit>
       <trans-unit id="game.voice.freeMode" datatype="html">
         <source>Free investigation</source>
@@ -731,6 +731,14 @@
       <trans-unit id="game.noPhotos" datatype="html">
         <source>No photo is available right now. Try again later.</source>
         <target>Aucune photo n'est disponible pour le moment. Réessayez plus tard.</target>
+      </trans-unit>
+      <trans-unit id="game.voice.lengthOne" datatype="html">
+        <source>1 case</source>
+        <target>1 affaire</target>
+      </trans-unit>
+      <trans-unit id="game.neutral.lengthOne" datatype="html">
+        <source>1 round</source>
+        <target>1 manche</target>
       </trans-unit>
       <trans-unit id="game.voice.length" datatype="html">
         <source><x id="count" equiv-text="count"/> cases</source>
@@ -945,28 +953,28 @@
         <target>photo retirée</target>
       </trans-unit>
       <trans-unit id="game.share.brilliant" datatype="html">
-        <source>Case of <x id="day" equiv-text="day"/> cracked brilliantly!</source>
-        <target>Enquête du <x id="day" equiv-text="day"/> résolue avec brio !</target>
+        <source><x id="day" equiv-text="day"/>: brilliant!</source>
+        <target>Partie du <x id="day" equiv-text="day"/> : brillant !</target>
       </trans-unit>
-      <trans-unit id="game.share.flair" datatype="html">
-        <source>Case of <x id="day" equiv-text="day"/> cracked with flair!</source>
-        <target>Enquête du <x id="day" equiv-text="day"/> résolue avec panache !</target>
+      <trans-unit id="game.share.wellPlayed" datatype="html">
+        <source><x id="day" equiv-text="day"/>: well played!</source>
+        <target>Partie du <x id="day" equiv-text="day"/> : bien joué !</target>
       </trans-unit>
-      <trans-unit id="game.share.solved" datatype="html">
-        <source>Case of <x id="day" equiv-text="day"/> wrapped up!</source>
-        <target>Enquête du <x id="day" equiv-text="day"/> bouclée !</target>
+      <trans-unit id="game.share.notBad" datatype="html">
+        <source><x id="day" equiv-text="day"/>: not bad!</source>
+        <target>Partie du <x id="day" equiv-text="day"/> : pas mal !</target>
       </trans-unit>
-      <trans-unit id="game.share.whisker" datatype="html">
-        <source>Case of <x id="day" equiv-text="day"/> solved by a whisker!</source>
-        <target>Enquête du <x id="day" equiv-text="day"/> résolue de justesse !</target>
+      <trans-unit id="game.share.tough" datatype="html">
+        <source><x id="day" equiv-text="day"/>: a tough one!</source>
+        <target>Partie du <x id="day" equiv-text="day"/> : pas facile !</target>
       </trans-unit>
-      <trans-unit id="game.share.cold" datatype="html">
-        <source>Case of <x id="day" equiv-text="day"/>: the trail went cold… see you tomorrow!</source>
-        <target>Enquête du <x id="day" equiv-text="day"/> : la piste s'est refroidie… à demain !</target>
+      <trans-unit id="game.share.tomorrow" datatype="html">
+        <source><x id="day" equiv-text="day"/>: better luck tomorrow!</source>
+        <target>Partie du <x id="day" equiv-text="day"/> : ça ira mieux demain !</target>
       </trans-unit>
       <trans-unit id="game.share.invite" datatype="html">
-        <source>Take on today's case at <x id="url" equiv-text="url"/></source>
-        <target>Toi aussi, mène l'enquête sur <x id="url" equiv-text="url"/></target>
+        <source>Play today's game at <x id="url" equiv-text="url"/></source>
+        <target>Toi aussi, joue sur <x id="url" equiv-text="url"/></target>
       </trans-unit>
       <trans-unit id="game.shareText" datatype="html">
         <source>AgeGuessr · <x id="challenge" equiv-text="GAME_TEXT.challenge"/> · <x id="points" equiv-text="points"/> / <x id="max" equiv-text="max"/></source>
@@ -1057,8 +1065,8 @@
         <target>jours d'affilée</target>
       </trans-unit>
       <trans-unit id="profile.gamesPlayed" datatype="html">
-        <source>Files closed</source>
-        <target>Dossiers classés</target>
+        <source>Games finished</source>
+        <target>Parties terminées</target>
       </trans-unit>
       <trans-unit id="profile.average" datatype="html">
         <source>Average score</source>
@@ -1069,20 +1077,20 @@
         <target>Meilleur score</target>
       </trans-unit>
       <trans-unit id="profile.history" datatype="html">
-        <source>Past files</source>
-        <target>Dossiers passés</target>
+        <source>Past games</source>
+        <target>Parties passées</target>
       </trans-unit>
       <trans-unit id="profile.streakExplained" datatype="html">
-        <source>A streak counts the days in a row on which you finished the day's file.</source>
-        <target>Une série compte les jours d'affilée où vous avez terminé le dossier du jour.</target>
+        <source>A streak counts the days in a row on which you finished the daily game.</source>
+        <target>Une série compte les jours d'affilée où vous avez terminé la partie du jour.</target>
       </trans-unit>
       <trans-unit id="profile.empty" datatype="html">
-        <source>No file closed yet. Your games will show up here.</source>
-        <target>Aucun dossier classé pour l'instant. Vos parties apparaîtront ici.</target>
+        <source>No game finished yet. Your games will show up here.</source>
+        <target>Aucune partie terminée pour l'instant. Vos parties apparaîtront ici.</target>
       </trans-unit>
       <trans-unit id="profile.play" datatype="html">
-        <source>Open today's file</source>
-        <target>Ouvrir le dossier du jour</target>
+        <source>Play today's game</source>
+        <target>Jouer la partie du jour</target>
       </trans-unit>
       <trans-unit id="profile.incomplete" datatype="html">
         <source>Not finished</source>
@@ -1101,8 +1109,8 @@
         <target>Vos essais :</target>
       </trans-unit>
       <trans-unit id="profile.older" datatype="html">
-        <source>Older files</source>
-        <target>Dossiers plus anciens</target>
+        <source>Older games</source>
+        <target>Parties plus anciennes</target>
       </trans-unit>
       <trans-unit id="profile.loadError" datatype="html">
         <source>Your history could not be loaded.</source>
@@ -1113,16 +1121,16 @@
         <target>Comment jouer</target>
       </trans-unit>
       <trans-unit id="game.ruleGuess" datatype="html">
-        <source>Guess how old the person was on the photo. You get two guesses per case.</source>
-        <target>Devinez l'âge de la personne sur la photo. Vous avez deux essais par affaire.</target>
+        <source>Guess how old the person was on the photo. You get two guesses per round.</source>
+        <target>Devinez l'âge de la personne sur la photo. Vous avez deux essais par manche.</target>
       </trans-unit>
       <trans-unit id="game.ruleLead" datatype="html">
         <source>After the first, you learn whether they were older or younger, and by how much: 1 to 5 years, 6 to 15, or more.</source>
         <target>Après le premier, vous savez si elle était plus âgée ou plus jeune, et de combien : de 1 à 5 ans, de 6 à 15, ou davantage.</target>
       </trans-unit>
       <trans-unit id="game.ruleHints" datatype="html">
-        <source>Then you pick a few leads, each a fact from as many years ago as their age on the photo: a film released 40 years ago means they were 40 on it.</source>
-        <target>Puis vous choisissez quelques pistes, chacune un fait survenu il y a autant d'années que son âge sur la photo : un film sorti il y a 40 ans veut dire qu'elle y avait 40 ans.</target>
+        <source>Then you pick a few hints, each a fact from as many years ago as their age on the photo: a film released 40 years ago means they were 40 on it.</source>
+        <target>Puis vous choisissez quelques indices, chacun un fait survenu il y a autant d'années que son âge sur la photo : un film sorti il y a 40 ans veut dire qu'elle y avait 40 ans.</target>
       </trans-unit>
       <trans-unit id="game.voice.showHints" datatype="html">
         <source>Open these leads</source>
@@ -1169,16 +1177,16 @@
         <target>Choix : <x id="picked" equiv-text="picked"/> sur <x id="count" equiv-text="count"/></target>
       </trans-unit>
       <trans-unit id="game.rulePoints" datatype="html">
-        <source>Each guess earns up to 500 points, more the closer it is; a spot-on first guess is worth 1000. A new file opens every day at midnight UTC.</source>
-        <target>Chaque essai rapporte jusqu'à 500 points, d'autant plus qu'il est proche ; un premier essai exact en vaut 1000. Un nouveau dossier s'ouvre chaque jour à minuit UTC.</target>
+        <source>Each guess earns up to 500 points, more the closer it is; a spot-on first guess is worth 1000. A new game starts every day at midnight UTC.</source>
+        <target>Chaque essai rapporte jusqu'à 500 points, d'autant plus qu'il est proche ; un premier essai exact en vaut 1000. Une nouvelle partie commence chaque jour à minuit UTC.</target>
       </trans-unit>
       <trans-unit id="game.gotIt" datatype="html">
         <source>Got it</source>
         <target>Compris</target>
       </trans-unit>
       <trans-unit id="game.playToday" datatype="html">
-        <source>Open today&apos;s file</source>
-        <target>Ouvrir le dossier du jour</target>
+        <source>Play today's game</source>
+        <target>Jouer la partie du jour</target>
       </trans-unit>
       <trans-unit id="game.seriesDuration" datatype="html">
         <source>About <x id="minutes" equiv-text="minutes"/> min</source>
@@ -1209,8 +1217,8 @@
         <target>Score</target>
       </trans-unit>
       <trans-unit id="profile.finishedLately" datatype="html">
-        <source>Files finished in the last 30 days: <x id="count" equiv-text="count"/></source>
-        <target>Dossiers terminés ces 30 derniers jours : <x id="count" equiv-text="count"/></target>
+        <source>Games finished in the last 30 days: <x id="count" equiv-text="count"/></source>
+        <target>Parties terminées ces 30 derniers jours : <x id="count" equiv-text="count"/></target>
       </trans-unit>
       <trans-unit id="title.friends" datatype="html">
         <source>Friends · AgeGuessr</source>
@@ -1297,16 +1305,16 @@
         <target>Pas encore d'ami. Envoyez-leur une demande avec leur pseudo.</target>
       </trans-unit>
       <trans-unit id="friends.todayTitle" datatype="html">
-        <source>Today&apos;s file</source>
-        <target>Le dossier du jour</target>
+        <source>Today's game</source>
+        <target>La partie du jour</target>
       </trans-unit>
       <trans-unit id="friends.todayLocked" datatype="html">
-        <source>Finish today&apos;s file to see your friends&apos; scores.</source>
-        <target>Terminez le dossier du jour pour voir les scores de vos amis.</target>
+        <source>Finish today's game to see your friends' scores.</source>
+        <target>Terminez la partie du jour pour voir les scores de vos amis.</target>
       </trans-unit>
       <trans-unit id="friends.playToday" datatype="html">
-        <source>Open today&apos;s file</source>
-        <target>Ouvrir le dossier du jour</target>
+        <source>Play today's game</source>
+        <target>Jouer la partie du jour</target>
       </trans-unit>
       <trans-unit id="friends.inProgress" datatype="html">
         <source>In progress</source>
@@ -1337,8 +1345,8 @@
         <target>Classement</target>
       </trans-unit>
       <trans-unit id="friends.leaderboardHelp" datatype="html">
-        <source>Average score per daily file finished.</source>
-        <target>Score moyen par dossier du jour terminé.</target>
+        <source>Average score per daily game finished.</source>
+        <target>Score moyen par partie du jour terminée.</target>
       </trans-unit>
       <trans-unit id="friends.rank" datatype="html">
         <source>Rank</source>
@@ -1353,16 +1361,16 @@
         <target>Moyenne</target>
       </trans-unit>
       <trans-unit id="friends.games" datatype="html">
-        <source>Files</source>
-        <target>Dossiers</target>
+        <source>Games</source>
+        <target>Parties</target>
       </trans-unit>
       <trans-unit id="friends.streak" datatype="html">
         <source>Streak</source>
         <target>Série</target>
       </trans-unit>
       <trans-unit id="friends.noGame" datatype="html">
-        <source>No file yet</source>
-        <target>Aucun dossier</target>
+        <source>No game yet</source>
+        <target>Aucune partie</target>
       </trans-unit>
       <trans-unit id="friends.aloneOnBoard" datatype="html">
         <source>Add friends to compare your scores.</source>

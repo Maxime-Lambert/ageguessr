@@ -73,7 +73,7 @@ export async function skipRules(page: Page): Promise<void> {
 export async function pickLeads(
   page: Page,
   names = ['Music', 'Film', 'Sport'],
-  open = 'Open these leads',
+  open = 'Show these hints',
 ) {
   for (const name of names) {
     await page.getByRole('button', { name, exact: true }).click();

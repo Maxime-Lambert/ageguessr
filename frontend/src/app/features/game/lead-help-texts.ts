@@ -74,5 +74,5 @@ export function leadHelp(category: HintCategory, gameYear: number): LeadHelp {
 
 /** The name of the ⓘ button: which card it explains, the category's label given. */
 export function leadHelpLabel(label: string): string {
-  return $localize`:@@game.leadHelp.button:How the ${label}:category: lead works`;
+  return $localize`:@@game.leadHelp.button:How the ${label}:category: hint works`;
 }

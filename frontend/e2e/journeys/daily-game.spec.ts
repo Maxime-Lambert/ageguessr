@@ -9,7 +9,7 @@ test.describe.configure({ mode: 'serial' });
  * Today's game against the full app, as a guest: the e2e-profiled backend replaces
  * today's rounds with three known people (GameTestSupportController), aged 40, 55 and 30.
  */
-test('a guest plays the three rounds of the day, through a reload, to the case report', async ({
+test('a guest plays the three rounds of the day, through a reload, to the summary', async ({
   page,
   request,
 }) => {
@@ -21,7 +21,7 @@ test('a guest plays the three rounds of the day, through a reload, to the case r
   const age = page.getByLabel('Age');
 
   // Round 1: a wrong guess, a hint, then a reload in the middle of the round.
-  await expect(page.getByRole('heading', { name: 'Case 1 of 3' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Round 1 of 3' })).toBeVisible();
   await age.fill('30');
   await page.getByRole('button', { name: 'Guess', exact: true }).click();
   await expect(page.getByText('Older than 30, by 6 to 15 years')).toBeVisible();
@@ -31,7 +31,7 @@ test('a guest plays the three rounds of the day, through a reload, to the case r
   await expect(hint).toBeVisible();
 
   await page.reload();
-  await expect(page.getByRole('heading', { name: 'Case 1 of 3' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Round 1 of 3' })).toBeVisible();
   await expect(page.getByText('Older than 30, by 6 to 15 years')).toBeVisible();
   await expect(hint).toBeVisible();
   await expect(page.getByText(/E2E SPORT hint|Indice E2E SPORT/)).toBeVisible();
@@ -40,30 +40,30 @@ test('a guest plays the three rounds of the day, through a reload, to the case r
   await page.getByRole('button', { name: 'Final guess' }).click();
   await expect(page.getByRole('link', { name: /E2E 1$|E2E Person 1/ })).toBeVisible();
   await expect(page.getByText('E2E Photographer')).toBeVisible();
-  await page.getByRole('button', { name: 'Next case' }).click();
+  await page.getByRole('button', { name: 'Next round' }).click();
 
   // Round 2: an exact first guess closes the round at once.
-  await expect(page.getByRole('heading', { name: 'Case 2 of 3' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Round 2 of 3' })).toBeVisible();
   await age.fill('55');
   await page.getByRole('button', { name: 'Guess', exact: true }).click();
   await expect(page.getByText('Spot on, first try.')).toBeVisible();
-  await page.getByRole('button', { name: 'Next case' }).click();
+  await page.getByRole('button', { name: 'Next round' }).click();
 
   // Round 3, then the report: 184 + 500, 1 000, 184 + 500.
-  await expect(page.getByRole('heading', { name: 'Case 3 of 3' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Round 3 of 3' })).toBeVisible();
   await age.fill('20');
   await page.getByRole('button', { name: 'Guess', exact: true }).click();
   await pickLeads(page);
   await age.fill('30');
   await page.getByRole('button', { name: 'Final guess' }).click();
-  await page.getByRole('button', { name: 'See the case report' }).click();
+  await page.getByRole('button', { name: 'See the summary' }).click();
 
-  await expect(page.getByRole('heading', { name: 'Case report' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Summary' })).toBeVisible();
   await expect(page.getByText('2368 out of 3000')).toBeVisible();
 
   // The day is played: coming back shows the report, not a new round.
   await page.reload();
-  await expect(page.getByRole('heading', { name: 'Case report' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Summary' })).toBeVisible();
 });
 
 test('a guest who then signs up finds the day on the profile, with a streak of 1', async ({
@@ -77,13 +77,11 @@ test('a guest who then signs up finds the day on the profile, with a streak of 1
   await page.goto('/en/');
   const age = page.getByLabel('Age');
   for (const [index, years] of [40, 55, 30].entries()) {
-    await expect(page.getByRole('heading', { name: `Case ${index + 1} of 3` })).toBeVisible();
+    await expect(page.getByRole('heading', { name: `Round ${index + 1} of 3` })).toBeVisible();
     await age.fill(String(years));
     await page.getByRole('button', { name: 'Guess', exact: true }).click();
     await expect(page.getByText('Spot on, first try.')).toBeVisible();
-    await page
-      .getByRole('button', { name: index < 2 ? 'Next case' : 'See the case report' })
-      .click();
+    await page.getByRole('button', { name: index < 2 ? 'Next round' : 'See the summary' }).click();
   }
   await expect(page.getByText('3000 out of 3000')).toBeVisible();
 
@@ -142,15 +140,15 @@ test('two players become friends and compare the day', async ({ browser, request
 
   // Locked for Alice until her own day is done; Bob plays first.
   await alice.reload();
-  await expect(alice.getByText("Finish today's file to see your friends' scores.")).toBeVisible();
+  await expect(alice.getByText("Finish today's game to see your friends' scores.")).toBeVisible();
   for (const playing of [bob, alice]) {
     await playing.goto('/en/');
     for (const [index, years] of [40, 55, 30].entries()) {
-      await expect(playing.getByRole('heading', { name: `Case ${index + 1} of 3` })).toBeVisible();
+      await expect(playing.getByRole('heading', { name: `Round ${index + 1} of 3` })).toBeVisible();
       await playing.getByLabel('Age').fill(String(years));
       await playing.getByRole('button', { name: 'Guess', exact: true }).click();
       await playing
-        .getByRole('button', { name: index < 2 ? 'Next case' : 'See the case report' })
+        .getByRole('button', { name: index < 2 ? 'Next round' : 'See the summary' })
         .click();
     }
   }

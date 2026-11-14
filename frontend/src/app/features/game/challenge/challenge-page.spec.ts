@@ -50,7 +50,7 @@ describe('ChallengePage', () => {
 
   it('says who sent it, then lets a guest join under a name and play', () => {
     opened(challenge());
-    expect(page.textContent).toContain('Sherlock challenges you on 5 cases.');
+    expect(page.textContent).toContain('Sherlock challenges you on 5 rounds.');
     expect(page.textContent).toContain(GAME_TEXT.onceOnly);
 
     const input = page.querySelector<HTMLInputElement>('input[autocomplete="nickname"]')!;

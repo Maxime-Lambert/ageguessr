@@ -8,12 +8,12 @@ test.describe('signalements en français', () => {
 
     await page.getByLabel('Âge').fill('30');
     await page.getByRole('button', { name: 'Valider' }).click();
-    await pickLeads(page, ['Musique', 'Cinéma', 'Sport'], 'Ouvrir ces pistes');
+    await pickLeads(page, ['Musique', 'Cinéma', 'Sport'], 'Voir ces indices');
     await page.getByLabel('Âge').fill('38');
     await page.getByRole('button', { name: 'Dernier essai' }).click();
     await expect(page.getByRole('link', { name: 'Jane Doe' })).toBeVisible();
 
-    await page.getByRole('button', { name: 'Signaler cette piste' }).click();
+    await page.getByRole('button', { name: 'Signaler cet indice' }).click();
     await page.getByLabel("L'année est fausse").check();
     await page.getByRole('button', { name: 'Envoyer' }).click();
 

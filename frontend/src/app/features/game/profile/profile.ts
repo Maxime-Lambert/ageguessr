@@ -49,25 +49,25 @@ export class Profile {
     currentStreak: $localize`:@@profile.currentStreak:Current streak`,
     bestStreak: $localize`:@@profile.bestStreak:Best streak`,
     days: $localize`:@@profile.days:days in a row`,
-    gamesPlayed: $localize`:@@profile.gamesPlayed:Files closed`,
+    gamesPlayed: $localize`:@@profile.gamesPlayed:Games finished`,
     average: $localize`:@@profile.average:Average score`,
     best: $localize`:@@profile.best:Best score`,
-    history: $localize`:@@profile.history:Past files`,
-    streakExplained: $localize`:@@profile.streakExplained:A streak counts the days in a row on which you finished the day's file.`,
-    empty: $localize`:@@profile.empty:No file closed yet. Your games will show up here.`,
-    play: $localize`:@@profile.play:Open today's file`,
+    history: $localize`:@@profile.history:Past games`,
+    streakExplained: $localize`:@@profile.streakExplained:A streak counts the days in a row on which you finished the daily game.`,
+    empty: $localize`:@@profile.empty:No game finished yet. Your games will show up here.`,
+    play: $localize`:@@profile.play:Play today's game`,
     incomplete: $localize`:@@profile.incomplete:Not finished`,
     roundNotFinished: $localize`:@@profile.roundNotFinished:Not finished`,
     years: $localize`:@@profile.years:years old`,
     // The colon is part of the text: French puts a space before it.
     guesses: $localize`:@@profile.guesses:Your guesses:`,
-    older: $localize`:@@profile.older:Older files`,
+    older: $localize`:@@profile.older:Older games`,
     loadError: $localize`:@@profile.loadError:Your history could not be loaded.`,
     lastDays: $localize`:@@profile.lastDays:Last 30 days`,
     notPlayed: $localize`:@@profile.notPlayed:Not played`,
     score: $localize`:@@profile.score:Score`,
     finishedLately: (count: number) =>
-      $localize`:@@profile.finishedLately:Files finished in the last 30 days: ${count}:count:`,
+      $localize`:@@profile.finishedLately:Games finished in the last 30 days: ${count}:count:`,
   };
 
   /**

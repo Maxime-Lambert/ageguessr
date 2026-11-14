@@ -95,7 +95,7 @@ describe('Profile', () => {
     );
     expect(tiles).toEqual([
       'Best streak 9',
-      'Files closed 12',
+      'Games finished 12',
       'Average score 1,820',
       'Best score 2,750',
     ]);
@@ -126,7 +126,7 @@ describe('Profile', () => {
       expect(squares[28].className).toContain('border-dashed');
       expect(squares[29].className).toMatch(/bg-score(?!\/)/);
       expect(root.querySelector('.sr-only')?.textContent).toContain(
-        'Files finished in the last 30 days: 2',
+        'Games finished in the last 30 days: 2',
       );
     });
   });
@@ -141,7 +141,7 @@ describe('Profile', () => {
     expect(text).toContain('1,734 out of 3,000');
     expect(text).toContain('Jane Doe · 52 years old');
     expect(text).toContain('Your guesses: 45 → 50');
-    expect(text).toContain('Withdrawn from the file');
+    expect(text).toContain('Photo removed');
     expect(text).not.toContain('Not finished');
     expect(day.querySelector('img')).toBeNull();
   });
@@ -177,8 +177,8 @@ describe('Profile', () => {
     );
     const root = page();
 
-    expect(root.textContent).toContain('No file closed yet.');
-    expect(root.querySelector('a[href="/"]')?.textContent).toContain("Open today's file");
+    expect(root.textContent).toContain('No game finished yet.');
+    expect(root.querySelector('a[href="/"]')?.textContent).toContain("Play today's game");
   });
 
   it('offers to try again after an error', () => {
@@ -199,7 +199,7 @@ describe('Profile', () => {
     page();
     respond(history({ hasMore: true }));
     const older = Array.from(page().querySelectorAll<HTMLButtonElement>('button')).find((button) =>
-      button.textContent?.includes('Older files'),
+      button.textContent?.includes('Older games'),
     )!;
 
     older.click();
@@ -209,7 +209,7 @@ describe('Profile', () => {
     expect(root.querySelectorAll('ol > li')).toHaveLength(2);
     expect(
       Array.from(root.querySelectorAll('button')).some((b) =>
-        b.textContent?.includes('Older files'),
+        b.textContent?.includes('Older games'),
       ),
     ).toBe(false);
   });
