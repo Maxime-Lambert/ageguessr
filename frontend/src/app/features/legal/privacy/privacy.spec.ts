@@ -113,6 +113,19 @@ describe('Privacy', () => {
 
     expect(page.querySelector('h1')?.textContent).toBe('Privacy Policy');
   });
+
+  it('says that backups keep deleted data for 30 days at most, in both languages', async () => {
+    const english = await render('/privacy');
+    expect(english.textContent?.replace(/\s+/g, ' ')).toContain(
+      'Backups: a copy of the whole database is made every day, kept on our server at OVH for 30 days at most, then erased.',
+    );
+
+    TestBed.resetTestingModule();
+    const french = await render('/privacy?lang=fr');
+    expect(french.textContent?.replace(/\s+/g, ' ')).toContain(
+      'Sauvegardes : une copie de toute la base de données est faite chaque jour, conservée sur notre serveur chez OVH 30 jours au plus, puis effacée.',
+    );
+  });
 });
 
 /** The text of a section: everything between its heading and the next one. */

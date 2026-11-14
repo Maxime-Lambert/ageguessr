@@ -280,6 +280,8 @@ rien récupérer).
 une donnée doit survivre pour d'autres joueurs, anonymisée explicitement), pour que ce
 seul `DELETE` suffise au droit à l'effacement. Vérifié par
 `CascadeDeleteIntegrationTest`, à étendre à chaque nouvelle table de ce type.
+Les sauvegardes gardent une copie des données supprimées jusqu'à 30 jours (voir
+« Sauvegardes et logs », annoncé dans `/privacy`).
 
 ### Rôle administrateur
 **Décision** : colonne `users.role` (`USER` / `ADMIN`, défaut `USER`), posée **à la
@@ -1216,6 +1218,49 @@ elles changent rarement, mais sont à revérifier de temps en temps
 **Décision** : migrations Flyway appliquées automatiquement au démarrage du conteneur
 backend (`spring.flyway.enabled=true` déjà actif par défaut) — acceptable pour une
 instance unique à faible trafic.
+
+### Sauvegardes et logs
+**Décision** (2026-11-14, PR `chore/backup-and-log-rotation`) :
+- **Un dump par jour** à 03:00 UTC par le service `backup` du compose de prod
+  (`deploy/backup/pg-backup.sh`), image `postgres:18-alpine` : un `pg_dump` plus ancien
+  que le serveur refuse de tourner, la même image garantit la même version majeure.
+  Une boucle shell plutôt que `crond`, qui sous busybox ne transmet pas l'environnement
+  (le mot de passe) à ses tâches. Au démarrage, un dump tout de suite si le dernier a
+  plus de 24 h.
+- **Format custom (`pg_dump -Fc`)**, compressé, restaurable en entier ou table par table.
+  Écrit dans un `.tmp` puis renommé : un dump interrompu n'est jamais pris pour un bon.
+- **30 jours au plus** : 7 quotidiens (`daily/`), et le dump du dimanche gardé en
+  hebdomadaire (`weekly/`, lien dur) jusqu'à 30 jours. Durée annoncée dans `/privacy`,
+  parce qu'un compte supprimé y reste jusque-là.
+- **Sur le disque du VPS seulement** (`/opt/ageguessr/backups`, 700, fichiers 600),
+  choix de l'utilisateur : protège d'une erreur (migration ratée, suppression), **pas de
+  la perte du VPS**. Une copie à la main : `scp` d'un fichier. Une copie hors VPS
+  automatique (restic vers un stockage S3, chiffrée avant envoi) pourra s'ajouter sans
+  changer le format.
+- **Surveillance** : le healthcheck du service passe `unhealthy` (`docker ps`) si le
+  dernier dump quotidien a plus de 26 h, en attendant le monitoring.
+- **Testé en CI** (job `backup-script`) : shellcheck, puis `deploy/backup/test-backup.sh`
+  fait un dump d'un vrai PostgreSQL 18, le restaure dans une base vide et vérifie la
+  rotation sur des fichiers vieillis.
+- **Logs Docker bornés** : ancre `x-logging` du compose de prod, `json-file` avec
+  `max-size: 10m` et `max-file: 3` sur chaque service, soit 30 Mo au plus par
+  conteneur. Dans le compose et pas dans `/etc/docker/daemon.json`, le VPS étant partagé
+  avec un autre projet. Ces logs n'ont pas de journal d'accès (annoncé dans `/privacy`).
+
+**Restaurer** (sur le VPS, dans `/opt/ageguessr`) :
+1. `sudo ls backups/daily backups/weekly` pour choisir le dump ; avant tout, en faire un
+   de l'état actuel : `docker compose -f docker-compose.prod.yml exec backup sh
+   /backup/pg-backup.sh once`.
+2. `docker compose -f docker-compose.prod.yml stop backend` (plus d'écriture).
+3. `docker compose -f docker-compose.prod.yml exec backup pg_restore --clean --if-exists
+   --no-owner -d ageguessr /backups/daily/ageguessr-AAAA-MM-JJ.dump`
+4. `docker compose -f docker-compose.prod.yml start backend` : Flyway rejoue les
+   migrations postérieures au dump.
+
+**Limite connue** : restaurer un dump fait revenir les comptes supprimés depuis ce dump,
+ce qui contredit l'effacement promis. Il n'y a pas encore de journal des suppressions à
+rejouer après une restauration (ligne de la roadmap, Semaine 8) : d'ici là, restaurer
+est réservé à un incident grave.
 
 ### Variables d'environnement
 - **Local** : fichier `.env` (gitignored)

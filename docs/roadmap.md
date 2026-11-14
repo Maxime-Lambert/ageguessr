@@ -283,9 +283,15 @@ retirer une fois tous faits.
 ## Semaine 8 — Stabilisation et déploiement
 - [ ] Tests d'intégration sur les endpoints critiques
 - [ ] Tests E2E sur les parcours principaux (Playwright)
-- [ ] Monitoring (uptime, erreurs) + rotation des logs Docker (`json-file` sans
-      `max-size` aujourd'hui, conservation illimitée)
-- [ ] Backup PostgreSQL (annoncer sa durée de conservation dans `/privacy`)
+- [ ] Monitoring (uptime, erreurs)
+- [x] Rotation des logs Docker : 3 × 10 Mo par conteneur du compose de prod — PR
+      `chore/backup-and-log-rotation`
+- [x] Backup PostgreSQL : dump quotidien sur le disque du VPS, 30 jours au plus, annoncé
+      dans `/privacy`, restauration documentée — PR `chore/backup-and-log-rotation`
+- [ ] Journal des suppressions de compte, à rejouer après la restauration d'un backup
+      (sinon les comptes supprimés depuis le dump reviennent)
+- [ ] Copie des backups hors du VPS (restic chiffré vers un stockage S3) : aujourd'hui,
+      perdre le VPS fait perdre les backups
 - [ ] Déploiement prod final et smoke tests
 - [ ] Landing page de lancement, qui tient aussi lieu de page d'accueil publique (fusion
       décidée le 2026-11-09 : le jeu reste à `/`)
