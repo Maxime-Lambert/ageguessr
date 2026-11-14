@@ -98,6 +98,10 @@ services:
       postgres:
         condition: service_healthy
     entrypoint: ["sh", "/backup/pg-backup.sh", "loop"]
+    # Rien a ecrire hors de /backups (bind mount) : systeme de fichiers en lecture seule.
+    read_only: true
+    tmpfs:
+      - /tmp
     environment:
       PGHOST: postgres
       PGUSER: ageguessr

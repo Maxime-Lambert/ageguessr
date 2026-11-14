@@ -77,7 +77,12 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Shellcheck
-        run: docker run --rm -v "$PWD/deploy/backup:/mnt" koalaman/shellcheck:v0.10.0 /mnt/pg-backup.sh /mnt/test-backup.sh
+        # Image epinglee par digest (v0.10.0), montee en lecture seule : elle ne peut pas
+        # modifier le script que l'etape suivante execute.
+        run: >-
+          docker run --rm -v "$PWD/deploy/backup:/mnt:ro"
+          koalaman/shellcheck@sha256:2097951f02e735b613f4a34de20c40f937a6c8f18ecb170612c88c34517221fb
+          /mnt/pg-backup.sh /mnt/test-backup.sh
 
       - name: Dump, restauration, rotation
         run: bash deploy/backup/test-backup.sh
