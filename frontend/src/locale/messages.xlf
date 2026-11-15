@@ -6,56 +6,56 @@
         <source>Series · AgeGuessr</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.routes.ts</context>
-          <context context-type="linenumber">15</context>
+          <context context-type="linenumber">22</context>
         </context-group>
       </trans-unit>
       <trans-unit id="title.howToPlay" datatype="html">
         <source>How to play · AgeGuessr</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.routes.ts</context>
-          <context context-type="linenumber">20</context>
+          <context context-type="linenumber">28</context>
         </context-group>
       </trans-unit>
       <trans-unit id="title.challenge" datatype="html">
         <source>Challenge · AgeGuessr</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.routes.ts</context>
-          <context context-type="linenumber">26</context>
+          <context context-type="linenumber">35</context>
         </context-group>
       </trans-unit>
       <trans-unit id="title.profile" datatype="html">
         <source>My profile · AgeGuessr</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.routes.ts</context>
-          <context context-type="linenumber">70</context>
+          <context context-type="linenumber">87</context>
         </context-group>
       </trans-unit>
       <trans-unit id="title.friends" datatype="html">
         <source>Friends · AgeGuessr</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.routes.ts</context>
-          <context context-type="linenumber">76</context>
+          <context context-type="linenumber">94</context>
         </context-group>
       </trans-unit>
       <trans-unit id="title.legalNotice" datatype="html">
         <source>Legal notice · AgeGuessr</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.routes.ts</context>
-          <context context-type="linenumber">106</context>
+          <context context-type="linenumber">128</context>
         </context-group>
       </trans-unit>
       <trans-unit id="title.terms" datatype="html">
         <source>Terms of Use · AgeGuessr</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.routes.ts</context>
-          <context context-type="linenumber">112</context>
+          <context context-type="linenumber">135</context>
         </context-group>
       </trans-unit>
       <trans-unit id="title.privacy" datatype="html">
         <source>Privacy Policy · AgeGuessr</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.routes.ts</context>
-          <context context-type="linenumber">117</context>
+          <context context-type="linenumber">141</context>
         </context-group>
       </trans-unit>
       <trans-unit id="account.title" datatype="html">
@@ -2330,6 +2330,55 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/layout/preferences/preferences.ts</context>
           <context context-type="linenumber">57</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="seo.title" datatype="html">
+        <source>AgeGuessr: guess the age in the photo</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/seo/seo-texts.ts</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="seo.description" datatype="html">
+        <source>A daily game: guess how old the person in an archive photo was, helped by facts from history, music, film and more. Three photos a day, free, no account needed.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/seo/seo-texts.ts</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="seo.description.free" datatype="html">
+        <source>Play as many series as you like: guess the age of people in archive photos, beyond the daily game. Free, no account needed.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/seo/seo-texts.ts</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="seo.description.howToPlay" datatype="html">
+        <source>How to play AgeGuessr: two guesses per photo, hints to narrow down the age, and points by how close you get.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/seo/seo-texts.ts</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="seo.description.legalNotice" datatype="html">
+        <source>Legal notice of AgeGuessr: publisher and host.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/seo/seo-texts.ts</context>
+          <context context-type="linenumber">14</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="seo.description.terms" datatype="html">
+        <source>Terms of Use of AgeGuessr.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/seo/seo-texts.ts</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="seo.description.privacy" datatype="html">
+        <source>Privacy Policy of AgeGuessr: the data kept, why, for how long, and your rights.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/seo/seo-texts.ts</context>
+          <context context-type="linenumber">16</context>
         </context-group>
       </trans-unit>
       <trans-unit id="common.genericError" datatype="html">

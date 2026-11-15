@@ -59,6 +59,33 @@ expect_page "the English site" /en/ en
 expect_page "a French route" /fr/account fr
 expect_page "an English route" /en/terms en
 
+# expect_file <description> <path> <text the body must contain>
+expect_file() {
+  local description=$1 path=$2 expected=$3
+  local status body
+  status=$(curl -s -o /dev/null -w '%{http_code}' "$BASE$path")
+  body=$(curl -s "$BASE$path")
+  if [[ $status == 200 ]] && grep -qF -- "$expected" <<<"$body"; then
+    echo "ok   $description"
+  else
+    echo "FAIL $description: $status, or no \"$expected\" in $path"
+    failures=$((failures + 1))
+  fi
+}
+
+expect_file "robots.txt at the root, not redirected" /robots.txt 'Sitemap: https://ageguessr.app/sitemap.xml'
+expect_file "sitemap.xml at the root, not redirected" /sitemap.xml '<loc>https://ageguessr.app/fr/how-to-play</loc>'
+expect_file "the French preview tags" /fr/ '<meta property="og:locale" content="fr_FR" />'
+expect_file "the French description" /fr/terms 'devinez l'"'"'âge'
+expect_file "the English preview tags" /en/ '<meta property="og:locale" content="en_US" />'
+type=$(curl -s -o /dev/null -w '%{http_code} %{content_type}' "$BASE/en/og-image.png")
+if [[ $type == "200 image/png" ]]; then
+  echo "ok   the preview image"
+else
+  echo "FAIL the preview image: $type, expected 200 image/png"
+  failures=$((failures + 1))
+fi
+
 status=$(curl -s -o /dev/null -w '%{http_code}' "$BASE/api/health")
 # No backend here: the proxy answers 502, which shows /api/* is not redirected.
 if [[ $status == 502 ]]; then

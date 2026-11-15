@@ -14,6 +14,12 @@ retirer une fois tous faits.
       deviné l'âge de 3 personnes en photo 📸 », la grille et le score, puis un qualificatif et « Tu fais mieux ? 👉 <site> » ; pareil
       en anglais (« Can you beat that? ») ; plus de bouton « Comparer avec vos amis » sous
       le récapitulatif, même connecté
+- [ ] SEO (`feature/seo`) : coller `https://ageguessr.app` dans WhatsApp ou Discord
+      montre la carte (image, titre et description dans la langue) ;
+      `https://ageguessr.app/robots.txt` et `/sitemap.xml` s'affichent ; dans Google
+      Search Console, ajouter le domaine, soumettre `https://ageguessr.app/sitemap.xml` et
+      inspecter `/fr/how-to-play` (canonical `…/fr/how-to-play`, indexable) et
+      `/fr/login` (exclue par `noindex`)
 - [ ] Backup et logs (`chore/backup-and-log-rotation`) : `sudo ls -l
       /opt/ageguessr/backups/daily` montre un dump `-rw-------` ; `docker ps` montre
       `ageguessr-prod-backup-1` `healthy` ; `docker inspect ageguessr-prod-backend-1
@@ -211,7 +217,9 @@ retirer une fois tous faits.
       `feature/friends`
 
 ## Semaine 7 — Polish
-- [ ] SEO (meta tags, sitemap, Angular SSR si pertinent pour le référencement)
+- [x] SEO léger : description et aperçu de lien (Open Graph, image) traduits dans
+      `index.html`, `robots.txt`, `sitemap.xml`, canonical/hreflang et `noindex` des pages
+      privées posés à chaque navigation ; SSR reporté à la landing page — PR `feature/seo`
 - [ ] Export des données personnelles (droit d'accès et de portabilité en self-service ;
       suppression déjà livrée en Semaine 5, pages légales en Semaine 1, pas de bannière
       cookies nécessaire tant qu'il n'y a que des traceurs strictement nécessaires)

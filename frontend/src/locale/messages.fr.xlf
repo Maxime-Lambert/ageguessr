@@ -1328,6 +1328,34 @@
         <source><x id="count" equiv-text="count"/> requests waiting for an answer</source>
         <target><x id="count" equiv-text="count"/> demandes en attente de réponse</target>
       </trans-unit>
+      <trans-unit id="seo.title" datatype="html">
+        <source>AgeGuessr: guess the age in the photo</source>
+        <target>AgeGuessr : devinez l'âge sur la photo</target>
+      </trans-unit>
+      <trans-unit id="seo.description" datatype="html">
+        <source>A daily game: guess how old the person in an archive photo was, helped by facts from history, music, film and more. Three photos a day, free, no account needed.</source>
+        <target>Un jeu quotidien : devinez l'âge qu'avait la personne sur une photo d'archive, avec des indices tirés de l'histoire, de la musique, du cinéma et plus encore. Trois photos par jour, gratuit, sans compte.</target>
+      </trans-unit>
+      <trans-unit id="seo.description.free" datatype="html">
+        <source>Play as many series as you like: guess the age of people in archive photos, beyond the daily game. Free, no account needed.</source>
+        <target>Enchaînez autant de séries que vous voulez : devinez l'âge de personnes sur des photos d'archive, en plus du jeu du jour. Gratuit, sans compte.</target>
+      </trans-unit>
+      <trans-unit id="seo.description.howToPlay" datatype="html">
+        <source>How to play AgeGuessr: two guesses per photo, hints to narrow down the age, and points by how close you get.</source>
+        <target>Comment jouer à AgeGuessr : deux essais par photo, des indices pour cerner l'âge, et des points selon votre précision.</target>
+      </trans-unit>
+      <trans-unit id="seo.description.legalNotice" datatype="html">
+        <source>Legal notice of AgeGuessr: publisher and host.</source>
+        <target>Mentions légales d'AgeGuessr : éditeur et hébergeur.</target>
+      </trans-unit>
+      <trans-unit id="seo.description.terms" datatype="html">
+        <source>Terms of Use of AgeGuessr.</source>
+        <target>Conditions d'utilisation d'AgeGuessr.</target>
+      </trans-unit>
+      <trans-unit id="seo.description.privacy" datatype="html">
+        <source>Privacy Policy of AgeGuessr: the data kept, why, for how long, and your rights.</source>
+        <target>Politique de confidentialité d'AgeGuessr : les données conservées, pourquoi, combien de temps, et vos droits.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
