@@ -862,23 +862,23 @@
       </trans-unit>
       <trans-unit id="game.share.verdict.brilliant" datatype="html">
         <source>Brilliant!</source>
-        <target>Brillant !</target>
+        <target>Brillant !</target>
       </trans-unit>
       <trans-unit id="game.share.verdict.wellPlayed" datatype="html">
         <source>Well played!</source>
-        <target>Bien joué !</target>
+        <target>Bien joué !</target>
       </trans-unit>
       <trans-unit id="game.share.verdict.notBad" datatype="html">
         <source>Not bad!</source>
-        <target>Pas mal !</target>
+        <target>Pas mal !</target>
       </trans-unit>
       <trans-unit id="game.share.verdict.tough" datatype="html">
         <source>A tough one!</source>
-        <target>Pas facile !</target>
+        <target>Pas facile !</target>
       </trans-unit>
       <trans-unit id="game.share.verdict.rough" datatype="html">
         <source>Rough day!</source>
-        <target>Rude journée !</target>
+        <target>Rude journée !</target>
       </trans-unit>
       <trans-unit id="game.share.playedOne" datatype="html">
         <source>I guessed the year of 1 photo 📸</source>
@@ -890,7 +890,7 @@
       </trans-unit>
       <trans-unit id="game.share.dare" datatype="html">
         <source>Can you beat that? 👉 <x id="url" equiv-text="url"/></source>
-        <target>Tu fais mieux ? 👉 <x id="url" equiv-text="url"/></target>
+        <target>Tu fais mieux ? 👉 <x id="url" equiv-text="url"/></target>
       </trans-unit>
       <trans-unit id="game.shareDateFormat" datatype="html">
         <source>MMM d, y</source>
