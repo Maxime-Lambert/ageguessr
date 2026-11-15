@@ -1,4 +1,4 @@
-import { formatDate } from '@angular/common';
+import { formatDate, formatNumber } from '@angular/common';
 import { COMMON_MESSAGES } from '../../shared/common-messages';
 import {
   Direction,
@@ -79,7 +79,6 @@ export const GAME_TEXT = {
   closed: $localize`:@@game.closed:Today's game is over. Here is the new one.`,
   genericError: COMMON_MESSAGES.genericError,
   comeBack: $localize`:@@game.comeBack:A new game starts at midnight UTC.`,
-  compareFriends: $localize`:@@game.compareFriends:Compare with your friends`,
   hintLanguage: $localize`:@@game.hintLanguage:Hints in`,
   freeIntro: $localize`:@@game.freeIntro:Same rules as the daily game, as many as you like. Nothing here counts toward the daily game.`,
   noPhotos: $localize`:@@game.noPhotos:No photo is available right now. Try again later.`,
@@ -230,42 +229,40 @@ export function shareText(points: number, max: number, squares: string, url: str
 }
 
 /**
- * What each square of the daily share means, in the order of the legend. Only the squares
- * a result holds are explained: a friend who never played reads the grid without guessing.
+ * A word on how the daily game went, by the share of the points won, before the dare. Never
+ * mocking: the lowest tier blames the day, not the player.
  */
-const SQUARE_LEGEND: [string, string][] = [
-  ['🎯', $localize`:@@game.share.legend.exact:first try`],
-  ['🟩', $localize`:@@game.share.legend.close:very close`],
-  ['🟨', $localize`:@@game.share.legend.near:close`],
-  ['🟥', $localize`:@@game.share.legend.far:far off`],
-  ['⬛', $localize`:@@game.share.legend.removed:photo withdrawn`],
-];
-
-/**
- * The headline of the daily share: the day, then how well the game went, by the share of
- * the points won. Never mocking: the lowest tier says to come back, not that it was bad.
- */
-export function dailyShareHeadline(day: string, points: number, max: number): string {
+export function dailyShareVerdict(points: number, max: number): string {
   const ratio = max > 0 ? points / max : 0;
-  if (ratio >= 0.9) return $localize`:@@game.share.brilliant:${day}:day:: brilliant!`;
-  if (ratio >= 0.7) return $localize`:@@game.share.wellPlayed:${day}:day:: well played!`;
-  if (ratio >= 0.5) return $localize`:@@game.share.notBad:${day}:day:: not bad!`;
-  if (ratio >= 0.3) return $localize`:@@game.share.tough:${day}:day:: a tough one!`;
-  return $localize`:@@game.share.tomorrow:${day}:day:: better luck tomorrow!`;
+  if (ratio >= 0.9) return $localize`:@@game.share.verdict.brilliant:Brilliant!`;
+  if (ratio >= 0.7) return $localize`:@@game.share.verdict.wellPlayed:Well played!`;
+  if (ratio >= 0.5) return $localize`:@@game.share.verdict.notBad:Not bad!`;
+  if (ratio >= 0.3) return $localize`:@@game.share.verdict.tough:A tough one!`;
+  return $localize`:@@game.share.verdict.rough:Rough day!`;
+}
+
+/** What the player did, in words a friend who never played understands. */
+function dailySharePlayed(photos: number): string {
+  return photos === 1
+    ? $localize`:@@game.share.playedOne:I guessed the year of 1 photo 📸`
+    : $localize`:@@game.share.played:I guessed the year of ${photos}:photos: photos 📸`;
 }
 
 /**
- * The text a player shares at the end of the daily game (« Partage façon Wordle »): a
- * headline with the day and a word on the result, the score, one square per round, what
- * the squares mean, then an invitation to the site. The players found the bare grid
- * unclear (2026-11-14). The day is the game's UTC day (YYYY-MM-DD), formatted in UTC so
- * that it never moves with the player's time zone, in a format of its language.
+ * The text a player shares at the end of the daily game (« Partage façon Wordle »), a dare
+ * more than a report (2026-11-15): the day, what the game is in one line, the squares with
+ * the score, then a word on the result and a challenge with the link. No legend: the
+ * squares read as colours, and the line above says what was guessed. The day is the game's
+ * UTC day (YYYY-MM-DD), formatted in UTC so that it never moves with the player's time zone,
+ * in a format of its language. `photos` counts the photos played, the withdrawn ones aside:
+ * with none left, the line about them goes.
  */
 export function dailyShareText(
   date: string,
   points: number,
   max: number,
   squares: string,
+  photos: number,
   url: string,
   locale: string,
 ): string {
@@ -273,15 +270,13 @@ export function dailyShareText(
   // the day before in UTC east of Greenwich.
   const midnightUtc = new Date(`${date}T00:00:00Z`);
   const day = formatDate(midnightUtc, $localize`:@@game.shareDateFormat:MMM d, y`, locale, 'UTC');
-  const legend = SQUARE_LEGEND.filter(([square]) => squares.includes(square))
-    .map(([square, meaning]) => `${square} ${meaning}`)
-    .join(' · ');
+  const score = `${formatNumber(points, locale, '1.0-0')} / ${formatNumber(max, locale, '1.0-0')}`;
   return [
-    `AgeGuessr · ${dailyShareHeadline(day, points, max)}`,
-    `${points} / ${max} ${GAME_TEXT.points}`,
-    squares,
-    legend,
-    $localize`:@@game.share.invite:Play today's game at ${url}:url:`,
+    `AgeGuessr · ${day}`,
+    ...(photos > 0 ? [dailySharePlayed(photos)] : []),
+    `${squares}  ${score}`,
+    `${dailyShareVerdict(points, max)} ` +
+      $localize`:@@game.share.dare:Can you beat that? 👉 ${url}:url:`,
   ].join('\n');
 }
 

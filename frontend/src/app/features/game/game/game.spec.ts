@@ -176,7 +176,7 @@ describe('Game', () => {
       { date: '2026-11-13' },
     );
   const expectedText =
-    "AgeGuessr · Nov 13, 2026: well played!\n2340 / 3000 points\n🎯🟩⬛🟥\n🎯 first try · 🟩 very close · 🟥 far off · ⬛ photo withdrawn\nPlay today's game at https://ageguessr.app";
+    'AgeGuessr · Nov 13, 2026\nI guessed the year of 3 photos 📸\n🎯🟩⬛🟥  2,340 / 3,000\nWell played! Can you beat that? 👉 https://ageguessr.app';
 
   it('offers to share the result only once the day is played', () => {
     load(today([finished(1), round(2)]));
@@ -217,14 +217,7 @@ describe('Game', () => {
     expect(page.querySelector('[role="alert"]')?.textContent).toContain(GAME_TEXT.genericError);
   });
 
-  it('offers a signed-in player to compare the day with their friends', () => {
-    const link = () =>
-      Array.from(page.querySelectorAll('a')).find(
-        (a) => a.textContent?.trim() === GAME_TEXT.compareFriends,
-      );
-    load(today([finished(1), finished(2), finished(3)]));
-    expect(link()).toBeUndefined();
-
+  it('leaves the friends to the menu, even for a signed-in player', () => {
     TestBed.inject(Auth).currentUser.set({
       id: '1',
       email: 'me@x.com',
@@ -234,8 +227,10 @@ describe('Game', () => {
       role: 'USER',
       language: 'EN',
     });
-    fixture.detectChanges();
-    expect(link()?.getAttribute('href')).toBe('/friends');
+    load(playedDay());
+
+    expect(page.querySelector('a[href="/friends"]')).toBeNull();
+    expect(button(GAME_TEXT.shareResult)).toBeDefined();
   });
 
   it('says when there is no game today', () => {

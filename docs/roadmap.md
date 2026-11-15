@@ -9,22 +9,11 @@ la suivante).
 Tests que seuls un compte et la boîte mail admin permettent de faire. À cocher, puis à
 retirer une fois tous faits.
 
-- [ ] Signaler une photo et un indice depuis l'écran de résultat d'une manche terminée
-- [ ] Retrouver ces signalements dans `/admin/curation` (photos) et `/admin/hints`
-      (indices), puis rejeter, garder ou exclure
-- [ ] Recevoir l'email d'alerte admin quand plusieurs joueurs signalent la même photo
-      (`ADMIN_EMAIL` du `.env` de prod)
-- [ ] Parcours e2e (`e2e/journeys/daily-game.spec.ts`, dont « invité → compte → profil »,
-      « amis » et les 3 pistes) : jamais lancés, ils ne tournent dans aucune CI — à lancer
-      à la main
-- [ ] Bulle des pistes sur ⓘ seulement (`fix/lead-help-on-info-only`) : sur ordinateur,
-      survoler une carte n'ouvre rien, survoler ⓘ ouvre sa bulle, qui se ferme en quittant
-      la carte ; Tab n'ouvre plus rien, Entrée sur ⓘ l'ouvre, Échap la ferme ; sur
-      téléphone, rien ne change (tap sur ⓘ)
-- [ ] Partage expliqué (`fix/daily-share-explained`) : partie du jour finie, « Partager
-      mon résultat », coller : « Enquête du <date> » et un qualificatif selon les points,
-      le score, la grille, une légende des seules cases présentes, « Toi aussi, mène
-      l'enquête sur <site> » ; pareil en anglais (« Case of … »)
+- [ ] Partage en défi (`fix/daily-share-challenge`) : partie du jour finie, « Partager mon
+      résultat », coller : « AgeGuessr · <date> », « J'ai deviné l'année de 3 photos 📸 »,
+      la grille et le score, puis un qualificatif et « Tu fais mieux ? 👉 <site> » ; pareil
+      en anglais (« Can you beat that? ») ; plus de bouton « Comparer avec vos amis » sous
+      le récapitulatif, même connecté
 - [ ] Backup et logs (`chore/backup-and-log-rotation`) : `sudo ls -l
       /opt/ageguessr/backups/daily` montre un dump `-rw-------` ; `docker ps` montre
       `ageguessr-prod-backup-1` `healthy` ; `docker inspect ageguessr-prod-backend-1
@@ -236,7 +225,9 @@ retirer une fois tous faits.
       récapitulatif du jour, date, score, une case par manche (🎯 pour un 1er essai exact)
       et le lien du site ; feuille de partage sur téléphone, copie ailleurs — PR
       `feature/daily-share` ; puis un titre qualifiant le résultat, une légende des cases
-      et une invitation à jouer — PR `fix/daily-share-explained`
+      et une invitation à jouer — PR `fix/daily-share-explained` ; puis un défi plutôt
+      qu'un compte rendu (le principe en une ligne, « Tu fais mieux ? »), sans légende —
+      PR `fix/daily-share-challenge`
 - [x] Aider davantage pour le 2e essai (retours des joueurs : les indices n'aidaient pas) :
       sens + tranche d'écart (1-5 / 6-15 / 16+ ans) à la place du simple plus/moins,
       saisie limitée à la plage restante, 3 pistes de catégories différentes au lieu

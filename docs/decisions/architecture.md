@@ -901,12 +901,14 @@ un classement.
     « YYYY-MM-DD » seul comme minuit local), dans un format traduit
     (`@@game.shareDateFormat`). 🎯 marque un 1er essai exact, pour le jour seulement : la
     grille des défis ne change pas. Partager sinon copier : `shareOrCopy` (`game/share.ts`),
-    commun au défi et au jour. Depuis le 2026-11-14 (PR `fix/daily-share-explained`, la
-    grille seule n'était pas claire pour qui n'a pas joué), le texte s'explique : un titre
-    « Enquête du <date> » suivi d'un qualificatif selon la part des points (brio ≥ 90 %,
-    panache ≥ 70 %, bouclée ≥ 50 %, de justesse ≥ 30 %, sinon « la piste s'est
-    refroidie… à demain », jamais moqueur), le score, la grille, une légende des seules
-    cases présentes, puis une invitation avec le lien.
+    commun au défi et au jour. Le 2026-11-14 (PR `fix/daily-share-explained`), le texte
+    s'est expliqué (titre qualifié, légende des cases) ; depuis le 2026-11-15 (PR
+    `fix/daily-share-challenge`, un compte rendu ne donnait pas envie), c'est un défi :
+    « AgeGuessr · <date> », « J'ai deviné l'année de N photos 📸 » (singulier pour 1, omis
+    si toutes sont retirées), la grille et le score formaté selon la langue sur une ligne,
+    puis un qualificatif selon la part des points (brillant ≥ 90 %, bien joué ≥ 70 %, pas
+    mal ≥ 50 %, pas facile ≥ 30 %, sinon « rude journée », jamais moqueur) et « Tu fais
+    mieux ? 👉 <site> ». Plus de légende : la ligne sur les photos dit ce qui a été deviné.
 
 **Raison** : le jeu quotidien ne se joue qu'une fois par jour. Ce mode donne de quoi
 jouer plus, et de quoi comparer ses scores entre amis sans attendre la feature Amis.
@@ -1024,7 +1026,8 @@ classement par moyenne de points par partie.
   reçues (`FriendsApi.incomingCount`, lu une fois par session et à chaque lecture de la
   liste). Copier et partager le lien passent par `shared/share-target.ts`
   (`SHARE_TARGET`, sorti de `game/share.ts` pour servir aux deux features). Le
-  récapitulatif du jour mène à `/friends` (exception `game → auth` déjà là pour le défi).
+  récapitulatif du jour ne mène plus à `/friends` (bouton retiré le 2026-11-15, le menu y
+  mène déjà) : le partage reste son seul appel.
 - **Comparaison du jour** (`GET /api/friends/today`) : `{locked: true}` et aucune donnée
   tant que la partie du jour de l'appelant n'est pas complète (les points d'un ami
   renseigneraient sur les manches qu'il reste à jouer). Ensuite, des points seulement :

@@ -53,9 +53,6 @@
               <button appButton type="button" (click)="shareResult(game)">
                 <svg lucideShare2 [size]="18" aria-hidden="true"></svg>{{ text.shareResult }}
               </button>
-              @if (auth.isAuthenticated()) {
-                <a appButton routerLink="/friends">{{ text.compareFriends }}</a>
-              }
               <a appButton variant="secondary" routerLink="/free">{{ text.tryFree }}</a>
             </div>
             @if (shared() === 'copied') {
