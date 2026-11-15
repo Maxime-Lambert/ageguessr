@@ -1,3 +1,3 @@
-package app.ageguessr.features.auth.Login;
+package app.ageguessr.features.auth;
 
 public record LoginResponse(String accessToken) {}

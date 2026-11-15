@@ -4,58 +4,100 @@
       Welcome back
     </h1>
 
-    <form class="mt-8 space-y-5" [formGroup]="form" (ngSubmit)="submit()">
-      <app-field controlId="email" label="Email" i18n-label="@@common.email">
-        <input appInput type="email" formControlName="email" autocomplete="email" />
-      </app-field>
-
-      <div>
-        <app-field controlId="password" label="Password" i18n-label="@@common.password">
+    @if (challenge()) {
+      <form class="mt-8 space-y-5" [formGroup]="codeForm" (ngSubmit)="submitCode()">
+        <p class="text-muted text-sm leading-relaxed" i18n="@@login.codeIntro">
+          Two-factor authentication is on: enter the 6-digit code shown by your authenticator app.
+        </p>
+        <app-field controlId="code" label="Code" i18n-label="@@login.codeLabel">
           <input
             appInput
-            type="password"
-            formControlName="password"
-            autocomplete="current-password"
+            type="text"
+            inputmode="numeric"
+            autocomplete="one-time-code"
+            maxlength="6"
+            formControlName="code"
           />
         </app-field>
-        <p class="mt-2 text-right text-sm">
-          <a
-            routerLink="/forgot-password"
-            class="text-accent underline underline-offset-2"
-            i18n="@@login.forgot"
-            >Forgot password?</a
+
+        @if (errorMessage()) {
+          <p class="text-danger text-sm" role="alert">{{ errorMessage() }}</p>
+        }
+
+        <button appButton block type="submit" [disabled]="submitting()" i18n="@@login.verifyCode">
+          Verify
+        </button>
+
+        @if (recoverySent()) {
+          <p class="text-muted text-sm" role="status" i18n="@@login.recoverySent">
+            We sent you an email with a link that turns two-factor authentication off. It expires in
+            1 hour.
+          </p>
+        } @else {
+          <button
+            type="button"
+            (click)="requestRecovery()"
+            class="text-accent text-sm underline underline-offset-2"
+            i18n="@@login.lostApp"
           >
-        </p>
-      </div>
+            I no longer have access to my authenticator app
+          </button>
+        }
+      </form>
+    } @else {
+      <form class="mt-8 space-y-5" [formGroup]="form" (ngSubmit)="submit()">
+        <app-field controlId="email" label="Email" i18n-label="@@common.email">
+          <input appInput type="email" formControlName="email" autocomplete="email" />
+        </app-field>
 
-      @if (errorMessage()) {
-        <p class="text-danger text-sm" role="alert">{{ errorMessage() }}</p>
-      }
-
-      @if (needsVerification()) {
-        <div class="card p-4 text-sm">
-          <p i18n="@@login.verify">Please verify your email before logging in.</p>
-          @if (resendSent()) {
-            <p class="text-muted mt-1" role="status" i18n="@@login.resent">
-              Verification email sent — check your inbox.
-            </p>
-          } @else {
-            <button
-              type="button"
-              (click)="resendVerification()"
-              class="text-accent mt-1 underline underline-offset-2"
-              i18n="@@login.resend"
+        <div>
+          <app-field controlId="password" label="Password" i18n-label="@@common.password">
+            <input
+              appInput
+              type="password"
+              formControlName="password"
+              autocomplete="current-password"
+            />
+          </app-field>
+          <p class="mt-2 text-right text-sm">
+            <a
+              routerLink="/forgot-password"
+              class="text-accent underline underline-offset-2"
+              i18n="@@login.forgot"
+              >Forgot password?</a
             >
-              Resend verification email
-            </button>
-          }
+          </p>
         </div>
-      }
 
-      <button appButton block type="submit" [disabled]="submitting()" i18n="@@login.submit">
-        Log in
-      </button>
-    </form>
+        @if (errorMessage()) {
+          <p class="text-danger text-sm" role="alert">{{ errorMessage() }}</p>
+        }
+
+        @if (needsVerification()) {
+          <div class="card p-4 text-sm">
+            <p i18n="@@login.verify">Please verify your email before logging in.</p>
+            @if (resendSent()) {
+              <p class="text-muted mt-1" role="status" i18n="@@login.resent">
+                Verification email sent — check your inbox.
+              </p>
+            } @else {
+              <button
+                type="button"
+                (click)="resendVerification()"
+                class="text-accent mt-1 underline underline-offset-2"
+                i18n="@@login.resend"
+              >
+                Resend verification email
+              </button>
+            }
+          </div>
+        }
+
+        <button appButton block type="submit" [disabled]="submitting()" i18n="@@login.submit">
+          Log in
+        </button>
+      </form>
+    }
 
     <p class="text-muted mt-6 text-center text-sm" i18n="@@login.noAccount">
       No account yet?

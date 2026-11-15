@@ -18,6 +18,16 @@ public class CurrentPasswordVerifier {
     private final AccountLockout accountLockout;
 
     public void verify(User user, String presentedPassword) {
+        verifyKeepingFailures(user, presentedPassword);
+        accountLockout.clear(user);
+    }
+
+    /**
+     * For a password followed by a two-factor code: the failures are cleared only once the
+     * code is right too (TwoFactorVerifier), or a right password would reset the count of
+     * wrong codes at each attempt and the lockout would never come.
+     */
+    public void verifyKeepingFailures(User user, String presentedPassword) {
         if (accountLockout.isLocked(user)) {
             throw invalid();
         }
@@ -25,7 +35,6 @@ public class CurrentPasswordVerifier {
             accountLockout.recordFailure(user);
             throw invalid();
         }
-        accountLockout.clear(user);
     }
 
     private static ForbiddenException invalid() {

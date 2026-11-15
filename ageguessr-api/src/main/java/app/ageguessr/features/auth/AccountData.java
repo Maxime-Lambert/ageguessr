@@ -16,7 +16,8 @@ import org.springframework.stereotype.Component;
 
 /**
  * The account, its sessions and its email links in the data export. Dates only for the
- * sessions and links: their hashes, like the password's, are secrets and never leave.
+ * sessions and links: their hashes, like the password's, are secrets and never leave; nor
+ * does the two-factor secret, only the date it was turned on.
  */
 @Component
 @Order(1)
@@ -37,7 +38,8 @@ public class AccountData implements PersonalDataSection {
             int failedLoginAttempts,
             Instant lockedUntil,
             Instant lastActiveAt,
-            Instant inactivityWarnedAt) {}
+            Instant inactivityWarnedAt,
+            Instant twoFactorEnabledAt) {}
 
     record Session(Instant createdAt, Instant expiresAt, Instant revokedAt) {}
 
@@ -62,7 +64,7 @@ public class AccountData implements PersonalDataSection {
                 """
                 SELECT email, username, language, role, email_verified, created_at, terms_version,
                        terms_accepted_at, failed_login_attempts, locked_until, last_active_at,
-                       inactivity_warned_at
+                       inactivity_warned_at, totp_enabled_at
                 FROM users WHERE id = :id
                 """,
                 id,
@@ -78,7 +80,8 @@ public class AccountData implements PersonalDataSection {
                         row.getInt("failed_login_attempts"),
                         instant(row, "locked_until"),
                         instant(row, "last_active_at"),
-                        instant(row, "inactivity_warned_at")))
+                        instant(row, "inactivity_warned_at"),
+                        instant(row, "totp_enabled_at")))
                 .stream()
                 .findFirst()
                 // Deleted since the token was issued.

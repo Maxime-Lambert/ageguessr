@@ -78,6 +78,7 @@ describe('ShareChallenge', () => {
       username: 'holmes',
       emailVerified: true,
       termsAccepted: true,
+      twoFactorEnabled: false,
       role: 'USER',
       language: 'EN',
     });

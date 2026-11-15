@@ -3,14 +3,14 @@ import { USER, asLoggedIn } from './session';
 
 test.describe('terms banner', () => {
   test('an account on older Terms accepts the new ones from the banner', async ({ page }) => {
-    await asLoggedIn(page, { ...USER, termsAccepted: false });
+    await asLoggedIn(page, { ...USER, termsAccepted: false, twoFactorEnabled: false });
     let sent: unknown = null;
     await page.route('**/api/auth/me/terms', (route) => {
       sent = route.request().postDataJSON();
       return route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify({ ...USER, termsAccepted: true }),
+        body: JSON.stringify({ ...USER, termsAccepted: true, twoFactorEnabled: false }),
       });
     });
     await page.goto('/en/');
@@ -32,7 +32,7 @@ test.describe('terms banner', () => {
     test.use({ viewport: { width: 375, height: 667 }, hasTouch: true, isMobile: true });
 
     test('fits the screen', async ({ page }) => {
-      await asLoggedIn(page, { ...USER, termsAccepted: false });
+      await asLoggedIn(page, { ...USER, termsAccepted: false, twoFactorEnabled: false });
       await page.goto('/en/');
 
       await expect(page.getByRole('button', { name: 'Accept' })).toBeVisible();

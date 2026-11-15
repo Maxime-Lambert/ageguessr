@@ -266,8 +266,42 @@ le mot de passe sans limite. Pour la même raison, ces handlers ne sont pas
 **Limite connue** : l'existence d'un email reste déductible via l'inscription (409
 `EMAIL_TAKEN`), choix antérieur conservé pour l'ergonomie ; le délai d'envoi d'un mail
 sur « mot de passe oublié » n'ajoute donc pas de fuite. Un attaquant qui contrôle la
-boîte mail contrôle le compte : seule une double authentification (TOTP, dans la
-roadmap) protégerait de ce cas.
+boîte mail contrôle le compte : la double authentification (ci-dessous) ne protège pas
+non plus de ce cas, son secours passant par l'email (choix assumé du 2026-11-15).
+
+### Double authentification (TOTP)
+**Décision** (2026-11-15, PR `feature/two-factor`) : facultative, activée depuis
+`/account` avec une app d'authentification.
+- **Algorithme** : `Totp` (RFC 6238 : HMAC-SHA1, pas de 30 s, 6 chiffres, fenêtre ±1 pas)
+  codé à la main et testé sur les vecteurs de la RFC, plutôt qu'une dépendance. Le dernier
+  pas accepté est gardé (`users.totp_last_step`) : un code déjà utilisé est refusé.
+- **Secret chiffré au repos** (`SecretCipher`, AES-256-GCM, IV aléatoire) avec
+  `TOTP_ENCRYPTION_KEY` (secret GitHub, écrit dans le `.env` du VPS au déploiement).
+  Un secret TOTP ne peut pas être haché : le serveur doit le relire. Clé absente ou de
+  mauvaise taille : le backend ne démarre pas. **La changer oblige chaque joueur à
+  réactiver la 2FA.** Jamais dans l'export (seulement `twoFactorEnabledAt`) ni les logs.
+- **Activation** : mot de passe → secret en attente + URI `otpauth://` (QR code dessiné
+  côté front par `qrcode`, `Cache-Control: no-store`) → un premier code active, email de
+  notification. **Désactivation** depuis le compte : mot de passe **et** code.
+- **Connexion en deux temps** : `POST /api/auth/login` répond
+  `{twoFactorRequired, challenge}` sans jeton ni cookie ; `POST /api/auth/login/totp`
+  (challenge + code) émet les jetons. Challenge = `account_tokens` `TOTP_LOGIN`, 5 min,
+  gardé après un code faux (une faute de frappe), consommé au bon code. Le compteur
+  d'échecs n'est remis à zéro qu'après le code : un bon mot de passe suivi de mauvais
+  codes mène au verrouillage (5 essais, 15 min). Le renouvellement de session ne redemande
+  rien.
+- **Secours** (pas de codes de secours) : depuis l'étape du code, un email (lien 1 h,
+  `TOTP_RECOVERY`) → page `/disable-two-factor` avec clic explicite → 2FA désactivée,
+  toutes les sessions révoquées, email de notification avec un lien « sécuriser votre
+  compte ». **Limite assumée** : qui a le mot de passe et la boîte mail peut désactiver la
+  2FA. Elle protège d'un mot de passe fuité, pas d'une boîte mail compromise. Variante
+  possible : désactivation par email différée de quelques jours, annulable. Un nouveau
+  lien de secours annule les précédents.
+- **Limite connue** (antérieure à la 2FA) : `AccountLockout.recordFailure` lit puis écrit
+  le compteur ; des requêtes simultanées peuvent compter plusieurs échecs pour un. Borné
+  par le rate limiting (20 requêtes/min/IP) et sans portée réelle sur 3 codes valides sur
+  un million ; un `UPDATE … SET failed_login_attempts = failed_login_attempts + 1`
+  atomique le fermerait.
 
 **Règle pour le futur changement d'email** : confirmation sur la nouvelle adresse **et**
 notification à l'ancienne avec un lien d'annulation valable plusieurs jours. Sans ça, un
@@ -344,8 +378,8 @@ main en SQL**. Aucun endpoint ni écran ne la modifie.
   dépendent de `auth`.
 
 **Limites connues** :
-- **Le compte admin n'est protégé que par son mot de passe** : pas de TOTP avant la
-  Semaine 7 (roadmap). Choisir un mot de passe long et unique.
+- **Le compte admin peut activer la double authentification** (TOTP, depuis `/account`) :
+  à faire en prod. Un mot de passe long et unique reste nécessaire.
 - Retirer le rôle en SQL prend effet au plus tard à l'expiration de l'access token
   (≤ 60 min), le refresh relisant le rôle en base.
 

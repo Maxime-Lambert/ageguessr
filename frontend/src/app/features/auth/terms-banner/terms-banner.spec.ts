@@ -13,6 +13,7 @@ const USER: AuthUser = {
   username: 'Player',
   emailVerified: true,
   termsAccepted: false,
+  twoFactorEnabled: false,
   role: 'USER',
   language: 'EN',
 };
@@ -57,7 +58,7 @@ describe('TermsBanner', () => {
     create(null);
     expect(page.querySelector('section')).toBeNull();
 
-    auth.currentUser.set({ ...USER, termsAccepted: true });
+    auth.currentUser.set({ ...USER, termsAccepted: true, twoFactorEnabled: false });
     fixture.detectChanges();
     expect(page.querySelector('section')).toBeNull();
   });
@@ -69,7 +70,7 @@ describe('TermsBanner', () => {
     const req = http.expectOne('/api/auth/me/terms');
     expect(req.request.method).toBe('PUT');
     expect(req.request.body).toEqual({ version: TERMS_VERSION });
-    req.flush({ ...USER, termsAccepted: true });
+    req.flush({ ...USER, termsAccepted: true, twoFactorEnabled: false });
     fixture.detectChanges();
 
     expect(page.querySelector('section')).toBeNull();

@@ -13,10 +13,24 @@ export interface AuthUser {
   language: ApiLanguage | null;
   /** False when the account accepted an older version of the Terms, or none: it is asked again. */
   termsAccepted: boolean;
+  /** Signing in asks for a code of an authenticator app. */
+  twoFactorEnabled: boolean;
 }
 
+/** Signed in (accessToken), or the password is right and a two-factor code is due (challenge). */
 export interface LoginResponse {
-  accessToken: string;
+  accessToken?: string;
+  twoFactorRequired?: boolean;
+  challenge?: string;
+}
+
+/** The end of the first step: signed in, or a challenge to send with the code. */
+export type LoginResult = { user: AuthUser } | { challenge: string };
+
+/** Shown once when turning two-factor on: for the QR code, and to type by hand. */
+export interface TwoFactorSetup {
+  secret: string;
+  otpauthUri: string;
 }
 
 export interface RefreshResponse {
