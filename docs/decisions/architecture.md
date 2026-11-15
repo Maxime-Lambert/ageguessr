@@ -904,8 +904,8 @@ un classement.
     commun au défi et au jour. Le 2026-11-14 (PR `fix/daily-share-explained`), le texte
     s'est expliqué (titre qualifié, légende des cases) ; depuis le 2026-11-15 (PR
     `fix/daily-share-challenge`, un compte rendu ne donnait pas envie), c'est un défi :
-    « AgeGuessr · <date> », « J'ai deviné l'année de N photos 📸 » (singulier pour 1, omis
-    si toutes sont retirées), la grille et le score formaté selon la langue sur une ligne,
+    « AgeGuessr · <date> », « J'ai deviné l'âge de N personnes en photo 📸 » (singulier
+    pour 1, omis si toutes sont retirées), la grille et le score formaté selon la langue sur une ligne,
     puis un qualificatif selon la part des points (brillant ≥ 90 %, bien joué ≥ 70 %, pas
     mal ≥ 50 %, pas facile ≥ 30 %, sinon « rude journée », jamais moqueur) et « Tu fais
     mieux ? 👉 <site> ». Plus de légende : la ligne sur les photos dit ce qui a été deviné.

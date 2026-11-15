@@ -12,7 +12,7 @@ Plan court d'un correctif, rempli une fois le travail fait.
 Status: Complete
 
 - [x] `dailyShareText` (`game-vocabulary.ts`) : « AgeGuessr · <date> », « J'ai deviné
-      l'année de N photos 📸 » (singulier pour 1, ligne omise si toutes retirées), grille
+      l'âge de N personnes en photo 📸 » (singulier pour 1, ligne omise si toutes retirées), grille
       et score formaté selon la langue (« 2 450 / 3 000 »), puis le qualificatif et
       « Tu fais mieux ? 👉 <site> ». Plus de légende des cases.
 - [x] `dailyShareHeadline(day, …)` devient `dailyShareVerdict(points, max)`, mêmes

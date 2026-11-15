@@ -9,9 +9,9 @@ la suivante).
 Tests que seuls un compte et la boîte mail admin permettent de faire. À cocher, puis à
 retirer une fois tous faits.
 
-- [ ] Partage en défi (`fix/daily-share-challenge`) : partie du jour finie, « Partager mon
-      résultat », coller : « AgeGuessr · <date> », « J'ai deviné l'année de 3 photos 📸 »,
-      la grille et le score, puis un qualificatif et « Tu fais mieux ? 👉 <site> » ; pareil
+- [ ] Partage en défi (`fix/daily-share-challenge`, `fix/share-says-age`) : partie du
+      jour finie, « Partager mon résultat », coller : « AgeGuessr · <date> », « J'ai
+      deviné l'âge de 3 personnes en photo 📸 », la grille et le score, puis un qualificatif et « Tu fais mieux ? 👉 <site> » ; pareil
       en anglais (« Can you beat that? ») ; plus de bouton « Comparer avec vos amis » sous
       le récapitulatif, même connecté
 - [ ] Backup et logs (`chore/backup-and-log-rotation`) : `sudo ls -l
