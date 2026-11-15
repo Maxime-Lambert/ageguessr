@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Service, computed, inject, signal } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import {
@@ -119,6 +119,14 @@ export class Auth {
       { currentPassword, newPassword },
       { withCredentials: true },
     );
+  }
+
+  /**
+   * Everything the site keeps on the player, as a JSON file (GDPR access and portability).
+   * The whole response: its Content-Disposition names the file.
+   */
+  downloadData(): Observable<HttpResponse<Blob>> {
+    return this.http.get('/api/auth/me/data', { responseType: 'blob', observe: 'response' });
   }
 
   /** Only sends the confirmation email - nothing is deleted until the link is confirmed. */

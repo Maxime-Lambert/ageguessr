@@ -513,6 +513,40 @@ class GameFunctionalTest {
     }
 
     @Test
+    void theDataExportHoldsThePlaysButNeverTheAnswer() throws Exception {
+        String email = "export-" + UUID.randomUUID() + "@x.com";
+        AuthFlows.registerAndVerify(mockMvc, objectMapper, emailSender, email, PASSWORD);
+        String token = AuthFlows.login(mockMvc, objectMapper, email, PASSWORD).accessToken();
+        // Round 1 still being played (its answer must not leak), round 2 finished.
+        perform(post(round(1, "first-guess")), "{\"guess\":30,\"language\":\"EN\"}", null, token)
+                .andExpect(status().isOk());
+        perform(post(round(2, "first-guess")), "{\"guess\":40,\"language\":\"FR\"}", null, token)
+                .andExpect(status().isOk());
+
+        String json = mockMvc.perform(get("/api/auth/me/data").header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.games.dailyGames.length()").value(2))
+                .andExpect(jsonPath("$.games.dailyGames[0].date").value(today.toString()))
+                .andExpect(jsonPath("$.games.dailyGames[0].round.position").value(1))
+                .andExpect(jsonPath("$.games.dailyGames[0].round.firstGuess").value(30))
+                .andExpect(jsonPath("$.games.dailyGames[0].round.finishedAt").value(nullValue()))
+                // Hidden until the round ends, as in the game: the points would give the age.
+                .andExpect(jsonPath("$.games.dailyGames[0].round.firstPoints").value(nullValue()))
+                .andExpect(jsonPath("$.games.dailyGames[0].round.hintCategories.length()").value(0))
+                .andExpect(jsonPath("$.games.dailyGames[1].round.language").value("FR"))
+                .andExpect(jsonPath("$.games.dailyGames[1].round.firstPoints").value(500))
+                .andExpect(jsonPath("$.games.dailyGames[1].round.finishedAt").exists())
+                .andExpect(jsonPath("$.games.dailyGames[1].round.secondGuess").value(nullValue()))
+                .andExpect(jsonPath("$.games.seriesCreated.length()").value(0))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        assertNoAnswerIn(json);
+        assertThat(json).doesNotContain("Person 1", "/api/images/");
+        seeded.forEach(photo -> assertThat(json).doesNotContain(photo.getPublicId().toString()));
+    }
+
+    @Test
     void theHistoryNeedsAnAccount() throws Exception {
         mockMvc.perform(get("/api/game/history").cookie(guestCookie())).andExpect(status().isUnauthorized());
     }

@@ -3,6 +3,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { Auth } from '../auth';
+import { FILE_SAVER, filenameOf } from '../file-saver';
 import { Account } from './account';
 
 const USER = {
@@ -23,11 +24,21 @@ describe('Account', () => {
   let component: Account;
   let httpMock: HttpTestingController;
   let auth: Auth;
+  let saved: { file: Blob; filename: string }[];
 
   beforeEach(async () => {
+    saved = [];
     await TestBed.configureTestingModule({
       imports: [Account],
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        {
+          provide: FILE_SAVER,
+          useValue: { save: (file: Blob, filename: string) => saved.push({ file, filename }) },
+        },
+      ],
     }).compileComponents();
     auth = TestBed.inject(Auth);
     auth.currentUser.set(USER);
@@ -150,5 +161,37 @@ describe('Account', () => {
 
     expect(component.deletionStatus()).toBe('idle');
     expect(component.deletionError()).toContain('Incorrect password');
+  });
+
+  it('saves the data under the name the server gave it', () => {
+    component.downloadData();
+    expect(component.dataStatus()).toBe('downloading');
+    const request = httpMock.expectOne('/api/auth/me/data');
+    expect(request.request.responseType).toBe('blob');
+    const file = new Blob(['{}'], { type: 'application/json' });
+    request.flush(file, {
+      headers: { 'Content-Disposition': 'attachment; filename="ageguessr-data-2026-11-15.json"' },
+    });
+
+    expect(saved).toEqual([{ file, filename: 'ageguessr-data-2026-11-15.json' }]);
+    expect(component.dataStatus()).toBe('idle');
+  });
+
+  it('says so when the data cannot be downloaded, and saves nothing', () => {
+    component.downloadData();
+    httpMock
+      .expectOne('/api/auth/me/data')
+      .flush(new Blob(), { status: 500, statusText: 'Server Error' });
+
+    expect(saved).toEqual([]);
+    expect(component.dataError()).toBeTruthy();
+    expect(component.dataStatus()).toBe('idle');
+  });
+
+  it('reads the file name from the header, else falls back', () => {
+    expect(filenameOf('attachment; filename="a.json"', 'b.json')).toBe('a.json');
+    expect(filenameOf('attachment; filename=a.json', 'b.json')).toBe('a.json');
+    expect(filenameOf(null, 'b.json')).toBe('b.json');
+    expect(filenameOf('attachment', 'b.json')).toBe('b.json');
   });
 });

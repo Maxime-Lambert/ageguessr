@@ -118,6 +118,28 @@
       </form>
     </section>
 
+    <section class="card mt-6 p-5 sm:p-6" aria-labelledby="data-title">
+      <h2 id="data-title" class="font-display text-xl" i18n="@@account.dataTitle">Your data</h2>
+      <p class="text-muted mt-2 text-sm leading-relaxed" i18n="@@account.dataIntro">
+        Download a copy of everything AgeGuessr keeps about you: your account, your games and your
+        friends, in a JSON file.
+      </p>
+      @if (dataError()) {
+        <p class="text-danger mt-4 text-sm" role="alert">{{ dataError() }}</p>
+      }
+      <button
+        appButton
+        variant="secondary"
+        type="button"
+        class="mt-5"
+        [disabled]="dataStatus() === 'downloading'"
+        (click)="downloadData()"
+        i18n="@@account.downloadData"
+      >
+        Download my data
+      </button>
+    </section>
+
     <section class="card border-danger mt-6 p-5 sm:p-6" aria-labelledby="danger-title">
       <h2 id="danger-title" class="font-display text-danger text-xl" i18n="@@account.deleteTitle">
         Delete account

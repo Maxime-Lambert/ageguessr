@@ -283,6 +283,27 @@ seul `DELETE` suffise au droit à l'effacement. Vérifié par
 Les sauvegardes gardent une copie des données supprimées jusqu'à 30 jours (voir
 « Sauvegardes et logs », annoncé dans `/privacy`).
 
+### Export des données (droit d'accès et de portabilité)
+**Décision** (2026-11-15, PR `feature/personal-data-export`) : `GET /api/auth/me/data`
+renvoie un fichier JSON (`Content-Disposition: attachment`) de tout ce que le site garde
+sur le joueur, téléchargé depuis `/account`.
+- **Chaque feature exporte ses tables** : interface `shared/personaldata/PersonalDataSection`
+  (nom, tables couvertes, `export(userId)`), une implémentation par feature
+  (`AccountData`, `GameData`, `FriendData`, `PhotoReviewData`, `HintReviewData`, dans
+  leur `@Order`), en SQL natif lecture seule. `ExportPersonalDataHandler` (auth) reçoit
+  la liste par injection : aucune feature n'en importe une autre.
+- **Couverture vérifiée** : `PersonalDataCoverageIntegrationTest` lit dans le schéma
+  réel toutes les tables qui ont une clé étrangère vers `users` et exige qu'une section
+  les couvre. **Toute nouvelle table liée à un joueur doit être exportée** (comme elle
+  doit être en `ON DELETE CASCADE`).
+- **Jamais** un hash (mot de passe, jetons : seulement les dates des sessions et des
+  liens), ni l'email d'un autre joueur (les amis par pseudo), ni la réponse d'une manche
+  (personne, photo, texte d'indice), ni les points d'une manche en cours (avec l'essai et
+  la formule, ils donneraient l'âge exact) : une manche en cours se tricherait par
+  l'export. Réponse en `Cache-Control: no-store`.
+- Sous `/api/auth/`, donc limité comme les autres requêtes de compte. Pas de re-saisie du
+  mot de passe : la session voit déjà le compte, l'historique et les amis.
+
 ### Rôle administrateur
 **Décision** : colonne `users.role` (`USER` / `ADMIN`, défaut `USER`), posée **à la
 main en SQL**. Aucun endpoint ni écran ne la modifie.
