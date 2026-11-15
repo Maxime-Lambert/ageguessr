@@ -881,12 +881,12 @@
         <target>Rude journée !</target>
       </trans-unit>
       <trans-unit id="game.share.playedOne" datatype="html">
-        <source>I guessed the year of 1 photo 📸</source>
-        <target>J'ai deviné l'année d'une photo 📸</target>
+        <source>I guessed the age of 1 person in a photo 📸</source>
+        <target>J'ai deviné l'âge d'une personne en photo 📸</target>
       </trans-unit>
       <trans-unit id="game.share.played" datatype="html">
-        <source>I guessed the year of <x id="photos" equiv-text="photos"/> photos 📸</source>
-        <target>J'ai deviné l'année de <x id="photos" equiv-text="photos"/> photos 📸</target>
+        <source>I guessed the age of <x id="photos" equiv-text="photos"/> people in photos 📸</source>
+        <target>J'ai deviné l'âge de <x id="photos" equiv-text="photos"/> personnes en photo 📸</target>
       </trans-unit>
       <trans-unit id="game.share.dare" datatype="html">
         <source>Can you beat that? 👉 <x id="url" equiv-text="url"/></source>
