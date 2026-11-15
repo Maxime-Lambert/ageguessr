@@ -2,7 +2,6 @@ import { Component, LOCALE_ID, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ApiLanguage } from '../../../shared/i18n/language';
-import { Auth } from '../../auth/auth';
 import { DaySummary } from '../day-summary/day-summary';
 import { GameApi } from '../game-api';
 import { LucideClock, LucideShare2 } from '@lucide/angular';
@@ -36,8 +35,6 @@ import { RoundsScreen } from '../rounds-screen';
 })
 export class Game extends RoundsScreen<TodayGame> {
   private readonly api = inject(GameApi);
-  /** A signed-in player can compare the day with their friends (exception front game → auth). */
-  protected readonly auth = inject(Auth);
   private readonly target = inject(SHARE_TARGET);
   private readonly locale = inject(LOCALE_ID);
 
@@ -56,6 +53,7 @@ export class Game extends RoundsScreen<TodayGame> {
       game.score.points,
       game.score.max,
       squares(game.rounds, { exact: true }),
+      game.rounds.filter((round) => round.status !== 'NEUTRALIZED').length,
       dailyShareUrl(this.target.origin()),
       this.locale,
     );

@@ -860,53 +860,41 @@
         <source>A friend challenges you on <x id="length" equiv-text="seriesLength(rounds)"/>.</source>
         <target>Un ami vous défie sur <x id="length" equiv-text="seriesLength(rounds)"/>.</target>
       </trans-unit>
+      <trans-unit id="game.share.verdict.brilliant" datatype="html">
+        <source>Brilliant!</source>
+        <target>Brillant !</target>
+      </trans-unit>
+      <trans-unit id="game.share.verdict.wellPlayed" datatype="html">
+        <source>Well played!</source>
+        <target>Bien joué !</target>
+      </trans-unit>
+      <trans-unit id="game.share.verdict.notBad" datatype="html">
+        <source>Not bad!</source>
+        <target>Pas mal !</target>
+      </trans-unit>
+      <trans-unit id="game.share.verdict.tough" datatype="html">
+        <source>A tough one!</source>
+        <target>Pas facile !</target>
+      </trans-unit>
+      <trans-unit id="game.share.verdict.rough" datatype="html">
+        <source>Rough day!</source>
+        <target>Rude journée !</target>
+      </trans-unit>
+      <trans-unit id="game.share.playedOne" datatype="html">
+        <source>I guessed the year of 1 photo 📸</source>
+        <target>J'ai deviné l'année d'une photo 📸</target>
+      </trans-unit>
+      <trans-unit id="game.share.played" datatype="html">
+        <source>I guessed the year of <x id="photos" equiv-text="photos"/> photos 📸</source>
+        <target>J'ai deviné l'année de <x id="photos" equiv-text="photos"/> photos 📸</target>
+      </trans-unit>
+      <trans-unit id="game.share.dare" datatype="html">
+        <source>Can you beat that? 👉 <x id="url" equiv-text="url"/></source>
+        <target>Tu fais mieux ? 👉 <x id="url" equiv-text="url"/></target>
+      </trans-unit>
       <trans-unit id="game.shareDateFormat" datatype="html">
         <source>MMM d, y</source>
         <target>dd/MM/yyyy</target>
-      </trans-unit>
-      <trans-unit id="game.share.legend.exact" datatype="html">
-        <source>first try</source>
-        <target>du 1er coup</target>
-      </trans-unit>
-      <trans-unit id="game.share.legend.close" datatype="html">
-        <source>very close</source>
-        <target>tout près</target>
-      </trans-unit>
-      <trans-unit id="game.share.legend.near" datatype="html">
-        <source>close</source>
-        <target>pas loin</target>
-      </trans-unit>
-      <trans-unit id="game.share.legend.far" datatype="html">
-        <source>far off</source>
-        <target>loin</target>
-      </trans-unit>
-      <trans-unit id="game.share.legend.removed" datatype="html">
-        <source>photo withdrawn</source>
-        <target>photo retirée</target>
-      </trans-unit>
-      <trans-unit id="game.share.brilliant" datatype="html">
-        <source><x id="day" equiv-text="day"/>: brilliant!</source>
-        <target>Partie du <x id="day" equiv-text="day"/> : brillant !</target>
-      </trans-unit>
-      <trans-unit id="game.share.wellPlayed" datatype="html">
-        <source><x id="day" equiv-text="day"/>: well played!</source>
-        <target>Partie du <x id="day" equiv-text="day"/> : bien joué !</target>
-      </trans-unit>
-      <trans-unit id="game.share.notBad" datatype="html">
-        <source><x id="day" equiv-text="day"/>: not bad!</source>
-        <target>Partie du <x id="day" equiv-text="day"/> : pas mal !</target>
-      </trans-unit>
-      <trans-unit id="game.share.tough" datatype="html">
-        <source><x id="day" equiv-text="day"/>: a tough one!</source>
-        <target>Partie du <x id="day" equiv-text="day"/> : pas facile !</target>
-      </trans-unit>
-      <trans-unit id="game.share.tomorrow" datatype="html">
-        <source><x id="day" equiv-text="day"/>: better luck tomorrow!</source>
-        <target>Partie du <x id="day" equiv-text="day"/> : ça ira mieux demain !</target>
-      </trans-unit>
-      <trans-unit id="game.share.invite" datatype="html">
-        <source>Play today's game at <x id="url" equiv-text="url"/></source>
-        <target>Toi aussi, joue sur <x id="url" equiv-text="url"/></target>
       </trans-unit>
       <trans-unit id="game.shareText" datatype="html">
         <source>AgeGuessr · <x id="challenge" equiv-text="GAME_TEXT.challenge"/> · <x id="points" equiv-text="points"/> / <x id="max" equiv-text="max"/></source>
@@ -1331,10 +1319,6 @@
       <trans-unit id="friends.error.pendingLimit" datatype="html">
         <source>Too many requests waiting for an answer. Cancel some first.</source>
         <target>Trop de demandes en attente de réponse. Annulez-en quelques-unes.</target>
-      </trans-unit>
-      <trans-unit id="game.compareFriends" datatype="html">
-        <source>Compare with your friends</source>
-        <target>Comparer avec vos amis</target>
       </trans-unit>
       <trans-unit id="header.friends" datatype="html">
         <source>Friends</source>
