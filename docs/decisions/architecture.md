@@ -1132,6 +1132,42 @@ qui est acceptable pour un choix rare.
 Tout nouveau texte joueur est marqué (`i18n` ou `$localize`) et traduit dans
 `messages.fr.xlf` dans la même PR ; tout nouvel email existe dans les deux langues.
 
+### Référencement (SEO léger, sans SSR)
+**Décision** (2026-11-15, PR `feature/seo`) : pas de rendu serveur ni de pré-rendu pour
+l'instant. Deux publics, deux mécanismes :
+- **Aperçus de liens** (WhatsApp, Discord, X…), qui n'exécutent pas le JavaScript :
+  `frontend/scripts/seo-postbuild.mjs`, lancé par `pnpm build` après `ng build`, écrit
+  dans le `index.html` de chaque langue le titre, la description, Open Graph
+  (`og:locale` + `og:locale:alternate`, `og:image` = `public/og-image.png`, 1200×630,
+  sans texte à traduire) et `twitter:card`. Angular ne traduit pas `index.html` : le
+  script lit les textes dans `messages.xlf` (anglais) et `messages.fr.xlf` (cible
+  française) sous les ids `@@seo.*` de `features/seo/seo-texts.ts`, une seule source
+  pour les deux mécanismes. Un id manquant ou contenant un placeholder fait échouer la
+  build. Pas de canonical statique : il serait faux sur toutes les routes sauf l'accueil.
+- **Moteurs qui exécutent le JavaScript** (Google) : `features/seo/seo.ts`, démarré par
+  `provideAppInitializer`, pose à chaque `NavigationEnd` le canonical
+  (`<origine>/<langue><chemin>`, sans query ni fragment), les alternates `hreflang` en,
+  fr et `x-default` (le chemin sans préfixe, que Caddy redirige selon le visiteur), la
+  description de la route (`data.description`, sinon celle du site) et
+  `<meta name="robots" content="noindex">` si `data.noindex`.
+- **Pages indexées** : accueil, `free`, `how-to-play`, `legal-notice`, `terms`,
+  `privacy`. Toutes les autres routes (connexion, compte, profil, amis, admin, liens de
+  défi) portent `noindex`. La même liste est dans `INDEXED_PATHS` du script, qui écrit
+  `sitemap.xml` (chaque page × chaque langue, avec ses alternates) : garder les deux en
+  phase.
+- **`robots.txt`** : tout est explorable sauf `/api/` et `/<langue>/admin`. Les pages
+  privées restent explorables exprès : un robot interdit d'y entrer ne verrait jamais
+  leur `noindex`.
+- **Caddy** sert `/robots.txt` et `/sitemap.xml` depuis la racine de `/srv` avant la
+  redirection de langue. Vérifié, avec les balises par langue et l'image, par
+  `scripts/check-edge-locales.sh`.
+
+**Raison** : la page d'accueil est le jeu, dont le contenu change chaque jour et dépend
+de l'API : la pré-rendre n'apporterait presque rien, et chaque composant devrait tourner
+hors navigateur. Google exécute le JavaScript ; seuls les aperçus de liens en ont besoin
+en dur, et ils ne lisent que `index.html`. Le pré-rendu sera reconsidéré avec la landing
+page, qui en profitera.
+
 ### Tests unitaires : Vitest
 **Décision** : Vitest, via le builder `@angular/build:unit-test` (défaut Angular CLI
 récent).

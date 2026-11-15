@@ -31,3 +31,18 @@ variable, on le décompresse en TTF d'abord) et `@resvg/resvg-js@2.6.2` (rendu P
 3. mettre le glyphe à l'échelle (hauteur 38/64, centré), inverser l'axe y, écrire le
    `<path>` ;
 4. rendre le SVG en PNG 32 (emballé dans un en-tête ICO de 22 octets) et 180 (sans coin).
+
+## Image d'aperçu des liens
+
+`og-image.png` (1200×630, `og:image` écrit par `scripts/seo-postbuild.mjs`) : un tirage
+d'archive incliné, la personne en silhouette, une pastille « ? » à l'accent, le wordmark
+et « AgeGuessr.app ». Aucun texte à traduire : une seule image pour les deux langues.
+
+- Mêmes outils que les icônes (`fontkit`, `wawoff2`, `@resvg/resvg-js`), script ponctuel
+  non versionné : le texte est converti en tracés depuis
+  `fraunces-latin-full-normal.woff2`, wordmark en `wght` 700 / `opsz` 144 (optique titre,
+  lisible à cette taille), domaine en `wght` 500 / `opsz` 24.
+- Couleurs du thème sombre : fond `--color-background` avec un halo `--color-surface-2`,
+  tirage `--color-paper`, silhouette `--color-paper-muted` sur un dégradé sépia
+  (`#c9b48f` → `#8f7856`), pastille `--color-accent`, wordmark `--color-foreground`,
+  domaine `--color-muted`.

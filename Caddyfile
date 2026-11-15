@@ -26,6 +26,15 @@
 		}
 	}
 
+	# robots.txt et sitemap.xml a la racine, ecrits par frontend/scripts/seo-postbuild.mjs :
+	# sans ces handle, la redirection de langue plus bas les enverrait vers /en/robots.txt,
+	# que les moteurs ne lisent pas.
+	@seoFiles path /robots.txt /sitemap.xml
+	handle @seoFiles {
+		root * /srv
+		file_server
+	}
+
 	# Une build par langue (Angular i18n, plans/done/i18n.md) : /en/ et /fr/, chacune
 	# avec son index.html pour les routes de l'application.
 	@en path /en /en/*
