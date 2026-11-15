@@ -48,6 +48,7 @@ public class RefreshHandler {
 
         token.setRevokedAt(clock.instant());
         refreshTokenRepository.save(token);
+        userRepository.markActive(user.getId(), clock.instant());
 
         String accessToken = authTokenService.issueAccessToken(user);
         String newRefreshToken = authTokenService.issueRefreshToken(user.getId());

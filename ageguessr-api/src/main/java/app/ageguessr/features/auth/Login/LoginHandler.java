@@ -7,6 +7,7 @@ import app.ageguessr.features.auth.User;
 import app.ageguessr.features.auth.UserRepository;
 import app.ageguessr.shared.exceptions.ForbiddenException;
 import app.ageguessr.shared.exceptions.UnauthorizedException;
+import java.time.Clock;
 import java.util.Optional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,17 +30,20 @@ public class LoginHandler {
     private final PasswordEncoder passwordEncoder;
     private final AuthTokenService authTokenService;
     private final AccountLockout accountLockout;
+    private final Clock clock;
     private final String dummyPasswordHash;
 
     public LoginHandler(
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
             AuthTokenService authTokenService,
-            AccountLockout accountLockout) {
+            AccountLockout accountLockout,
+            Clock clock) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authTokenService = authTokenService;
         this.accountLockout = accountLockout;
+        this.clock = clock;
         // Computed once from the real encoder so its cost factor always matches real
         // password comparisons - not a hardcoded string that could drift out of sync.
         this.dummyPasswordHash = passwordEncoder.encode(DUMMY_PASSWORD);
@@ -73,6 +77,7 @@ public class LoginHandler {
 
         accountLockout.clear(user);
         userRepository.save(user);
+        userRepository.markActive(user.getId(), clock.instant());
 
         String accessToken = authTokenService.issueAccessToken(user);
         String refreshToken = authTokenService.issueRefreshToken(user.getId());

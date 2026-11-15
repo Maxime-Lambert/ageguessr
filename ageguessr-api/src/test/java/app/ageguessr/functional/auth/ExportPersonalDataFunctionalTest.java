@@ -79,6 +79,7 @@ class ExportPersonalDataFunctionalTest {
                 .andExpect(jsonPath("$.account.account.username").value(me.username()))
                 .andExpect(jsonPath("$.account.account.emailVerified").value(true))
                 .andExpect(jsonPath("$.account.account.role").value("USER"))
+                .andExpect(jsonPath("$.account.account.lastActiveAt").exists())
                 .andExpect(jsonPath("$.account.sessions.length()").value(1))
                 .andExpect(jsonPath("$.account.emailLinks[0].purpose").value("EMAIL_VERIFICATION"))
                 .andExpect(jsonPath("$.account.emailLinks[0].usedAt").exists())

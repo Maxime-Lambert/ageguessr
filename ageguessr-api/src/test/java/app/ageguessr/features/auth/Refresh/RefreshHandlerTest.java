@@ -94,6 +94,7 @@ class RefreshHandlerTest {
                 .isInstanceOf(UnauthorizedException.class);
 
         verify(refreshTokenRepository, never()).revokeAllActiveForUser(any(), any());
+        verify(userRepository, never()).markActive(any(), any());
     }
 
     @Test
@@ -116,5 +117,6 @@ class RefreshHandlerTest {
         assertThat(tokens).isEqualTo(new TokenPair("new-access-token", "new-refresh-token"));
         assertThat(valid.getRevokedAt()).isEqualTo(FIXED_CLOCK.instant());
         verify(refreshTokenRepository).save(valid);
+        verify(userRepository).markActive(user.getId(), FIXED_CLOCK.instant());
     }
 }

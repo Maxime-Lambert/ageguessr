@@ -35,7 +35,9 @@ public class AccountData implements PersonalDataSection {
             String termsVersion,
             Instant termsAcceptedAt,
             int failedLoginAttempts,
-            Instant lockedUntil) {}
+            Instant lockedUntil,
+            Instant lastActiveAt,
+            Instant inactivityWarnedAt) {}
 
     record Session(Instant createdAt, Instant expiresAt, Instant revokedAt) {}
 
@@ -59,7 +61,8 @@ public class AccountData implements PersonalDataSection {
         Account account = jdbc.query(
                 """
                 SELECT email, username, language, role, email_verified, created_at, terms_version,
-                       terms_accepted_at, failed_login_attempts, locked_until
+                       terms_accepted_at, failed_login_attempts, locked_until, last_active_at,
+                       inactivity_warned_at
                 FROM users WHERE id = :id
                 """,
                 id,
@@ -73,7 +76,9 @@ public class AccountData implements PersonalDataSection {
                         row.getString("terms_version"),
                         instant(row, "terms_accepted_at"),
                         row.getInt("failed_login_attempts"),
-                        instant(row, "locked_until")))
+                        instant(row, "locked_until"),
+                        instant(row, "last_active_at"),
+                        instant(row, "inactivity_warned_at")))
                 .stream()
                 .findFirst()
                 // Deleted since the token was issued.
