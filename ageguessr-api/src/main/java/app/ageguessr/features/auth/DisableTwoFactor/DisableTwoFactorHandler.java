@@ -30,7 +30,7 @@ public class DisableTwoFactorHandler {
         if (!user.hasTwoFactor()) {
             throw new ConflictException("TWO_FACTOR_NOT_ENABLED", "Two-factor authentication is off");
         }
-        passwordVerifier.verify(user, command.password());
+        passwordVerifier.verifyKeepingFailures(user, command.password());
         twoFactor.verify(user, command.code());
         user.dropTwoFactor();
         users.save(user);

@@ -83,24 +83,33 @@ challenge. Le login ne remet pas le compteur d'échecs à zéro avant le code. V
 verrouillage, challenge expiré / réutilisé, secours, désactivation, export sans secret).
 
 ## Phase 3 : frontend
-Status: Not started
+Status: Complete
 
-- [ ] `/account` : section 2FA (activer : mot de passe → QR + secret → code ; désactiver).
-- [ ] `/login` : étape du code, lien « plus accès à mon app ».
-- [ ] Page `/disable-two-factor` (noindex), i18n FR, `/privacy` (secret chiffré, date).
-- [ ] Tests Vitest ; Playwright composant de l'étape de code si utile.
+- [x] `/account` : section 2FA (activer : mot de passe → QR + secret → code ; désactiver).
+- [x] `/login` : étape du code, lien « plus accès à mon app ».
+- [x] Page `/disable-two-factor` (noindex), i18n FR, `/privacy` (secret chiffré, date).
+- [x] Tests Vitest ; Playwright composant de l'étape de code si utile.
 
 ### Verification Plan
 - `pnpm test`, lint, format verts.
 
 ### Phase Summary
-_(write when phase completes)_
+`Auth.login` renvoie `{user}` ou `{challenge}` ; `loginWithCode`, secours,
+setup/enable/disable. `/login` : étape du code (`autocomplete="one-time-code"`), retour
+au mot de passe si le challenge a expiré. `/account` : section 2FA (QR via `qrcode`,
+déclaré dans `allowedCommonJsDependencies`). Page `/disable-two-factor` (noindex, clic
+explicite). `/privacy` FR + EN (secret chiffré, emails). Vérifié : `pnpm test` 486 + 7,
+lint, format, `ng build --localize`.
 
 ## Phase 4 : docs, reviews, PR
 Status: Not started
 
-- [ ] `architecture.md` (« Récupération du compte » mis à jour), roadmap, vérification prod.
-- [ ] architecture-reviewer + code-reviewer, corrections.
+- [x] `architecture.md` (« Récupération du compte » mis à jour), roadmap, vérification prod.
+- [x] architecture-reviewer + code-reviewer, corrections : la désactivation depuis le
+      compte ne remet plus le compteur d'échecs à zéro au bon mot de passe
+      (`verifyKeepingFailures`, la remise à zéro passe dans `TwoFactorVerifier`) ;
+      `LoginResponse` à la racine d'auth ; un nouveau lien de secours annule les anciens ;
+      constantes dans `Totp` ; tests unitaires `LoginTotpHandler`, `DisableTwoFactorHandler`.
 - [ ] PR → `develop`, CI verte, merge. Prévenir : `TOTP_ENCRYPTION_KEY` à ajouter en prod
       avant la release.
 
@@ -111,7 +120,14 @@ Status: Not started
 _(write when phase completes)_
 
 ## Final Recap
-_(write when all phases complete)_
+Double authentification TOTP facultative : QR code depuis `/account`, code à la
+connexion, secours par lien email, secret chiffré au repos. Protège d'un mot de passe
+fuité ; pas d'une boîte mail compromise (choix assumé du secours par email).
 
 ## Deployment Plan
-_(write when all phases complete)_
+1. **Avant la release** : créer le secret GitHub `TOTP_ENCRYPTION_KEY`
+   (`openssl rand -base64 32`), à ne jamais changer ensuite. Sans lui, le backend ne
+   démarre pas.
+2. Merger dans `develop`, puis release `develop → main` (merge commit) : Flyway applique
+   V26 ; le step de déploiement écrit la clé dans le `.env` du VPS.
+3. Vérification prod listée en tête de `docs/roadmap.md`.

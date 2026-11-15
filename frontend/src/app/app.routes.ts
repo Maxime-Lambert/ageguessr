@@ -100,6 +100,14 @@ export const routes: Routes = [
   // where adding by username is the way now.
   { path: 'friends/invite/:code', redirectTo: 'friends' },
   {
+    path: 'disable-two-factor',
+    ...PRIVATE,
+    loadComponent: () =>
+      import('./features/auth/disable-two-factor/disable-two-factor').then(
+        (m) => m.DisableTwoFactor,
+      ),
+  },
+  {
     path: 'confirm-account-deletion',
     ...PRIVATE,
     loadComponent: () =>

@@ -19,7 +19,10 @@ public class TwoFactorVerifier {
     private final AccountLockout lockout;
     private final Clock clock;
 
-    /** Records the step on the user on success; the caller saves it with its own changes. */
+    /**
+     * On success, records the step and clears the failures on the user; the caller saves it
+     * with its own changes.
+     */
     public void verify(User user, String code) {
         if (user.getTotpSecret() == null || lockout.isLocked(user)) {
             throw invalid();
@@ -31,6 +34,7 @@ public class TwoFactorVerifier {
             throw invalid();
         }
         user.setTotpLastStep(step.getAsLong());
+        lockout.clear(user);
     }
 
     private static ForbiddenException invalid() {

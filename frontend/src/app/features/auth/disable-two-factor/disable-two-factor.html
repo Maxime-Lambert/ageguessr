@@ -1,0 +1,66 @@
+<main>
+  <app-page width="narrow">
+    @switch (status()) {
+      @case ('disabled') {
+        <h1
+          class="font-display text-[32px] leading-tight sm:text-[36px]"
+          i18n="@@twoFactorRecovery.doneTitle"
+        >
+          Two-factor authentication turned off
+        </h1>
+        <p class="text-muted mt-3 leading-relaxed" i18n="@@twoFactorRecovery.done">
+          You can sign in with your password alone, then turn it on again from your account with
+          your new phone. Every device was signed out.
+        </p>
+        <a appButton routerLink="/login" class="mt-6" i18n="@@twoFactorRecovery.toLogin">Log in</a>
+      }
+      @case ('invalid-link') {
+        <h1
+          class="font-display text-[32px] leading-tight sm:text-[36px]"
+          i18n="@@common.linkInvalid"
+        >
+          Link invalid or expired
+        </h1>
+        <p class="text-danger mt-3" i18n="@@twoFactorRecovery.invalid">
+          This link no longer works. Two-factor authentication is still on: ask for a new link from
+          the sign-in page.
+        </p>
+        <a
+          appButton
+          variant="secondary"
+          routerLink="/login"
+          class="mt-6"
+          i18n="@@twoFactorRecovery.toLogin"
+          >Log in</a
+        >
+      }
+      @default {
+        <h1
+          class="font-display text-[32px] leading-tight sm:text-[36px]"
+          i18n="@@twoFactorRecovery.title"
+        >
+          Turn off two-factor authentication?
+        </h1>
+        <p class="text-muted mt-3 leading-relaxed" i18n="@@twoFactorRecovery.warning">
+          Signing in will ask for your password only, and every device will be signed out. If you
+          didn't ask for this, keep it on and change your password: someone knows it.
+        </p>
+        <div class="mt-8 flex flex-col gap-3">
+          <button
+            appButton
+            block
+            type="button"
+            (click)="confirm()"
+            [disabled]="status() === 'disabling'"
+            i18n="@@twoFactorRecovery.confirm"
+          >
+            Turn off two-factor authentication
+          </button>
+          <a appButton variant="ghost" block routerLink="/" i18n="@@twoFactorRecovery.keep"
+            >Keep it on</a
+          >
+        </div>
+      }
+    }
+  </app-page>
+</main>

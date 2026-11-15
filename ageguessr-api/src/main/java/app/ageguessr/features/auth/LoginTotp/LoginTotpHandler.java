@@ -1,6 +1,5 @@
 package app.ageguessr.features.auth.LoginTotp;
 
-import app.ageguessr.features.auth.AccountLockout;
 import app.ageguessr.features.auth.AccountTokenPurpose;
 import app.ageguessr.features.auth.AccountTokenService;
 import app.ageguessr.features.auth.AuthTokenService;
@@ -24,7 +23,6 @@ public class LoginTotpHandler {
 
     private final AccountTokenService accountTokens;
     private final TwoFactorVerifier twoFactor;
-    private final AccountLockout lockout;
     private final UserRepository users;
     private final AuthTokenService authTokens;
     private final Clock clock;
@@ -34,7 +32,6 @@ public class LoginTotpHandler {
         twoFactor.verify(user, command.code());
         // Once only: two requests with the same right code, the second gets the 404.
         accountTokens.redeem(command.challenge(), AccountTokenPurpose.TOTP_LOGIN);
-        lockout.clear(user);
         users.save(user);
         users.markActive(user.getId(), clock.instant());
         return new TokenPair(authTokens.issueAccessToken(user), authTokens.issueRefreshToken(user.getId()));

@@ -180,6 +180,24 @@ class TwoFactorFunctionalTest {
     }
 
     @Test
+    void theRightPasswordDoesNotResetTheCountOfWrongCodesWhenTurningItOff() throws Exception {
+        Player player = signUp();
+        String secret = turnOn(player);
+        forgetLastStep(player);
+
+        for (int i = 0; i < 5; i++) {
+            post("/api/auth/me/two-factor/disable", player.token(), Map.of("password", PASSWORD, "code", "000000"))
+                    .andExpect(status().isForbidden());
+        }
+
+        // Locked: even the right password and code are refused for 15 minutes.
+        post("/api/auth/me/two-factor/disable", player.token(), Map.of("password", PASSWORD, "code", codeAt(secret, 0)))
+                .andExpect(status().isForbidden());
+        assertThat(jdbc.queryForObject("SELECT totp_enabled_at FROM users WHERE id = ?", Instant.class, player.id()))
+                .isNotNull();
+    }
+
+    @Test
     void anExpiredChallengeIsRefused() throws Exception {
         Player player = signUp();
         String secret = turnOn(player);
@@ -199,6 +217,10 @@ class TwoFactorFunctionalTest {
         String challenge = challenge(player);
 
         post("/api/auth/login/totp/recovery", null, Map.of("challenge", challenge)).andExpect(status().isAccepted());
+        String older = VerificationLinks.extractToken(emailSender.lastMessageTo(player.email()));
+        // Asked twice: only the latest link works.
+        post("/api/auth/login/totp/recovery", null, Map.of("challenge", challenge)).andExpect(status().isAccepted());
+        post("/api/auth/disable-two-factor", null, Map.of("token", older)).andExpect(status().isNotFound());
         String link = emailSender.lastMessageTo(player.email()).htmlBody();
         assertThat(link).contains("/disable-two-factor?token=");
         String token = VerificationLinks.extractToken(emailSender.lastMessageTo(player.email()));

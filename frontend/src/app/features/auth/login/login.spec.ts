@@ -56,6 +56,87 @@ describe('Login', () => {
 
     expect(component.resendSent()).toBe(true);
   });
+
+  describe('with two-factor authentication', () => {
+    function toCodeStep() {
+      fillForm('user@x.com', 'tortoise-violin-42');
+      component.submit();
+      httpMock
+        .expectOne('/api/auth/login')
+        .flush({ twoFactorRequired: true, challenge: 'the-challenge' });
+      fixture.detectChanges();
+    }
+
+    it('asks for the code once the password is right', () => {
+      toCodeStep();
+
+      expect(component.challenge()).toBe('the-challenge');
+      const input = fixture.nativeElement.querySelector('input[autocomplete="one-time-code"]');
+      expect(input).not.toBeNull();
+      httpMock.expectNone('/api/auth/me');
+    });
+
+    it('signs in with the code, sent with the challenge', () => {
+      const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
+      toCodeStep();
+      component.codeForm.setValue({ code: '123456' });
+
+      component.submitCode();
+      const request = httpMock.expectOne('/api/auth/login/totp');
+      expect(request.request.body).toEqual({ challenge: 'the-challenge', code: '123456' });
+      request.flush({ accessToken: 'token' });
+      httpMock.expectOne('/api/auth/me').flush({ id: '1' });
+      httpMock.expectOne('/api/game/guest-plays/claim').flush({ claimed: 0 });
+
+      expect(navigate).toHaveBeenCalledWith('/');
+    });
+
+    it('explains a wrong code and keeps the step', () => {
+      toCodeStep();
+      component.codeForm.setValue({ code: '000000' });
+
+      component.submitCode();
+      httpMock
+        .expectOne('/api/auth/login/totp')
+        .flush({ errorCode: 'INVALID_TOTP_CODE' }, { status: 403, statusText: 'Forbidden' });
+
+      expect(component.challenge()).toBe('the-challenge');
+      expect(component.errorMessage()).toContain('Incorrect or expired code');
+    });
+
+    it('goes back to the password once the challenge has expired', () => {
+      toCodeStep();
+      component.codeForm.setValue({ code: '123456' });
+
+      component.submitCode();
+      httpMock
+        .expectOne('/api/auth/login/totp')
+        .flush(null, { status: 404, statusText: 'Not Found' });
+
+      expect(component.challenge()).toBeNull();
+      expect(component.errorMessage()).toContain('expired');
+    });
+
+    it('refuses a code that is not 6 digits without asking the server', () => {
+      toCodeStep();
+      component.codeForm.setValue({ code: '12a' });
+
+      component.submitCode();
+
+      httpMock.expectNone('/api/auth/login/totp');
+    });
+
+    it('emails the recovery link when the app is lost', () => {
+      toCodeStep();
+
+      component.requestRecovery();
+      const request = httpMock.expectOne('/api/auth/login/totp/recovery');
+      expect(request.request.body).toEqual({ challenge: 'the-challenge' });
+      request.flush(null, { status: 202, statusText: 'Accepted' });
+
+      expect(component.recoverySent()).toBe(true);
+    });
+  });
 });
 
 describe('Login return URL', () => {

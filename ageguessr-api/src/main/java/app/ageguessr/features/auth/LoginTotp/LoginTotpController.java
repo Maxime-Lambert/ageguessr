@@ -1,6 +1,6 @@
 package app.ageguessr.features.auth.LoginTotp;
 
-import app.ageguessr.features.auth.Login.LoginResponse;
+import app.ageguessr.features.auth.LoginResponse;
 import app.ageguessr.features.auth.RefreshTokenCookieFactory;
 import app.ageguessr.features.auth.TokenPair;
 import jakarta.validation.Valid;

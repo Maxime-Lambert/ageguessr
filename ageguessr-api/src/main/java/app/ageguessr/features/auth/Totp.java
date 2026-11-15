@@ -23,6 +23,8 @@ public final class Totp {
     static final long STEP_SECONDS = 30;
     /** One step either side: a phone a little early or late, a code typed as it changes. */
     static final int WINDOW = 1;
+    private static final int MODULUS = 1_000_000;
+    private static final String ISSUER = "AgeGuessr";
     private static final int SECRET_BYTES = 20;
     private static final String BASE32 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
     private static final SecureRandom RANDOM = new SecureRandom();
@@ -65,9 +67,8 @@ public final class Totp {
 
     /** The address the apps read from the QR code: issuer and account shown in the app. */
     public static String otpauthUri(String account, String base32Secret) {
-        String issuer = "AgeGuessr";
-        String label = URLEncoder.encode(issuer + ":" + account, StandardCharsets.UTF_8).replace("+", "%20");
-        return "otpauth://totp/" + label + "?secret=" + base32Secret + "&issuer=" + issuer + "&digits=" + DIGITS
+        String label = URLEncoder.encode(ISSUER + ":" + account, StandardCharsets.UTF_8).replace("+", "%20");
+        return "otpauth://totp/" + label + "?secret=" + base32Secret + "&issuer=" + ISSUER + "&digits=" + DIGITS
                 + "&period=" + STEP_SECONDS;
     }
 
@@ -87,7 +88,7 @@ public final class Totp {
                     | ((hash[offset + 1] & 0xff) << 16)
                     | ((hash[offset + 2] & 0xff) << 8)
                     | (hash[offset + 3] & 0xff);
-            return String.format("%0" + DIGITS + "d", binary % (int) Math.pow(10, DIGITS));
+            return String.format("%0" + DIGITS + "d", binary % MODULUS);
         } catch (GeneralSecurityException e) {
             throw new IllegalStateException("HmacSHA1 is part of every JDK", e);
         }

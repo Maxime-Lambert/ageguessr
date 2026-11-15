@@ -35,6 +35,7 @@ describe('authGuard', () => {
       username: 'Player',
       emailVerified: true,
       termsAccepted: true,
+      twoFactorEnabled: false,
       role: 'USER',
       language: 'EN',
     });
@@ -65,6 +66,7 @@ describe('authGuard', () => {
       username: 'Player',
       emailVerified: true,
       termsAccepted: true,
+      twoFactorEnabled: false,
       role: 'USER',
       language: 'EN',
     });

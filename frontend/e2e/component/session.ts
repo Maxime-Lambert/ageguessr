@@ -6,6 +6,7 @@ export const USER = {
   username: 'Player',
   emailVerified: true,
   termsAccepted: true,
+  twoFactorEnabled: false,
   role: 'USER' as const,
   // The language of the English pages the tests open: no reload to the other build.
   language: 'EN' as const,
