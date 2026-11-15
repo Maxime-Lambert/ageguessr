@@ -10,6 +10,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import app.ageguessr.features.auth.AccountLockout;
+import app.ageguessr.features.auth.AccountTokenPurpose;
+import app.ageguessr.features.auth.AccountTokenService;
 import app.ageguessr.features.auth.AuthTokenService;
 import app.ageguessr.features.auth.TokenPair;
 import app.ageguessr.features.auth.User;
@@ -43,6 +45,9 @@ class LoginHandlerTest {
     @Mock
     private AuthTokenService authTokenService;
 
+    @Mock
+    private AccountTokenService accountTokenService;
+
     private LoginHandler handler;
 
     @BeforeEach
@@ -50,6 +55,7 @@ class LoginHandlerTest {
         when(passwordEncoder.encode(anyString())).thenReturn(DUMMY_HASH);
         handler = new LoginHandler(
                 userRepository, passwordEncoder, authTokenService, new AccountLockout(userRepository, FIXED_CLOCK, 5, 15),
+                accountTokenService,
                 FIXED_CLOCK);
     }
 
@@ -87,7 +93,7 @@ class LoginHandlerTest {
         when(authTokenService.issueAccessToken(user)).thenReturn("access-token");
         when(authTokenService.issueRefreshToken(user.getId())).thenReturn("refresh-token");
 
-        TokenPair tokens = handler.handle(new LoginCommand("expired-lock@x.com", "correct"));
+        TokenPair tokens = handler.handle(new LoginCommand("expired-lock@x.com", "correct")).tokens();
 
         assertThat(tokens.accessToken()).isEqualTo("access-token");
     }
@@ -157,7 +163,7 @@ class LoginHandlerTest {
         when(authTokenService.issueAccessToken(user)).thenReturn("access-token");
         when(authTokenService.issueRefreshToken(user.getId())).thenReturn("refresh-token");
 
-        TokenPair tokens = handler.handle(new LoginCommand("user@x.com", "correct"));
+        TokenPair tokens = handler.handle(new LoginCommand("user@x.com", "correct")).tokens();
 
         assertThat(tokens).isEqualTo(new TokenPair("access-token", "refresh-token"));
         assertThat(user.getFailedLoginAttempts()).isZero();
@@ -165,6 +171,27 @@ class LoginHandlerTest {
         verify(userRepository, times(1)).save(user);
         // Active again: the purge of inactive accounts starts over, any warning lifted.
         verify(userRepository).markActive(user.getId(), FIXED_CLOCK.instant());
+    }
+
+    @Test
+    void withTwoFactorTheRightPasswordOnlyGetsAChallengeAndKeepsTheFailures() {
+        User user = userWith("2fa@x.com", "real-hash", true);
+        user.setTotpSecret("encrypted");
+        user.setTotpEnabledAt(FIXED_CLOCK.instant());
+        user.setFailedLoginAttempts(3);
+        when(userRepository.findByEmailIgnoreCase("2fa@x.com")).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches("correct", "real-hash")).thenReturn(true);
+        when(accountTokenService.issue(user.getId(), AccountTokenPurpose.TOTP_LOGIN, java.time.Duration.ofMinutes(5)))
+                .thenReturn("challenge");
+
+        LoginOutcome outcome = handler.handle(new LoginCommand("2fa@x.com", "correct"));
+
+        assertThat(outcome.twoFactorChallenge()).isEqualTo("challenge");
+        assertThat(outcome.tokens()).isNull();
+        // Cleared only once the code is right: wrong codes after it still lock.
+        assertThat(user.getFailedLoginAttempts()).isEqualTo(3);
+        verify(authTokenService, never()).issueAccessToken(any());
+        verify(userRepository, never()).markActive(any(), any());
     }
 
     private User userWith(String email, String passwordHash, boolean emailVerified) {
