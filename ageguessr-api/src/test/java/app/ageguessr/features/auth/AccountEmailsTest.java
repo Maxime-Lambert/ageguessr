@@ -9,6 +9,7 @@ import app.ageguessr.shared.email.EmailMessage;
 import app.ageguessr.shared.email.EmailSender;
 import app.ageguessr.shared.i18n.Language;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -83,6 +84,27 @@ class AccountEmailsTest {
                 .contains("https://ageguessr.app/en/confirm-account-deletion?token=raw-token")
                 .contains("cannot be undone")
                 .contains("expires in 1 hour");
+    }
+
+    @Test
+    void theInactivityWarningGivesTheDateAndALinkToSignInWithoutAToken() {
+        accountEmails.sendInactivityWarning(USER, Instant.parse("2026-12-15T00:50:00Z"));
+
+        EmailMessage message = sent();
+        assertThat(message.subject()).isEqualTo("Your AgeGuessr account will be deleted on 15 December 2026");
+        assertThat(message.htmlBody())
+                .contains("<a href=\"https://ageguessr.app/en/login\">sign in</a>")
+                .contains("deleted on 15 December 2026")
+                .doesNotContain("token=");
+    }
+
+    @Test
+    void warnsAFrenchAccountInFrench() {
+        accountEmails.sendInactivityWarning(FRENCH_USER, Instant.parse("2026-12-15T00:50:00Z"));
+
+        EmailMessage message = sent();
+        assertThat(message.subject()).isEqualTo("Votre compte AgeGuessr sera supprimé le 15 décembre 2026");
+        assertThat(message.htmlBody()).contains("https://ageguessr.app/fr/login").contains("supprimés le 15 décembre 2026");
     }
 
     @Test

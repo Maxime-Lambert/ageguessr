@@ -24,6 +24,9 @@ retirer une fois tous faits.
       mes données » enregistre `ageguessr-data-<date>.json` ; il contient l'email, le pseudo,
       les parties jouées et les amis, aucun hash ni nom de personne d'une manche ; `/privacy`
       mentionne le téléchargement
+- [ ] Purge des comptes (`feature/account-purge`) : le lendemain du déploiement,
+      `docker logs ageguessr-prod-backend-1 | grep "Accounts purged"` montre une ligne
+      (00:50 UTC) ; `/privacy` section 4 annonce 7 jours et 3 ans
 - [ ] Backup et logs (`chore/backup-and-log-rotation`) : `sudo ls -l
       /opt/ageguessr/backups/daily` montre un dump `-rw-------` ; `docker ps` montre
       `ageguessr-prod-backup-1` `healthy` ; `docker inspect ageguessr-prod-backend-1
@@ -227,8 +230,8 @@ retirer une fois tous faits.
 - [x] Export des données personnelles (droit d'accès et de portabilité en self-service) :
       fichier JSON téléchargé depuis `/account`, chaque feature exporte ses tables, test de
       couverture sur le schéma — PR `feature/personal-data-export`
-- [ ] Purge des comptes jamais vérifiés et des comptes inactifs (durées à fixer, puis à
-      annoncer dans la politique de confidentialité)
+- [x] Purge des comptes jamais vérifiés (7 jours) et inactifs (3 ans, email 30 jours
+      avant), annoncée dans `/privacy` — PR `feature/account-purge`
 - [x] Ré-acceptation des CGU à chaque nouvelle version (`users.terms_version` déjà
       enregistré) — bandeau non bloquant, PR `feature/terms-reacceptance`
 - [ ] Double authentification (TOTP), seule protection si la boîte mail d'un joueur est

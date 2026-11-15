@@ -1,6 +1,10 @@
 package app.ageguessr.features.auth;
 
 import app.ageguessr.shared.i18n.Language;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 /**
  * Every word of the account emails, in both languages, kept apart from the sending so
@@ -78,5 +82,31 @@ final class AccountEmailTexts {
                                         + "<p>If it wasn't you, ignore this email and change your password: someone knows"
                                         + " it.</p>")
                                 .formatted(link));
+    }
+
+    /** The day of the deletion, written out in the language: "15 December 2026", "15 décembre 2026". */
+    private static String day(Instant instant, Language language) {
+        Locale locale = language == Language.FR ? Locale.FRENCH : Locale.ENGLISH;
+        return DateTimeFormatter.ofPattern("d MMMM yyyy", locale).withZone(ZoneOffset.UTC).format(instant);
+    }
+
+    static Text inactivityWarning(Language language, String loginLink, Instant deletionDate) {
+        return language == Language.FR
+                ? new Text(
+                        "Votre compte AgeGuessr sera supprimé le " + day(deletionDate, language),
+                        ("<p>Votre compte AgeGuessr n'a pas servi depuis bientôt 3 ans. Pour ne pas garder"
+                                        + " vos données inutilement, votre compte, votre historique et vos amis"
+                                        + " seront supprimés le %s.</p>"
+                                        + "<p>Pour le garder, il suffit de <a href=\"%s\">vous connecter</a> d'ici là.</p>"
+                                        + "<p>Sinon, vous n'avez rien à faire.</p>")
+                                .formatted(day(deletionDate, language), loginLink))
+                : new Text(
+                        "Your AgeGuessr account will be deleted on " + day(deletionDate, language),
+                        ("<p>You haven't signed in to AgeGuessr for almost 3 years. So as not to keep your"
+                                        + " data for nothing, your account, history and friends will be deleted on"
+                                        + " %s.</p>"
+                                        + "<p>To keep it, just <a href=\"%s\">sign in</a> before then.</p>"
+                                        + "<p>Otherwise, there is nothing to do.</p>")
+                                .formatted(day(deletionDate, language), loginLink));
     }
 }

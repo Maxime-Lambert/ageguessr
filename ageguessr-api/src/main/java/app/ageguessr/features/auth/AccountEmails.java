@@ -3,6 +3,7 @@ package app.ageguessr.features.auth;
 import app.ageguessr.shared.email.EmailMessage;
 import app.ageguessr.shared.email.EmailSender;
 import java.time.Duration;
+import java.time.Instant;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -57,6 +58,15 @@ public class AccountEmails {
         String link = links.to(user, "/confirm-account-deletion", accountTokenService.issue(
                 user.getId(), AccountTokenPurpose.ACCOUNT_DELETION, deletionTtl));
         send(user, AccountEmailTexts.deletionConfirmation(user.languageOrDefault(), link));
+    }
+
+    /**
+     * Announces the deletion of an inactive account, with a link to sign in, which keeps it.
+     * No token: signing in with the password is what proves the account is still wanted.
+     */
+    public void sendInactivityWarning(User user, Instant deletionDate) {
+        send(user, AccountEmailTexts.inactivityWarning(
+                user.languageOrDefault(), links.page(user, "/login"), deletionDate));
     }
 
     private void send(User user, AccountEmailTexts.Text text) {

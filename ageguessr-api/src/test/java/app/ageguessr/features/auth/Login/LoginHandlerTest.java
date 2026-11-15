@@ -49,7 +49,8 @@ class LoginHandlerTest {
     void setUp() {
         when(passwordEncoder.encode(anyString())).thenReturn(DUMMY_HASH);
         handler = new LoginHandler(
-                userRepository, passwordEncoder, authTokenService, new AccountLockout(userRepository, FIXED_CLOCK, 5, 15));
+                userRepository, passwordEncoder, authTokenService, new AccountLockout(userRepository, FIXED_CLOCK, 5, 15),
+                FIXED_CLOCK);
     }
 
     @Test
@@ -132,6 +133,7 @@ class LoginHandlerTest {
                 .satisfies(ex -> assertThat(((ForbiddenException) ex).getErrorCode()).isEqualTo("EMAIL_NOT_VERIFIED"));
 
         verify(authTokenService, never()).issueAccessToken(any());
+        verify(userRepository, never()).markActive(any(), any());
     }
 
     @Test
@@ -161,6 +163,8 @@ class LoginHandlerTest {
         assertThat(user.getFailedLoginAttempts()).isZero();
         assertThat(user.getLockedUntil()).isNull();
         verify(userRepository, times(1)).save(user);
+        // Active again: the purge of inactive accounts starts over, any warning lifted.
+        verify(userRepository).markActive(user.getId(), FIXED_CLOCK.instant());
     }
 
     private User userWith(String email, String passwordHash, boolean emailVerified) {

@@ -283,6 +283,28 @@ seul `DELETE` suffise au droit à l'effacement. Vérifié par
 Les sauvegardes gardent une copie des données supprimées jusqu'à 30 jours (voir
 « Sauvegardes et logs », annoncé dans `/privacy`).
 
+### Purge des comptes non vérifiés et inactifs
+**Décision** (2026-11-15, PR `feature/account-purge`) : `PurgeAccountsHandler`, chaque
+jour à 00:50 UTC (`app.auth.retention.*`, désactivé en test) :
+- **jamais vérifié** : supprimé 7 jours après sa création (il ne peut pas se connecter et
+  bloque un email et un pseudo) ;
+- **inactif** : `users.last_active_at` (V25) est posé à la connexion et à chaque
+  renouvellement de session (`UserRepository.markActive`) ; une session vivante se
+  renouvelle au moins tous les 90 jours, donc pas d'écriture à chaque requête. « 3 ans »
+  = 1 096 jours (jamais moins de 3 années civiles). À 3 ans − 30 jours, un email (FR/EN,
+  lien vers `/login`) part une seule fois (`inactivity_warned_at`, remis à NULL par la
+  prochaine activité). Suppression quand 3 ans sont passés **et** que l'avertissement a
+  plus de 30 jours et 12 heures : un job arrêté ne raccourcit jamais le préavis, et la
+  marge absorbe l'heure de départ du job d'un jour à l'autre. La suppression tombe donc
+  au passage J+31, la date que l'email annonce. Un email en échec n'est pas marqué :
+  réessayé le lendemain ;
+- **admins exclus de la purge des inactifs** (rôle posé à la main ; supprimer le seul
+  admin fermerait la curation). Un admin jamais vérifié est purgé comme les autres : il
+  ne peut pas se connecter.
+Supprimer = `DELETE` de la ligne `users`, les cascades font le reste. Les deux colonnes
+sont en lecture seule dans l'entité (`insertable/updatable = false`) : un `save()` d'un
+`User` construit en mémoire y écrirait NULL. Elles figurent dans l'export.
+
 ### Export des données (droit d'accès et de portabilité)
 **Décision** (2026-11-15, PR `feature/personal-data-export`) : `GET /api/auth/me/data`
 renvoie un fichier JSON (`Content-Disposition: attachment`) de tout ce que le site garde
