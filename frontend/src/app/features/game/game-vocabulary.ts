@@ -244,8 +244,8 @@ export function dailyShareVerdict(points: number, max: number): string {
 /** What the player did, in words a friend who never played understands. */
 function dailySharePlayed(photos: number): string {
   return photos === 1
-    ? $localize`:@@game.share.playedOne:I guessed the year of 1 photo 📸`
-    : $localize`:@@game.share.played:I guessed the year of ${photos}:photos: photos 📸`;
+    ? $localize`:@@game.share.playedOne:I guessed the age of 1 person in a photo 📸`
+    : $localize`:@@game.share.played:I guessed the age of ${photos}:photos: people in photos 📸`;
 }
 
 /**

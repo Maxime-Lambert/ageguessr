@@ -12,7 +12,7 @@ test.describe('daily game', () => {
     await expect
       .poll(() => sharedTexts(page))
       .toEqual([
-        `AgeGuessr · Nov 13, 2026\nI guessed the year of 3 photos 📸\n🎯🟩⬛🟥  2,340 / 3,000\nWell played! Can you beat that? 👉 ${new URL(baseURL!).origin}`,
+        `AgeGuessr · Nov 13, 2026\nI guessed the age of 3 people in photos 📸\n🎯🟩⬛🟥  2,340 / 3,000\nWell played! Can you beat that? 👉 ${new URL(baseURL!).origin}`,
       ]);
   });
 

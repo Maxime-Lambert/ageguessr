@@ -52,7 +52,7 @@ describe('share', () => {
       ),
     ).toBe(
       'AgeGuessr · Nov 13, 2026\n' +
-        'I guessed the year of 3 photos 📸\n' +
+        'I guessed the age of 3 people in photos 📸\n' +
         '🎯🟩🟥  2,340 / 3,000\n' +
         'Well played! Can you beat that? 👉 https://ageguessr.app',
     );
@@ -60,7 +60,7 @@ describe('share', () => {
 
   it('counts a single photo in the singular, and drops the line with none left', () => {
     expect(dailyShareText('2026-11-13', 900, 1000, '🟩', 1, '', 'en-US')).toContain(
-      '\nI guessed the year of 1 photo 📸\n',
+      '\nI guessed the age of 1 person in a photo 📸\n',
     );
     const allWithdrawn = dailyShareText('2026-11-13', 0, 0, '⬛⬛⬛', 0, '', 'en-US');
     expect(allWithdrawn).not.toContain('I guessed');
