@@ -20,6 +20,10 @@ retirer une fois tous faits.
       Search Console, ajouter le domaine, soumettre `https://ageguessr.app/sitemap.xml` et
       inspecter `/fr/how-to-play` (canonical `…/fr/how-to-play`, indexable) et
       `/fr/login` (exclue par `noindex`)
+- [ ] Export des données (`feature/personal-data-export`) : sur `/account`, « Télécharger
+      mes données » enregistre `ageguessr-data-<date>.json` ; il contient l'email, le pseudo,
+      les parties jouées et les amis, aucun hash ni nom de personne d'une manche ; `/privacy`
+      mentionne le téléchargement
 - [ ] Backup et logs (`chore/backup-and-log-rotation`) : `sudo ls -l
       /opt/ageguessr/backups/daily` montre un dump `-rw-------` ; `docker ps` montre
       `ageguessr-prod-backup-1` `healthy` ; `docker inspect ageguessr-prod-backend-1
@@ -220,9 +224,9 @@ retirer une fois tous faits.
 - [x] SEO léger : description et aperçu de lien (Open Graph, image) traduits dans
       `index.html`, `robots.txt`, `sitemap.xml`, canonical/hreflang et `noindex` des pages
       privées posés à chaque navigation ; SSR reporté à la landing page — PR `feature/seo`
-- [ ] Export des données personnelles (droit d'accès et de portabilité en self-service ;
-      suppression déjà livrée en Semaine 5, pages légales en Semaine 1, pas de bannière
-      cookies nécessaire tant qu'il n'y a que des traceurs strictement nécessaires)
+- [x] Export des données personnelles (droit d'accès et de portabilité en self-service) :
+      fichier JSON téléchargé depuis `/account`, chaque feature exporte ses tables, test de
+      couverture sur le schéma — PR `feature/personal-data-export`
 - [ ] Purge des comptes jamais vérifiés et des comptes inactifs (durées à fixer, puis à
       annoncer dans la politique de confidentialité)
 - [x] Ré-acceptation des CGU à chaque nouvelle version (`users.terms_version` déjà

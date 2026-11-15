@@ -6,56 +6,56 @@
         <source>Series · AgeGuessr</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.routes.ts</context>
-          <context context-type="linenumber">22</context>
+          <context context-type="linenumber">23</context>
         </context-group>
       </trans-unit>
       <trans-unit id="title.howToPlay" datatype="html">
         <source>How to play · AgeGuessr</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.routes.ts</context>
-          <context context-type="linenumber">28</context>
+          <context context-type="linenumber">29</context>
         </context-group>
       </trans-unit>
       <trans-unit id="title.challenge" datatype="html">
         <source>Challenge · AgeGuessr</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.routes.ts</context>
-          <context context-type="linenumber">35</context>
+          <context context-type="linenumber">36</context>
         </context-group>
       </trans-unit>
       <trans-unit id="title.profile" datatype="html">
         <source>My profile · AgeGuessr</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.routes.ts</context>
-          <context context-type="linenumber">87</context>
+          <context context-type="linenumber">88</context>
         </context-group>
       </trans-unit>
       <trans-unit id="title.friends" datatype="html">
         <source>Friends · AgeGuessr</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.routes.ts</context>
-          <context context-type="linenumber">94</context>
+          <context context-type="linenumber">95</context>
         </context-group>
       </trans-unit>
       <trans-unit id="title.legalNotice" datatype="html">
         <source>Legal notice · AgeGuessr</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.routes.ts</context>
-          <context context-type="linenumber">128</context>
+          <context context-type="linenumber">129</context>
         </context-group>
       </trans-unit>
       <trans-unit id="title.terms" datatype="html">
         <source>Terms of Use · AgeGuessr</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.routes.ts</context>
-          <context context-type="linenumber">135</context>
+          <context context-type="linenumber">136</context>
         </context-group>
       </trans-unit>
       <trans-unit id="title.privacy" datatype="html">
         <source>Privacy Policy · AgeGuessr</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/app.routes.ts</context>
-          <context context-type="linenumber">141</context>
+          <context context-type="linenumber">142</context>
         </context-group>
       </trans-unit>
       <trans-unit id="account.title" datatype="html">
@@ -161,11 +161,32 @@
           <context context-type="linenumber">116,118</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="account.dataTitle" datatype="html">
+        <source>Your data</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
+          <context context-type="linenumber">122,123</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="account.dataIntro" datatype="html">
+        <source> Download a copy of everything AgeGuessr keeps about you: your account, your games and your friends, in a JSON file. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
+          <context context-type="linenumber">124,127</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="account.downloadData" datatype="html">
+        <source> Download my data </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
+          <context context-type="linenumber">139,141</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="account.deleteTitle" datatype="html">
         <source> Delete account </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">123,125</context>
+          <context context-type="linenumber">145,147</context>
         </context-group>
       </trans-unit>
       <trans-unit id="account.deletionSent" datatype="html">
@@ -173,21 +194,21 @@
           &gt;"/>. Your account will only be deleted once you open it and confirm. The link expires in 1 hour. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">127,131</context>
+          <context context-type="linenumber">149,153</context>
         </context-group>
       </trans-unit>
       <trans-unit id="account.deleteIntro" datatype="html">
         <source> Permanently deletes your account, history and friends. We&apos;ll email you a link to confirm before anything is deleted. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">134,138</context>
+          <context context-type="linenumber">156,160</context>
         </context-group>
       </trans-unit>
       <trans-unit id="common.password" datatype="html">
         <source>Password</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">139</context>
+          <context context-type="linenumber">161</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/login/login.html</context>
@@ -202,21 +223,21 @@
         <source> Delete my account </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.html</context>
-          <context context-type="linenumber">159,161</context>
+          <context context-type="linenumber">181,183</context>
         </context-group>
       </trans-unit>
       <trans-unit id="account.wrongPassword" datatype="html">
         <source>Incorrect password. After too many attempts, your account is locked for 15 minutes.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.ts</context>
-          <context context-type="linenumber">18</context>
+          <context context-type="linenumber">19</context>
         </context-group>
       </trans-unit>
       <trans-unit id="account.passwordsDiffer" datatype="html">
         <source>New passwords don&apos;t match.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/account/account.ts</context>
-          <context context-type="linenumber">100</context>
+          <context context-type="linenumber">105</context>
         </context-group>
       </trans-unit>
       <trans-unit id="checkEmail.title" datatype="html">

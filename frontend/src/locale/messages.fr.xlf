@@ -1356,6 +1356,18 @@
         <source>Privacy Policy of AgeGuessr: the data kept, why, for how long, and your rights.</source>
         <target>Politique de confidentialité d'AgeGuessr : les données conservées, pourquoi, combien de temps, et vos droits.</target>
       </trans-unit>
+      <trans-unit id="account.dataTitle" datatype="html">
+        <source>Your data</source>
+        <target>Vos données</target>
+      </trans-unit>
+      <trans-unit id="account.dataIntro" datatype="html">
+        <source> Download a copy of everything AgeGuessr keeps about you: your account, your games and your friends, in a JSON file. </source>
+        <target>Téléchargez une copie de tout ce qu'AgeGuessr garde sur vous : votre compte, vos parties et vos amis, dans un fichier JSON.</target>
+      </trans-unit>
+      <trans-unit id="account.downloadData" datatype="html">
+        <source> Download my data </source>
+        <target>Télécharger mes données</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

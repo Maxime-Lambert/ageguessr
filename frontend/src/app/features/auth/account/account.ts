@@ -3,6 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Auth } from '../auth';
+import { FILE_SAVER, filenameOf } from '../file-saver';
 import { USERNAME_PATTERN, USERNAME_RULE_MESSAGE, USERNAME_TAKEN_MESSAGE } from '../models';
 import {
   NEW_PASSWORD_VALIDATORS,
@@ -51,6 +52,10 @@ export class Account {
   readonly passwordRefusal = signal<string | null>(null);
   readonly passwordStatus = signal<'idle' | 'saving' | 'saved'>('idle');
   readonly passwordError = signal<string | null>(null);
+
+  private readonly fileSaver = inject(FILE_SAVER);
+  readonly dataStatus = signal<'idle' | 'downloading'>('idle');
+  readonly dataError = signal<string | null>(null);
 
   readonly deletionForm = new FormGroup({
     password: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
@@ -119,6 +124,25 @@ export class Account {
         this.passwordError.set(
           isWrongPassword(error) ? WRONG_PASSWORD_MESSAGE : GENERIC_ERROR_MESSAGE,
         );
+      },
+    });
+  }
+
+  downloadData(): void {
+    this.dataStatus.set('downloading');
+    this.dataError.set(null);
+    this.auth.downloadData().subscribe({
+      next: (response) => {
+        this.dataStatus.set('idle');
+        const filename = filenameOf(
+          response.headers.get('Content-Disposition'),
+          'ageguessr-data.json',
+        );
+        this.fileSaver.save(response.body!, filename);
+      },
+      error: () => {
+        this.dataStatus.set('idle');
+        this.dataError.set(GENERIC_ERROR_MESSAGE);
       },
     });
   }
