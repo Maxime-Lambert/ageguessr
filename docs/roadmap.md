@@ -30,6 +30,11 @@ retirer une fois tous faits.
       `ageguessr-prod-backup-1` `healthy` ; `docker inspect ageguessr-prod-backend-1
       --format '{{json .HostConfig.LogConfig}}'` donne `max-size 10m`, `max-file 3` ; le
       lendemain, `docker logs ageguessr-prod-backup-1` montre le dump de 03:00 UTC
+- [ ] Monitoring (`feature/monitoring`) : dans UptimeRobot, deux surveillances HTTP(S)
+      sur `https://ageguessr.app/api/health` et `https://ageguessr.app/api/health/backup`
+      (5 min, alerte par email), toutes deux « Up » ; bouton de test de notification reçu ;
+      le premier email d'erreur du backend arrivera à la première vraie erreur (pas de
+      moyen sûr d'en provoquer une en prod)
 
 ## Semaine 1 — Fondations
 - [x] Initialisation projet Spring Boot (Java 25) + Angular (Claude Code)
@@ -253,7 +258,9 @@ retirer une fois tous faits.
 ## Semaine 8 — Stabilisation et déploiement
 - [ ] Tests d'intégration sur les endpoints critiques
 - [ ] Tests E2E sur les parcours principaux (Playwright)
-- [ ] Monitoring (uptime, erreurs)
+- [x] Monitoring : `/api/health` vérifie PostgreSQL et Redis, `/api/health/backup` la
+      fraîcheur du dernier dump, surveillés par UptimeRobot ; erreurs du backend envoyées
+      par email à l'admin, regroupées — PR `feature/monitoring`
 - [x] Rotation des logs Docker : 3 × 10 Mo par conteneur du compose de prod — PR
       `chore/backup-and-log-rotation`
 - [x] Backup PostgreSQL : dump quotidien sur le disque du VPS, 30 jours au plus, annoncé

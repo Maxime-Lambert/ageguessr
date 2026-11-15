@@ -26,6 +26,14 @@ class HealthFunctionalTest {
         mockMvc.perform(get("/api/health")).andExpect(status().isOk()).andExpect(content().string("OK"));
     }
 
+    /** No status file in the tests: the backup check says so, without asking to log in. */
+    @Test
+    void theBackupCheckAnswersWithoutAuthentication() throws Exception {
+        mockMvc.perform(get("/api/health/backup"))
+                .andExpect(status().isServiceUnavailable())
+                .andExpect(content().string("UNAVAILABLE"));
+    }
+
     /** Guards the SecurityConfig allow-list: only /api/health was opened, not /api/** broadly. */
     @Test
     void otherApiPathsStillRequireAuthentication() throws Exception {

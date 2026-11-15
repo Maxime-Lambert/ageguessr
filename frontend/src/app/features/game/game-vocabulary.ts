@@ -13,31 +13,11 @@ import {
 
 /**
  * Every word of the game screens comes from here, never from a template
- * (docs/decisions/design.md, « Voix dossier d'enquête »), translated with Angular i18n
- * ($localize, src/locale/messages.fr.xlf). The neutral voice is on trial (2026-11-14,
- * feature/neutral-voice): the investigation voice stays below only to switch back by
- * setting VOICE. Both voices exist in both languages.
+ * (docs/decisions/design.md, « Ton éditorial »), translated with Angular i18n
+ * ($localize, src/locale/messages.fr.xlf). Neutral words since 2026-11-14: the
+ * investigation vocabulary (case, file, lead) was tried, then dropped.
  */
-export const INVESTIGATION_VOICE = {
-  round: $localize`:@@game.voice.round:Case`,
-  dailyGame: $localize`:@@game.voice.dailyGame:Today's file`,
-  hint: $localize`:@@game.voice.hint:Lead`,
-  pickHint: $localize`:@@game.voice.pickHint:Pick a lead`,
-  showHints: $localize`:@@game.voice.showHints:Open these leads`,
-  noHint: $localize`:@@game.voice.noHint:No lead turned up for this case. Make your final guess.`,
-  result: $localize`:@@game.voice.result:Case closed`,
-  summary: $localize`:@@game.voice.summary:Case report`,
-  next: $localize`:@@game.voice.next:Next case`,
-  seeSummary: $localize`:@@game.voice.seeSummary:See the case report`,
-  removed: $localize`:@@game.voice.removed:Withdrawn from the file`,
-  freeMode: $localize`:@@game.voice.freeMode:Free investigation`,
-  chooseLength: $localize`:@@game.voice.chooseLength:How many cases?`,
-  newSeries: $localize`:@@game.voice.newSeries:New investigation`,
-  tryFree: $localize`:@@game.voice.tryFree:Not enough? Open a free investigation`,
-  reportHint: $localize`:@@game.voice.reportHint:Report this lead`,
-};
-
-export const NEUTRAL_VOICE: typeof INVESTIGATION_VOICE = {
+const GAME_WORDS = {
   round: $localize`:@@game.neutral.round:Round`,
   dailyGame: $localize`:@@game.neutral.dailyGame:Daily game`,
   hint: $localize`:@@game.neutral.hint:Hint`,
@@ -56,10 +36,8 @@ export const NEUTRAL_VOICE: typeof INVESTIGATION_VOICE = {
   reportHint: $localize`:@@game.neutral.reportHint:Report this hint`,
 };
 
-const VOICE = NEUTRAL_VOICE;
-
 export const GAME_TEXT = {
-  ...VOICE,
+  ...GAME_WORDS,
   question: $localize`:@@game.question:How old were they on this photo?`,
   photoAlt: $localize`:@@game.photoAlt:The person to guess`,
   // The API picks a fact from (game year − age on the photo): its distance in years is
@@ -155,15 +133,10 @@ export const HINT_REPORT_REASONS: Record<HintReportReason, string> = {
   OTHER: $localize`:@@game.report.hint.other:Something else`,
 };
 
-/** A length of series, in the voice of the game: a challenge can hold a single round. */
+/** A length of series: a challenge can hold a single round. */
 export function seriesLength(count: number): string {
-  if (count === 1) {
-    return VOICE === INVESTIGATION_VOICE
-      ? $localize`:@@game.voice.lengthOne:1 case`
-      : $localize`:@@game.neutral.lengthOne:1 round`;
-  }
-  return VOICE === INVESTIGATION_VOICE
-    ? $localize`:@@game.voice.length:${count}:count: cases`
+  return count === 1
+    ? $localize`:@@game.neutral.lengthOne:1 round`
     : $localize`:@@game.neutral.length:${count}:count: rounds`;
 }
 
@@ -203,12 +176,10 @@ export function ageOutOfRange(range: GuessRange): string {
   return $localize`:@@game.ageOutOfRange:Enter a whole age from ${range.min}:min: to ${range.max}:max:.`;
 }
 
-/** How many leads to pick, and how many are picked so far. */
+/** How many hints to pick, and how many are picked so far. */
 export function pickHintsText(count: number): string {
   if (count === 1) return GAME_TEXT.pickHint;
-  return VOICE === INVESTIGATION_VOICE
-    ? $localize`:@@game.voice.pickHints:Pick ${count}:count: leads`
-    : $localize`:@@game.neutral.pickHints:Pick ${count}:count: hints`;
+  return $localize`:@@game.neutral.pickHints:Pick ${count}:count: hints`;
 }
 
 export function pickedText(picked: number, count: number): string {

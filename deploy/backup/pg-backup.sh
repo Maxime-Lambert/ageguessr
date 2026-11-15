@@ -18,6 +18,9 @@ set -o pipefail
 BACKUP_DIR="${BACKUP_DIR:-/backups}"
 # Jour de la copie hebdomadaire (date +%u : 1 = lundi, 7 = dimanche).
 WEEKLY_DAY="${WEEKLY_DAY:-7}"
+# Dossier ou noter l'heure du dernier dump reussi (volume backup_status, lu par le backend
+# pour /api/health/backup). Vide : rien n'est note.
+STATUS_DIR="${STATUS_DIR:-}"
 DAILY="$BACKUP_DIR/daily"
 WEEKLY="$BACKUP_DIR/weekly"
 
@@ -38,11 +41,20 @@ dump() {
   chmod 600 "$file.tmp"
   mv -f "$file.tmp" "$file"
   log "dump ecrit : $file ($(du -k "$file" | cut -f1) Ko)"
+  mark_success
   if [ "$(date -u +%u)" = "$WEEKLY_DAY" ]; then
     # Lien dur : pas de place en plus, et le fichier survit a la rotation des quotidiens.
     ln -f "$file" "$WEEKLY/$(basename "$file")"
     log "copie hebdomadaire : $WEEKLY/$(basename "$file")"
   fi
+}
+
+# L'epoch du succes, ecrit dans un .tmp puis renomme : le backend ne lit jamais un
+# fichier a moitie ecrit. Seulement une heure : rien des donnees.
+mark_success() {
+  [ -n "$STATUS_DIR" ] || return 0
+  date -u +%s >"$STATUS_DIR/last-success.tmp"
+  mv -f "$STATUS_DIR/last-success.tmp" "$STATUS_DIR/last-success"
 }
 
 # -mtime +6 : 7 jours ou plus (find compte les jours entiers ecoules), donc 7 quotidiens.

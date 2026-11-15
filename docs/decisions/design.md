@@ -265,7 +265,14 @@ possible sans tout casser (mêmes tokens CSS).
 
 ## Ton éditorial
 
-### Voix "dossier d'enquête", adoptée à l'essai
+### Voix "dossier d'enquête", essayée puis abandonnée
+**Abandon** (2026-11-14, PR `feature/neutral-voice` puis `chore/drop-investigation-voice`) :
+une fois en prod, le jeu se lisait mieux en vocabulaire neutre (manche, partie du jour,
+indice, récapitulatif, série ; round, daily game, hint, summary, series). Le visuel
+archives (coupures de journal, sépia, typographie) reste. `INVESTIGATION_VOICE`, la
+constante `VOICE` et les traductions `game.voice.*` sont supprimées ; les mots du jeu
+sont dans `GAME_WORDS` (`game-vocabulary.ts`). Historique de l'essai ci-dessous.
+
 **Décision** (2026-10-21) : le vocabulaire du jeu suit la métaphore enquête/archives,
 avec un ton un peu taquin et journalistique dans les textes de résultat. C'est un
 **essai** : chaque terme a un équivalent neutre de repli.
@@ -300,8 +307,7 @@ constante `VOICE` choisit entre les deux.
 NEUTRAL_VOICE`, et les textes qui contournaient `VOICE` (règles, chargement, profil,
 amis, partage du jour, bulles des indices, titre de la série) réécrits en neutre, en
 anglais et en français. **Les mots seulement** : le visuel archives (coupures de journal,
-sépia, typographie) reste. Gardé, cet essai entraînera la suppression de
-`INVESTIGATION_VOICE` ; abandonné, la branche n'est pas fusionnée.
+sépia, typographie) reste. Gardé : voir « Abandon » ci-dessus.
 
 **Périmètre** : seulement les écrans de jeu. Compte, connexion et inscription restent
 en vocabulaire neutre (*Sign in* reste *Sign in*) : ce sont des parcours standards où
@@ -312,7 +318,8 @@ l'on cherche des repères familiers.
 et en français (voir « Internationalisation » dans `docs/decisions/architecture.md`).
 Ton direct dans les deux langues. En français :
 - **vouvoiement** partout ;
-- la **voix enquête** est gardée, avec son repli neutre, dans `game-vocabulary.ts` :
+- la **voix enquête** avait son repli neutre en français aussi (abandonnée le 2026-11-14,
+  seul le repli neutre reste) :
 
   | Notion | Enquête | Repli neutre |
   |---|---|---|

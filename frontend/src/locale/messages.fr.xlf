@@ -356,46 +356,6 @@
         <source>Get a new link</source>
         <target>Obtenir un nouveau lien</target>
       </trans-unit>
-      <trans-unit id="game.voice.round" datatype="html">
-        <source>Case</source>
-        <target>Affaire</target>
-      </trans-unit>
-      <trans-unit id="game.voice.dailyGame" datatype="html">
-        <source>Today&apos;s file</source>
-        <target>Le dossier du jour</target>
-      </trans-unit>
-      <trans-unit id="game.voice.hint" datatype="html">
-        <source>Lead</source>
-        <target>Piste</target>
-      </trans-unit>
-      <trans-unit id="game.voice.pickHint" datatype="html">
-        <source>Pick a lead</source>
-        <target>Choisissez une piste</target>
-      </trans-unit>
-      <trans-unit id="game.voice.noHint" datatype="html">
-        <source>No lead turned up for this case. Make your final guess.</source>
-        <target>Aucune piste pour cette affaire. Faites votre dernier essai.</target>
-      </trans-unit>
-      <trans-unit id="game.voice.result" datatype="html">
-        <source>Case closed</source>
-        <target>Affaire classée</target>
-      </trans-unit>
-      <trans-unit id="game.voice.summary" datatype="html">
-        <source>Case report</source>
-        <target>Rapport d'enquête</target>
-      </trans-unit>
-      <trans-unit id="game.voice.next" datatype="html">
-        <source>Next case</source>
-        <target>Affaire suivante</target>
-      </trans-unit>
-      <trans-unit id="game.voice.seeSummary" datatype="html">
-        <source>See the case report</source>
-        <target>Voir le rapport d'enquête</target>
-      </trans-unit>
-      <trans-unit id="game.voice.removed" datatype="html">
-        <source>Withdrawn from the file</source>
-        <target>Retirée du dossier</target>
-      </trans-unit>
       <trans-unit id="game.neutral.round" datatype="html">
         <source>Round</source>
         <target>Manche</target>
@@ -692,22 +652,6 @@
         <source>Series · AgeGuessr</source>
         <target>Série · AgeGuessr</target>
       </trans-unit>
-      <trans-unit id="game.voice.freeMode" datatype="html">
-        <source>Free investigation</source>
-        <target>Enquête libre</target>
-      </trans-unit>
-      <trans-unit id="game.voice.chooseLength" datatype="html">
-        <source>How many cases?</source>
-        <target>Combien d'affaires ?</target>
-      </trans-unit>
-      <trans-unit id="game.voice.newSeries" datatype="html">
-        <source>New investigation</source>
-        <target>Nouvelle enquête</target>
-      </trans-unit>
-      <trans-unit id="game.voice.tryFree" datatype="html">
-        <source>Not enough? Open a free investigation</source>
-        <target>Pas assez ? Ouvrez une enquête libre</target>
-      </trans-unit>
       <trans-unit id="game.neutral.freeMode" datatype="html">
         <source>Series</source>
         <target>Série</target>
@@ -732,17 +676,9 @@
         <source>No photo is available right now. Try again later.</source>
         <target>Aucune photo n'est disponible pour le moment. Réessayez plus tard.</target>
       </trans-unit>
-      <trans-unit id="game.voice.lengthOne" datatype="html">
-        <source>1 case</source>
-        <target>1 affaire</target>
-      </trans-unit>
       <trans-unit id="game.neutral.lengthOne" datatype="html">
         <source>1 round</source>
         <target>1 manche</target>
-      </trans-unit>
-      <trans-unit id="game.voice.length" datatype="html">
-        <source><x id="count" equiv-text="count"/> cases</source>
-        <target><x id="count" equiv-text="count"/> affaires</target>
       </trans-unit>
       <trans-unit id="game.neutral.length" datatype="html">
         <source><x id="count" equiv-text="count"/> rounds</source>
@@ -839,10 +775,6 @@
       <trans-unit id="game.player" datatype="html">
         <source>Player</source>
         <target>Joueur</target>
-      </trans-unit>
-      <trans-unit id="game.voice.reportHint" datatype="html">
-        <source>Report this lead</source>
-        <target>Signaler cette piste</target>
       </trans-unit>
       <trans-unit id="game.neutral.reportHint" datatype="html">
         <source>Report this hint</source>
@@ -1132,10 +1064,6 @@
         <source>Then you pick a few hints, each a fact from as many years ago as their age on the photo: a film released 40 years ago means they were 40 on it.</source>
         <target>Puis vous choisissez quelques indices, chacun un fait survenu il y a autant d'années que son âge sur la photo : un film sorti il y a 40 ans veut dire qu'elle y avait 40 ans.</target>
       </trans-unit>
-      <trans-unit id="game.voice.showHints" datatype="html">
-        <source>Open these leads</source>
-        <target>Ouvrir ces pistes</target>
-      </trans-unit>
       <trans-unit id="game.neutral.showHints" datatype="html">
         <source>Show these hints</source>
         <target>Voir ces indices</target>
@@ -1163,10 +1091,6 @@
       <trans-unit id="game.ageOutOfRange" datatype="html">
         <source>Enter a whole age from <x id="min" equiv-text="range.min"/> to <x id="max" equiv-text="range.max"/>.</source>
         <target>Saisissez un âge entier entre <x id="min" equiv-text="range.min"/> et <x id="max" equiv-text="range.max"/>.</target>
-      </trans-unit>
-      <trans-unit id="game.voice.pickHints" datatype="html">
-        <source>Pick <x id="count" equiv-text="count"/> leads</source>
-        <target>Choisissez <x id="count" equiv-text="count"/> pistes</target>
       </trans-unit>
       <trans-unit id="game.neutral.pickHints" datatype="html">
         <source>Pick <x id="count" equiv-text="count"/> hints</source>
