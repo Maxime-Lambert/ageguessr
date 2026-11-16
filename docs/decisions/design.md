@@ -200,7 +200,12 @@ faut évaluer.
 
 ### Typographie
 **Décision** : Fraunces (variable) pour les titres, le wordmark et les moments
-éditoriaux (indices, révélation du résultat) ; Inter pour l'UI et le texte courant.
+éditoriaux (révélation du résultat, gros chiffres) ; Inter pour l'UI et le texte courant.
+
+**Mise à jour 2026-11-16** : le texte des indices passe en Inter. En phrase courante, le
+J majuscule de Fraunces, qui descend sous la ligne avec un crochet vers la gauche, se
+lisait comme un défaut d'affichage (retour d'un joueur). Le bandeau « Indice ·
+catégorie » et la coupure de journal restent : seul le corps du texte change.
 
 **Raison** : Fraunces est un serif moderne à l'esprit volontairement suranné (empattements
 doux, contraste marqué) — cohérent avec l'ambiance "vieille photo/archive" sans tomber
