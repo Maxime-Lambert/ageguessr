@@ -267,7 +267,8 @@ le mot de passe sans limite. Pour la même raison, ces handlers ne sont pas
 `EMAIL_TAKEN`), choix antérieur conservé pour l'ergonomie ; le délai d'envoi d'un mail
 sur « mot de passe oublié » n'ajoute donc pas de fuite. Un attaquant qui contrôle la
 boîte mail contrôle le compte : seule une double authentification (TOTP) protégerait
-de ce cas. Elle a été implémentée puis retirée avant release (nov. 2026) : pour une
+de ce cas. Elle a été implémentée, déployée brièvement, puis retirée (nov. 2026 ;
+migration `V26` conservée, colonnes supprimées par `V27`) : pour une
 dizaine de joueurs dont le compte ne contient que des scores et des amis, le risque ne
 justifie pas ~3 300 lignes de plus dans le code d'authentification ni un secret de
 chiffrement à ne jamais perdre. À reconsidérer si l'audience ou l'enjeu change.
