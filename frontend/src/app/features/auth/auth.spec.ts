@@ -9,7 +9,6 @@ const USER = {
   username: 'Player',
   emailVerified: true,
   termsAccepted: true,
-  twoFactorEnabled: false,
   role: 'USER' as const,
   language: 'EN' as const,
 };
@@ -30,29 +29,6 @@ describe('Auth', () => {
     httpMock.verify();
   });
 
-  it('with two-factor, login signs nothing in and hands the challenge on', () => {
-    let result: unknown;
-    service.login('user@x.com', 'tortoise-violin-42').subscribe((r) => (result = r));
-
-    httpMock.expectOne('/api/auth/login').flush({ twoFactorRequired: true, challenge: 'abc' });
-
-    expect(result).toEqual({ challenge: 'abc' });
-    expect(service.accessToken()).toBeNull();
-    httpMock.expectNone('/api/auth/me');
-  });
-
-  it('the code then signs in, sending the challenge', () => {
-    service.loginWithCode('abc', '123456').subscribe();
-
-    const request = httpMock.expectOne('/api/auth/login/totp');
-    expect(request.request.body).toEqual({ challenge: 'abc', code: '123456' });
-    expect(request.request.withCredentials).toBe(true);
-    request.flush({ accessToken: 'access-token' });
-
-    expect(service.accessToken()).toBe('access-token');
-    httpMock.expectOne('/api/auth/me').flush({ id: '1' });
-  });
-
   it('login sets the access token and fetches the current user', () => {
     let result: unknown;
     service.login('user@x.com', 'tortoise-violin-42').subscribe((user) => (result = user));
@@ -70,7 +46,6 @@ describe('Auth', () => {
       username: 'Player',
       emailVerified: true,
       termsAccepted: true,
-      twoFactorEnabled: false,
       role: 'USER',
       language: 'EN',
     });
@@ -81,12 +56,19 @@ describe('Auth', () => {
       username: 'Player',
       emailVerified: true,
       termsAccepted: true,
-      twoFactorEnabled: false,
       role: 'USER',
       language: 'EN',
     });
     expect(service.isAuthenticated()).toBe(true);
-    expect(result).toEqual({ user: service.currentUser() });
+    expect(result).toEqual({
+      id: '1',
+      email: 'user@x.com',
+      username: 'Player',
+      emailVerified: true,
+      termsAccepted: true,
+      role: 'USER',
+      language: 'EN',
+    });
   });
 
   it('saves the language on the account and keeps the profile returned', () => {
@@ -107,7 +89,6 @@ describe('Auth', () => {
       username: 'Player',
       emailVerified: true,
       termsAccepted: true,
-      twoFactorEnabled: false,
       role: 'USER',
       language: 'EN',
     });

@@ -27,12 +27,6 @@ retirer une fois tous faits.
 - [ ] Purge des comptes (`feature/account-purge`) : le lendemain du déploiement,
       `docker logs ageguessr-prod-backend-1 | grep "Accounts purged"` montre une ligne
       (00:50 UTC) ; `/privacy` section 4 annonce 7 jours et 3 ans
-- [ ] Double authentification (`feature/two-factor`) : **avant la release**, créer le
-      secret GitHub `TOTP_ENCRYPTION_KEY` (`openssl rand -base64 32`). Puis sur `/account`,
-      configurer avec une app (Google Authenticator, Aegis…), l'email « activée » arrive ;
-      se déconnecter, se reconnecter : le code est demandé ; « Je n'ai plus accès à mon
-      application » envoie le lien, qui désactive après le clic ; réactiver puis désactiver
-      depuis le compte (mot de passe + code)
 - [ ] Backup et logs (`chore/backup-and-log-rotation`) : `sudo ls -l
       /opt/ageguessr/backups/daily` montre un dump `-rw-------` ; `docker ps` montre
       `ageguessr-prod-backup-1` `healthy` ; `docker inspect ageguessr-prod-backend-1
@@ -240,9 +234,9 @@ retirer une fois tous faits.
       avant), annoncée dans `/privacy` — PR `feature/account-purge`
 - [x] Ré-acceptation des CGU à chaque nouvelle version (`users.terms_version` déjà
       enregistré) — bandeau non bloquant, PR `feature/terms-reacceptance`
-- [x] Double authentification (TOTP) facultative : QR code depuis `/account`, code à la
-      connexion, secours par lien email, secret chiffré (`TOTP_ENCRYPTION_KEY`) — PR
-      `feature/two-factor`
+- ~~Double authentification (TOTP)~~ — écartée (nov. 2026) : disproportionnée pour une
+      dizaine de joueurs et un enjeu faible, ~3 300 lignes de code d'auth à maintenir
+      (voir `docs/decisions/architecture.md`)
 - [x] Partage de résultat façon Wordle (grille/emoji, pas de compte requis) : sur le
       récapitulatif du jour, date, score, une case par manche (🎯 pour un 1er essai exact)
       et le lien du site ; feuille de partage sur téléphone, copie ailleurs — PR
