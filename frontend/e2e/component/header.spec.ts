@@ -70,6 +70,7 @@ test.describe('header', () => {
       username: 'A_very-long_name_20',
       emailVerified: true,
       termsAccepted: true,
+      twoFactorEnabled: false,
       role: 'USER',
     });
     await page.goto('/en/');

@@ -266,8 +266,42 @@ le mot de passe sans limite. Pour la même raison, ces handlers ne sont pas
 **Limite connue** : l'existence d'un email reste déductible via l'inscription (409
 `EMAIL_TAKEN`), choix antérieur conservé pour l'ergonomie ; le délai d'envoi d'un mail
 sur « mot de passe oublié » n'ajoute donc pas de fuite. Un attaquant qui contrôle la
-boîte mail contrôle le compte : seule une double authentification (TOTP, dans la
-roadmap) protégerait de ce cas.
+boîte mail contrôle le compte : la double authentification (ci-dessous) ne protège pas
+non plus de ce cas, son secours passant par l'email (choix assumé du 2026-11-15).
+
+### Double authentification (TOTP)
+**Décision** (2026-11-15, PR `feature/two-factor`) : facultative, activée depuis
+`/account` avec une app d'authentification.
+- **Algorithme** : `Totp` (RFC 6238 : HMAC-SHA1, pas de 30 s, 6 chiffres, fenêtre ±1 pas)
+  codé à la main et testé sur les vecteurs de la RFC, plutôt qu'une dépendance. Le dernier
+  pas accepté est gardé (`users.totp_last_step`) : un code déjà utilisé est refusé.
+- **Secret chiffré au repos** (`SecretCipher`, AES-256-GCM, IV aléatoire) avec
+  `TOTP_ENCRYPTION_KEY` (secret GitHub, écrit dans le `.env` du VPS au déploiement).
+  Un secret TOTP ne peut pas être haché : le serveur doit le relire. Clé absente ou de
+  mauvaise taille : le backend ne démarre pas. **La changer oblige chaque joueur à
+  réactiver la 2FA.** Jamais dans l'export (seulement `twoFactorEnabledAt`) ni les logs.
+- **Activation** : mot de passe → secret en attente + URI `otpauth://` (QR code dessiné
+  côté front par `qrcode`, `Cache-Control: no-store`) → un premier code active, email de
+  notification. **Désactivation** depuis le compte : mot de passe **et** code.
+- **Connexion en deux temps** : `POST /api/auth/login` répond
+  `{twoFactorRequired, challenge}` sans jeton ni cookie ; `POST /api/auth/login/totp`
+  (challenge + code) émet les jetons. Challenge = `account_tokens` `TOTP_LOGIN`, 5 min,
+  gardé après un code faux (une faute de frappe), consommé au bon code. Le compteur
+  d'échecs n'est remis à zéro qu'après le code : un bon mot de passe suivi de mauvais
+  codes mène au verrouillage (5 essais, 15 min). Le renouvellement de session ne redemande
+  rien.
+- **Secours** (pas de codes de secours) : depuis l'étape du code, un email (lien 1 h,
+  `TOTP_RECOVERY`) → page `/disable-two-factor` avec clic explicite → 2FA désactivée,
+  toutes les sessions révoquées, email de notification avec un lien « sécuriser votre
+  compte ». **Limite assumée** : qui a le mot de passe et la boîte mail peut désactiver la
+  2FA. Elle protège d'un mot de passe fuité, pas d'une boîte mail compromise. Variante
+  possible : désactivation par email différée de quelques jours, annulable. Un nouveau
+  lien de secours annule les précédents.
+- **Limite connue** (antérieure à la 2FA) : `AccountLockout.recordFailure` lit puis écrit
+  le compteur ; des requêtes simultanées peuvent compter plusieurs échecs pour un. Borné
+  par le rate limiting (20 requêtes/min/IP) et sans portée réelle sur 3 codes valides sur
+  un million ; un `UPDATE … SET failed_login_attempts = failed_login_attempts + 1`
+  atomique le fermerait.
 
 **Règle pour le futur changement d'email** : confirmation sur la nouvelle adresse **et**
 notification à l'ancienne avec un lien d'annulation valable plusieurs jours. Sans ça, un
@@ -282,6 +316,49 @@ seul `DELETE` suffise au droit à l'effacement. Vérifié par
 `CascadeDeleteIntegrationTest`, à étendre à chaque nouvelle table de ce type.
 Les sauvegardes gardent une copie des données supprimées jusqu'à 30 jours (voir
 « Sauvegardes et logs », annoncé dans `/privacy`).
+
+### Purge des comptes non vérifiés et inactifs
+**Décision** (2026-11-15, PR `feature/account-purge`) : `PurgeAccountsHandler`, chaque
+jour à 00:50 UTC (`app.auth.retention.*`, désactivé en test) :
+- **jamais vérifié** : supprimé 7 jours après sa création (il ne peut pas se connecter et
+  bloque un email et un pseudo) ;
+- **inactif** : `users.last_active_at` (V25) est posé à la connexion et à chaque
+  renouvellement de session (`UserRepository.markActive`) ; une session vivante se
+  renouvelle au moins tous les 90 jours, donc pas d'écriture à chaque requête. « 3 ans »
+  = 1 096 jours (jamais moins de 3 années civiles). À 3 ans − 30 jours, un email (FR/EN,
+  lien vers `/login`) part une seule fois (`inactivity_warned_at`, remis à NULL par la
+  prochaine activité). Suppression quand 3 ans sont passés **et** que l'avertissement a
+  plus de 30 jours et 12 heures : un job arrêté ne raccourcit jamais le préavis, et la
+  marge absorbe l'heure de départ du job d'un jour à l'autre. La suppression tombe donc
+  au passage J+31, la date que l'email annonce. Un email en échec n'est pas marqué :
+  réessayé le lendemain ;
+- **admins exclus de la purge des inactifs** (rôle posé à la main ; supprimer le seul
+  admin fermerait la curation). Un admin jamais vérifié est purgé comme les autres : il
+  ne peut pas se connecter.
+Supprimer = `DELETE` de la ligne `users`, les cascades font le reste. Les deux colonnes
+sont en lecture seule dans l'entité (`insertable/updatable = false`) : un `save()` d'un
+`User` construit en mémoire y écrirait NULL. Elles figurent dans l'export.
+
+### Export des données (droit d'accès et de portabilité)
+**Décision** (2026-11-15, PR `feature/personal-data-export`) : `GET /api/auth/me/data`
+renvoie un fichier JSON (`Content-Disposition: attachment`) de tout ce que le site garde
+sur le joueur, téléchargé depuis `/account`.
+- **Chaque feature exporte ses tables** : interface `shared/personaldata/PersonalDataSection`
+  (nom, tables couvertes, `export(userId)`), une implémentation par feature
+  (`AccountData`, `GameData`, `FriendData`, `PhotoReviewData`, `HintReviewData`, dans
+  leur `@Order`), en SQL natif lecture seule. `ExportPersonalDataHandler` (auth) reçoit
+  la liste par injection : aucune feature n'en importe une autre.
+- **Couverture vérifiée** : `PersonalDataCoverageIntegrationTest` lit dans le schéma
+  réel toutes les tables qui ont une clé étrangère vers `users` et exige qu'une section
+  les couvre. **Toute nouvelle table liée à un joueur doit être exportée** (comme elle
+  doit être en `ON DELETE CASCADE`).
+- **Jamais** un hash (mot de passe, jetons : seulement les dates des sessions et des
+  liens), ni l'email d'un autre joueur (les amis par pseudo), ni la réponse d'une manche
+  (personne, photo, texte d'indice), ni les points d'une manche en cours (avec l'essai et
+  la formule, ils donneraient l'âge exact) : une manche en cours se tricherait par
+  l'export. Réponse en `Cache-Control: no-store`.
+- Sous `/api/auth/`, donc limité comme les autres requêtes de compte. Pas de re-saisie du
+  mot de passe : la session voit déjà le compte, l'historique et les amis.
 
 ### Rôle administrateur
 **Décision** : colonne `users.role` (`USER` / `ADMIN`, défaut `USER`), posée **à la
@@ -301,8 +378,8 @@ main en SQL**. Aucun endpoint ni écran ne la modifie.
   dépendent de `auth`.
 
 **Limites connues** :
-- **Le compte admin n'est protégé que par son mot de passe** : pas de TOTP avant la
-  Semaine 7 (roadmap). Choisir un mot de passe long et unique.
+- **Le compte admin peut activer la double authentification** (TOTP, depuis `/account`) :
+  à faire en prod. Un mot de passe long et unique reste nécessaire.
 - Retirer le rôle en SQL prend effet au plus tard à l'expiration de l'access token
   (≤ 60 min), le refresh relisant le rôle en base.
 
@@ -901,12 +978,14 @@ un classement.
     « YYYY-MM-DD » seul comme minuit local), dans un format traduit
     (`@@game.shareDateFormat`). 🎯 marque un 1er essai exact, pour le jour seulement : la
     grille des défis ne change pas. Partager sinon copier : `shareOrCopy` (`game/share.ts`),
-    commun au défi et au jour. Depuis le 2026-11-14 (PR `fix/daily-share-explained`, la
-    grille seule n'était pas claire pour qui n'a pas joué), le texte s'explique : un titre
-    « Enquête du <date> » suivi d'un qualificatif selon la part des points (brio ≥ 90 %,
-    panache ≥ 70 %, bouclée ≥ 50 %, de justesse ≥ 30 %, sinon « la piste s'est
-    refroidie… à demain », jamais moqueur), le score, la grille, une légende des seules
-    cases présentes, puis une invitation avec le lien.
+    commun au défi et au jour. Le 2026-11-14 (PR `fix/daily-share-explained`), le texte
+    s'est expliqué (titre qualifié, légende des cases) ; depuis le 2026-11-15 (PR
+    `fix/daily-share-challenge`, un compte rendu ne donnait pas envie), c'est un défi :
+    « AgeGuessr · <date> », « J'ai deviné l'âge de N personnes en photo 📸 » (singulier
+    pour 1, omis si toutes sont retirées), la grille et le score formaté selon la langue sur une ligne,
+    puis un qualificatif selon la part des points (brillant ≥ 90 %, bien joué ≥ 70 %, pas
+    mal ≥ 50 %, pas facile ≥ 30 %, sinon « rude journée », jamais moqueur) et « Tu fais
+    mieux ? 👉 <site> ». Plus de légende : la ligne sur les photos dit ce qui a été deviné.
 
 **Raison** : le jeu quotidien ne se joue qu'une fois par jour. Ce mode donne de quoi
 jouer plus, et de quoi comparer ses scores entre amis sans attendre la feature Amis.
@@ -1024,7 +1103,8 @@ classement par moyenne de points par partie.
   reçues (`FriendsApi.incomingCount`, lu une fois par session et à chaque lecture de la
   liste). Copier et partager le lien passent par `shared/share-target.ts`
   (`SHARE_TARGET`, sorti de `game/share.ts` pour servir aux deux features). Le
-  récapitulatif du jour mène à `/friends` (exception `game → auth` déjà là pour le défi).
+  récapitulatif du jour ne mène plus à `/friends` (bouton retiré le 2026-11-15, le menu y
+  mène déjà) : le partage reste son seul appel.
 - **Comparaison du jour** (`GET /api/friends/today`) : `{locked: true}` et aucune donnée
   tant que la partie du jour de l'appelant n'est pas complète (les points d'un ami
   renseigneraient sur les manches qu'il reste à jouer). Ensuite, des points seulement :
@@ -1128,6 +1208,42 @@ qui est acceptable pour un choix rare.
 **Règle** : aucun texte visible par un joueur n'est écrit en dur dans une seule langue.
 Tout nouveau texte joueur est marqué (`i18n` ou `$localize`) et traduit dans
 `messages.fr.xlf` dans la même PR ; tout nouvel email existe dans les deux langues.
+
+### Référencement (SEO léger, sans SSR)
+**Décision** (2026-11-15, PR `feature/seo`) : pas de rendu serveur ni de pré-rendu pour
+l'instant. Deux publics, deux mécanismes :
+- **Aperçus de liens** (WhatsApp, Discord, X…), qui n'exécutent pas le JavaScript :
+  `frontend/scripts/seo-postbuild.mjs`, lancé par `pnpm build` après `ng build`, écrit
+  dans le `index.html` de chaque langue le titre, la description, Open Graph
+  (`og:locale` + `og:locale:alternate`, `og:image` = `public/og-image.png`, 1200×630,
+  sans texte à traduire) et `twitter:card`. Angular ne traduit pas `index.html` : le
+  script lit les textes dans `messages.xlf` (anglais) et `messages.fr.xlf` (cible
+  française) sous les ids `@@seo.*` de `features/seo/seo-texts.ts`, une seule source
+  pour les deux mécanismes. Un id manquant ou contenant un placeholder fait échouer la
+  build. Pas de canonical statique : il serait faux sur toutes les routes sauf l'accueil.
+- **Moteurs qui exécutent le JavaScript** (Google) : `features/seo/seo.ts`, démarré par
+  `provideAppInitializer`, pose à chaque `NavigationEnd` le canonical
+  (`<origine>/<langue><chemin>`, sans query ni fragment), les alternates `hreflang` en,
+  fr et `x-default` (le chemin sans préfixe, que Caddy redirige selon le visiteur), la
+  description de la route (`data.description`, sinon celle du site) et
+  `<meta name="robots" content="noindex">` si `data.noindex`.
+- **Pages indexées** : accueil, `free`, `how-to-play`, `legal-notice`, `terms`,
+  `privacy`. Toutes les autres routes (connexion, compte, profil, amis, admin, liens de
+  défi) portent `noindex`. La même liste est dans `INDEXED_PATHS` du script, qui écrit
+  `sitemap.xml` (chaque page × chaque langue, avec ses alternates) : garder les deux en
+  phase.
+- **`robots.txt`** : tout est explorable sauf `/api/` et `/<langue>/admin`. Les pages
+  privées restent explorables exprès : un robot interdit d'y entrer ne verrait jamais
+  leur `noindex`.
+- **Caddy** sert `/robots.txt` et `/sitemap.xml` depuis la racine de `/srv` avant la
+  redirection de langue. Vérifié, avec les balises par langue et l'image, par
+  `scripts/check-edge-locales.sh`.
+
+**Raison** : la page d'accueil est le jeu, dont le contenu change chaque jour et dépend
+de l'API : la pré-rendre n'apporterait presque rien, et chaque composant devrait tourner
+hors navigateur. Google exécute le JavaScript ; seuls les aperçus de liens en ont besoin
+en dur, et ils ne lisent que `index.html`. Le pré-rendu sera reconsidéré avec la landing
+page, qui en profitera.
 
 ### Tests unitaires : Vitest
 **Décision** : Vitest, via le builder `@angular/build:unit-test` (défaut Angular CLI

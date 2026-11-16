@@ -1,8 +1,10 @@
+import { vi } from 'vitest';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { Auth } from '../auth';
+import { FILE_SAVER, filenameOf } from '../file-saver';
 import { Account } from './account';
 
 const USER = {
@@ -11,6 +13,7 @@ const USER = {
   username: 'Player',
   emailVerified: true,
   termsAccepted: true,
+  twoFactorEnabled: false,
   role: 'USER' as const,
   language: 'EN' as const,
 };
@@ -23,11 +26,21 @@ describe('Account', () => {
   let component: Account;
   let httpMock: HttpTestingController;
   let auth: Auth;
+  let saved: { file: Blob; filename: string }[];
 
   beforeEach(async () => {
+    saved = [];
     await TestBed.configureTestingModule({
       imports: [Account],
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        {
+          provide: FILE_SAVER,
+          useValue: { save: (file: Blob, filename: string) => saved.push({ file, filename }) },
+        },
+      ],
     }).compileComponents();
     auth = TestBed.inject(Auth);
     auth.currentUser.set(USER);
@@ -150,5 +163,92 @@ describe('Account', () => {
 
     expect(component.deletionStatus()).toBe('idle');
     expect(component.deletionError()).toContain('Incorrect password');
+  });
+
+  it('saves the data under the name the server gave it', () => {
+    component.downloadData();
+    expect(component.dataStatus()).toBe('downloading');
+    const request = httpMock.expectOne('/api/auth/me/data');
+    expect(request.request.responseType).toBe('blob');
+    const file = new Blob(['{}'], { type: 'application/json' });
+    request.flush(file, {
+      headers: { 'Content-Disposition': 'attachment; filename="ageguessr-data-2026-11-15.json"' },
+    });
+
+    expect(saved).toEqual([{ file, filename: 'ageguessr-data-2026-11-15.json' }]);
+    expect(component.dataStatus()).toBe('idle');
+  });
+
+  it('says so when the data cannot be downloaded, and saves nothing', () => {
+    component.downloadData();
+    httpMock
+      .expectOne('/api/auth/me/data')
+      .flush(new Blob(), { status: 500, statusText: 'Server Error' });
+
+    expect(saved).toEqual([]);
+    expect(component.dataError()).toBeTruthy();
+    expect(component.dataStatus()).toBe('idle');
+  });
+
+  it('reads the file name from the header, else falls back', () => {
+    expect(filenameOf('attachment; filename="a.json"', 'b.json')).toBe('a.json');
+    expect(filenameOf('attachment; filename=a.json', 'b.json')).toBe('a.json');
+    expect(filenameOf(null, 'b.json')).toBe('b.json');
+    expect(filenameOf('attachment', 'b.json')).toBe('b.json');
+  });
+
+  describe('two-factor authentication', () => {
+    it('sets it up with the password, shows the QR code, then turns it on with a code', async () => {
+      component.twoFactorPasswordForm.setValue({ password: 'tortoise-violin-42' });
+
+      component.startTwoFactor();
+      httpMock.expectOne('/api/auth/me/two-factor/setup').flush({
+        secret: 'JBSWY3DPEHPK3PXP',
+        otpauthUri: 'otpauth://totp/AgeGuessr:Player?secret=JBSWY3DPEHPK3PXP&issuer=AgeGuessr',
+      });
+      await vi.waitFor(() => expect(component.twoFactorSetup()).not.toBeNull());
+      expect(component.twoFactorSetup()?.secret).toBe('JBSWY3DPEHPK3PXP');
+      expect(component.twoFactorSetup()?.qrCode).toMatch(/^data:image\/png;base64,/);
+
+      component.twoFactorCodeForm.setValue({ code: '123456' });
+      component.enableTwoFactor();
+      httpMock
+        .expectOne('/api/auth/me/two-factor/enable')
+        .flush({ ...USER, twoFactorEnabled: true });
+
+      expect(component.twoFactorStatus()).toBe('enabled');
+      expect(component.twoFactorSetup()).toBeNull();
+      expect(auth.currentUser()?.twoFactorEnabled).toBe(true);
+    });
+
+    it('explains a wrong password or a wrong code', () => {
+      component.twoFactorPasswordForm.setValue({ password: 'wrong' });
+      component.startTwoFactor();
+      httpMock
+        .expectOne('/api/auth/me/two-factor/setup')
+        .flush(WRONG_PASSWORD.body, WRONG_PASSWORD.options);
+      expect(component.twoFactorError()).toContain('Incorrect password');
+
+      auth.currentUser.set({ ...USER, twoFactorEnabled: true });
+      component.twoFactorOffForm.setValue({ password: 'tortoise-violin-42', code: '000000' });
+      component.disableTwoFactor();
+      httpMock
+        .expectOne('/api/auth/me/two-factor/disable')
+        .flush({ errorCode: 'INVALID_TOTP_CODE' }, { status: 403, statusText: 'Forbidden' });
+      expect(component.twoFactorError()).toContain('Incorrect or expired code');
+    });
+
+    it('turns it off with the password and a code', () => {
+      auth.currentUser.set({ ...USER, twoFactorEnabled: true });
+      component.twoFactorOffForm.setValue({ password: 'tortoise-violin-42', code: '123456' });
+
+      component.disableTwoFactor();
+      const request = httpMock.expectOne('/api/auth/me/two-factor/disable');
+      expect(request.request.body).toEqual({ password: 'tortoise-violin-42', code: '123456' });
+      request.flush({ ...USER, twoFactorEnabled: false });
+
+      expect(component.twoFactorStatus()).toBe('disabled');
+      expect(auth.currentUser()?.twoFactorEnabled).toBe(false);
+    });
   });
 });

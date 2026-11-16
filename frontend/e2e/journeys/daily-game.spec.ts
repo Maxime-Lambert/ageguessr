@@ -152,7 +152,8 @@ test('two players become friends and compare the day', async ({ browser, request
         .click();
     }
   }
-  await alice.getByRole('link', { name: 'Compare with your friends' }).click();
+  // The daily summary no longer links to the friends (2026-11-15): the menu does.
+  await alice.goto('/en/friends');
   const today = alice.locator('section[aria-labelledby="friends-today-title"]');
   await expect(today).toContainText(bobAccount.username);
   await expect(today).toContainText('3,000 out of 3,000');

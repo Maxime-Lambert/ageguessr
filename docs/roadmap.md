@@ -9,22 +9,30 @@ la suivante).
 Tests que seuls un compte et la boîte mail admin permettent de faire. À cocher, puis à
 retirer une fois tous faits.
 
-- [ ] Signaler une photo et un indice depuis l'écran de résultat d'une manche terminée
-- [ ] Retrouver ces signalements dans `/admin/curation` (photos) et `/admin/hints`
-      (indices), puis rejeter, garder ou exclure
-- [ ] Recevoir l'email d'alerte admin quand plusieurs joueurs signalent la même photo
-      (`ADMIN_EMAIL` du `.env` de prod)
-- [ ] Parcours e2e (`e2e/journeys/daily-game.spec.ts`, dont « invité → compte → profil »,
-      « amis » et les 3 pistes) : jamais lancés, ils ne tournent dans aucune CI — à lancer
-      à la main
-- [ ] Bulle des pistes sur ⓘ seulement (`fix/lead-help-on-info-only`) : sur ordinateur,
-      survoler une carte n'ouvre rien, survoler ⓘ ouvre sa bulle, qui se ferme en quittant
-      la carte ; Tab n'ouvre plus rien, Entrée sur ⓘ l'ouvre, Échap la ferme ; sur
-      téléphone, rien ne change (tap sur ⓘ)
-- [ ] Partage expliqué (`fix/daily-share-explained`) : partie du jour finie, « Partager
-      mon résultat », coller : « Enquête du <date> » et un qualificatif selon les points,
-      le score, la grille, une légende des seules cases présentes, « Toi aussi, mène
-      l'enquête sur <site> » ; pareil en anglais (« Case of … »)
+- [ ] Partage en défi (`fix/daily-share-challenge`, `fix/share-says-age`) : partie du
+      jour finie, « Partager mon résultat », coller : « AgeGuessr · <date> », « J'ai
+      deviné l'âge de 3 personnes en photo 📸 », la grille et le score, puis un qualificatif et « Tu fais mieux ? 👉 <site> » ; pareil
+      en anglais (« Can you beat that? ») ; plus de bouton « Comparer avec vos amis » sous
+      le récapitulatif, même connecté
+- [ ] SEO (`feature/seo`) : coller `https://ageguessr.app` dans WhatsApp ou Discord
+      montre la carte (image, titre et description dans la langue) ;
+      `https://ageguessr.app/robots.txt` et `/sitemap.xml` s'affichent ; dans Google
+      Search Console, ajouter le domaine, soumettre `https://ageguessr.app/sitemap.xml` et
+      inspecter `/fr/how-to-play` (canonical `…/fr/how-to-play`, indexable) et
+      `/fr/login` (exclue par `noindex`)
+- [ ] Export des données (`feature/personal-data-export`) : sur `/account`, « Télécharger
+      mes données » enregistre `ageguessr-data-<date>.json` ; il contient l'email, le pseudo,
+      les parties jouées et les amis, aucun hash ni nom de personne d'une manche ; `/privacy`
+      mentionne le téléchargement
+- [ ] Purge des comptes (`feature/account-purge`) : le lendemain du déploiement,
+      `docker logs ageguessr-prod-backend-1 | grep "Accounts purged"` montre une ligne
+      (00:50 UTC) ; `/privacy` section 4 annonce 7 jours et 3 ans
+- [ ] Double authentification (`feature/two-factor`) : **avant la release**, créer le
+      secret GitHub `TOTP_ENCRYPTION_KEY` (`openssl rand -base64 32`). Puis sur `/account`,
+      configurer avec une app (Google Authenticator, Aegis…), l'email « activée » arrive ;
+      se déconnecter, se reconnecter : le code est demandé ; « Je n'ai plus accès à mon
+      application » envoie le lien, qui désactive après le clic ; réactiver puis désactiver
+      depuis le compte (mot de passe + code)
 - [ ] Backup et logs (`chore/backup-and-log-rotation`) : `sudo ls -l
       /opt/ageguessr/backups/daily` montre un dump `-rw-------` ; `docker ps` montre
       `ageguessr-prod-backup-1` `healthy` ; `docker inspect ageguessr-prod-backend-1
@@ -222,21 +230,26 @@ retirer une fois tous faits.
       `feature/friends`
 
 ## Semaine 7 — Polish
-- [ ] SEO (meta tags, sitemap, Angular SSR si pertinent pour le référencement)
-- [ ] Export des données personnelles (droit d'accès et de portabilité en self-service ;
-      suppression déjà livrée en Semaine 5, pages légales en Semaine 1, pas de bannière
-      cookies nécessaire tant qu'il n'y a que des traceurs strictement nécessaires)
-- [ ] Purge des comptes jamais vérifiés et des comptes inactifs (durées à fixer, puis à
-      annoncer dans la politique de confidentialité)
+- [x] SEO léger : description et aperçu de lien (Open Graph, image) traduits dans
+      `index.html`, `robots.txt`, `sitemap.xml`, canonical/hreflang et `noindex` des pages
+      privées posés à chaque navigation ; SSR reporté à la landing page — PR `feature/seo`
+- [x] Export des données personnelles (droit d'accès et de portabilité en self-service) :
+      fichier JSON téléchargé depuis `/account`, chaque feature exporte ses tables, test de
+      couverture sur le schéma — PR `feature/personal-data-export`
+- [x] Purge des comptes jamais vérifiés (7 jours) et inactifs (3 ans, email 30 jours
+      avant), annoncée dans `/privacy` — PR `feature/account-purge`
 - [x] Ré-acceptation des CGU à chaque nouvelle version (`users.terms_version` déjà
       enregistré) — bandeau non bloquant, PR `feature/terms-reacceptance`
-- [ ] Double authentification (TOTP), seule protection si la boîte mail d'un joueur est
-      compromise (voir `docs/decisions/architecture.md`, « Récupération du compte »)
+- [x] Double authentification (TOTP) facultative : QR code depuis `/account`, code à la
+      connexion, secours par lien email, secret chiffré (`TOTP_ENCRYPTION_KEY`) — PR
+      `feature/two-factor`
 - [x] Partage de résultat façon Wordle (grille/emoji, pas de compte requis) : sur le
       récapitulatif du jour, date, score, une case par manche (🎯 pour un 1er essai exact)
       et le lien du site ; feuille de partage sur téléphone, copie ailleurs — PR
       `feature/daily-share` ; puis un titre qualifiant le résultat, une légende des cases
-      et une invitation à jouer — PR `fix/daily-share-explained`
+      et une invitation à jouer — PR `fix/daily-share-explained` ; puis un défi plutôt
+      qu'un compte rendu (le principe en une ligne, « Tu fais mieux ? »), sans légende —
+      PR `fix/daily-share-challenge`
 - [x] Aider davantage pour le 2e essai (retours des joueurs : les indices n'aidaient pas) :
       sens + tranche d'écart (1-5 / 6-15 / 16+ ans) à la place du simple plus/moins,
       saisie limitée à la plage restante, 3 pistes de catégories différentes au lieu

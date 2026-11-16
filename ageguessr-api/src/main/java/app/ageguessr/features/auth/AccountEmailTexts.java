@@ -1,6 +1,10 @@
 package app.ageguessr.features.auth;
 
 import app.ageguessr.shared.i18n.Language;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 /**
  * Every word of the account emails, in both languages, kept apart from the sending so
@@ -75,6 +79,89 @@ final class AccountEmailTexts {
                         "Confirm the deletion of your AgeGuessr account",
                         ("<p>You asked to delete your AgeGuessr account. This cannot be undone.</p>"
                                         + "<p><a href=\"%s\">Confirm the deletion</a> (this link expires in 1 hour).</p>"
+                                        + "<p>If it wasn't you, ignore this email and change your password: someone knows"
+                                        + " it.</p>")
+                                .formatted(link));
+    }
+
+    /** The day of the deletion, written out in the language: "15 December 2026", "15 décembre 2026". */
+    private static String day(Instant instant, Language language) {
+        Locale locale = language == Language.FR ? Locale.FRENCH : Locale.ENGLISH;
+        return DateTimeFormatter.ofPattern("d MMMM yyyy", locale).withZone(ZoneOffset.UTC).format(instant);
+    }
+
+    static Text inactivityWarning(Language language, String loginLink, Instant deletionDate) {
+        return language == Language.FR
+                ? new Text(
+                        "Votre compte AgeGuessr sera supprimé le " + day(deletionDate, language),
+                        ("<p>Votre compte AgeGuessr n'a pas servi depuis bientôt 3 ans. Pour ne pas garder"
+                                        + " vos données inutilement, votre compte, votre historique et vos amis"
+                                        + " seront supprimés le %s.</p>"
+                                        + "<p>Pour le garder, il suffit de <a href=\"%s\">vous connecter</a> d'ici là.</p>"
+                                        + "<p>Sinon, vous n'avez rien à faire.</p>")
+                                .formatted(day(deletionDate, language), loginLink))
+                : new Text(
+                        "Your AgeGuessr account will be deleted on " + day(deletionDate, language),
+                        ("<p>You haven't signed in to AgeGuessr for almost 3 years. So as not to keep your"
+                                        + " data for nothing, your account, history and friends will be deleted on"
+                                        + " %s.</p>"
+                                        + "<p>To keep it, just <a href=\"%s\">sign in</a> before then.</p>"
+                                        + "<p>Otherwise, there is nothing to do.</p>")
+                                .formatted(day(deletionDate, language), loginLink));
+    }
+
+    static Text twoFactorEnabled(Language language) {
+        return language == Language.FR
+                ? new Text(
+                        "Double authentification activée sur votre compte AgeGuessr",
+                        "<p>La double authentification vient d'être activée sur votre compte AgeGuessr : chaque"
+                                + " connexion demandera désormais un code de votre application d'authentification.</p>"
+                                + "<p>Si ce n'était pas vous, changez votre mot de passe tout de suite : quelqu'un le"
+                                + " connaît.</p>")
+                : new Text(
+                        "Two-factor authentication turned on for your AgeGuessr account",
+                        "<p>Two-factor authentication was just turned on for your AgeGuessr account: every sign-in"
+                                + " will now ask for a code from your authenticator app.</p>"
+                                + "<p>If it wasn't you, change your password right away: someone knows it.</p>");
+    }
+
+    static Text twoFactorDisabled(Language language, String secureLink) {
+        return language == Language.FR
+                ? new Text(
+                        "Double authentification désactivée sur votre compte AgeGuessr",
+                        ("<p>La double authentification vient d'être désactivée sur votre compte AgeGuessr : la"
+                                        + " connexion ne demande plus que le mot de passe.</p>"
+                                        + "<p>Si ce n'était pas vous, <a href=\"%s\">sécurisez votre compte</a> (ce lien"
+                                        + " expire dans 24 heures) et vérifiez l'accès à votre boîte mail.</p>")
+                                .formatted(secureLink))
+                : new Text(
+                        "Two-factor authentication turned off for your AgeGuessr account",
+                        ("<p>Two-factor authentication was just turned off for your AgeGuessr account: signing in"
+                                        + " now asks for the password only.</p>"
+                                        + "<p>If it wasn't you, <a href=\"%s\">secure your account</a> (this link expires"
+                                        + " in 24 hours) and check who can access your mailbox.</p>")
+                                .formatted(secureLink));
+    }
+
+    static Text twoFactorRecovery(Language language, String link) {
+        return language == Language.FR
+                ? new Text(
+                        "Désactiver la double authentification de votre compte AgeGuessr",
+                        ("<p>Vous n'avez plus accès à votre application d'authentification ? Ce lien désactive la"
+                                        + " double authentification de votre compte AgeGuessr ; vous pourrez ensuite vous"
+                                        + " connecter avec votre mot de passe et la réactiver.</p>"
+                                        + "<p><a href=\"%s\">Désactiver la double authentification</a> (ce lien expire"
+                                        + " dans 1 heure).</p>"
+                                        + "<p>Si ce n'était pas vous, ignorez cet email et changez votre mot de passe :"
+                                        + " quelqu'un le connaît.</p>")
+                                .formatted(link))
+                : new Text(
+                        "Turn off two-factor authentication for your AgeGuessr account",
+                        ("<p>Lost access to your authenticator app? This link turns off two-factor authentication"
+                                        + " for your AgeGuessr account; you can then sign in with your password and turn it"
+                                        + " on again.</p>"
+                                        + "<p><a href=\"%s\">Turn off two-factor authentication</a> (this link expires in"
+                                        + " 1 hour).</p>"
                                         + "<p>If it wasn't you, ignore this email and change your password: someone knows"
                                         + " it.</p>")
                                 .formatted(link));

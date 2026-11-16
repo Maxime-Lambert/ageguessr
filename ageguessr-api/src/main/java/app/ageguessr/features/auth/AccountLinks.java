@@ -18,6 +18,11 @@ public class AccountLinks {
     }
 
     public String to(User user, String path, String rawToken) {
-        return frontendUrl + "/" + user.languageOrDefault().code() + path + "?token=" + rawToken;
+        return page(user, path) + "?token=" + rawToken;
+    }
+
+    /** A page of the site, without a token. */
+    public String page(User user, String path) {
+        return frontendUrl + "/" + user.languageOrDefault().code() + path;
     }
 }

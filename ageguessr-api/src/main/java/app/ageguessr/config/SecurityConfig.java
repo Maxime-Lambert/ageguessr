@@ -40,7 +40,11 @@ public class SecurityConfig {
         "/api/auth/resend-verification",
         "/api/auth/forgot-password",
         "/api/auth/reset-password",
-        "/api/auth/confirm-account-deletion"
+        "/api/auth/confirm-account-deletion",
+        // Two-factor sign-in: the password is proven, the challenge stands for it.
+        "/api/auth/login/totp",
+        "/api/auth/login/totp/recovery",
+        "/api/auth/disable-two-factor"
     };
 
     private static final String[] PUBLIC_GAME_GET_PATHS = {"/api/images/*"};
@@ -94,6 +98,9 @@ public class SecurityConfig {
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         config.setAllowCredentials(true);
+        // Same origin in production (Caddy proxies /api), but a cross-origin front would
+        // otherwise lose the file name of the data export (GET /api/auth/me/data).
+        config.setExposedHeaders(List.of("Content-Disposition"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;

@@ -1,6 +1,7 @@
 package app.ageguessr.features.auth;
 
 import app.ageguessr.shared.i18n.Language;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -63,6 +64,37 @@ public class User {
     /** Of the emails, and of the site once signed in. Null until chosen (V14): emails in English. */
     @Enumerated(EnumType.STRING)
     private Language language;
+
+    /**
+     * Last sign-in or session renewal (V25), for the purge of inactive accounts. Read-only
+     * here: the column's default (now()) dates a new account, and UserRepository.markActive
+     * writes it. Written by save(), an account built in memory would send NULL.
+     */
+    @Column(insertable = false, updatable = false)
+    private Instant lastActiveAt;
+
+    /** When the email announcing the deletion for inactivity was sent (UserRepository.markWarned). */
+    @Column(insertable = false, updatable = false)
+    private Instant inactivityWarnedAt;
+
+    /** The two-factor secret, encrypted (SecretCipher); pending until totpEnabledAt is set (V26). */
+    private String totpSecret;
+
+    private Instant totpEnabledAt;
+
+    /** The last 30-second step accepted: a code already used is refused (Totp.verify). */
+    private Long totpLastStep;
+
+    public boolean hasTwoFactor() {
+        return totpEnabledAt != null;
+    }
+
+    /** Back to signing in with the password alone, the pending secret dropped too. */
+    public void dropTwoFactor() {
+        totpSecret = null;
+        totpEnabledAt = null;
+        totpLastStep = null;
+    }
 
     /** Whether the account accepted the Terms in force: otherwise the site asks again. */
     public boolean hasAcceptedCurrentTerms() {

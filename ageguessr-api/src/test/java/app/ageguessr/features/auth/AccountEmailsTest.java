@@ -9,6 +9,7 @@ import app.ageguessr.shared.email.EmailMessage;
 import app.ageguessr.shared.email.EmailSender;
 import app.ageguessr.shared.i18n.Language;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -83,6 +84,58 @@ class AccountEmailsTest {
                 .contains("https://ageguessr.app/en/confirm-account-deletion?token=raw-token")
                 .contains("cannot be undone")
                 .contains("expires in 1 hour");
+    }
+
+    @Test
+    void theInactivityWarningGivesTheDateAndALinkToSignInWithoutAToken() {
+        accountEmails.sendInactivityWarning(USER, Instant.parse("2026-12-15T00:50:00Z"));
+
+        EmailMessage message = sent();
+        assertThat(message.subject()).isEqualTo("Your AgeGuessr account will be deleted on 15 December 2026");
+        assertThat(message.htmlBody())
+                .contains("<a href=\"https://ageguessr.app/en/login\">sign in</a>")
+                .contains("deleted on 15 December 2026")
+                .doesNotContain("token=");
+    }
+
+    @Test
+    void warnsAFrenchAccountInFrench() {
+        accountEmails.sendInactivityWarning(FRENCH_USER, Instant.parse("2026-12-15T00:50:00Z"));
+
+        EmailMessage message = sent();
+        assertThat(message.subject()).isEqualTo("Votre compte AgeGuessr sera supprimé le 15 décembre 2026");
+        assertThat(message.htmlBody()).contains("https://ageguessr.app/fr/login").contains("supprimés le 15 décembre 2026");
+    }
+
+    @Test
+    void theTwoFactorRecoveryEmailCarriesAOneHourLinkThatTurnsItOff() {
+        when(accountTokenService.issue(USER.getId(), AccountTokenPurpose.TOTP_RECOVERY, Duration.ofHours(1)))
+                .thenReturn("raw-token");
+
+        accountEmails.sendTwoFactorRecovery(USER);
+
+        assertThat(sent().htmlBody())
+                .contains("https://ageguessr.app/en/disable-two-factor?token=raw-token")
+                .contains("expires in 1 hour");
+    }
+
+    @Test
+    void turningTwoFactorOffIsToldWithA24HourSecureYourAccountLink() {
+        when(accountTokenService.issue(USER.getId(), AccountTokenPurpose.PASSWORD_RESET, Duration.ofHours(24)))
+                .thenReturn("raw-token");
+
+        accountEmails.sendTwoFactorDisabled(USER);
+
+        EmailMessage message = sent();
+        assertThat(message.subject()).isEqualTo("Two-factor authentication turned off for your AgeGuessr account");
+        assertThat(message.htmlBody()).contains("https://ageguessr.app/en/reset-password?token=raw-token");
+    }
+
+    @Test
+    void turningTwoFactorOnIsToldInTheAccountsLanguage() {
+        accountEmails.sendTwoFactorEnabled(FRENCH_USER);
+
+        assertThat(sent().subject()).isEqualTo("Double authentification activée sur votre compte AgeGuessr");
     }
 
     @Test

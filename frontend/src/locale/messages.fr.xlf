@@ -860,53 +860,41 @@
         <source>A friend challenges you on <x id="length" equiv-text="seriesLength(rounds)"/>.</source>
         <target>Un ami vous défie sur <x id="length" equiv-text="seriesLength(rounds)"/>.</target>
       </trans-unit>
+      <trans-unit id="game.share.verdict.brilliant" datatype="html">
+        <source>Brilliant!</source>
+        <target>Brillant !</target>
+      </trans-unit>
+      <trans-unit id="game.share.verdict.wellPlayed" datatype="html">
+        <source>Well played!</source>
+        <target>Bien joué !</target>
+      </trans-unit>
+      <trans-unit id="game.share.verdict.notBad" datatype="html">
+        <source>Not bad!</source>
+        <target>Pas mal !</target>
+      </trans-unit>
+      <trans-unit id="game.share.verdict.tough" datatype="html">
+        <source>A tough one!</source>
+        <target>Pas facile !</target>
+      </trans-unit>
+      <trans-unit id="game.share.verdict.rough" datatype="html">
+        <source>Rough day!</source>
+        <target>Rude journée !</target>
+      </trans-unit>
+      <trans-unit id="game.share.playedOne" datatype="html">
+        <source>I guessed the age of 1 person in a photo 📸</source>
+        <target>J'ai deviné l'âge d'une personne en photo 📸</target>
+      </trans-unit>
+      <trans-unit id="game.share.played" datatype="html">
+        <source>I guessed the age of <x id="photos" equiv-text="photos"/> people in photos 📸</source>
+        <target>J'ai deviné l'âge de <x id="photos" equiv-text="photos"/> personnes en photo 📸</target>
+      </trans-unit>
+      <trans-unit id="game.share.dare" datatype="html">
+        <source>Can you beat that? 👉 <x id="url" equiv-text="url"/></source>
+        <target>Tu fais mieux ? 👉 <x id="url" equiv-text="url"/></target>
+      </trans-unit>
       <trans-unit id="game.shareDateFormat" datatype="html">
         <source>MMM d, y</source>
         <target>dd/MM/yyyy</target>
-      </trans-unit>
-      <trans-unit id="game.share.legend.exact" datatype="html">
-        <source>first try</source>
-        <target>du 1er coup</target>
-      </trans-unit>
-      <trans-unit id="game.share.legend.close" datatype="html">
-        <source>very close</source>
-        <target>tout près</target>
-      </trans-unit>
-      <trans-unit id="game.share.legend.near" datatype="html">
-        <source>close</source>
-        <target>pas loin</target>
-      </trans-unit>
-      <trans-unit id="game.share.legend.far" datatype="html">
-        <source>far off</source>
-        <target>loin</target>
-      </trans-unit>
-      <trans-unit id="game.share.legend.removed" datatype="html">
-        <source>photo withdrawn</source>
-        <target>photo retirée</target>
-      </trans-unit>
-      <trans-unit id="game.share.brilliant" datatype="html">
-        <source><x id="day" equiv-text="day"/>: brilliant!</source>
-        <target>Partie du <x id="day" equiv-text="day"/> : brillant !</target>
-      </trans-unit>
-      <trans-unit id="game.share.wellPlayed" datatype="html">
-        <source><x id="day" equiv-text="day"/>: well played!</source>
-        <target>Partie du <x id="day" equiv-text="day"/> : bien joué !</target>
-      </trans-unit>
-      <trans-unit id="game.share.notBad" datatype="html">
-        <source><x id="day" equiv-text="day"/>: not bad!</source>
-        <target>Partie du <x id="day" equiv-text="day"/> : pas mal !</target>
-      </trans-unit>
-      <trans-unit id="game.share.tough" datatype="html">
-        <source><x id="day" equiv-text="day"/>: a tough one!</source>
-        <target>Partie du <x id="day" equiv-text="day"/> : pas facile !</target>
-      </trans-unit>
-      <trans-unit id="game.share.tomorrow" datatype="html">
-        <source><x id="day" equiv-text="day"/>: better luck tomorrow!</source>
-        <target>Partie du <x id="day" equiv-text="day"/> : ça ira mieux demain !</target>
-      </trans-unit>
-      <trans-unit id="game.share.invite" datatype="html">
-        <source>Play today's game at <x id="url" equiv-text="url"/></source>
-        <target>Toi aussi, joue sur <x id="url" equiv-text="url"/></target>
       </trans-unit>
       <trans-unit id="game.shareText" datatype="html">
         <source>AgeGuessr · <x id="challenge" equiv-text="GAME_TEXT.challenge"/> · <x id="points" equiv-text="points"/> / <x id="max" equiv-text="max"/></source>
@@ -1332,10 +1320,6 @@
         <source>Too many requests waiting for an answer. Cancel some first.</source>
         <target>Trop de demandes en attente de réponse. Annulez-en quelques-unes.</target>
       </trans-unit>
-      <trans-unit id="game.compareFriends" datatype="html">
-        <source>Compare with your friends</source>
-        <target>Comparer avec vos amis</target>
-      </trans-unit>
       <trans-unit id="header.friends" datatype="html">
         <source>Friends</source>
         <target>Amis</target>
@@ -1343,6 +1327,154 @@
       <trans-unit id="header.pendingRequests" datatype="html">
         <source><x id="count" equiv-text="count"/> requests waiting for an answer</source>
         <target><x id="count" equiv-text="count"/> demandes en attente de réponse</target>
+      </trans-unit>
+      <trans-unit id="seo.title" datatype="html">
+        <source>AgeGuessr: guess the age in the photo</source>
+        <target>AgeGuessr : devinez l'âge sur la photo</target>
+      </trans-unit>
+      <trans-unit id="seo.description" datatype="html">
+        <source>A daily game: guess how old the person in an archive photo was, helped by facts from history, music, film and more. Three photos a day, free, no account needed.</source>
+        <target>Un jeu quotidien : devinez l'âge qu'avait la personne sur une photo d'archive, avec des indices tirés de l'histoire, de la musique, du cinéma et plus encore. Trois photos par jour, gratuit, sans compte.</target>
+      </trans-unit>
+      <trans-unit id="seo.description.free" datatype="html">
+        <source>Play as many series as you like: guess the age of people in archive photos, beyond the daily game. Free, no account needed.</source>
+        <target>Enchaînez autant de séries que vous voulez : devinez l'âge de personnes sur des photos d'archive, en plus du jeu du jour. Gratuit, sans compte.</target>
+      </trans-unit>
+      <trans-unit id="seo.description.howToPlay" datatype="html">
+        <source>How to play AgeGuessr: two guesses per photo, hints to narrow down the age, and points by how close you get.</source>
+        <target>Comment jouer à AgeGuessr : deux essais par photo, des indices pour cerner l'âge, et des points selon votre précision.</target>
+      </trans-unit>
+      <trans-unit id="seo.description.legalNotice" datatype="html">
+        <source>Legal notice of AgeGuessr: publisher and host.</source>
+        <target>Mentions légales d'AgeGuessr : éditeur et hébergeur.</target>
+      </trans-unit>
+      <trans-unit id="seo.description.terms" datatype="html">
+        <source>Terms of Use of AgeGuessr.</source>
+        <target>Conditions d'utilisation d'AgeGuessr.</target>
+      </trans-unit>
+      <trans-unit id="seo.description.privacy" datatype="html">
+        <source>Privacy Policy of AgeGuessr: the data kept, why, for how long, and your rights.</source>
+        <target>Politique de confidentialité d'AgeGuessr : les données conservées, pourquoi, combien de temps, et vos droits.</target>
+      </trans-unit>
+      <trans-unit id="account.dataTitle" datatype="html">
+        <source>Your data</source>
+        <target>Vos données</target>
+      </trans-unit>
+      <trans-unit id="account.dataIntro" datatype="html">
+        <source> Download a copy of everything AgeGuessr keeps about you: your account, your games and your friends, in a JSON file. </source>
+        <target>Téléchargez une copie de tout ce qu'AgeGuessr garde sur vous : votre compte, vos parties et vos amis, dans un fichier JSON.</target>
+      </trans-unit>
+      <trans-unit id="account.downloadData" datatype="html">
+        <source> Download my data </source>
+        <target>Télécharger mes données</target>
+      </trans-unit>
+      <trans-unit id="account.twoFactorTitle" datatype="html">
+        <source> Two-factor authentication </source>
+        <target>Double authentification</target>
+      </trans-unit>
+      <trans-unit id="account.twoFactorEnabled" datatype="html">
+        <source> Two-factor authentication is on. Every sign-in will ask for a code from your app. </source>
+        <target>La double authentification est activée. Chaque connexion demandera un code de votre application.</target>
+      </trans-unit>
+      <trans-unit id="account.twoFactorDisabled" datatype="html">
+        <source> Two-factor authentication is off. Signing in asks for your password only. </source>
+        <target>La double authentification est désactivée. La connexion ne demande plus que votre mot de passe.</target>
+      </trans-unit>
+      <trans-unit id="account.twoFactorOffIntro" datatype="html">
+        <source> To turn it off, enter your password and a code from your app. </source>
+        <target>Pour la désactiver, saisissez votre mot de passe et un code de votre application.</target>
+      </trans-unit>
+      <trans-unit id="login.codeLabel" datatype="html">
+        <source>Code</source>
+        <target>Code</target>
+      </trans-unit>
+      <trans-unit id="account.twoFactorTurnOff" datatype="html">
+        <source> Turn off two-factor authentication </source>
+        <target>Désactiver la double authentification</target>
+      </trans-unit>
+      <trans-unit id="account.twoFactorScan" datatype="html">
+        <source> Scan this QR code with your authenticator app (Google Authenticator, Aegis, 1Password…), or type the key below. Then enter the 6-digit code it shows. </source>
+        <target>Scannez ce QR code avec votre application d'authentification (Google Authenticator, Aegis, 1Password…), ou saisissez la clé ci-dessous. Puis entrez le code à 6 chiffres qu'elle affiche.</target>
+      </trans-unit>
+      <trans-unit id="account.twoFactorQrAlt" datatype="html">
+        <source>QR code to scan with your authenticator app</source>
+        <target>QR code à scanner avec votre application d'authentification</target>
+      </trans-unit>
+      <trans-unit id="account.twoFactorKey" datatype="html">
+        <source>Key:</source>
+        <target>Clé :</target>
+      </trans-unit>
+      <trans-unit id="account.twoFactorTurnOn" datatype="html">
+        <source> Turn on two-factor authentication </source>
+        <target>Activer la double authentification</target>
+      </trans-unit>
+      <trans-unit id="account.twoFactorIntro" datatype="html">
+        <source> Protect your account with a code from an authenticator app on your phone, asked at every sign-in. If you lose your phone, a link sent by email turns it off. </source>
+        <target>Protégez votre compte avec un code d'une application d'authentification sur votre téléphone, demandé à chaque connexion. Si vous perdez votre téléphone, un lien envoyé par email la désactive.</target>
+      </trans-unit>
+      <trans-unit id="account.twoFactorSetUp" datatype="html">
+        <source> Set up two-factor authentication </source>
+        <target>Configurer la double authentification</target>
+      </trans-unit>
+      <trans-unit id="account.wrongCode" datatype="html">
+        <source>Incorrect or expired code. After too many attempts, your account is locked for 15 minutes.</source>
+        <target>Code incorrect ou expiré. Après trop d'essais, votre compte est bloqué pendant 15 minutes.</target>
+      </trans-unit>
+      <trans-unit id="twoFactorRecovery.doneTitle" datatype="html">
+        <source> Two-factor authentication turned off </source>
+        <target>Double authentification désactivée</target>
+      </trans-unit>
+      <trans-unit id="twoFactorRecovery.done" datatype="html">
+        <source> You can sign in with your password alone, then turn it on again from your account with your new phone. Every device was signed out. </source>
+        <target>Vous pouvez vous connecter avec votre seul mot de passe, puis la réactiver depuis votre compte avec votre nouveau téléphone. Tous vos appareils ont été déconnectés.</target>
+      </trans-unit>
+      <trans-unit id="twoFactorRecovery.toLogin" datatype="html">
+        <source>Log in</source>
+        <target>Se connecter</target>
+      </trans-unit>
+      <trans-unit id="twoFactorRecovery.invalid" datatype="html">
+        <source> This link no longer works. Two-factor authentication is still on: ask for a new link from the sign-in page. </source>
+        <target>Ce lien ne fonctionne plus. La double authentification est toujours activée : demandez un nouveau lien depuis la page de connexion.</target>
+      </trans-unit>
+      <trans-unit id="twoFactorRecovery.title" datatype="html">
+        <source> Turn off two-factor authentication? </source>
+        <target>Désactiver la double authentification ?</target>
+      </trans-unit>
+      <trans-unit id="twoFactorRecovery.warning" datatype="html">
+        <source> Signing in will ask for your password only, and every device will be signed out. If you didn&apos;t ask for this, keep it on and change your password: someone knows it. </source>
+        <target>La connexion ne demandera plus que votre mot de passe, et tous vos appareils seront déconnectés. Si vous n&apos;êtes pas à l&apos;origine de cette demande, gardez-la activée et changez votre mot de passe : quelqu&apos;un le connaît.</target>
+      </trans-unit>
+      <trans-unit id="twoFactorRecovery.confirm" datatype="html">
+        <source> Turn off two-factor authentication </source>
+        <target>Désactiver la double authentification</target>
+      </trans-unit>
+      <trans-unit id="twoFactorRecovery.keep" datatype="html">
+        <source>Keep it on</source>
+        <target>La garder activée</target>
+      </trans-unit>
+      <trans-unit id="login.codeIntro" datatype="html">
+        <source> Two-factor authentication is on: enter the 6-digit code shown by your authenticator app. </source>
+        <target>La double authentification est activée : saisissez le code à 6 chiffres affiché par votre application d'authentification.</target>
+      </trans-unit>
+      <trans-unit id="login.verifyCode" datatype="html">
+        <source> Verify </source>
+        <target>Valider</target>
+      </trans-unit>
+      <trans-unit id="login.recoverySent" datatype="html">
+        <source> We sent you an email with a link that turns two-factor authentication off. It expires in 1 hour. </source>
+        <target>Nous vous avons envoyé un email avec un lien qui désactive la double authentification. Il expire dans 1 heure.</target>
+      </trans-unit>
+      <trans-unit id="login.lostApp" datatype="html">
+        <source> I no longer have access to my authenticator app </source>
+        <target>Je n'ai plus accès à mon application d'authentification</target>
+      </trans-unit>
+      <trans-unit id="login.invalidCode" datatype="html">
+        <source>Incorrect or expired code. After too many attempts, your account is locked for 15 minutes.</source>
+        <target>Code incorrect ou expiré. Après trop d'essais, votre compte est bloqué pendant 15 minutes.</target>
+      </trans-unit>
+      <trans-unit id="login.challengeExpired" datatype="html">
+        <source>This sign-in has expired. Please enter your password again.</source>
+        <target>Cette connexion a expiré. Saisissez à nouveau votre mot de passe.</target>
       </trans-unit>
     </body>
   </file>

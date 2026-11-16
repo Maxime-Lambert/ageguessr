@@ -68,7 +68,7 @@ test.describe('le jeu en français', () => {
     await expect
       .poll(() => sharedTexts(page))
       .toEqual([
-        `AgeGuessr · Partie du 13/11/2026\u00a0: bien joué\u00a0!\n2340 / 3000 points\n🎯🟩⬛🟥\n🎯 du 1er coup · 🟩 tout près · 🟥 loin · ⬛ photo retirée\nToi aussi, joue sur ${new URL(baseURL!).origin}`,
+        `AgeGuessr · 13/11/2026\nJ'ai deviné l'âge de 3 personnes en photo 📸\n🎯🟩⬛🟥  2\u202f340 / 3\u202f000\nBien joué\u00a0! Tu fais mieux\u00a0? 👉 ${new URL(baseURL!).origin}`,
       ]);
   });
 });

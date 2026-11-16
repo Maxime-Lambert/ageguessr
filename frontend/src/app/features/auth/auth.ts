@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Service, computed, inject, signal } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import {
@@ -14,7 +14,14 @@ import {
   tap,
 } from 'rxjs';
 import { ApiLanguage } from '../../shared/i18n/language';
-import { AuthUser, LoginResponse, RefreshResponse, RegisterResponse } from './models';
+import {
+  AuthUser,
+  LoginResponse,
+  LoginResult,
+  RefreshResponse,
+  RegisterResponse,
+  TwoFactorSetup,
+} from './models';
 
 @Service()
 export class Auth {
@@ -54,13 +61,55 @@ export class Auth {
     });
   }
 
-  login(email: string, password: string): Observable<AuthUser> {
+  /** With two-factor on, nothing is signed in yet: the challenge goes with the code. */
+  login(email: string, password: string): Observable<LoginResult> {
     return this.http
       .post<LoginResponse>('/api/auth/login', { email, password }, { withCredentials: true })
       .pipe(
-        tap((response) => this.accessToken.set(response.accessToken)),
+        switchMap((response): Observable<LoginResult> => {
+          if (response.twoFactorRequired && response.challenge) {
+            return of({ challenge: response.challenge });
+          }
+          this.accessToken.set(response.accessToken!);
+          return this.me().pipe(map((user) => ({ user })));
+        }),
+      );
+  }
+
+  /** The second step of a two-factor sign-in. */
+  loginWithCode(challenge: string, code: string): Observable<AuthUser> {
+    return this.http
+      .post<LoginResponse>('/api/auth/login/totp', { challenge, code }, { withCredentials: true })
+      .pipe(
+        tap((response) => this.accessToken.set(response.accessToken!)),
         switchMap(() => this.me()),
       );
+  }
+
+  /** The authenticator app is lost: emails a link that turns two-factor off. */
+  requestTwoFactorRecovery(challenge: string): Observable<void> {
+    return this.http.post<void>('/api/auth/login/totp/recovery', { challenge });
+  }
+
+  confirmTwoFactorRecovery(token: string): Observable<void> {
+    return this.http.post<void>('/api/auth/disable-two-factor', { token });
+  }
+
+  /** Asks for the password; the secret stays pending until a first code (enableTwoFactor). */
+  setUpTwoFactor(password: string): Observable<TwoFactorSetup> {
+    return this.http.post<TwoFactorSetup>('/api/auth/me/two-factor/setup', { password });
+  }
+
+  enableTwoFactor(code: string): Observable<AuthUser> {
+    return this.http
+      .post<AuthUser>('/api/auth/me/two-factor/enable', { code })
+      .pipe(tap((user) => this.currentUser.set(user)));
+  }
+
+  disableTwoFactor(password: string, code: string): Observable<AuthUser> {
+    return this.http
+      .post<AuthUser>('/api/auth/me/two-factor/disable', { password, code })
+      .pipe(tap((user) => this.currentUser.set(user)));
   }
 
   /** Local state is cleared even if the call fails - the user asked to be logged out. */
@@ -119,6 +168,14 @@ export class Auth {
       { currentPassword, newPassword },
       { withCredentials: true },
     );
+  }
+
+  /**
+   * Everything the site keeps on the player, as a JSON file (GDPR access and portability).
+   * The whole response: its Content-Disposition names the file.
+   */
+  downloadData(): Observable<HttpResponse<Blob>> {
+    return this.http.get('/api/auth/me/data', { responseType: 'blob', observe: 'response' });
   }
 
   /** Only sends the confirmation email - nothing is deleted until the link is confirmed. */

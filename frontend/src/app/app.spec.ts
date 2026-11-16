@@ -55,6 +55,7 @@ describe('App', () => {
       username: 'Player',
       emailVerified: true,
       termsAccepted: true,
+      twoFactorEnabled: false,
       role: 'USER',
       language: 'FR',
     });
