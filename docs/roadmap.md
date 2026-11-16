@@ -36,7 +36,7 @@ retirer une fois tous faits.
       `ageguessr-prod-backup-1` `healthy` ; `docker inspect ageguessr-prod-backend-1
       --format '{{json .HostConfig.LogConfig}}'` donne `max-size 10m`, `max-file 3` ; le
       lendemain, `docker logs ageguessr-prod-backup-1` montre le dump de 03:00 UTC
-- [ ] Monitoring (`feature/monitoring`) : dans UptimeRobot, deux surveillances HTTP(S)
+- [x] Monitoring (`feature/monitoring`) : dans UptimeRobot, deux surveillances HTTP(S)
       sur `https://ageguessr.app/api/health` et `https://ageguessr.app/api/health/backup`
       (5 min, alerte par email), toutes deux « Up » ; bouton de test de notification reçu ;
       le premier email d'erreur du backend arrivera à la première vraie erreur (pas de
