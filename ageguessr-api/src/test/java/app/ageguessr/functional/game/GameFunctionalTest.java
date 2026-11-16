@@ -427,6 +427,7 @@ class GameFunctionalTest {
 
         mockMvc.perform(get("/api/game/calendar").cookie(guest))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.today").value(today.toString()))
                 .andExpect(jsonPath("$.month").value(thisMonth))
                 .andExpect(jsonPath("$.firstMonth").value(YearMonth.from(past).toString()))
                 .andExpect(jsonPath("$.days.length()").value(YearMonth.from(today).lengthOfMonth()))

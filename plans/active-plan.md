@@ -167,26 +167,26 @@ Vérifié : `CalendarDaysTest` (9 cas), `GameFunctionalTest` (calendrier invité
 cookie, bornes), `PlayerHistoryTest` verts.
 
 ## Phase 4 : Calendrier et jour passé (frontend)
-Status: Not started
+Status: Complete
 
-- [ ] `features/game/game-api.ts` + `models.ts` : `day(date)`, `calendar(month?)`,
+- [x] `features/game/game-api.ts` + `models.ts` : `day(date)`, `calendar(month?)`,
       types `DayState`, `Calendar`
-- [ ] Jeu d'un jour passé : route `day/:date` ; réutiliser `Game` (date en entrée,
+- [x] Jeu d'un jour passé : route `day/:date` ; réutiliser `Game` (date en entrée,
       `today()` ou `day(date)`) plutôt que dupliquer — si le composant devient
       ambigu, un `PastDayGame` mince sur `RoundsScreen`
-- [ ] Récap d'un jour passé : sans « Revenez demain » ni partage, lien « Back to
+- [x] Récap d'un jour passé : sans « Revenez demain » ni partage, lien « Back to
       calendar » ; date du jour affichée en titre
-- [ ] `features/game/calendar/calendar.{ts,html,spec.ts}` : grille lundi→dimanche,
+- [x] `features/game/calendar/calendar.{ts,html,spec.ts}` : grille lundi→dimanche,
       mois en toutes lettres selon la langue, flèches bornées, cases colorées par
       état avec légende ; case disponible / commencée = lien (`/` pour aujourd'hui,
       `/day/…` sinon) ; terminée = lien vers le récap ; indisponible = non cliquable
-- [ ] Accessibilité : chaque case a un libellé (« 12 novembre, commencé »), la couleur
+- [x] Accessibilité : chaque case a un libellé (« 12 novembre, commencé »), la couleur
       n'est jamais la seule information (légende + icône ou motif pour commencé/fini),
       contrastes en clair et sombre
-- [ ] Route `calendar` dans `app.routes.ts`, onglet dans `layout/header/header.ts`
+- [x] Route `calendar` dans `app.routes.ts`, onglet dans `layout/header/header.ts`
       (desktop + menu mobile)
-- [ ] i18n : `i18n="@@calendar.*"` / `$localize`, traductions dans `messages.fr.xlf`
-- [ ] Liste des pages publiques du sitemap (`feature/seo`) : ajouter `/calendar` si les
+- [x] i18n : `i18n="@@calendar.*"` / `$localize`, traductions dans `messages.fr.xlf`
+- [x] Liste des pages publiques du sitemap (`feature/seo`) : ajouter `/calendar` si les
       pages publiques y sont listées
 
 ### Tests (Phase 4)
@@ -209,7 +209,18 @@ Status: Not started
 - Capture d'écran du calendrier en clair et sombre avec `shoot.mjs` (un seul navigateur)
 
 ### Phase Summary
-_(write when phase completes)_
+`/calendar` (`features/game/calendar`) : grille lundi→dimanche, flèches bornées
+(`firstMonth`, mois de `today` renvoyé par l'API — ajouté à `CalendarResponse` pour ne
+pas dépendre du fuseau du navigateur), cases liées selon l'état, libellés accessibles,
+légende, coche/pointillés en plus de la couleur. `Game` joue aussi `/day/:date`
+(`ActivatedRoute`), titre « Partie du … », récap sans partage ni « revenez », retour au
+calendrier ; le récap du jour propose « Jouer les jours passés ». Onglet header,
+`/calendar` dans le sitemap + description SEO. `GAME_CLOSED` : texte « Ce jour n'est pas
+encore ouvert ». Seed e2e `seed-daily-game?daysAgo=N`. `RateLimitFunctionalTest` visait
+un jour de 2000 pour obtenir un 409 : passé à 2999 (jour à venir).
+Vérifié : `pnpm test` 483 verts (+ test SEO), `pnpm lint` propre, `./mvnw test` vert
+(1269), captures clair/sombre/mobile via build statique + un Chromium (pas de serveur de
+dev). Playwright (component, component-fr, journeys/calendar) : en CI.
 
 ## Phase 5 : Docs, revues, PR
 Status: Not started

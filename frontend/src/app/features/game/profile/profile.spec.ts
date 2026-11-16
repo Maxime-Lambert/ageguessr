@@ -89,11 +89,7 @@ describe('Profile', () => {
     const tiles = Array.from(root.querySelectorAll('dl > div')).map((tile) =>
       tile.textContent?.replace(/\s+/g, ' ').trim(),
     );
-    expect(tiles).toEqual([
-      'Games finished 12',
-      'Average score 1,820',
-      'Best score 2,750',
-    ]);
+    expect(tiles).toEqual(['Games finished 12', 'Average score 1,820', 'Best score 2,750']);
   });
 
   describe('the last 30 days', () => {

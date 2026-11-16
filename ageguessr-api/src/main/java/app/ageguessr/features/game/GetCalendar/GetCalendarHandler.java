@@ -54,6 +54,6 @@ public class GetCalendarHandler {
         List<CalendarResponse.Day> days = CalendarDays.of(shown, today, playable, played).stream()
                 .map(day -> new CalendarResponse.Day(day.date(), day.state()))
                 .toList();
-        return new CalendarResponse(shown, firstMonth, days);
+        return new CalendarResponse(today, shown, firstMonth, days);
     }
 }

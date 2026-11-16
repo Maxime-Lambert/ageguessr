@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Service, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiLanguage } from '../../shared/i18n/language';
-import { HintCategory, History, RoundReport, RoundView, TodayGame } from './models';
+import { CalendarMonth, HintCategory, History, RoundReport, RoundView, TodayGame } from './models';
 
 /**
  * The daily game. Public: the auth interceptor adds the bearer token when signed in, and a
@@ -28,6 +28,16 @@ export class GameApi {
 
   today(): Observable<TodayGame> {
     return this.http.get<TodayGame>('/api/game/today');
+  }
+
+  /** A past day's game, played from the calendar (404 when nothing was drawn that day). */
+  day(date: string): Observable<TodayGame> {
+    return this.http.get<TodayGame>(`/api/game/days/${encodeURIComponent(date)}`);
+  }
+
+  /** A month of the calendar, the current one when none is given ("2026-11"). */
+  calendar(month?: string): Observable<CalendarMonth> {
+    return this.http.get<CalendarMonth>('/api/game/calendar', month ? { params: { month } } : {});
   }
 
   firstGuess(
