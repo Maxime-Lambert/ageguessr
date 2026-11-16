@@ -41,7 +41,6 @@ describe('guestGuard', () => {
       username: 'Player',
       emailVerified: true,
       termsAccepted: true,
-      twoFactorEnabled: false,
       role: 'USER',
       language: 'EN',
     });

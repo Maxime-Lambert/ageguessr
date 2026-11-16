@@ -9,17 +9,9 @@ import java.util.UUID;
  * from the token on every /api/admin/** request. {@code language} is null until chosen:
  * the front end then saves the language of the page. {@code termsAccepted} is false when
  * the account accepted an older version of the Terms, or none: the site then asks again.
- * {@code twoFactorEnabled}: whether sign-in asks for a code of an authenticator app.
  */
 public record ProfileResponse(
-        UUID id,
-        String email,
-        String username,
-        boolean emailVerified,
-        UserRole role,
-        Language language,
-        boolean termsAccepted,
-        boolean twoFactorEnabled) {
+        UUID id, String email, String username, boolean emailVerified, UserRole role, Language language, boolean termsAccepted) {
     public static ProfileResponse from(User user) {
         return new ProfileResponse(
                 user.getId(),
@@ -28,7 +20,6 @@ public record ProfileResponse(
                 user.isEmailVerified(),
                 user.getRole(),
                 user.getLanguage(),
-                user.hasAcceptedCurrentTerms(),
-                user.hasTwoFactor());
+                user.hasAcceptedCurrentTerms());
     }
 }

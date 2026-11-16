@@ -20,7 +20,6 @@ public class AccountEmails {
     private final Duration passwordResetTtl;
     private final Duration secureAccountTtl;
     private final Duration deletionTtl;
-    private static final Duration TWO_FACTOR_RECOVERY_TTL = Duration.ofHours(1);
 
     public AccountEmails(
             AccountTokenService accountTokenService,
@@ -68,29 +67,6 @@ public class AccountEmails {
     public void sendInactivityWarning(User user, Instant deletionDate) {
         send(user, AccountEmailTexts.inactivityWarning(
                 user.languageOrDefault(), links.page(user, "/login"), deletionDate));
-    }
-
-    /** Two-factor turned on: if it wasn't the owner, they learn it at once. */
-    public void sendTwoFactorEnabled(User user) {
-        send(user, AccountEmailTexts.twoFactorEnabled(user.languageOrDefault()));
-    }
-
-    /**
-     * Two-factor turned off, from the account or by the emailed link. Carries a "secure your
-     * account" link, as after a password change: if it wasn't the owner, someone has the
-     * password (and maybe the mailbox).
-     */
-    public void sendTwoFactorDisabled(User user) {
-        String link = links.to(user, "/reset-password", accountTokenService.issue(
-                user.getId(), AccountTokenPurpose.PASSWORD_RESET, secureAccountTtl));
-        send(user, AccountEmailTexts.twoFactorDisabled(user.languageOrDefault(), link));
-    }
-
-    /** The way back in when the authenticator app is lost: a link that turns two-factor off. */
-    public void sendTwoFactorRecovery(User user) {
-        String link = links.to(user, "/disable-two-factor", accountTokenService.issue(
-                user.getId(), AccountTokenPurpose.TOTP_RECOVERY, TWO_FACTOR_RECOVERY_TTL));
-        send(user, AccountEmailTexts.twoFactorRecovery(user.languageOrDefault(), link));
     }
 
     private void send(User user, AccountEmailTexts.Text text) {

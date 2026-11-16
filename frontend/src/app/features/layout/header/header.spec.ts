@@ -18,7 +18,6 @@ const PLAYER: AuthUser = {
   username: 'Player',
   emailVerified: true,
   termsAccepted: true,
-  twoFactorEnabled: false,
   role: 'USER',
   language: 'EN',
 };

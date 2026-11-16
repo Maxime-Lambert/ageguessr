@@ -77,25 +77,6 @@ public class User {
     @Column(insertable = false, updatable = false)
     private Instant inactivityWarnedAt;
 
-    /** The two-factor secret, encrypted (SecretCipher); pending until totpEnabledAt is set (V26). */
-    private String totpSecret;
-
-    private Instant totpEnabledAt;
-
-    /** The last 30-second step accepted: a code already used is refused (Totp.verify). */
-    private Long totpLastStep;
-
-    public boolean hasTwoFactor() {
-        return totpEnabledAt != null;
-    }
-
-    /** Back to signing in with the password alone, the pending secret dropped too. */
-    public void dropTwoFactor() {
-        totpSecret = null;
-        totpEnabledAt = null;
-        totpLastStep = null;
-    }
-
     /** Whether the account accepted the Terms in force: otherwise the site asks again. */
     public boolean hasAcceptedCurrentTerms() {
         return TermsVersion.CURRENT.equals(termsVersion);

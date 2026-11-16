@@ -1,8 +1,6 @@
 package app.ageguessr.features.auth.Login;
 
 import app.ageguessr.features.auth.AccountLockout;
-import app.ageguessr.features.auth.AccountTokenPurpose;
-import app.ageguessr.features.auth.AccountTokenService;
 import app.ageguessr.features.auth.AuthTokenService;
 import app.ageguessr.features.auth.TokenPair;
 import app.ageguessr.features.auth.User;
@@ -10,7 +8,6 @@ import app.ageguessr.features.auth.UserRepository;
 import app.ageguessr.shared.exceptions.ForbiddenException;
 import app.ageguessr.shared.exceptions.UnauthorizedException;
 import java.time.Clock;
-import java.time.Duration;
 import java.util.Optional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -32,10 +29,7 @@ public class LoginHandler {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthTokenService authTokenService;
-    private static final Duration TWO_FACTOR_CHALLENGE_TTL = Duration.ofMinutes(5);
-
     private final AccountLockout accountLockout;
-    private final AccountTokenService accountTokenService;
     private final Clock clock;
     private final String dummyPasswordHash;
 
@@ -44,20 +38,18 @@ public class LoginHandler {
             PasswordEncoder passwordEncoder,
             AuthTokenService authTokenService,
             AccountLockout accountLockout,
-            AccountTokenService accountTokenService,
             Clock clock) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authTokenService = authTokenService;
         this.accountLockout = accountLockout;
-        this.accountTokenService = accountTokenService;
         this.clock = clock;
         // Computed once from the real encoder so its cost factor always matches real
         // password comparisons - not a hardcoded string that could drift out of sync.
         this.dummyPasswordHash = passwordEncoder.encode(DUMMY_PASSWORD);
     }
 
-    public LoginOutcome handle(LoginCommand command) {
+    public TokenPair handle(LoginCommand command) {
         Optional<User> maybeUser = userRepository.findByEmailIgnoreCase(command.email());
 
         if (maybeUser.isEmpty()) {
@@ -83,20 +75,13 @@ public class LoginHandler {
             throw new ForbiddenException("EMAIL_NOT_VERIFIED", "Please verify your email before logging in");
         }
 
-        if (user.hasTwoFactor()) {
-            // The failed attempts are not cleared yet: a right password followed by wrong
-            // codes must still end in the lockout (LoginTotpHandler clears them).
-            return LoginOutcome.twoFactor(
-                    accountTokenService.issue(user.getId(), AccountTokenPurpose.TOTP_LOGIN, TWO_FACTOR_CHALLENGE_TTL));
-        }
-
         accountLockout.clear(user);
         userRepository.save(user);
         userRepository.markActive(user.getId(), clock.instant());
 
         String accessToken = authTokenService.issueAccessToken(user);
         String refreshToken = authTokenService.issueRefreshToken(user.getId());
-        return LoginOutcome.signedIn(new TokenPair(accessToken, refreshToken));
+        return new TokenPair(accessToken, refreshToken);
     }
 
     /** Runs a real bcrypt comparison against a throwaway hash so a short-circuited
