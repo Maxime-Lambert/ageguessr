@@ -101,6 +101,20 @@ class RateLimitFunctionalTest {
                 .andExpect(status().isAccepted());
     }
 
+    /** The calendar and the past days, which a script would page through, count with the guesses. */
+    @Test
+    void limitsTheCalendarAndThePastDaysWithTheGuesses() throws Exception {
+        String client = "203.0.113.27";
+        mockMvc.perform(get("/api/game/calendar").header("X-Forwarded-For", client))
+                .andExpect(status().isOk());
+        mockMvc.perform(get("/api/game/days/2000-01-01").header("X-Forwarded-For", client))
+                .andExpect(status().isNotFound());
+        mockMvc.perform(get("/api/game/days/2000-01-02").header("X-Forwarded-For", client))
+                .andExpect(status().isTooManyRequests());
+        guessFrom(client).andExpect(status().isTooManyRequests());
+        mockMvc.perform(get("/api/game/today").header("X-Forwarded-For", client)).andExpect(status().isOk());
+    }
+
     /**
      * The history, the one costly read, shares the guesses' counter. Limited before the
      * security chain, so even its 401 without a token counts.

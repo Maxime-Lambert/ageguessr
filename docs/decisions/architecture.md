@@ -906,6 +906,9 @@ se joue sur `/day/AAAA-MM-JJ`, le même écran que la partie du jour.
 - **Bornes** : du mois du premier tirage (`firstMonth`) au mois courant, sinon `400
   MONTH_OUT_OF_RANGE`. Trois requêtes par mois, quel que soit le joueur.
 - **Pas de tirage rétroactif** : un jour sans tirage reste indisponible.
+- **Limité** : `GET /api/game/calendar` et `GET /api/game/days/{date}` partagent le
+  compteur des essais (60 par minute et par IP), comme l'historique : un script les
+  parcourrait mois après mois, jour après jour.
 - **Ouvert aux invités** : leurs jours viennent du cookie invité, rattachés au compte à
   la connexion comme ceux du jour. Lire le calendrier ne pose jamais de cookie.
 - **Un jour passé ne se partage pas** : le texte de partage parle du défi du jour ; le

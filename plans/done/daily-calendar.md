@@ -223,21 +223,28 @@ Vérifié : `pnpm test` 483 verts (+ test SEO), `pnpm lint` propre, `./mvnw test
 dev). Playwright (component, component-fr, journeys/calendar) : en CI.
 
 ## Phase 5 : Docs, revues, PR
-Status: Not started
+Status: Complete
 
 - [x] `docs/decisions/architecture.md` : jours passés jouables, états du calendrier,
       purge invités sur `started_at`, fin des séries
 - [x] `docs/roadmap.md` : ligne cochée avec la PR
 - [x] Agents `architecture-reviewer` et `code-reviewer` (endpoints + données joueur)
       sur le diff ; corriger leurs remarques
-- [ ] PR `feature/daily-calendar` → `develop` (skill `/pr`) ; vérifications prod à
+- [x] PR `feature/daily-calendar` → `develop` (skill `/pr`) ; vérifications prod à
       ajouter en haut de la roadmap
 
 ### Verification Plan
 - CI verte sur la PR (backend, frontend, Playwright)
 
 ### Phase Summary
-_(write when phase completes)_
+Doc d'architecture (section « Calendrier des jours passés », fin des séries, purge sur
+`started_at`, endpoints) et roadmap (ligne cochée + vérification prod). Revues :
+architecture — rien de bloquant, une remarque mineure appliquée (`@Transactional
+(readOnly = true)` sur `GetDayGameHandler`) ; sécurité/RGPD — rien de bloquant, un point
+important appliqué : `GET /api/game/calendar` et `/api/game/days/*` passent sur le
+compteur des essais (`RateLimitFilter`, test `limitsTheCalendarAndThePastDaysWithTheGuesses`).
+Limite connue documentée : une photo d'un jour passé peut être vue dans une série sous
+son `publicId` actuel.
 
 ## Edge cases
 - Jour futur demandé ou joué (URL forgée) → 409 `GAME_CLOSED`
@@ -253,7 +260,17 @@ _(write when phase completes)_
 - Double clic / deux onglets sur un jour passé : index uniques existants (V13)
 
 ## Final Recap
-_(write when all phases complete)_
+Les séries de jours ont disparu (API, profil, classement, textes, confidentialité). Tout
+jour tiré jusqu'à aujourd'hui se joue (`/day/AAAA-MM-JJ`, même écran que le jour, sans
+partage) ; `/calendar` montre chaque mois avec un état par jour (non disponible / à
+jouer / commencée / terminée), ouvert aux invités. Backend : `DayGames`, `GetDayGame`,
+`GetCalendar` (`CalendarDays` pur), purge invités sur `started_at` (V28), lectures du
+calendrier limitées en débit. Tests : `./mvnw test` vert, `pnpm test` vert (483 + SEO),
+lint propre ; Playwright (component EN/FR) en CI, parcours `journeys/calendar` en local.
 
 ## Deployment Plan
-_(write when all phases complete)_
+- Merge vers `develop`, puis release `develop` → `main` en merge commit.
+- Migration `V28` (index uniquement) : appliquée au démarrage par Flyway, sans arrêt.
+- Aucun nouveau secret ni variable d'environnement.
+- Après déploiement : vérifications de la roadmap (« Calendrier »), et `curl
+  https://ageguessr.app/api/game/calendar` → 200 avec `today` et `days`.
