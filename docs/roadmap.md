@@ -42,6 +42,12 @@ retirer une fois tous faits.
       le premier email d'erreur du backend arrivera à la première vraie erreur (pas de
       moyen sûr d'en provoquer une en prod)
 
+- [ ] Accès DBeaver (`chore/prod-db-access`) : définir le mot de passe de
+      `ageguessr_readonly` puis configurer DBeaver (procédure dans
+      `docs/decisions/architecture.md`, « Accès à la base de prod ») ; un `SELECT` sur
+      `users` répond, un `UPDATE` est refusé (« permission denied ») ; depuis ton PC, sans
+      tunnel, `nc -zv <vps> 15432` échoue
+
 ## Semaine 1 — Fondations
 - [x] Initialisation projet Spring Boot (Java 25) + Angular (Claude Code)
 - [x] Docker Compose local fonctionnel (PostgreSQL + Redis)
@@ -284,8 +290,11 @@ retirer une fois tous faits.
 - ~~Journal des suppressions de compte~~ — écarté (nov. 2026) : ne servirait qu'après
       la restauration d'un backup ; si elle arrive, re-supprimer à la main les comptes
       supprimés depuis la date du dump
-- [ ] Copie des backups hors du VPS (restic chiffré vers un stockage S3) : aujourd'hui,
-      perdre le VPS fait perdre les backups
+- ~~Copie des backups hors du VPS~~ — écartée (nov. 2026) : OVH Object Storage est
+      payant et l'audience petite ; copie manuelle documentée dans
+      `docs/decisions/architecture.md` (« Sauvegardes et logs »)
+- [x] Accès à la base de prod depuis DBeaver : tunnel SSH vers `127.0.0.1:15432`, rôle en
+      lecture seule — PR `chore/prod-db-access`
 - [ ] Déploiement prod final et smoke tests : la prod tourne et chaque déploiement
       passe un smoke test ; à cocher quand la section « À vérifier à la main » est vide
 - ~~Landing page de lancement~~ — écartée (nov. 2026) : le jeu à `/` sert de page

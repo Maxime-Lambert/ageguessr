@@ -1360,9 +1360,10 @@ instance unique à faible trafic.
   parce qu'un compte supprimé y reste jusque-là.
 - **Sur le disque du VPS seulement** (`/opt/ageguessr/backups`, 700, fichiers 600),
   choix de l'utilisateur : protège d'une erreur (migration ratée, suppression), **pas de
-  la perte du VPS**. Une copie à la main : `scp` d'un fichier. Une copie hors VPS
-  automatique (restic vers un stockage S3, chiffrée avant envoi) pourra s'ajouter sans
-  changer le format.
+  la perte du VPS**. Copie hors VPS automatique (restic chiffré vers OVH Object Storage)
+  **écartée** (2026-11-16) : payante, même pour quelques centimes par mois, et
+  disproportionnée pour l'audience. Le filet de sécurité est une copie manuelle (voir
+  plus bas).
 - **Surveillance** : le healthcheck du service passe `unhealthy` (`docker ps`) si le
   dernier dump quotidien a plus de 26 h, en attendant le monitoring.
 - **Testé en CI** (job `backup-script`) : shellcheck, puis `deploy/backup/test-backup.sh`
@@ -1383,6 +1384,29 @@ instance unique à faible trafic.
 4. `docker compose -f docker-compose.prod.yml start backend` : Flyway rejoue les
    migrations postérieures au dump.
 
+**Copie manuelle hors du VPS** (sur le PC de l'admin, par exemple une fois par mois et
+après chaque vague d'ingestion). Ce qui coûterait cher à refaire après la perte du VPS,
+c'est la base des personnes, des photos et des indices (curation, modération), pas les
+comptes d'une dizaine de joueurs.
+- **Dump complet** : `scp -P 2222 <user>@<vps>:/opt/ageguessr/backups/daily/ageguessr-AAAA-MM-JJ.dump .`
+  (en `sudo` sur le VPS, copier d'abord le fichier dans son dossier, le dossier étant en
+  700 root). Il contient les données des joueurs : **sur un disque chiffré seulement**
+  (BitLocker, LUKS…), **ne garder que la dernière copie et supprimer les précédentes**, et
+  jamais de copie de plus de 30 jours. C'est ce que promet `/privacy`, qui annonce cette
+  copie.
+- **Contenu seul**, sans durée limite parce qu'il ne contient aucune donnée de joueur
+  (`reviewed_by` n'est que l'UUID du compte admin). Les personnalités et les auteurs des
+  photos restent des données personnelles, déjà publiques (Wikidata, Commons) : on ne garde
+  là aussi que la dernière copie. Une personne retirée du jeu (`excluded`) y figure comme en
+  prod, où sa ligne reste pour empêcher sa réingestion, sans ses photos :
+  `docker compose -f docker-compose.prod.yml exec -T backup pg_dump -Fc --data-only
+  -t people -t person_photos -t person_photo_images -t hints -t daily_rounds > contenu.dump`
+  (dans `/opt/ageguessr`), puis `scp` du fichier. Pour le restaurer dans une base neuve,
+  migrée par Flyway au premier démarrage du backend : `pg_restore --data-only
+  --disable-triggers -d ageguessr contenu.dump` (superutilisateur : les clés étrangères
+  vers `users` ne sont pas vérifiées), puis `UPDATE person_photos SET reviewed_by = NULL`
+  et `UPDATE hints SET reviewed_by = NULL`, les comptes n'existant plus.
+
 **Limite connue** : restaurer un dump fait revenir les comptes supprimés depuis ce dump,
 ce qui contredit l'effacement promis. Un journal des suppressions à rejouer a été
 écarté (nov. 2026) : disproportionné pour l'audience, une restauration étant rare.
@@ -1396,6 +1420,49 @@ Restaurer reste réservé à un incident grave, avec cette procédure manuelle :
   main est le choix le plus sûr pour l'effacement promis.
 Les purges automatiques (comptes jamais vérifiés, inactifs) se rejouent seules au
 passage suivant du job quotidien.
+
+### Accès à la base de prod
+**Décision** (2026-11-16, PR `chore/prod-db-access`) : consulter la base de prod depuis
+DBeaver, en local, sans l'exposer à Internet et sans pouvoir y écrire par erreur.
+- **Port publié sur `127.0.0.1:15432` du VPS seulement.** Une adresse de loopback n'est
+  joignable que depuis le VPS lui-même, quel que soit le pare-feu : Docker contourne ufw
+  pour les ports publiés, mais une liaison sur `127.0.0.1` ne sort jamais. On y accède par
+  un tunnel SSH. Le port 15432 plutôt que 5432, parce que le VPS est partagé avec un autre
+  projet.
+- **Rôle `ageguessr_readonly`** (migration `V29`) : `SELECT` sur toutes les tables, y
+  compris celles que créeront les migrations suivantes (`ALTER DEFAULT PRIVILEGES`), et
+  aucune écriture. La garantie est dans PostgreSQL, pas dans un réglage de DBeaver, et le
+  mot de passe du superutilisateur `ageguessr` ne quitte jamais le VPS. Le rôle est créé
+  **sans mot de passe**, donc aucune connexion n'est possible tant que l'admin n'en a pas
+  défini un. Jamais de mot de passe dans le dépôt.
+- **Pas les hachages** : sur chaque table qui a une colonne `*_hash` (mot de passe des
+  comptes, jetons), le rôle lit toutes les autres colonnes, pas celle-là. Ces colonnes ne
+  servent à rien en consultation et ne doivent pas finir dans un cache de DBeaver. Un
+  `SELECT *` sur ces tables est donc refusé : il faut nommer les colonnes. Une colonne
+  ajoutée plus tard à ces tables n'est pas lisible tant qu'une migration ne l'accorde pas.
+  Une future table qui contient un secret doit retirer elle-même ce droit, sinon les droits
+  par défaut la rendent lisible.
+- **Testé** : `integration/database/ReadonlyRoleIntegrationTest` (lecture permise, hachages,
+  `TRUNCATE`, `DROP` et `CREATE` refusés, table créée après coup lisible).
+
+**Mise en place, une fois** (sur le VPS, dans `/opt/ageguessr`) :
+1. `docker compose -f docker-compose.prod.yml exec postgres psql -U ageguessr -d
+   ageguessr -c '\password ageguessr_readonly'`, avec un mot de passe généré
+   (`openssl rand -base64 24`), rangé dans le gestionnaire de mots de passe.
+2. Dans DBeaver, une connexion PostgreSQL :
+   - onglet **Main** : hôte `localhost`, port `15432`, base `ageguessr`, utilisateur
+     `ageguessr_readonly` ;
+   - onglet **SSH** : « Use SSH Tunnel », hôte du VPS, port `2222`, utilisateur et clé SSH
+     habituels ;
+   - en plus, cocher « Read-only connection » dans les réglages généraux de la connexion.
+
+**Après la restauration d'un dump sur un serveur neuf** : un rôle est global au serveur
+PostgreSQL, il n'est donc pas dans le dump. `pg_restore` signale les `GRANT` vers ce rôle
+en erreur, sans s'arrêter. On rejoue ensuite le SQL de `V29` à la main, puis l'étape 1.
+
+**Données personnelles** : la base contient les emails et les parties des joueurs. Le PC
+qui s'y connecte a un disque chiffré. On n'exporte pas de résultats (CSV, copies) au-delà
+du besoin du moment.
 
 ### Monitoring
 **Décision** (2026-11-14, PR `feature/monitoring`) : être prévenu par email sans rien
