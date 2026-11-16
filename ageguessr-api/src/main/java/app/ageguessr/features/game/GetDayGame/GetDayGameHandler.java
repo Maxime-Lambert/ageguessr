@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Any day's game up to today, played from the calendar. Never draws: a day without a draw
@@ -22,6 +23,7 @@ public class GetDayGameHandler {
     private final DayGames days;
     private final Clock clock;
 
+    @Transactional(readOnly = true)
     public DayGameResponse handle(LocalDate date, Optional<PlayerKey> player) {
         if (date.isAfter(LocalDate.now(clock))) {
             throw GameErrors.gameClosed();

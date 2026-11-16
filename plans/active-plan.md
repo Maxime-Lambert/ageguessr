@@ -225,10 +225,10 @@ dev). Playwright (component, component-fr, journeys/calendar) : en CI.
 ## Phase 5 : Docs, revues, PR
 Status: Not started
 
-- [ ] `docs/decisions/architecture.md` : jours passés jouables, états du calendrier,
+- [x] `docs/decisions/architecture.md` : jours passés jouables, états du calendrier,
       purge invités sur `started_at`, fin des séries
-- [ ] `docs/roadmap.md` : ligne cochée avec la PR
-- [ ] Agents `architecture-reviewer` et `code-reviewer` (endpoints + données joueur)
+- [x] `docs/roadmap.md` : ligne cochée avec la PR
+- [x] Agents `architecture-reviewer` et `code-reviewer` (endpoints + données joueur)
       sur le diff ; corriger leurs remarques
 - [ ] PR `feature/daily-calendar` → `develop` (skill `/pr`) ; vérifications prod à
       ajouter en haut de la roadmap
