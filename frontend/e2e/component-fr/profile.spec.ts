@@ -40,7 +40,9 @@ test.describe('profil', () => {
 
     await page.goto('/fr/profile');
 
-    await expect(page.locator('dl > div').filter({ hasText: 'Parties terminées' })).toContainText('12');
+    await expect(page.locator('dl > div').filter({ hasText: 'Parties terminées' })).toContainText(
+      '12',
+    );
     await expect(page.getByText('Score moyen')).toBeVisible();
     const day = page.getByRole('article', { name: 'dimanche 8 novembre 2026' });
     // Espaces fines insécables : le format des nombres en français.

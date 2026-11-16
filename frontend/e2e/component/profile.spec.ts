@@ -57,7 +57,9 @@ test.describe('profile page', () => {
     await page.goto('/en/profile');
 
     await expect(page.getByRole('heading', { name: 'Player' })).toBeVisible();
-    await expect(page.locator('dl > div').filter({ hasText: 'Games finished' })).toContainText('12');
+    await expect(page.locator('dl > div').filter({ hasText: 'Games finished' })).toContainText(
+      '12',
+    );
     await expect(page.getByText('Average score')).toBeVisible();
     const day = page.getByRole('article', { name: 'Sunday, November 8, 2026' });
     await expect(day).toContainText('1,734 out of 3,000');

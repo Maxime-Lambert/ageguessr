@@ -19,7 +19,15 @@ export const LANGUAGES = [
  * The pages worth indexing, as in app.routes.ts (the ones without `noindex`). Keep both
  * lists in step.
  */
-export const INDEXED_PATHS = ['', 'free', 'calendar', 'how-to-play', 'legal-notice', 'terms', 'privacy'];
+export const INDEXED_PATHS = [
+  '',
+  'free',
+  'calendar',
+  'how-to-play',
+  'legal-notice',
+  'terms',
+  'privacy',
+];
 export const OG_IMAGE = { file: 'og-image.png', width: 1200, height: 630 };
 const IDS = ['seo.title', 'seo.description'];
 
