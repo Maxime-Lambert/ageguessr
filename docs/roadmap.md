@@ -9,6 +9,10 @@ la suivante).
 Tests que seuls un compte et la boîte mail admin permettent de faire. À cocher, puis à
 retirer une fois tous faits.
 
+- [ ] Calendrier (`feature/daily-calendar`) : onglet « Calendrier », le mois en cours
+      s'affiche avec aujourd'hui entouré ; jouer un jour passé depuis sa case, revenir :
+      la case est « Terminée » ; le profil n'a plus de « série » ; le lendemain, une
+      partie commencée la veille se termine encore
 - [ ] Partage en défi (`fix/daily-share-challenge`, `fix/share-says-age`) : partie du
       jour finie, « Partager mon résultat », coller : « AgeGuessr · <date> », « J'ai
       deviné l'âge de 3 personnes en photo 📸 », la grille et le score, puis un qualificatif et « Tu fais mieux ? 👉 <site> » ; pareil
@@ -237,6 +241,8 @@ retirer une fois tous faits.
 - ~~Double authentification (TOTP)~~ — écartée (nov. 2026) : disproportionnée pour une
       dizaine de joueurs et un enjeu faible, ~3 300 lignes de code d'auth à maintenir
       (voir `docs/decisions/architecture.md`)
+- [x] Calendrier des parties passées (`/calendar`, mois par mois, 4 états par jour,
+      ouvert aux invités) et fin des séries de jours — PR `feature/daily-calendar`
 - [x] Partage de résultat façon Wordle (grille/emoji, pas de compte requis) : sur le
       récapitulatif du jour, date, score, une case par manche (🎯 pour un 1er essai exact)
       et le lien du site ; feuille de partage sur téléphone, copie ailleurs — PR
