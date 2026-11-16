@@ -26,7 +26,6 @@ test.describe('amis', () => {
               me: true,
               gamesPlayed: 0,
               averagePoints: null,
-              currentStreak: 0,
             },
           ],
         },

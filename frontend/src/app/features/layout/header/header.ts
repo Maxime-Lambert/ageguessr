@@ -81,6 +81,7 @@ export class Header {
   protected readonly gameLinks = [
     { path: '/', label: GAME_TEXT.dailyGame },
     { path: '/free', label: GAME_TEXT.freeMode },
+    { path: '/calendar', label: GAME_TEXT.calendar },
   ];
 
   constructor() {

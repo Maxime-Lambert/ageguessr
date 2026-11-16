@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Gives an account the daily games its player played as a guest on this browser, so that
- * logging in keeps today's game and the streak. A round the account already played wins
+ * logging in keeps the days played (today's and caught-up ones). A round the account already played wins
  * over the guest's. Running it again finds nothing left: it is safe to call on every
  * login, and two logins at once cannot both move the same rows.
  */

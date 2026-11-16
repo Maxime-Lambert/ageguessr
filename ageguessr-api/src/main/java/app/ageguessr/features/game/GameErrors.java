@@ -12,9 +12,9 @@ public final class GameErrors {
 
     private GameErrors() {}
 
-    /** Only today's game is played: a round started before midnight is closed after it. */
+    /** A day to come: today's game and the past days' are played, never tomorrow's. */
     public static ConflictException gameClosed() {
-        return new ConflictException("GAME_CLOSED", "Only today's game can be played");
+        return new ConflictException("GAME_CLOSED", "This day is not open yet");
     }
 
     /** The photo was rejected or its person excluded since the draw: out for everyone. */

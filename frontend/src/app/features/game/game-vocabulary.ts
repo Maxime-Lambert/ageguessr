@@ -76,9 +76,12 @@ export const GAME_TEXT = {
   invalidAge: $localize`:@@game.invalidAge:Enter a whole age from ${MIN_AGE}:min: to ${MAX_AGE}:max:.`,
   imageFailed: $localize`:@@game.imageFailed:The photo could not load.`,
   removedExplained: $localize`:@@game.removedExplained:This photo was withdrawn for everyone. It does not count in your score.`,
-  closed: $localize`:@@game.closed:Today's game is over. Here is the new one.`,
+  closed: $localize`:@@game.closed:This day is not open yet.`,
   genericError: COMMON_MESSAGES.genericError,
   comeBack: $localize`:@@game.comeBack:A new game starts at midnight UTC.`,
+  backToCalendar: $localize`:@@game.backToCalendar:Back to the calendar`,
+  playPastDays: $localize`:@@game.playPastDays:Play past days`,
+  calendar: $localize`:@@game.calendar:Calendar`,
   hintLanguage: $localize`:@@game.hintLanguage:Hints in`,
   freeIntro: $localize`:@@game.freeIntro:Same rules as the daily game, as many as you like. Nothing here counts toward the daily game.`,
   noPhotos: $localize`:@@game.noPhotos:No photo is available right now. Try again later.`,
@@ -278,6 +281,19 @@ export function dailyShareText(
     `${dailyShareVerdict(points, max)} ` +
       $localize`:@@game.share.dare:Can you beat that? 👉 ${url}:url:`,
   ].join('\n');
+}
+
+/**
+ * A game's day written out in the language ("Thursday, November 12, 2026"), read in UTC as
+ * the draw's day, so that it never moves with the player's time zone.
+ */
+export function calendarDate(date: string, locale: string): string {
+  return formatDate(new Date(`${date}T00:00:00Z`), 'fullDate', locale, 'UTC');
+}
+
+/** The heading of a past day's game, played from the calendar. */
+export function pastDayTitle(day: string): string {
+  return $localize`:@@game.pastDayTitle:Daily game of ${day}:day:`;
 }
 
 /** Why a nickname was refused (400): taken by an account, or not in the format. */

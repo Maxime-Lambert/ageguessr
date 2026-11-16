@@ -1,7 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { Auth } from '../../auth/auth';
 import { GAME_TEXT } from '../game-vocabulary';
 import { TodayGame } from '../models';
@@ -371,5 +371,70 @@ describe('Game', () => {
     expect(page.textContent).toContain(GAME_TEXT.reportSent);
     expect(fixture.componentInstance.active()?.result?.photoReported).toBe(true);
     expect(fixture.componentInstance.active()?.result?.reportedHints).toEqual([]);
+  });
+});
+
+describe('Game of a past day', () => {
+  let fixture: ComponentFixture<Game>;
+  let http: HttpTestingController;
+  let page: HTMLElement;
+
+  beforeEach(() => {
+    localStorage.clear();
+    localStorage.setItem('ageguessr-rules-seen', '1');
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        { provide: SHARE_TARGET, useValue: fakeShareTarget().target },
+        {
+          provide: ActivatedRoute,
+          useValue: { snapshot: { paramMap: convertToParamMap({ date: '2026-10-20' }) } },
+        },
+      ],
+    });
+    http = TestBed.inject(HttpTestingController);
+    fixture = TestBed.createComponent(Game);
+    page = fixture.nativeElement as HTMLElement;
+  });
+
+  afterEach(() => http.verify());
+
+  it('reads the day and plays it on its own date', () => {
+    http.expectOne('/api/game/days/2026-10-20').flush(today([round(1)], { date: '2026-10-20' }));
+    fixture.detectChanges();
+
+    expect(page.querySelector('h1')?.textContent).toContain(
+      'Daily game of Tuesday, October 20, 2026',
+    );
+    const input = page.querySelector<HTMLInputElement>('app-age-input input')!;
+    input.value = '30';
+    input.dispatchEvent(new Event('input'));
+    page.querySelector('form')!.dispatchEvent(new Event('submit'));
+    http.expectOne('/api/game/2026-10-20/rounds/1/first-guess').flush(round(1));
+  });
+
+  it('ends on the calendar, without share nor « come back tomorrow »', () => {
+    http.expectOne('/api/game/days/2026-10-20').flush(today([finished(1)], { date: '2026-10-20' }));
+    fixture.detectChanges();
+
+    expect(page.textContent).toContain(GAME_TEXT.summary);
+    expect(page.textContent).not.toContain(GAME_TEXT.shareResult);
+    expect(page.textContent).not.toContain(GAME_TEXT.comeBack);
+    const links = Array.from(page.querySelectorAll('a')).filter(
+      (link) => link.textContent?.trim() === GAME_TEXT.backToCalendar,
+    );
+    expect(links.map((link) => link.getAttribute('href'))).toEqual(['/calendar', '/calendar']);
+  });
+
+  it('leads back to the calendar when the day cannot be read', () => {
+    http
+      .expectOne('/api/game/days/2026-10-20')
+      .flush({ message: 'x' }, { status: 404, statusText: 'Not Found' });
+    fixture.detectChanges();
+
+    expect(page.textContent).toContain(GAME_TEXT.genericError);
+    expect(page.textContent).toContain(GAME_TEXT.backToCalendar);
   });
 });

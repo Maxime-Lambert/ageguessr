@@ -14,6 +14,7 @@ import app.ageguessr.shared.i18n.Language;
 import app.ageguessr.features.game.PlayerKey;
 import app.ageguessr.features.game.PurgeGuestPlays.PurgeGuestPlaysHandler;
 import java.time.Clock;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
@@ -45,31 +46,35 @@ class PurgeGuestPlaysIntegrationTest {
     private Clock clock;
 
     @Test
-    void deletesTheGuestGamesOlderThanSevenDaysOnly() {
+    void deletesTheGuestRoundsPlayedMoreThanSevenDaysAgoOnly() {
         LocalDate today = LocalDate.now(clock);
-        GamePlay eightDays = play(today.minusDays(8), PlayerKey.guest(UUID.randomUUID()));
-        GamePlay sevenDays = play(today.minusDays(7), PlayerKey.guest(UUID.randomUUID()));
-        GamePlay ofToday = play(today, PlayerKey.guest(UUID.randomUUID()));
+        Instant now = clock.instant();
+        GamePlay eightDays = play(today.minusDays(8), PlayerKey.guest(UUID.randomUUID()), now.minus(Duration.ofDays(8)));
+        GamePlay sixDays = play(today.minusDays(6), PlayerKey.guest(UUID.randomUUID()), now.minus(Duration.ofDays(6)));
+        GamePlay ofToday = play(today, PlayerKey.guest(UUID.randomUUID()), now);
+        // A day of a month ago, caught up from the calendar yesterday: kept.
+        GamePlay caughtUp = play(today.minusDays(30), PlayerKey.guest(UUID.randomUUID()), now.minus(Duration.ofDays(1)));
         User user = users.saveAndFlush(User.builder()
                 .email("purge-" + UUID.randomUUID() + "@x.com")
                 .username("purge" + UUID.randomUUID().toString().substring(0, 8))
                 .passwordHash("hash")
                 .createdAt(Instant.now())
                 .build());
-        GamePlay ofAccount = play(today.minusDays(8), PlayerKey.account(user.getId()));
+        GamePlay ofAccount =
+                play(today.minusDays(8), PlayerKey.account(user.getId()), now.minus(Duration.ofDays(8)));
 
         assertThat(handler.purge()).isEqualTo(1);
 
         assertThat(plays.findAll())
                 .extracting(GamePlay::getId)
-                .containsExactlyInAnyOrder(sevenDays.getId(), ofToday.getId(), ofAccount.getId())
+                .containsExactlyInAnyOrder(sixDays.getId(), ofToday.getId(), caughtUp.getId(), ofAccount.getId())
                 .doesNotContain(eightDays.getId());
     }
 
-    private GamePlay play(LocalDate day, PlayerKey player) {
+    private GamePlay play(LocalDate day, PlayerKey player, Instant startedAt) {
         if (!rounds.existsById(new DailyRoundId(day, (short) 1))) {
             rounds.saveAndFlush(DailyRound.builder().gameDate(day).position((short) 1).drawnAt(Instant.now()).build());
         }
-        return plays.saveAndFlush(GamePlay.start(day, (short) 1, player, Language.EN, 30, 40, Instant.now()));
+        return plays.saveAndFlush(GamePlay.start(day, (short) 1, player, Language.EN, 30, 40, startedAt));
     }
 }

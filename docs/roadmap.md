@@ -9,6 +9,10 @@ la suivante).
 Tests que seuls un compte et la boîte mail admin permettent de faire. À cocher, puis à
 retirer une fois tous faits.
 
+- [ ] Calendrier (`feature/daily-calendar`) : onglet « Calendrier », le mois en cours
+      s'affiche avec aujourd'hui entouré ; jouer un jour passé depuis sa case, revenir :
+      la case est « Terminée » ; le profil n'a plus de « série » ; le lendemain, une
+      partie commencée la veille se termine encore
 - [ ] Partage en défi (`fix/daily-share-challenge`, `fix/share-says-age`) : partie du
       jour finie, « Partager mon résultat », coller : « AgeGuessr · <date> », « J'ai
       deviné l'âge de 3 personnes en photo 📸 », la grille et le score, puis un qualificatif et « Tu fais mieux ? 👉 <site> » ; pareil
@@ -237,6 +241,8 @@ retirer une fois tous faits.
 - ~~Double authentification (TOTP)~~ — écartée (nov. 2026) : disproportionnée pour une
       dizaine de joueurs et un enjeu faible, ~3 300 lignes de code d'auth à maintenir
       (voir `docs/decisions/architecture.md`)
+- [x] Calendrier des parties passées (`/calendar`, mois par mois, 4 états par jour,
+      ouvert aux invités) et fin des séries de jours — PR `feature/daily-calendar`
 - [x] Partage de résultat façon Wordle (grille/emoji, pas de compte requis) : sur le
       récapitulatif du jour, date, score, une case par manche (🎯 pour un 1er essai exact)
       et le lien du site ; feuille de partage sur téléphone, copie ailleurs — PR
@@ -263,8 +269,11 @@ retirer une fois tous faits.
       `feature/lead-help`, puis `fix/lead-help-on-info-only`
 
 ## Semaine 8 — Stabilisation et déploiement
-- [ ] Tests d'intégration sur les endpoints critiques
-- [ ] Tests E2E sur les parcours principaux (Playwright)
+- [x] Tests d'intégration sur les endpoints critiques : vraie API (Spring + MockMvc +
+      Testcontainers) dans les tests de chaque feature
+- [x] Tests E2E sur les parcours principaux (Playwright, en CI) : inscription/connexion,
+      partie du jour, défi, mot de passe oublié, suppression de compte, compte en
+      français (`frontend/e2e/journeys`), plus les specs par écran (`e2e/component`)
 - [x] Monitoring : `/api/health` vérifie PostgreSQL et Redis, `/api/health/backup` la
       fraîcheur du dernier dump, surveillés par UptimeRobot ; erreurs du backend envoyées
       par email à l'admin, regroupées — PR `feature/monitoring`
@@ -272,10 +281,12 @@ retirer une fois tous faits.
       `chore/backup-and-log-rotation`
 - [x] Backup PostgreSQL : dump quotidien sur le disque du VPS, 30 jours au plus, annoncé
       dans `/privacy`, restauration documentée — PR `chore/backup-and-log-rotation`
-- [ ] Journal des suppressions de compte, à rejouer après la restauration d'un backup
-      (sinon les comptes supprimés depuis le dump reviennent)
+- ~~Journal des suppressions de compte~~ — écarté (nov. 2026) : ne servirait qu'après
+      la restauration d'un backup ; si elle arrive, re-supprimer à la main les comptes
+      supprimés depuis la date du dump
 - [ ] Copie des backups hors du VPS (restic chiffré vers un stockage S3) : aujourd'hui,
       perdre le VPS fait perdre les backups
-- [ ] Déploiement prod final et smoke tests
-- [ ] Landing page de lancement, qui tient aussi lieu de page d'accueil publique (fusion
-      décidée le 2026-11-09 : le jeu reste à `/`)
+- [ ] Déploiement prod final et smoke tests : la prod tourne et chaque déploiement
+      passe un smoke test ; à cocher quand la section « À vérifier à la main » est vide
+- ~~Landing page de lancement~~ — écartée (nov. 2026) : le jeu à `/` sert de page
+      d'accueil

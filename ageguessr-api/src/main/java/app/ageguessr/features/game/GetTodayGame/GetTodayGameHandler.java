@@ -1,22 +1,13 @@
 package app.ageguessr.features.game.GetTodayGame;
 
+import app.ageguessr.features.game.DayGameResponse;
+import app.ageguessr.features.game.DayGames;
 import app.ageguessr.features.game.DrawDailyGame.DrawDailyGameHandler;
-import app.ageguessr.features.game.GamePlay;
-import app.ageguessr.features.game.GamePlayRepository;
 import app.ageguessr.features.game.GameProperties;
-import app.ageguessr.features.game.GameRound;
-import app.ageguessr.features.game.GameRounds;
-import app.ageguessr.features.game.GameScore;
 import app.ageguessr.features.game.PlayerKey;
-import app.ageguessr.features.game.RoundView;
-import app.ageguessr.features.game.RoundViews;
 import java.time.Clock;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -31,24 +22,16 @@ public class GetTodayGameHandler {
 
     private final DrawDailyGameHandler draw;
     private final GameProperties properties;
-    private final GameRounds rounds;
-    private final GamePlayRepository plays;
-    private final RoundViews views;
+    private final DayGames days;
     private final Clock clock;
 
-    public TodayGameResponse handle(Optional<PlayerKey> player) {
+    public DayGameResponse handle(Optional<PlayerKey> player) {
         LocalDate today = LocalDate.now(clock);
         // The scheduler draws at midnight and at startup; drawing here too covers a draw
         // that failed, and the first visitor of the day draws it. Off with the flag.
         if (properties.drawEnabled()) {
             draw.drawIfMissing(today);
         }
-        Map<Short, GamePlay> played = player.map(key -> plays.findOf(key, today)).orElse(List.of()).stream()
-                .collect(Collectors.toMap(GamePlay::getPosition, Function.identity()));
-        List<GameRound> day = rounds.of(today);
-        List<RoundView> roundViews = day.stream()
-                .map(round -> views.of(round, played.get(round.position())))
-                .toList();
-        return new TodayGameResponse(today, roundViews, GameScore.of(roundViews));
+        return days.of(today, player);
     }
 }

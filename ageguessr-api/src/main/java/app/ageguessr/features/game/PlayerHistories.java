@@ -60,11 +60,10 @@ public class PlayerHistories {
                         .put(state.position(), state.status() == DailyRoundStatus.PLAYABLE);
             }
         }
-        LocalDate today = today();
         Map<UUID, Record> records = new HashMap<>();
         for (UUID userId : userIds) {
             List<PlayerHistory.Play> own = byUser.getOrDefault(userId, List.of());
-            records.put(userId, new Record(own, PlayerHistory.compute(own, playable, today)));
+            records.put(userId, new Record(own, PlayerHistory.compute(own, playable)));
         }
         return records;
     }

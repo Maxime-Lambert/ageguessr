@@ -81,8 +81,8 @@ class RateLimitFunctionalTest {
     }
 
     /**
-     * The guesses have their own counter: whatever they answer (here a 409, no game being
-     * drawn), past the threshold they are refused before reaching the game. The reads are
+     * The guesses have their own counter: whatever they answer (here a 409, the day being
+     * to come), past the threshold they are refused before reaching the game. The reads are
      * not limited, nor do the guesses use up the login attempts.
      */
     @Test
@@ -99,6 +99,20 @@ class RateLimitFunctionalTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new EmailPayload("someone@x.com"))))
                 .andExpect(status().isAccepted());
+    }
+
+    /** The calendar and the past days, which a script would page through, count with the guesses. */
+    @Test
+    void limitsTheCalendarAndThePastDaysWithTheGuesses() throws Exception {
+        String client = "203.0.113.27";
+        mockMvc.perform(get("/api/game/calendar").header("X-Forwarded-For", client))
+                .andExpect(status().isOk());
+        mockMvc.perform(get("/api/game/days/2000-01-01").header("X-Forwarded-For", client))
+                .andExpect(status().isNotFound());
+        mockMvc.perform(get("/api/game/days/2000-01-02").header("X-Forwarded-For", client))
+                .andExpect(status().isTooManyRequests());
+        guessFrom(client).andExpect(status().isTooManyRequests());
+        mockMvc.perform(get("/api/game/today").header("X-Forwarded-For", client)).andExpect(status().isOk());
     }
 
     /**
@@ -221,7 +235,7 @@ class RateLimitFunctionalTest {
     }
 
     private ResultActions guessFrom(String clientIp) throws Exception {
-        return mockMvc.perform(post("/api/game/2000-01-01/rounds/1/first-guess")
+        return mockMvc.perform(post("/api/game/2999-01-01/rounds/1/first-guess")
                 .header("X-Forwarded-For", clientIp)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"guess\":30,\"language\":\"EN\"}"));

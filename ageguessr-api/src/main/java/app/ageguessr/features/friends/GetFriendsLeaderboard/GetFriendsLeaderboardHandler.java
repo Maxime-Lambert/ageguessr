@@ -32,8 +32,7 @@ public class GetFriendsLeaderboardHandler {
                             group.usernames().get(member),
                             member.equals(userId),
                             stats.gamesPlayed(),
-                            stats.averagePoints(),
-                            stats.currentStreak());
+                            stats.averagePoints());
                 })
                 .toList();
         return new FriendsLeaderboardResponse(LeaderboardRanking.rank(entries).stream()
@@ -42,8 +41,7 @@ public class GetFriendsLeaderboardHandler {
                         ranked.entry().username(),
                         ranked.entry().me(),
                         ranked.entry().gamesPlayed(),
-                        ranked.rank() == null ? null : ranked.entry().averagePoints(),
-                        ranked.entry().currentStreak()))
+                        ranked.rank() == null ? null : ranked.entry().averagePoints()))
                 .toList());
     }
 }

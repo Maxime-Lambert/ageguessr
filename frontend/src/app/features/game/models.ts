@@ -81,8 +81,23 @@ export interface PlayedRounds {
   score: GameScore;
 }
 
+/** Today's game (/api/game/today) or a past day's (/api/game/days/{date}). */
 export interface TodayGame extends PlayedRounds {
   date: string;
+}
+
+/** A day of the calendar, for the player (DayState). */
+export type DayState = 'UNAVAILABLE' | 'AVAILABLE' | 'STARTED' | 'FINISHED';
+
+/** A month of the calendar (/api/game/calendar): states only, never a score. */
+export interface CalendarMonth {
+  /** The day of the draw (UTC), not the visitor's. */
+  today: string;
+  /** "2026-11". */
+  month: string;
+  /** The furthest the calendar goes back. */
+  firstMonth: string;
+  days: { date: string; state: DayState }[];
 }
 
 /** The lengths of a free series (FreeSeries.SIZES). */
@@ -153,8 +168,6 @@ export interface HistoryStats {
   gamesPlayed: number;
   averagePoints: number;
   bestPoints: number;
-  currentStreak: number;
-  bestStreak: number;
 }
 
 export interface HistoryDay {

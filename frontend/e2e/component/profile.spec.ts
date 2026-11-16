@@ -6,8 +6,6 @@ const HISTORY = {
     gamesPlayed: 12,
     averagePoints: 1820,
     bestPoints: 2750,
-    currentStreak: 4,
-    bestStreak: 9,
   },
   days: [
     {
@@ -52,14 +50,16 @@ test.describe('profile page', () => {
     await expect(page).toHaveURL(/\/en\/login\?returnUrl=%2Fprofile$/);
   });
 
-  test('shows the streak, the statistics and the past files', async ({ page }) => {
+  test('shows the statistics and the past files', async ({ page }) => {
     await asLoggedIn(page);
     await page.route('**/api/game/history*', (route) => route.fulfill({ json: HISTORY }));
 
     await page.goto('/en/profile');
 
     await expect(page.getByRole('heading', { name: 'Player' })).toBeVisible();
-    await expect(page.locator('section[aria-labelledby="streak-title"]')).toContainText('4');
+    await expect(page.locator('dl > div').filter({ hasText: 'Games finished' })).toContainText(
+      '12',
+    );
     await expect(page.getByText('Average score')).toBeVisible();
     const day = page.getByRole('article', { name: 'Sunday, November 8, 2026' });
     await expect(day).toContainText('1,734 out of 3,000');

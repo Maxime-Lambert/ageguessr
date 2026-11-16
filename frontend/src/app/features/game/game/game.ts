@@ -1,23 +1,25 @@
 import { Component, LOCALE_ID, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ApiLanguage } from '../../../shared/i18n/language';
 import { DaySummary } from '../day-summary/day-summary';
 import { GameApi } from '../game-api';
-import { LucideClock, LucideShare2 } from '@lucide/angular';
+import { LucideArrowLeft, LucideClock, LucideShare2 } from '@lucide/angular';
 import { Button } from '../../../shared/ui/button/button';
 import { Page } from '../../../shared/ui/page/page';
 import { HintCategory, RoundReport, RoundView, TodayGame } from '../models';
 import { SHARE_TARGET } from '../../../shared/share-target';
-import { dailyShareText } from '../game-vocabulary';
+import { calendarDate, dailyShareText, pastDayTitle } from '../game-vocabulary';
 import { dailyShareUrl, shareOrCopy, squares } from '../share';
 import { RulesCard } from '../how-to-play/rules-card';
 import { RoundPlayer } from '../round-player/round-player';
 import { RoundsScreen } from '../rounds-screen';
 
 /**
- * Today's game, at /: the rounds one after the other, then the summary (RoundsScreen),
- * from today's rounds (game_plays).
+ * Today's game, at /, or a past day's, at /day/:date from the calendar: the rounds one
+ * after the other, then the summary (RoundsScreen), from the day's rounds (game_plays).
+ * A past day has no share (the text speaks of the daily game) and leads back to the
+ * calendar instead.
  */
 @Component({
   imports: [
@@ -28,6 +30,7 @@ import { RoundsScreen } from '../rounds-screen';
     Page,
     LucideClock,
     LucideShare2,
+    LucideArrowLeft,
     RulesCard,
   ],
   selector: 'app-game',
@@ -37,6 +40,11 @@ export class Game extends RoundsScreen<TodayGame> {
   private readonly api = inject(GameApi);
   private readonly target = inject(SHARE_TARGET);
   private readonly locale = inject(LOCALE_ID);
+
+  /** The day played from the calendar ("2026-11-12"), null for today's game. */
+  protected readonly pastDay = inject(ActivatedRoute).snapshot.paramMap.get('date');
+  protected readonly pastDayTitle =
+    this.pastDay && pastDayTitle(calendarDate(this.pastDay, this.locale));
 
   /** What became of the last share: copied says so, a refused copy says it failed. */
   protected readonly shared = signal<'shared' | 'copied' | 'failed' | null>(null);
@@ -65,7 +73,7 @@ export class Game extends RoundsScreen<TodayGame> {
   }
 
   protected fetch(): Observable<TodayGame> {
-    return this.api.today();
+    return this.pastDay ? this.api.day(this.pastDay) : this.api.today();
   }
 
   protected sendFirstGuess(

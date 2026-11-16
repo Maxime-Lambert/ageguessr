@@ -46,18 +46,19 @@ public class GameRounds {
     }
 
     /**
-     * A round a guess can be made on: today's, and still playable. The date is checked
-     * first, so that a round of another day says nothing about its status.
+     * A round a guess can be made on: of today or of a past day (the calendar), and still
+     * playable. The date is checked first, so that a round of a day to come says nothing
+     * about its status.
      */
     public GameRound playable(LocalDate gameDate, short position) {
-        if (!gameDate.equals(LocalDate.now(clock))) {
+        if (gameDate.isAfter(LocalDate.now(clock))) {
             throw GameErrors.gameClosed();
         }
         GameRound round = rounds.findStatesOf(gameDate).stream()
                 .filter(state -> state.position() == position)
                 .findFirst()
                 .map(state -> load(gameDate, null, state))
-                .orElseThrow(() -> new NotFoundException("No such round today"));
+                .orElseThrow(() -> new NotFoundException("No such round on this day"));
         if (!round.playable()) {
             throw GameErrors.roundNeutralized();
         }

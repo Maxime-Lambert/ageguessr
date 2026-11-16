@@ -10,6 +10,7 @@ export const SEO_TEXT = {
   /** The site's description: the home page, and every page without its own. */
   description: $localize`:@@seo.description:A daily game: guess how old the person in an archive photo was, helped by facts from history, music, film and more. Three photos a day, free, no account needed.`,
   free: $localize`:@@seo.description.free:Play as many series as you like: guess the age of people in archive photos, beyond the daily game. Free, no account needed.`,
+  calendar: $localize`:@@seo.description.calendar:Every past daily game of AgeGuessr, month by month: catch up on the days you missed. Free, no account needed.`,
   howToPlay: $localize`:@@seo.description.howToPlay:How to play AgeGuessr: two guesses per photo, hints to narrow down the age, and points by how close you get.`,
   legalNotice: $localize`:@@seo.description.legalNotice:Legal notice of AgeGuessr: publisher and host.`,
   terms: $localize`:@@seo.description.terms:Terms of Use of AgeGuessr.`,

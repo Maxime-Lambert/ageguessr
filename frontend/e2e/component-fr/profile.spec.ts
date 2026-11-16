@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 import { USER, asLoggedIn } from '../component/session';
 
 test.describe('profil', () => {
-  test('affiche la série, les statistiques et les dossiers en français', async ({ page }) => {
+  test('affiche les statistiques et les dossiers en français', async ({ page }) => {
     await asLoggedIn(page, { ...USER, language: 'FR' });
     await page.route('**/api/game/history*', (route) =>
       route.fulfill({
@@ -11,8 +11,6 @@ test.describe('profil', () => {
             gamesPlayed: 12,
             averagePoints: 1820,
             bestPoints: 2750,
-            currentStreak: 4,
-            bestStreak: 9,
           },
           days: [
             {
@@ -42,7 +40,9 @@ test.describe('profil', () => {
 
     await page.goto('/fr/profile');
 
-    await expect(page.getByRole('heading', { name: 'Série en cours' })).toBeVisible();
+    await expect(page.locator('dl > div').filter({ hasText: 'Parties terminées' })).toContainText(
+      '12',
+    );
     await expect(page.getByText('Score moyen')).toBeVisible();
     const day = page.getByRole('article', { name: 'dimanche 8 novembre 2026' });
     // Espaces fines insécables : le format des nombres en français.

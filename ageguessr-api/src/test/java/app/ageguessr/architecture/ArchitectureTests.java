@@ -23,7 +23,7 @@ class ArchitectureTests {
      * Three exceptions. Two from the game, which is built on the other features: on the
      * photos of people (age, curation status, box, public id) and on the hints of a year.
      * One from friends, which compares daily scores by the game's own rules (a complete
-     * day, its maximum, the average, the streak: PlayerHistory) rather than a copy of them.
+     * day, its maximum, the average: PlayerHistory) rather than a copy of them.
      * Never the reverse, see the next rules: neither people nor hints know anything of the
      * game, which is why a curation decision is read by the game rather than pushed to it,
      * and the game knows nothing of friends (docs/decisions/architecture.md).

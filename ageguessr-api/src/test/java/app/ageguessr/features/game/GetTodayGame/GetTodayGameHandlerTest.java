@@ -16,6 +16,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
+import app.ageguessr.features.game.DayGameResponse;
+import app.ageguessr.features.game.DayGames;
 import app.ageguessr.features.game.GameFixtures;
 import app.ageguessr.features.game.DrawDailyGame.DrawDailyGameHandler;
 import app.ageguessr.features.game.GamePlay;
@@ -56,7 +58,7 @@ class GetTodayGameHandlerTest {
         GamePlay outOfTheScore = started(guest, (short) 3, AGE);
         when(plays.findOf(guest, TODAY)).thenReturn(List.of(exact, finished, outOfTheScore));
 
-        TodayGameResponse response = handler(false).handle(Optional.of(guest));
+        DayGameResponse response = handler(false).handle(Optional.of(guest));
 
         assertThat(response.date()).isEqualTo(TODAY);
         assertThat(response.rounds()).extracting(RoundView::position).containsExactly((short) 1, (short) 2, (short) 3);
@@ -70,7 +72,7 @@ class GetTodayGameHandlerTest {
         when(rounds.of(TODAY)).thenReturn(List.of(playableRound((short) 1), playableRound((short) 2)));
         when(plays.findOf(guest, TODAY)).thenReturn(List.of(started(guest, (short) 1, AGE)));
 
-        TodayGameResponse response = handler(false).handle(Optional.of(guest));
+        DayGameResponse response = handler(false).handle(Optional.of(guest));
 
         assertThat(response.score()).isEqualTo(new GameScore(1000, 2000, false));
     }
@@ -79,7 +81,7 @@ class GetTodayGameHandlerTest {
     void showsAPlayerWithoutCookieEveryRoundNotStarted() {
         when(rounds.of(TODAY)).thenReturn(List.of(playableRound((short) 1)));
 
-        TodayGameResponse response = handler(false).handle(Optional.empty());
+        DayGameResponse response = handler(false).handle(Optional.empty());
 
         assertThat(response.rounds()).extracting(RoundView::step).containsExactly(RoundStep.NOT_STARTED);
         assertThat(response.score()).isEqualTo(new GameScore(0, 1000, false));
@@ -99,7 +101,7 @@ class GetTodayGameHandlerTest {
     void neverDrawsWhenTheDrawIsOff() {
         when(rounds.of(TODAY)).thenReturn(List.of());
 
-        TodayGameResponse response = handler(false).handle(Optional.empty());
+        DayGameResponse response = handler(false).handle(Optional.empty());
 
         verify(draw, never()).drawIfMissing(any());
         verify(hintRepository, never()).findEligible(anyInt(), any(), any());
@@ -107,6 +109,7 @@ class GetTodayGameHandlerTest {
     }
 
     private GetTodayGameHandler handler(boolean drawEnabled) {
-        return new GetTodayGameHandler(draw, new GameProperties(3, 3, drawEnabled), rounds, plays, views, CLOCK);
+        return new GetTodayGameHandler(
+                draw, new GameProperties(3, 3, drawEnabled), new DayGames(rounds, plays, views), CLOCK);
     }
 }
