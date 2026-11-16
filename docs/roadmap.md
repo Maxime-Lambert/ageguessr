@@ -263,8 +263,11 @@ retirer une fois tous faits.
       `feature/lead-help`, puis `fix/lead-help-on-info-only`
 
 ## Semaine 8 — Stabilisation et déploiement
-- [ ] Tests d'intégration sur les endpoints critiques
-- [ ] Tests E2E sur les parcours principaux (Playwright)
+- [x] Tests d'intégration sur les endpoints critiques : vraie API (Spring + MockMvc +
+      Testcontainers) dans les tests de chaque feature
+- [x] Tests E2E sur les parcours principaux (Playwright, en CI) : inscription/connexion,
+      partie du jour, défi, mot de passe oublié, suppression de compte, compte en
+      français (`frontend/e2e/journeys`), plus les specs par écran (`e2e/component`)
 - [x] Monitoring : `/api/health` vérifie PostgreSQL et Redis, `/api/health/backup` la
       fraîcheur du dernier dump, surveillés par UptimeRobot ; erreurs du backend envoyées
       par email à l'admin, regroupées — PR `feature/monitoring`
@@ -272,10 +275,12 @@ retirer une fois tous faits.
       `chore/backup-and-log-rotation`
 - [x] Backup PostgreSQL : dump quotidien sur le disque du VPS, 30 jours au plus, annoncé
       dans `/privacy`, restauration documentée — PR `chore/backup-and-log-rotation`
-- [ ] Journal des suppressions de compte, à rejouer après la restauration d'un backup
-      (sinon les comptes supprimés depuis le dump reviennent)
+- ~~Journal des suppressions de compte~~ — écarté (nov. 2026) : ne servirait qu'après
+      la restauration d'un backup ; si elle arrive, re-supprimer à la main les comptes
+      supprimés depuis la date du dump
 - [ ] Copie des backups hors du VPS (restic chiffré vers un stockage S3) : aujourd'hui,
       perdre le VPS fait perdre les backups
-- [ ] Déploiement prod final et smoke tests
-- [ ] Landing page de lancement, qui tient aussi lieu de page d'accueil publique (fusion
-      décidée le 2026-11-09 : le jeu reste à `/`)
+- [ ] Déploiement prod final et smoke tests : la prod tourne et chaque déploiement
+      passe un smoke test ; à cocher quand la section « À vérifier à la main » est vide
+- ~~Landing page de lancement~~ — écartée (nov. 2026) : le jeu à `/` sert de page
+      d'accueil
