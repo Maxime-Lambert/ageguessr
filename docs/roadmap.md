@@ -42,7 +42,7 @@ retirer une fois tous faits.
       le premier email d'erreur du backend arrivera à la première vraie erreur (pas de
       moyen sûr d'en provoquer une en prod)
 
-- [ ] Accès DBeaver (`chore/prod-db-access`) : définir le mot de passe de
+- [x] Accès DBeaver (`chore/prod-db-access`) : définir le mot de passe de
       `ageguessr_readonly` puis configurer DBeaver (procédure dans
       `docs/decisions/architecture.md`, « Accès à la base de prod ») ; un `SELECT` sur
       `users` répond, un `UPDATE` est refusé (« permission denied ») ; depuis ton PC, sans
