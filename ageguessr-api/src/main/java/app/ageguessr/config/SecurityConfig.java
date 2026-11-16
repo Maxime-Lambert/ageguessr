@@ -40,11 +40,7 @@ public class SecurityConfig {
         "/api/auth/resend-verification",
         "/api/auth/forgot-password",
         "/api/auth/reset-password",
-        "/api/auth/confirm-account-deletion",
-        // Two-factor sign-in: the password is proven, the challenge stands for it.
-        "/api/auth/login/totp",
-        "/api/auth/login/totp/recovery",
-        "/api/auth/disable-two-factor"
+        "/api/auth/confirm-account-deletion"
     };
 
     private static final String[] PUBLIC_GAME_GET_PATHS = {"/api/images/*"};

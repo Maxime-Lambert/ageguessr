@@ -36,20 +36,6 @@ public class AccountTokenService {
     }
 
     /**
-     * The user of a valid token, without using it up: a two-factor challenge survives a
-     * mistyped code (the lockout counts the attempts). Same 404 as redeem otherwise.
-     */
-    public User find(String rawToken, AccountTokenPurpose purpose) {
-        AccountToken token = accountTokenRepository
-                .findByTokenHashAndPurpose(tokenGenerator.hash(rawToken), purpose)
-                .filter(found -> found.getConsumedAt() == null && !found.getExpiresAt().isBefore(clock.instant()))
-                .orElseThrow(() -> new NotFoundException(INVALID_TOKEN_MESSAGE));
-        return userRepository
-                .findById(token.getUserId())
-                .orElseThrow(() -> new NotFoundException(INVALID_TOKEN_MESSAGE));
-    }
-
-    /**
      * Marks the token used and returns its user. Unknown, wrong-purpose, expired and
      * already-used tokens are indistinguishable to the caller (same 404).
      */

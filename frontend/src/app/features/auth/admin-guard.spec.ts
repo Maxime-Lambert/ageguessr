@@ -38,7 +38,6 @@ describe('adminGuard', () => {
       username: 'Admin',
       emailVerified: true,
       termsAccepted: true,
-      twoFactorEnabled: false,
       role: 'ADMIN',
       language: 'EN',
     });
@@ -54,7 +53,6 @@ describe('adminGuard', () => {
       username: 'Player',
       emailVerified: true,
       termsAccepted: true,
-      twoFactorEnabled: false,
       role: 'USER',
       language: 'EN',
     });

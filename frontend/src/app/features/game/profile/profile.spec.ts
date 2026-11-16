@@ -66,7 +66,6 @@ describe('Profile', () => {
       username: 'Jane_D',
       emailVerified: true,
       termsAccepted: true,
-      twoFactorEnabled: false,
       role: 'USER',
       language: 'EN',
     });

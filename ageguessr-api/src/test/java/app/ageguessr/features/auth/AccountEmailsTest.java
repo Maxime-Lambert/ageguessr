@@ -108,37 +108,6 @@ class AccountEmailsTest {
     }
 
     @Test
-    void theTwoFactorRecoveryEmailCarriesAOneHourLinkThatTurnsItOff() {
-        when(accountTokenService.issue(USER.getId(), AccountTokenPurpose.TOTP_RECOVERY, Duration.ofHours(1)))
-                .thenReturn("raw-token");
-
-        accountEmails.sendTwoFactorRecovery(USER);
-
-        assertThat(sent().htmlBody())
-                .contains("https://ageguessr.app/en/disable-two-factor?token=raw-token")
-                .contains("expires in 1 hour");
-    }
-
-    @Test
-    void turningTwoFactorOffIsToldWithA24HourSecureYourAccountLink() {
-        when(accountTokenService.issue(USER.getId(), AccountTokenPurpose.PASSWORD_RESET, Duration.ofHours(24)))
-                .thenReturn("raw-token");
-
-        accountEmails.sendTwoFactorDisabled(USER);
-
-        EmailMessage message = sent();
-        assertThat(message.subject()).isEqualTo("Two-factor authentication turned off for your AgeGuessr account");
-        assertThat(message.htmlBody()).contains("https://ageguessr.app/en/reset-password?token=raw-token");
-    }
-
-    @Test
-    void turningTwoFactorOnIsToldInTheAccountsLanguage() {
-        accountEmails.sendTwoFactorEnabled(FRENCH_USER);
-
-        assertThat(sent().subject()).isEqualTo("Double authentification activée sur votre compte AgeGuessr");
-    }
-
-    @Test
     void writesInFrenchToAFrenchAccountWithLinksToTheFrenchSite() {
         when(accountTokenService.issue(FRENCH_USER.getId(), AccountTokenPurpose.PASSWORD_RESET, Duration.ofMinutes(60)))
                 .thenReturn("raw-token");
