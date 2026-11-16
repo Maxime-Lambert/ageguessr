@@ -40,7 +40,6 @@ export const FRIENDS_TEXT = {
   player: $localize`:@@friends.player:Player`,
   average: $localize`:@@friends.average:Average`,
   games: $localize`:@@friends.games:Games`,
-  streak: $localize`:@@friends.streak:Streak`,
   noGame: $localize`:@@friends.noGame:No game yet`,
   aloneOnBoard: $localize`:@@friends.aloneOnBoard:Add friends to compare your scores.`,
 };

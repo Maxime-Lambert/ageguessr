@@ -1,0 +1,119 @@
+<main>
+  <app-page>
+    <h1 class="font-display text-[32px] leading-tight sm:text-[36px]">{{ text.calendar }}</h1>
+    <p class="text-muted mt-2">{{ text.intro }}</p>
+
+    @switch (status()) {
+      @case ('error') {
+        <p class="text-danger mt-8" role="alert">{{ text.genericError }}</p>
+        <button appButton variant="secondary" type="button" class="mt-3" (click)="load()">
+          {{ text.retry }}
+        </button>
+      }
+      @default {
+        @if (month()) {
+          <section class="card mt-8 max-w-lg p-4 sm:p-6" aria-labelledby="calendar-month">
+            <div class="flex items-center justify-between gap-2">
+              <button
+                appButton
+                variant="ghost"
+                size="sm"
+                type="button"
+                [disabled]="!hasPrevious() || status() === 'loading'"
+                [attr.aria-label]="text.previousMonth"
+                (click)="previous()"
+              >
+                <svg lucideChevronLeft [size]="20" aria-hidden="true"></svg>
+              </button>
+              <h2
+                id="calendar-month"
+                class="font-display text-xl first-letter:uppercase"
+                aria-live="polite"
+              >
+                {{ title() }}
+              </h2>
+              <button
+                appButton
+                variant="ghost"
+                size="sm"
+                type="button"
+                [disabled]="!hasNext() || status() === 'loading'"
+                [attr.aria-label]="text.nextMonth"
+                (click)="next()"
+              >
+                <svg lucideChevronRight [size]="20" aria-hidden="true"></svg>
+              </button>
+            </div>
+
+            <div
+              class="text-muted mt-4 grid grid-cols-7 gap-1.5 text-center text-xs sm:gap-2"
+              aria-hidden="true"
+            >
+              @for (weekday of weekdays(); track $index) {
+                <span class="first-letter:uppercase">{{ weekday }}</span>
+              }
+            </div>
+            <ol class="mt-2 grid grid-cols-7 gap-1.5 sm:gap-2" [attr.aria-label]="title()">
+              @for (empty of offset(); track $index) {
+                <li aria-hidden="true"></li>
+              }
+              @for (cell of cells(); track cell.date) {
+                <li data-day [attr.data-state]="cell.state">
+                  @if (cell.link) {
+                    <a
+                      [routerLink]="cell.link"
+                      [class]="cell.classes"
+                      [attr.aria-label]="cell.label"
+                      [attr.aria-current]="cell.today ? 'date' : null"
+                    >
+                      <span aria-hidden="true">{{ cell.dayOfMonth }}</span>
+                      @if (cell.state === 'FINISHED') {
+                        <svg
+                          lucideCheck
+                          [size]="10"
+                          class="absolute top-0.5 right-0.5 sm:top-1 sm:right-1"
+                          aria-hidden="true"
+                        ></svg>
+                      } @else if (cell.state === 'STARTED') {
+                        <span
+                          class="bg-score absolute bottom-1 size-1.5 rounded-full"
+                          aria-hidden="true"
+                        ></span>
+                      }
+                    </a>
+                  } @else {
+                    <span [class]="cell.classes" [attr.aria-label]="cell.label" role="img">
+                      <span aria-hidden="true">{{ cell.dayOfMonth }}</span>
+                    </span>
+                  }
+                </li>
+              }
+            </ol>
+
+            <ul
+              class="text-muted mt-5 flex flex-wrap gap-x-5 gap-y-2 text-xs"
+              [attr.aria-label]="text.legend"
+            >
+              @for (item of legend; track item.state) {
+                <li class="flex items-center gap-2">
+                  <span [class]="item.classes" aria-hidden="true">
+                    @if (item.state === 'FINISHED') {
+                      <svg lucideCheck [size]="12" aria-hidden="true"></svg>
+                    } @else if (item.state === 'STARTED') {
+                      <span class="bg-score size-1.5 rounded-full"></span>
+                    } @else if (item.state === 'UNAVAILABLE') {
+                      –
+                    }
+                  </span>
+                  {{ item.label }}
+                </li>
+              }
+            </ul>
+          </section>
+        } @else {
+          <p class="text-muted mt-8">{{ text.loading }}</p>
+        }
+      }
+    }
+  </app-page>
+</main>

@@ -3,14 +3,14 @@ package app.ageguessr.features.game.PurgeGuestPlays;
 import app.ageguessr.features.game.GamePlayRepository;
 import app.ageguessr.features.game.GuestProperties;
 import java.time.Clock;
-import java.time.LocalDate;
+import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Deletes the guest games older than the retention: with 7 days, today's game and the
- * 7 days before are kept. A guest id is pseudonymous, but it is still personal data to
+ * Deletes the guest rounds played longer ago than the retention (7 days), whatever their
+ * day: a past day caught up from the calendar today is kept 7 days too. A guest id is pseudonymous, but it is still personal data to
  * keep no longer than it serves. An account's games go with the account (V13 cascade).
  */
 @Service
@@ -24,6 +24,7 @@ public class PurgeGuestPlaysHandler {
     /** @return the number of rows deleted */
     @Transactional
     public int purge() {
-        return plays.deleteGuestPlaysBefore(LocalDate.now(clock).minusDays(properties.retentionDays()));
+        return plays.deleteGuestPlaysStartedBefore(
+                clock.instant().minus(Duration.ofDays(properties.retentionDays())));
     }
 }

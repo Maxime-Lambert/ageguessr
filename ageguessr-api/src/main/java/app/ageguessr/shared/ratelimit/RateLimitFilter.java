@@ -26,7 +26,9 @@ import tools.jackson.databind.ObjectMapper;
  * so that reporting never uses up the guesses, and a script cannot flood the admin queue.
  * Friends too, on what a script would try in bulk: usernames (sending a request), and
  * every other change to the graph.
- * The game reads (GET) are not limited: they write nothing once the day is drawn.
+ * The game reads (GET) are not limited, they write nothing once the day is drawn, except
+ * the costly ones and those a script would page through: the history, the friends'
+ * scores, the calendar and the past days, on the guesses' counter.
  *
  * <p>Partitions by client IP (request.getRemoteAddr(), which WebConfig's
  * ForwardedHeaderFilter already resolves from X-Forwarded-For when present, running
@@ -81,8 +83,12 @@ public class RateLimitFilter extends OncePerRequestFilter {
             return auth;
         }
         // The costly reads: every round the account ever played, or those of the account
-        // and all its friends. They share the guesses' counter.
-        if (uri.equals("/api/game/history") || FRIENDS_SCORES.contains(uri)) {
+        // and all its friends; and those a script would page through, month after month
+        // or day after day. They share the guesses' counter.
+        if (uri.equals("/api/game/history")
+                || FRIENDS_SCORES.contains(uri)
+                || uri.equals("/api/game/calendar")
+                || uri.startsWith("/api/game/days/")) {
             return game;
         }
         // Every change to the friends graph: a request sent, accepted, declined or

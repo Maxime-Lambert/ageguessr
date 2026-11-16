@@ -3,6 +3,7 @@ package app.ageguessr.features.game;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -51,4 +52,24 @@ public interface DailyRoundRepository extends JpaRepository<DailyRound, DailyRou
             WHERE r.gameDate IN :gameDates
             """)
     List<DatedRoundState> findStatesOn(@Param("gameDates") Collection<LocalDate> gameDates);
+
+    /** As {@link #findStatesOn}, for a range of days, both included: a month of the calendar. */
+    @Query(
+            """
+            SELECT new app.ageguessr.features.game.DatedRoundState(
+                r.gameDate, r.position, r.photoId,
+                CASE WHEN ph.reviewStatus = app.ageguessr.features.people.ReviewStatus.APPROVED
+                          AND p.excluded = false
+                     THEN app.ageguessr.features.game.DailyRoundStatus.PLAYABLE
+                     ELSE app.ageguessr.features.game.DailyRoundStatus.NEUTRALIZED END)
+            FROM DailyRound r
+            LEFT JOIN app.ageguessr.features.people.PersonPhoto ph ON ph.id = r.photoId
+            LEFT JOIN app.ageguessr.features.people.Person p ON p.id = ph.personId
+            WHERE r.gameDate BETWEEN :from AND :to
+            """)
+    List<DatedRoundState> findStatesBetween(@Param("from") LocalDate from, @Param("to") LocalDate to);
+
+    /** The first day ever drawn: the calendar goes no further back. Empty before any draw. */
+    @Query("SELECT MIN(r.gameDate) FROM DailyRound r")
+    Optional<LocalDate> findFirstGameDate();
 }

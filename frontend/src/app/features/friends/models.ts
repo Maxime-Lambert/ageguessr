@@ -40,7 +40,6 @@ export interface LeaderboardPlayer {
   me: boolean;
   gamesPlayed: number;
   averagePoints: number | null;
-  currentStreak: number;
 }
 
 export interface FriendsLeaderboard {

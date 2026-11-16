@@ -1,7 +1,6 @@
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { LucideFlame } from '@lucide/angular';
 import { Button } from '../../../shared/ui/button/button';
 import { Page } from '../../../shared/ui/page/page';
 import { Auth } from '../../auth/auth';
@@ -27,7 +26,7 @@ function levelOf(day: HistoryDay): number {
  * an old image served by today's id would tie it to a known answer.
  */
 @Component({
-  imports: [RouterLink, DatePipe, DecimalPipe, Page, Button, LucideFlame],
+  imports: [RouterLink, DatePipe, DecimalPipe, Page, Button],
   selector: 'app-profile',
   templateUrl: './profile.html',
 })
@@ -46,14 +45,10 @@ export class Profile {
   protected readonly game = GAME_TEXT;
   protected readonly text = {
     title: $localize`:@@profile.title:My profile`,
-    currentStreak: $localize`:@@profile.currentStreak:Current streak`,
-    bestStreak: $localize`:@@profile.bestStreak:Best streak`,
-    days: $localize`:@@profile.days:days in a row`,
     gamesPlayed: $localize`:@@profile.gamesPlayed:Games finished`,
     average: $localize`:@@profile.average:Average score`,
     best: $localize`:@@profile.best:Best score`,
     history: $localize`:@@profile.history:Past games`,
-    streakExplained: $localize`:@@profile.streakExplained:A streak counts the days in a row on which you finished the daily game.`,
     empty: $localize`:@@profile.empty:No game finished yet. Your games will show up here.`,
     play: $localize`:@@profile.play:Play today's game`,
     incomplete: $localize`:@@profile.incomplete:Not finished`,

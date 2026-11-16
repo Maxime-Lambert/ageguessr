@@ -285,8 +285,8 @@
         <target>Créez votre compte</target>
       </trans-unit>
       <trans-unit id="register.intro" datatype="html">
-        <source>Track your streak and compare scores with friends.</source>
-        <target>Suivez votre série et comparez vos scores avec vos amis.</target>
+        <source>Keep your history and compare scores with friends.</source>
+        <target>Gardez votre historique et comparez vos scores avec vos amis.</target>
       </trans-unit>
       <trans-unit id="register.usernameHint" datatype="html">
         <source> Shown to your friends. You can change it later. </source>
@@ -485,8 +485,8 @@
         <target>Cette photo a été retirée pour tout le monde. Elle ne compte pas dans votre score.</target>
       </trans-unit>
       <trans-unit id="game.closed" datatype="html">
-        <source>Today's game is over. Here is the new one.</source>
-        <target>La partie du jour est terminée. Voici la nouvelle.</target>
+        <source>This day is not open yet.</source>
+        <target>Ce jour n'est pas encore ouvert.</target>
       </trans-unit>
       <trans-unit id="game.comeBack" datatype="html">
         <source>A new game starts at midnight UTC.</source>
@@ -972,18 +972,6 @@
         <source>My profile</source>
         <target>Mon profil</target>
       </trans-unit>
-      <trans-unit id="profile.currentStreak" datatype="html">
-        <source>Current streak</source>
-        <target>Série en cours</target>
-      </trans-unit>
-      <trans-unit id="profile.bestStreak" datatype="html">
-        <source>Best streak</source>
-        <target>Meilleure série</target>
-      </trans-unit>
-      <trans-unit id="profile.days" datatype="html">
-        <source>days in a row</source>
-        <target>jours d'affilée</target>
-      </trans-unit>
       <trans-unit id="profile.gamesPlayed" datatype="html">
         <source>Games finished</source>
         <target>Parties terminées</target>
@@ -999,10 +987,6 @@
       <trans-unit id="profile.history" datatype="html">
         <source>Past games</source>
         <target>Parties passées</target>
-      </trans-unit>
-      <trans-unit id="profile.streakExplained" datatype="html">
-        <source>A streak counts the days in a row on which you finished the daily game.</source>
-        <target>Une série compte les jours d'affilée où vous avez terminé la partie du jour.</target>
       </trans-unit>
       <trans-unit id="profile.empty" datatype="html">
         <source>No game finished yet. Your games will show up here.</source>
@@ -1276,10 +1260,6 @@
         <source>Games</source>
         <target>Parties</target>
       </trans-unit>
-      <trans-unit id="friends.streak" datatype="html">
-        <source>Streak</source>
-        <target>Série</target>
-      </trans-unit>
       <trans-unit id="friends.noGame" datatype="html">
         <source>No game yet</source>
         <target>Aucune partie</target>
@@ -1367,6 +1347,70 @@
       <trans-unit id="account.downloadData" datatype="html">
         <source> Download my data </source>
         <target>Télécharger mes données</target>
+      </trans-unit>
+      <trans-unit id="title.calendar" datatype="html">
+        <source>Calendar · AgeGuessr</source>
+        <target>Calendrier · AgeGuessr</target>
+      </trans-unit>
+      <trans-unit id="title.pastDay" datatype="html">
+        <source>Past game · AgeGuessr</source>
+        <target>Partie passée · AgeGuessr</target>
+      </trans-unit>
+      <trans-unit id="calendar.intro" datatype="html">
+        <source>Missed a day? Every past daily game can still be played.</source>
+        <target>Un jour manqué ? Toutes les parties du jour passées se jouent encore.</target>
+      </trans-unit>
+      <trans-unit id="calendar.previousMonth" datatype="html">
+        <source>Previous month</source>
+        <target>Mois précédent</target>
+      </trans-unit>
+      <trans-unit id="calendar.nextMonth" datatype="html">
+        <source>Next month</source>
+        <target>Mois suivant</target>
+      </trans-unit>
+      <trans-unit id="calendar.available" datatype="html">
+        <source>To play</source>
+        <target>À jouer</target>
+      </trans-unit>
+      <trans-unit id="calendar.started" datatype="html">
+        <source>Started</source>
+        <target>Commencée</target>
+      </trans-unit>
+      <trans-unit id="calendar.finished" datatype="html">
+        <source>Finished</source>
+        <target>Terminée</target>
+      </trans-unit>
+      <trans-unit id="calendar.unavailable" datatype="html">
+        <source>No game</source>
+        <target>Pas de partie</target>
+      </trans-unit>
+      <trans-unit id="calendar.today" datatype="html">
+        <source>today</source>
+        <target>aujourd'hui</target>
+      </trans-unit>
+      <trans-unit id="calendar.legend" datatype="html">
+        <source>Legend</source>
+        <target>Légende</target>
+      </trans-unit>
+      <trans-unit id="game.backToCalendar" datatype="html">
+        <source>Back to the calendar</source>
+        <target>Retour au calendrier</target>
+      </trans-unit>
+      <trans-unit id="game.playPastDays" datatype="html">
+        <source>Play past days</source>
+        <target>Jouer les jours passés</target>
+      </trans-unit>
+      <trans-unit id="game.calendar" datatype="html">
+        <source>Calendar</source>
+        <target>Calendrier</target>
+      </trans-unit>
+      <trans-unit id="game.pastDayTitle" datatype="html">
+        <source>Daily game of <x id="day" equiv-text="day"/></source>
+        <target>Partie du <x id="day" equiv-text="day"/></target>
+      </trans-unit>
+      <trans-unit id="seo.description.calendar" datatype="html">
+        <source>Every past daily game of AgeGuessr, month by month: catch up on the days you missed. Free, no account needed.</source>
+        <target>Toutes les parties du jour passées d'AgeGuessr, mois par mois : rattrapez les jours manqués. Gratuit, sans compte.</target>
       </trans-unit>
     </body>
   </file>

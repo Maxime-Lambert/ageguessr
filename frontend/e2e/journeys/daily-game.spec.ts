@@ -66,7 +66,7 @@ test('a guest plays the three rounds of the day, through a reload, to the summar
   await expect(page.getByRole('heading', { name: 'Summary' })).toBeVisible();
 });
 
-test('a guest who then signs up finds the day on the profile, with a streak of 1', async ({
+test('a guest who then signs up finds the day on the profile, counted as a game', async ({
   page,
   request,
 }) => {
@@ -95,9 +95,7 @@ test('a guest who then signs up finds the day on the profile, with a streak of 1
 
   await page.goto('/en/profile');
   await expect(page.getByRole('heading', { name: account.username })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Current streak' })).toBeVisible();
-  const streak = page.locator('section[aria-labelledby="streak-title"]');
-  await expect(streak).toContainText('1');
+  await expect(page.locator('dl > div').filter({ hasText: 'Games finished' })).toContainText('1');
   const day = page.getByRole('article');
   await expect(day).toHaveCount(1);
   await expect(day).toContainText('3,000 out of 3,000');

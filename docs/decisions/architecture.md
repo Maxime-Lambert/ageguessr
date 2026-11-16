@@ -58,8 +58,8 @@ exceptions :
   case, `publicId`), donc `game` peut lire et modifier ses entités ;
 - `game → hints` (2026-11-02) : le jeu lit les indices d'une année (`HintRepository.findEligible`) ;
 - `friends → game` (2026-11-10) : la comparaison du jour et le classement entre amis
-  appliquent les règles du jeu (jour complet, maximum, manche neutralisée, moyenne,
-  série), écrites une seule fois dans `game/PlayerHistory` et lues par
+  appliquent les règles du jeu (jour complet, maximum, manche neutralisée, moyenne),
+  écrites une seule fois dans `game/PlayerHistory` et lues par
   `game/PlayerHistories`. Le code des invitations reprend aussi `game/ShareCodes`.
 
 L'inverse est interdit : ni `people` ni `hints` ne savent rien du jeu, et le jeu ne sait
@@ -863,19 +863,25 @@ points.
   ignore un id inconnu ou rejeté. Une table fille aurait demandé une table par entité
   (`RoundProgress` est embarqué dans deux tables) pour une liste de 6 éléments au plus.
 - **Points stockés à l'essai** : régler la formule ne réécrit pas les parties passées.
-- **Minuit** : seule la date du jour se joue (`409 GAME_CLOSED`). Une manche commencée
-  à 23:59 se perd ; le front recharge la nouvelle partie.
+- **Jours passés** (2026-11-16, calendrier) : tout jour tiré jusqu'à aujourd'hui se
+  joue ; seul un jour à venir est refusé (`409 GAME_CLOSED`). Une manche commencée à
+  23:59 se termine donc après minuit, et compte pour son jour.
 - **Concurrence** (double clic, deux onglets) : les uniques de V13 et un verrou
   optimiste (`@Version`) donnent un `409 WRONG_STEP`, jamais un 500 ni une écriture
   écrasée.
-- **Conservation** : parties invitées purgées 7 jours après le jour joué
-  (`app.game.guest.retention-days`, tâche quotidienne). Celles d'un compte partent avec
+- **Conservation** : manches invitées purgées 7 jours après avoir été jouées
+  (`started_at`, index partiel V28 ; `app.game.guest.retention-days`, tâche
+  quotidienne), et non après la date du défi, sinon un jour ancien rattrapé serait
+  purgé la nuit même. Une journée invitée jouée sur plusieurs jours peut donc perdre
+  ses premières manches avant les dernières. Celles d'un compte partent avec
   lui (`ON DELETE CASCADE`). Les deux sont décrites sur `/privacy`.
 - **Limite connue**, comme Wordle : rien n'empêche de rejouer en navigation privée. Une
   limite par IP (`app.rate-limit.game.*`, 60 POST par minute) empêche seulement de créer
   des milliers de parties invitées.
 
-**Endpoints** (publics, JWT facultatif) : `GET /api/game/today`, puis `POST
+**Endpoints** (publics, JWT facultatif) : `GET /api/game/today` (tire le jour s'il
+manque), `GET /api/game/days/{date}` (un jour passé, ne tire jamais : 404 sans tirage),
+`GET /api/game/calendar?month=AAAA-MM` (voir « Calendrier »), puis `POST
 /api/game/{date}/rounds/{position}/first-guess` (`{guess, language}`), `…/hint`
 (`{categories}`) et `…/second-guess` (`{guess}`). Tous renvoient un `RoundView`, la seule
 forme sous laquelle une manche sort de l'API. **Rien de la réponse avant la fin** : ni
@@ -885,6 +891,33 @@ sort qu'avec sa catégorie et son texte. La tranche d'écart et la plage (`gap`,
 donnent un intervalle de 5 ans au moins, sauf aux bords de 18-100 (voir « Déroulé d'une
 manche »). `GameFunctionalTest` vérifie le JSON brut à
 chaque étape.
+
+### Calendrier des jours passés
+**Décision** (2026-11-16, PR `feature/daily-calendar`) : `/calendar` montre les jours
+mois par mois, une case par jour dans l'un de quatre états pour le joueur courant
+(`DayState`) : `UNAVAILABLE` (à venir, jamais tiré, ou plus aucune manche jouable avant
+qu'il ne commence), `AVAILABLE`, `STARTED`, `FINISHED`. Tout jour disponible ou commencé
+se joue sur `/day/AAAA-MM-JJ`, le même écran que la partie du jour.
+
+- **Règle pure** `GetCalendar/CalendarDays` : « terminé » est le « jour complet » de
+  `PlayerHistory.day`, rendu public plutôt que recopié.
+- **Les jours sont ceux du tirage (UTC)** : l'API renvoie `today`, le front n'utilise
+  jamais l'horloge du navigateur pour savoir quel jour est aujourd'hui.
+- **Bornes** : du mois du premier tirage (`firstMonth`) au mois courant, sinon `400
+  MONTH_OUT_OF_RANGE`. Trois requêtes par mois, quel que soit le joueur.
+- **Pas de tirage rétroactif** : un jour sans tirage reste indisponible.
+- **Limité** : `GET /api/game/calendar` et `GET /api/game/days/{date}` partagent le
+  compteur des essais (60 par minute et par IP), comme l'historique : un script les
+  parcourrait mois après mois, jour après jour.
+- **Ouvert aux invités** : leurs jours viennent du cookie invité, rattachés au compte à
+  la connexion comme ceux du jour. Lire le calendrier ne pose jamais de cookie.
+- **Un jour passé ne se partage pas** : le texte de partage parle du défi du jour ; le
+  récapitulatif renvoie au calendrier.
+- **Limite connue** : une série de l'enquête libre peut tirer une photo d'un jour passé,
+  sous son `publicId` actuel (seul le tirage quotidien le renouvelle). Un joueur qui l'y
+  a vue connaît donc sa réponse s'il rattrape ce jour. Acceptée : sans séries de jours
+  ni enjeu, le seul effet est sur sa propre moyenne, et exclure ces photos des séries
+  viderait le pool au fil des mois.
 
 ### Réinitialisation quotidienne
 **Décision** : minuit UTC, même partie (mêmes personnes) pour tous les joueurs ce
@@ -976,15 +1009,16 @@ manche par manche (`GET /api/game/history`, 30 jours par page).
   jour, mais son nom n'est plus affiché. Une manche neutralisée avant d'être terminée
   sort du maximum, comme le jour même. Un jour est complet quand chaque manche encore
   jouable est terminée.
-- **Série** : jours UTC consécutifs complets (ceux du tirage). La série en cours compte
-  jusqu'à aujourd'hui si la partie du jour est complète, sinon jusqu'à hier.
+- **Pas de séries** (retirées le 2026-11-16) : avec le calendrier, rattraper un jour
+  aurait « réparé » une série, et elles n'apportaient pas grand-chose. Un jour rattrapé
+  compte comme les autres dans les parties, la moyenne et le meilleur score.
 - **Rien de la réponse avant la fin** : le nom et l'âge d'une manche ne sortent que si
   elle est terminée et encore jouable, sinon l'historique donnerait la réponse de la
   manche du jour en cours. **Jamais de photo ni de `publicId`** (voir « Limites
   connues »).
 - **Calculs en Java** (`PlayerHistory`, pur, partagé avec les amis depuis 2026-11-10) :
   toutes les manches du compte sont lues
-  (3 par jour au plus), puis les jours, séries et statistiques sont calculés en mémoire.
+  (3 par jour au plus), puis les jours et statistiques sont calculés en mémoire.
   Testable unitairement et par mutation. À revoir si un compte dépasse plusieurs milliers
   de jours.
 - **Parties invité rattachées à la connexion** : le frontend appelle

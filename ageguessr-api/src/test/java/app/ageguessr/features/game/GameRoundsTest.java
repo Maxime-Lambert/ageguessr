@@ -15,6 +15,7 @@ import app.ageguessr.features.people.PersonPhotoRepository;
 import app.ageguessr.features.people.PersonRepository;
 import app.ageguessr.shared.exceptions.ConflictException;
 import app.ageguessr.shared.exceptions.NotFoundException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -41,15 +42,25 @@ class GameRoundsTest {
     }
 
     @Test
-    void closesEveryOtherDayBeforeLookingAtIt() {
-        assertThatThrownBy(() -> rounds.playable(TODAY.minusDays(1), (short) 1))
+    void closesADayToComeBeforeLookingAtIt() {
+        assertThatThrownBy(() -> rounds.playable(TODAY.plusDays(1), (short) 1))
                 .isInstanceOf(ConflictException.class)
                 .extracting("errorCode")
                 .isEqualTo("GAME_CLOSED");
-        assertThatThrownBy(() -> rounds.playable(TODAY.plusDays(1), (short) 1))
-                .extracting("errorCode")
-                .isEqualTo("GAME_CLOSED");
         verifyNoInteractions(dailyRounds);
+    }
+
+    @Test
+    void opensARoundOfAPastDay() {
+        PersonPhoto photo = stubPhoto();
+        LocalDate past = TODAY.minusDays(30);
+        when(dailyRounds.findStatesOf(past))
+                .thenReturn(List.of(new RoundState((short) 2, photo.getId(), DailyRoundStatus.PLAYABLE)));
+
+        GameRound round = rounds.playable(past, (short) 2);
+
+        assertThat(round.gameDate()).isEqualTo(past);
+        assertThat(round.photo()).isSameAs(photo);
     }
 
     @Test

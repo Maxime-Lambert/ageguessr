@@ -25,7 +25,6 @@ describe('FriendsLeaderboard', () => {
           me: false,
           gamesPlayed: 9,
           averagePoints: 2400,
-          currentStreak: 3,
         },
         {
           rank: 1,
@@ -33,7 +32,6 @@ describe('FriendsLeaderboard', () => {
           me: true,
           gamesPlayed: 9,
           averagePoints: 2400,
-          currentStreak: 5,
         },
         {
           rank: null,
@@ -41,7 +39,6 @@ describe('FriendsLeaderboard', () => {
           me: false,
           gamesPlayed: 0,
           averagePoints: null,
-          currentStreak: 0,
         },
       ],
     });
@@ -53,7 +50,7 @@ describe('FriendsLeaderboard', () => {
           .map((cell) => cell.textContent?.replace(/\s+/g, ' ').trim())
           .join(' '),
       ),
-    ).toEqual(['1 watson 2,400 9 3', '1 me · you 2,400 9 5', '– idle No game yet 0 0']);
+    ).toEqual(['1 watson 2,400 9', '1 me · you 2,400 9', '– idle No game yet 0']);
     expect(rows[1].classList).toContain('font-semibold');
     expect(page.textContent).not.toContain('Add friends to compare');
   });

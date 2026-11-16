@@ -40,6 +40,7 @@ import jakarta.servlet.http.Cookie;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -367,10 +368,102 @@ class GameFunctionalTest {
     }
 
     @Test
-    void refusesTheGameOfAnotherDay() throws Exception {
-        perform(post("/api/game/" + today.minusDays(1) + "/rounds/1/first-guess"), "{\"guess\":30,\"language\":\"EN\"}", null, null)
+    void refusesTheGameOfADayToCome() throws Exception {
+        perform(post("/api/game/" + today.plusDays(1) + "/rounds/1/first-guess"), "{\"guess\":30,\"language\":\"EN\"}", null, null)
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.errorCode").value("GAME_CLOSED"));
+    }
+
+    @Test
+    void aGuestPlaysAPastDayFromTheCalendar() throws Exception {
+        LocalDate past = today.minusDays(3);
+        rounds.save(DailyRound.builder()
+                .gameDate(past)
+                .position((short) 1)
+                .photoId(seeded.getFirst().getId())
+                .drawnAt(Instant.now())
+                .build());
+        Cookie guest = guestCookie();
+
+        String before = mockMvc.perform(get("/api/game/days/" + past))
+                .andExpect(status().isOk())
+                .andExpect(header().doesNotExist(HttpHeaders.SET_COOKIE))
+                .andExpect(jsonPath("$.date").value(past.toString()))
+                .andExpect(jsonPath("$.rounds.length()").value(1))
+                .andExpect(jsonPath("$.rounds[0].step").value("NOT_STARTED"))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        assertNoAnswerIn(before);
+        perform(post("/api/game/" + past + "/rounds/1/first-guess"), "{\"guess\":%d,\"language\":\"EN\"}".formatted(AGE), guest, null)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.step").value("FINISHED"));
+
+        mockMvc.perform(get("/api/game/days/" + past).cookie(guest))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.score.points").value(1000))
+                .andExpect(jsonPath("$.score.complete").value(true));
+        // Today's game is untouched by the past day.
+        mockMvc.perform(get("/api/game/today").cookie(guest))
+                .andExpect(jsonPath("$.score.points").value(0));
+    }
+
+    @Test
+    void theCalendarGivesEachDayItsStateForThePlayer() throws Exception {
+        LocalDate past = today.minusDays(3);
+        rounds.save(DailyRound.builder()
+                .gameDate(past)
+                .position((short) 1)
+                .photoId(seeded.getFirst().getId())
+                .drawnAt(Instant.now())
+                .build());
+        Cookie guest = guestCookie();
+        perform(post("/api/game/" + past + "/rounds/1/first-guess"), "{\"guess\":%d,\"language\":\"EN\"}".formatted(AGE), guest, null)
+                .andExpect(status().isOk());
+        firstGuess(1, 30, guest).andExpect(status().isOk());
+        String thisMonth = YearMonth.from(today).toString();
+        String todayPath = "$.days[%d].state".formatted(today.getDayOfMonth() - 1);
+        String pastPath = "$.days[%d].state".formatted(past.getDayOfMonth() - 1);
+
+        mockMvc.perform(get("/api/game/calendar").cookie(guest))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.today").value(today.toString()))
+                .andExpect(jsonPath("$.month").value(thisMonth))
+                .andExpect(jsonPath("$.firstMonth").value(YearMonth.from(past).toString()))
+                .andExpect(jsonPath("$.days.length()").value(YearMonth.from(today).lengthOfMonth()))
+                .andExpect(jsonPath(todayPath).value("STARTED"));
+        mockMvc.perform(get("/api/game/calendar").param("month", YearMonth.from(past).toString()).cookie(guest))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath(pastPath).value("FINISHED"));
+        // Another visitor, without cookie: nothing started, and no cookie set by reading.
+        mockMvc.perform(get("/api/game/calendar").param("month", YearMonth.from(past).toString()))
+                .andExpect(status().isOk())
+                .andExpect(header().doesNotExist(HttpHeaders.SET_COOKIE))
+                .andExpect(jsonPath(pastPath).value("AVAILABLE"));
+    }
+
+    @Test
+    void theCalendarGoesFromTheFirstGameToThisMonth() throws Exception {
+        YearMonth current = YearMonth.from(today);
+        mockMvc.perform(get("/api/game/calendar").param("month", current.plusMonths(1).toString()))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorCode").value("MONTH_OUT_OF_RANGE"));
+        mockMvc.perform(get("/api/game/calendar").param("month", current.minusMonths(1).toString()))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorCode").value("MONTH_OUT_OF_RANGE"));
+        mockMvc.perform(get("/api/game/calendar").param("month", "2026-13")).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void aDayIsReadUpToTodayAndOnlyWhenItWasDrawn() throws Exception {
+        mockMvc.perform(get("/api/game/days/" + today))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.rounds.length()").value(3));
+        mockMvc.perform(get("/api/game/days/" + today.plusDays(1)))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.errorCode").value("GAME_CLOSED"));
+        mockMvc.perform(get("/api/game/days/" + today.minusDays(10))).andExpect(status().isNotFound());
+        mockMvc.perform(get("/api/game/days/not-a-date")).andExpect(status().isBadRequest());
     }
 
     @Test
@@ -482,7 +575,6 @@ class GameFunctionalTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.stats.gamesPlayed").value(1))
                 .andExpect(jsonPath("$.stats.bestPoints").value(3000))
-                .andExpect(jsonPath("$.stats.currentStreak").value(1))
                 .andExpect(jsonPath("$.days.length()").value(2))
                 .andExpect(jsonPath("$.days[0].date").value(today.toString()))
                 .andExpect(jsonPath("$.days[0].complete").value(false))

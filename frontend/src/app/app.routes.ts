@@ -24,6 +24,20 @@ export const routes: Routes = [
     loadComponent: () => import('./features/game/free-game/free-game').then((m) => m.FreeGame),
   },
   {
+    path: 'calendar',
+    ...describedAs(SEO_TEXT.calendar),
+    title: $localize`:@@title.calendar:Calendar · AgeGuessr`,
+    loadComponent: () => import('./features/game/calendar/calendar').then((m) => m.Calendar),
+  },
+  {
+    // A past day's game, from the calendar: the same screen as today's. Not indexed, one
+    // URL per day.
+    path: 'day/:date',
+    ...PRIVATE,
+    title: $localize`:@@title.pastDay:Past game · AgeGuessr`,
+    loadComponent: () => import('./features/game/game/game').then((m) => m.Game),
+  },
+  {
     path: 'how-to-play',
     ...describedAs(SEO_TEXT.howToPlay),
     title: $localize`:@@title.howToPlay:How to play · AgeGuessr`,

@@ -32,6 +32,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -68,10 +69,11 @@ public class GameTestSupportController {
     private final JdbcTemplate jdbc;
     private final Clock clock;
 
+    /** @param daysAgo 0 for today's game, more for a past day played from the calendar */
     @PostMapping("/test-support/seed-daily-game")
     @Transactional
-    public SeededGame seedDailyGame() {
-        LocalDate today = LocalDate.now(clock);
+    public SeededGame seedDailyGame(@RequestParam(defaultValue = "0") int daysAgo) {
+        LocalDate today = LocalDate.now(clock).minusDays(Math.max(0, daysAgo));
         jdbc.update("DELETE FROM game_plays WHERE game_date = ?", today);
         jdbc.update("DELETE FROM daily_rounds WHERE game_date = ?", today);
         byte[] jpeg = jpeg();

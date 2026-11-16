@@ -28,6 +28,22 @@ describe('GameApi', () => {
     expect(date).toBe('2026-11-02');
   });
 
+  it("reads a past day's game", () => {
+    api.day('2026-10-20').subscribe();
+
+    const req = http.expectOne('/api/game/days/2026-10-20');
+    expect(req.request.method).toBe('GET');
+    req.flush(today([round(1)]));
+  });
+
+  it('reads a month of the calendar, the current one without a month', () => {
+    api.calendar('2026-10').subscribe();
+    http.expectOne('/api/game/calendar?month=2026-10').flush({});
+
+    api.calendar().subscribe();
+    http.expectOne('/api/game/calendar').flush({});
+  });
+
   it('sends the first guess with the language of the round', () => {
     api.firstGuess('2026-11-02', 1, 30, 'FR').subscribe();
 
