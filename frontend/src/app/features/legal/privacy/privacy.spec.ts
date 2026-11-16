@@ -117,13 +117,13 @@ describe('Privacy', () => {
   it('says that backups keep deleted data for 30 days at most, in both languages', async () => {
     const english = await render('/privacy');
     expect(english.textContent?.replace(/\s+/g, ' ')).toContain(
-      'Backups: a copy of the whole database is made every day, kept on our server at OVH for 30 days at most, then erased.',
+      "Backups: a copy of the whole database is made every day, kept on our server at OVH for 30 days at most, then erased. The most recent one may also be copied, now and then, to the publisher's encrypted computer, within the same 30 days.",
     );
 
     TestBed.resetTestingModule();
     const french = await render('/privacy?lang=fr');
     expect(french.textContent?.replace(/\s+/g, ' ')).toContain(
-      'Sauvegardes : une copie de toute la base de données est faite chaque jour, conservée sur notre serveur chez OVH 30 jours au plus, puis effacée.',
+      "Sauvegardes : une copie de toute la base de données est faite chaque jour, conservée sur notre serveur chez OVH 30 jours au plus, puis effacée. La plus récente peut aussi être copiée, de temps en temps, sur l'ordinateur chiffré de l'éditeur, dans les mêmes 30 jours.",
     );
   });
 });

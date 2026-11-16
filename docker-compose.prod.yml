@@ -27,6 +27,11 @@ services:
       # officielle met PGDATA dans /var/lib/postgresql/18/docker et declare son VOLUME
       # sur /var/lib/postgresql (permet les montees de version majeure via pg_upgrade).
       - postgres_data_prod:/var/lib/postgresql
+    # Sur l'interface locale du VPS seulement, jamais sur Internet : un client SQL y arrive
+    # par un tunnel SSH, avec le role ageguessr_readonly (voir docs/decisions/architecture.md,
+    # « Acces a la base de prod »). 15432 et pas 5432 : le VPS est partage.
+    ports:
+      - "127.0.0.1:15432:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ageguessr -d ageguessr"]
       interval: 5s
