@@ -57,7 +57,14 @@ public final class PlayerHistory {
         return new Result(days, stats(days));
     }
 
-    private static Day day(LocalDate date, List<Play> plays, Map<Short, Boolean> rounds) {
+    /**
+     * One day by the rules above. Public: the calendar tells a started day from a finished
+     * one by the same rule as the history.
+     *
+     * @param plays the player's rounds, of this day or not
+     * @param rounds the day's rounds, whether each can be played now, by position
+     */
+    public static Day day(LocalDate date, List<Play> plays, Map<Short, Boolean> rounds) {
         List<Play> ofDay = plays.stream().filter(play -> play.date().equals(date)).toList();
         Set<Short> positions = new HashSet<>(rounds.keySet());
         ofDay.forEach(play -> positions.add(play.position()));

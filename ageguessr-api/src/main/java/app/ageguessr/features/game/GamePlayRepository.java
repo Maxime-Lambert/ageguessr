@@ -34,6 +34,17 @@ public interface GamePlayRepository extends JpaRepository<GamePlay, UUID> {
                 : findByGuestIdAndGameDate(player.guestId(), gameDate);
     }
 
+    List<GamePlay> findByUserIdAndGameDateBetween(UUID userId, LocalDate from, LocalDate to);
+
+    List<GamePlay> findByGuestIdAndGameDateBetween(UUID guestId, LocalDate from, LocalDate to);
+
+    /** The rounds a player has started over a range of days, both included: a calendar month. */
+    default List<GamePlay> findOf(PlayerKey player, LocalDate from, LocalDate to) {
+        return player.userId() != null
+                ? findByUserIdAndGameDateBetween(player.userId(), from, to)
+                : findByGuestIdAndGameDateBetween(player.guestId(), from, to);
+    }
+
     default Optional<GamePlay> findOf(PlayerKey player, LocalDate gameDate, short position) {
         return player.userId() != null
                 ? findByUserIdAndGameDateAndPosition(player.userId(), gameDate, position)

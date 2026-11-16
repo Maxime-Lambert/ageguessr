@@ -132,18 +132,18 @@ Vérifié : `GetDayGameHandlerTest`, `GameRoundsTest`, `GetTodayGameHandlerTest`
 `PurgeGuestPlaysIntegrationTest`, `GameFunctionalTest`, `ReportFunctionalTest` verts.
 
 ## Phase 3 : Calendrier (backend)
-Status: Not started
+Status: Complete
 
-- [ ] `features/game/DayState.java` : `UNAVAILABLE`, `AVAILABLE`, `STARTED`, `FINISHED`
-- [ ] Nouveau use case `features/game/GetCalendar/` : `GET /api/game/calendar?month=AAAA-MM`
+- [x] `features/game/DayState.java` : `UNAVAILABLE`, `AVAILABLE`, `STARTED`, `FINISHED`
+- [x] Nouveau use case `features/game/GetCalendar/` : `GET /api/game/calendar?month=AAAA-MM`
       → `{ month, firstMonth, days: [{ date, state }] }` (tous les jours du mois) ;
       `month` absent = mois courant ; validé (format, pas après le mois courant, pas
       avant `firstMonth`) ; joueur facultatif (`PlayerResolver.existing`), ne crée pas
       de cookie
-- [ ] Règle pure `features/game/GetCalendar/CalendarDays.java` (pas de base, pas
+- [x] Règle pure `features/game/GetCalendar/CalendarDays.java` (pas de base, pas
       d'horloge : aujourd'hui en paramètre) ; réutilise la notion de jour complet de
       `PlayerHistory` (extraire une méthode publique si besoin, pas de copie)
-- [ ] Requêtes : manches jouables par jour du mois (`DailyRoundRepository`), parties du
+- [x] Requêtes : manches jouables par jour du mois (`DailyRoundRepository`), parties du
       joueur sur le mois (`GamePlayRepository`), premier jour tiré
 
 ### Tests (Phase 3)
@@ -157,7 +157,14 @@ Status: Not started
 - `cd ageguessr-api && ./mvnw test` → BUILD SUCCESS
 
 ### Phase Summary
-_(write when phase completes)_
+`GET /api/game/calendar?month=AAAA-MM` (`GetCalendar`) : `CalendarDays` (règle pure,
+réutilise `PlayerHistory.day`, rendu public), `DayState`, `CalendarResponse`
+(`month`, `firstMonth`, `days`). Requêtes : `DailyRoundRepository.findStatesBetween`,
+`findFirstGameDate`, `GamePlayRepository.findOf(player, from, to)`. Erreur
+`MONTH_OUT_OF_RANGE` (400) hors [premier mois, mois courant]. Les requêtes du mois sont
+couvertes par le test fonctionnel (base réelle) plutôt qu'un test d'intégration séparé.
+Vérifié : `CalendarDaysTest` (9 cas), `GameFunctionalTest` (calendrier invité / sans
+cookie, bornes), `PlayerHistoryTest` verts.
 
 ## Phase 4 : Calendrier et jour passé (frontend)
 Status: Not started
