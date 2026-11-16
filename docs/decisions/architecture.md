@@ -1212,8 +1212,8 @@ l'instant. Deux publics, deux mécanismes :
 **Raison** : la page d'accueil est le jeu, dont le contenu change chaque jour et dépend
 de l'API : la pré-rendre n'apporterait presque rien, et chaque composant devrait tourner
 hors navigateur. Google exécute le JavaScript ; seuls les aperçus de liens en ont besoin
-en dur, et ils ne lisent que `index.html`. Le pré-rendu sera reconsidéré avec la landing
-page, qui en profitera.
+en dur, et ils ne lisent que `index.html`. La landing page qui aurait justifié un
+pré-rendu a été écartée (nov. 2026) : le jeu reste la page d'accueil.
 
 ### Tests unitaires : Vitest
 **Décision** : Vitest, via le builder `@angular/build:unit-test` (défaut Angular CLI
@@ -1350,9 +1350,18 @@ instance unique à faible trafic.
    migrations postérieures au dump.
 
 **Limite connue** : restaurer un dump fait revenir les comptes supprimés depuis ce dump,
-ce qui contredit l'effacement promis. Il n'y a pas encore de journal des suppressions à
-rejouer après une restauration (ligne de la roadmap, Semaine 8) : d'ici là, restaurer
-est réservé à un incident grave.
+ce qui contredit l'effacement promis. Un journal des suppressions à rejouer a été
+écarté (nov. 2026) : disproportionné pour l'audience, une restauration étant rare.
+Restaurer reste réservé à un incident grave, avec cette procédure manuelle :
+- si la base actuelle est encore lisible, exporter avant la restauration la liste des
+  `id` de `users`, puis après la restauration supprimer les comptes absents de cette
+  liste ;
+- sinon, retrouver dans les logs d'envoi de Resend les emails « Confirmez la
+  suppression » envoyés depuis la date du dump : ce sont des demandes, pas des
+  suppressions confirmées, mais le joueur a voulu partir, et supprimer ces comptes à la
+  main est le choix le plus sûr pour l'effacement promis.
+Les purges automatiques (comptes jamais vérifiés, inactifs) se rejouent seules au
+passage suivant du job quotidien.
 
 ### Monitoring
 **Décision** (2026-11-14, PR `feature/monitoring`) : être prévenu par email sans rien
