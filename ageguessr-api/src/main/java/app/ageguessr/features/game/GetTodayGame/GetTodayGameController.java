@@ -1,5 +1,6 @@
 package app.ageguessr.features.game.GetTodayGame;
 
+import app.ageguessr.features.game.DayGameResponse;
 import app.ageguessr.features.game.PlayerResolver;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,7 @@ public class GetTodayGameController {
     private final PlayerResolver players;
 
     @GetMapping("/api/game/today")
-    TodayGameResponse today(@AuthenticationPrincipal Jwt jwt, HttpServletRequest request) {
+    DayGameResponse today(@AuthenticationPrincipal Jwt jwt, HttpServletRequest request) {
         return handler.handle(players.existing(jwt, request));
     }
 }

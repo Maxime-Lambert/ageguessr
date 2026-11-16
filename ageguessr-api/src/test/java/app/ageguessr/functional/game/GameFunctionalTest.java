@@ -367,10 +367,56 @@ class GameFunctionalTest {
     }
 
     @Test
-    void refusesTheGameOfAnotherDay() throws Exception {
-        perform(post("/api/game/" + today.minusDays(1) + "/rounds/1/first-guess"), "{\"guess\":30,\"language\":\"EN\"}", null, null)
+    void refusesTheGameOfADayToCome() throws Exception {
+        perform(post("/api/game/" + today.plusDays(1) + "/rounds/1/first-guess"), "{\"guess\":30,\"language\":\"EN\"}", null, null)
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.errorCode").value("GAME_CLOSED"));
+    }
+
+    @Test
+    void aGuestPlaysAPastDayFromTheCalendar() throws Exception {
+        LocalDate past = today.minusDays(3);
+        rounds.save(DailyRound.builder()
+                .gameDate(past)
+                .position((short) 1)
+                .photoId(seeded.getFirst().getId())
+                .drawnAt(Instant.now())
+                .build());
+        Cookie guest = guestCookie();
+
+        String before = mockMvc.perform(get("/api/game/days/" + past))
+                .andExpect(status().isOk())
+                .andExpect(header().doesNotExist(HttpHeaders.SET_COOKIE))
+                .andExpect(jsonPath("$.date").value(past.toString()))
+                .andExpect(jsonPath("$.rounds.length()").value(1))
+                .andExpect(jsonPath("$.rounds[0].step").value("NOT_STARTED"))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        assertNoAnswerIn(before);
+        perform(post("/api/game/" + past + "/rounds/1/first-guess"), "{\"guess\":%d,\"language\":\"EN\"}".formatted(AGE), guest, null)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.step").value("FINISHED"));
+
+        mockMvc.perform(get("/api/game/days/" + past).cookie(guest))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.score.points").value(1000))
+                .andExpect(jsonPath("$.score.complete").value(true));
+        // Today's game is untouched by the past day.
+        mockMvc.perform(get("/api/game/today").cookie(guest))
+                .andExpect(jsonPath("$.score.points").value(0));
+    }
+
+    @Test
+    void aDayIsReadUpToTodayAndOnlyWhenItWasDrawn() throws Exception {
+        mockMvc.perform(get("/api/game/days/" + today))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.rounds.length()").value(3));
+        mockMvc.perform(get("/api/game/days/" + today.plusDays(1)))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.errorCode").value("GAME_CLOSED"));
+        mockMvc.perform(get("/api/game/days/" + today.minusDays(10))).andExpect(status().isNotFound());
+        mockMvc.perform(get("/api/game/days/not-a-date")).andExpect(status().isBadRequest());
     }
 
     @Test

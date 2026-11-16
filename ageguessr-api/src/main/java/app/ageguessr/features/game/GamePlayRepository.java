@@ -1,5 +1,6 @@
 package app.ageguessr.features.game;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
@@ -39,10 +40,14 @@ public interface GamePlayRepository extends JpaRepository<GamePlay, UUID> {
                 : findByGuestIdAndGameDateAndPosition(player.guestId(), gameDate, position);
     }
 
-    /** Guest rows only: an account's games are kept as long as the account. */
+    /**
+     * Guest rows only: an account's games are kept as long as the account. By the moment a
+     * round was played, not its day: a past day caught up from the calendar is kept as
+     * long as today's.
+     */
     @Modifying
-    @Query("DELETE FROM GamePlay g WHERE g.guestId IS NOT NULL AND g.gameDate < :before")
-    int deleteGuestPlaysBefore(@Param("before") LocalDate before);
+    @Query("DELETE FROM GamePlay g WHERE g.guestId IS NOT NULL AND g.progress.startedAt < :before")
+    int deleteGuestPlaysStartedBefore(@Param("before") Instant before);
 
     /**
      * Claiming a guest's games, step 1: the rounds the account already played win, so the

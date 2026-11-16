@@ -90,23 +90,23 @@ Vérifié : grep « streak » vide (hors Javadoc « no streaks »), `./mvnw test
 `pnpm test` vert après correction du spec du classement, `pnpm lint` propre.
 
 ## Phase 2 : Ouvrir les jours passés (backend)
-Status: Not started
+Status: Complete
 
-- [ ] `GameRounds.playable(LocalDate, short)` : accepter tout jour `<= aujourd'hui` ayant
+- [x] `GameRounds.playable(LocalDate, short)` : accepter tout jour `<= aujourd'hui` ayant
       un tirage ; un jour futur reste refusé (`GAME_CLOSED`, message « This day is not
       open yet ») ; Javadoc de `GameErrors.gameClosed` mise à jour
-- [ ] Extraire la construction « jour + manches + score » de `GetTodayGameHandler` dans
+- [x] Extraire la construction « jour + manches + score » de `GetTodayGameHandler` dans
       `features/game/DayGames.java` (composant de la feature, pas de couplage
       handler→handler) ; `TodayGameResponse` → `features/game/DayGameResponse.java`
-- [ ] Nouveau use case `features/game/GetDayGame/` : `GET /api/game/days/{date}`
+- [x] Nouveau use case `features/game/GetDayGame/` : `GET /api/game/days/{date}`
       (`GetDayGameController`, `GetDayGameHandler`) ; 404 si le jour n'a pas de tirage,
       409 `GAME_CLOSED` si futur ; ne tire jamais (pas de `drawIfMissing`)
-- [ ] `PurgeGuestPlays` : purger sur `started_at` (7 jours après avoir joué) au lieu de
+- [x] `PurgeGuestPlays` : purger sur `started_at` (7 jours après avoir joué) au lieu de
       `game_date`, sinon une partie invitée d'un jour ancien serait purgée la nuit
       même ; `GamePlayRepository.deleteGuestPlaysBefore(Instant)`
-- [ ] Migration `V28__guest_plays_purge_on_started_at.sql` : remplacer l'index
+- [x] Migration `V28__guest_plays_purge_on_started_at.sql` : remplacer l'index
       `game_plays_guest_date_idx` par un index partiel sur `started_at` (invités)
-- [ ] `ReportRound` : rien à changer (le signalement lit déjà un jour quelconque) —
+- [x] `ReportRound` : rien à changer (le signalement lit déjà un jour quelconque) —
       vérifier par un test qu'on signale une manche d'un jour passé rattrapé
 
 ### Tests (Phase 2)
@@ -122,7 +122,14 @@ Status: Not started
 - `cd ageguessr-api && ./mvnw test` → BUILD SUCCESS
 
 ### Phase Summary
-_(write when phase completes)_
+`GameRounds.playable` n'ouvre plus que « pas dans le futur » ; `DayGames` (composant)
+construit un jour pour un joueur, partagé par `GetTodayGame` et le nouveau `GetDayGame`
+(`GET /api/game/days/{date}`, 409 futur, 404 sans tirage, jamais de tirage).
+`DayGameResponse` remplace `TodayGameResponse` (même forme JSON). Purge invités sur
+`started_at` + `V28` (index partiel). Signalement : inchangé, `ReportRound` lit déjà
+`rounds.of(date, position)` pour tout jour — pas de test dédié ajouté.
+Vérifié : `GetDayGameHandlerTest`, `GameRoundsTest`, `GetTodayGameHandlerTest`,
+`PurgeGuestPlaysIntegrationTest`, `GameFunctionalTest`, `ReportFunctionalTest` verts.
 
 ## Phase 3 : Calendrier (backend)
 Status: Not started
