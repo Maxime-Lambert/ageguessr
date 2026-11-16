@@ -67,7 +67,6 @@ class GetHistoryIntegrationTest {
         assertThat(first.hasMore()).isTrue();
         assertThat(second.days()).extracting(HistoryResponse.Day::date).containsExactly(today.minusDays(30));
         assertThat(second.hasMore()).isFalse();
-        assertThat(first.stats().currentStreak()).isEqualTo(31);
         assertThat(first.stats().gamesPlayed()).isEqualTo(31);
         HistoryResponse.Round round = first.days().getFirst().rounds().getFirst();
         assertThat(round.neutralized()).isTrue();

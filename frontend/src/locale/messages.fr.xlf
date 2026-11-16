@@ -285,8 +285,8 @@
         <target>Créez votre compte</target>
       </trans-unit>
       <trans-unit id="register.intro" datatype="html">
-        <source>Track your streak and compare scores with friends.</source>
-        <target>Suivez votre série et comparez vos scores avec vos amis.</target>
+        <source>Keep your history and compare scores with friends.</source>
+        <target>Gardez votre historique et comparez vos scores avec vos amis.</target>
       </trans-unit>
       <trans-unit id="register.usernameHint" datatype="html">
         <source> Shown to your friends. You can change it later. </source>
@@ -972,18 +972,6 @@
         <source>My profile</source>
         <target>Mon profil</target>
       </trans-unit>
-      <trans-unit id="profile.currentStreak" datatype="html">
-        <source>Current streak</source>
-        <target>Série en cours</target>
-      </trans-unit>
-      <trans-unit id="profile.bestStreak" datatype="html">
-        <source>Best streak</source>
-        <target>Meilleure série</target>
-      </trans-unit>
-      <trans-unit id="profile.days" datatype="html">
-        <source>days in a row</source>
-        <target>jours d'affilée</target>
-      </trans-unit>
       <trans-unit id="profile.gamesPlayed" datatype="html">
         <source>Games finished</source>
         <target>Parties terminées</target>
@@ -999,10 +987,6 @@
       <trans-unit id="profile.history" datatype="html">
         <source>Past games</source>
         <target>Parties passées</target>
-      </trans-unit>
-      <trans-unit id="profile.streakExplained" datatype="html">
-        <source>A streak counts the days in a row on which you finished the daily game.</source>
-        <target>Une série compte les jours d'affilée où vous avez terminé la partie du jour.</target>
       </trans-unit>
       <trans-unit id="profile.empty" datatype="html">
         <source>No game finished yet. Your games will show up here.</source>
@@ -1275,10 +1259,6 @@
       <trans-unit id="friends.games" datatype="html">
         <source>Games</source>
         <target>Parties</target>
-      </trans-unit>
-      <trans-unit id="friends.streak" datatype="html">
-        <source>Streak</source>
-        <target>Série</target>
       </trans-unit>
       <trans-unit id="friends.noGame" datatype="html">
         <source>No game yet</source>

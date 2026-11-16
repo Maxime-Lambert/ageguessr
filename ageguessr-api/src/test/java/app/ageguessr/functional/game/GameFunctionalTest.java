@@ -482,7 +482,6 @@ class GameFunctionalTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.stats.gamesPlayed").value(1))
                 .andExpect(jsonPath("$.stats.bestPoints").value(3000))
-                .andExpect(jsonPath("$.stats.currentStreak").value(1))
                 .andExpect(jsonPath("$.days.length()").value(2))
                 .andExpect(jsonPath("$.days[0].date").value(today.toString()))
                 .andExpect(jsonPath("$.days[0].complete").value(false))

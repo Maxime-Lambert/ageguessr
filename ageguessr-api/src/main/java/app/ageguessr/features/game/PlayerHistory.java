@@ -9,8 +9,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Turns an account's played rounds into days, statistics and streaks. Pure: no database,
- * no clock (today is given), so that every rule below is tested on its own. Public: the
+ * Turns an account's played rounds into days and statistics. Pure: no database, no
+ * clock, so that every rule below is tested on its own. Public: the
  * profile (GetHistory) and the friends' comparison and leaderboard share these rules,
  * written once (docs/decisions/architecture.md, the friends -> game exception).
  *
@@ -23,10 +23,9 @@ import java.util.Set;
  *       be played.
  *   <li>A day is complete when every round still playable is finished: a neutralized
  *       round never holds a day back.
- *   <li>A streak is a run of complete days in a row (UTC days, those of the draw). The
- *       current one runs up to today if today is complete, else up to yesterday: a game
- *       not finished yet does not break it.
- *   <li>The games played, average and best are over complete days with a maximum above 0.
+ * *   <li>The games played, average and best are over complete days with a maximum above 0,
+ *       whenever they were played: a past day caught up from the calendar counts as any
+ *       other (no streaks, user decision 2026-11-16).
  * </ul>
  */
 public final class PlayerHistory {
@@ -38,7 +37,7 @@ public final class PlayerHistory {
 
     public record Day(LocalDate date, int points, int max, boolean complete) {}
 
-    public record Stats(int gamesPlayed, int averagePoints, int bestPoints, int currentStreak, int bestStreak) {}
+    public record Stats(int gamesPlayed, int averagePoints, int bestPoints) {}
 
     public record Result(List<Day> days, Stats stats) {}
 
@@ -48,14 +47,14 @@ public final class PlayerHistory {
      *     (its photo still approved), by position
      * @return the days, most recent first, and the statistics
      */
-    public static Result compute(List<Play> plays, Map<LocalDate, Map<Short, Boolean>> playable, LocalDate today) {
+    public static Result compute(List<Play> plays, Map<LocalDate, Map<Short, Boolean>> playable) {
         List<Day> days = plays.stream()
                 .map(Play::date)
                 .distinct()
                 .sorted(Comparator.reverseOrder())
                 .map(date -> day(date, plays, playable.getOrDefault(date, Map.of())))
                 .toList();
-        return new Result(days, stats(days, today));
+        return new Result(days, stats(days));
     }
 
     private static Day day(LocalDate date, List<Play> plays, Map<Short, Boolean> rounds) {
@@ -84,47 +83,17 @@ public final class PlayerHistory {
         return new Day(date, points, counted * Scoring.EXACT_FIRST_GUESS_ROUND, complete);
     }
 
-    private static Stats stats(List<Day> days, LocalDate today) {
-        Set<LocalDate> complete = new HashSet<>();
+    private static Stats stats(List<Day> days) {
         List<Day> scored = new ArrayList<>();
         for (Day day : days) {
-            if (day.complete()) {
-                complete.add(day.date());
-                if (day.max() > 0) {
-                    scored.add(day);
-                }
+            if (day.complete() && day.max() > 0) {
+                scored.add(day);
             }
         }
         int average = scored.isEmpty()
                 ? 0
                 : (int) Math.round(scored.stream().mapToInt(Day::points).average().orElse(0));
         int best = scored.stream().mapToInt(Day::points).max().orElse(0);
-        return new Stats(scored.size(), average, best, currentStreak(complete, today), bestStreak(complete));
-    }
-
-    private static int currentStreak(Set<LocalDate> complete, LocalDate today) {
-        LocalDate day = complete.contains(today) ? today : today.minusDays(1);
-        int streak = 0;
-        while (complete.contains(day)) {
-            streak++;
-            day = day.minusDays(1);
-        }
-        return streak;
-    }
-
-    private static int bestStreak(Set<LocalDate> complete) {
-        int best = 0;
-        for (LocalDate day : complete) {
-            // Only count from the first day of a run, so each run is walked once.
-            if (complete.contains(day.minusDays(1))) {
-                continue;
-            }
-            int length = 0;
-            for (LocalDate next = day; complete.contains(next); next = next.plusDays(1)) {
-                length++;
-            }
-            best = Math.max(best, length);
-        }
-        return best;
+        return new Stats(scored.size(), average, best);
     }
 }

@@ -568,7 +568,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="register.intro" datatype="html">
-        <source> Track your streak and compare scores with friends. </source>
+        <source> Keep your history and compare scores with friends. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/auth/register/register.html</context>
           <context context-type="linenumber">7,10</context>
@@ -967,81 +967,74 @@
           <context context-type="linenumber">42</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="friends.streak" datatype="html">
-        <source>Streak</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/friends/friends-text.ts</context>
-          <context context-type="linenumber">43</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="friends.noGame" datatype="html">
         <source>No game yet</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/friends/friends-text.ts</context>
-          <context context-type="linenumber">44</context>
+          <context context-type="linenumber">43</context>
         </context-group>
       </trans-unit>
       <trans-unit id="friends.aloneOnBoard" datatype="html">
         <source>Add friends to compare your scores.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/friends/friends-text.ts</context>
-          <context context-type="linenumber">45</context>
+          <context context-type="linenumber">44</context>
         </context-group>
       </trans-unit>
       <trans-unit id="friends.error.noSuchPlayer" datatype="html">
         <source>No player with this username.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/friends/friends-text.ts</context>
-          <context context-type="linenumber">48</context>
+          <context context-type="linenumber">47</context>
         </context-group>
       </trans-unit>
       <trans-unit id="friends.error.gone" datatype="html">
         <source>This request or friend is no longer there.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/friends/friends-text.ts</context>
-          <context context-type="linenumber">50</context>
+          <context context-type="linenumber">49</context>
         </context-group>
       </trans-unit>
       <trans-unit id="friends.error.alreadyFriends" datatype="html">
         <source>You are already friends.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/friends/friends-text.ts</context>
-          <context context-type="linenumber">64</context>
+          <context context-type="linenumber">63</context>
         </context-group>
       </trans-unit>
       <trans-unit id="friends.error.alreadySent" datatype="html">
         <source>You already sent a request to this player.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/friends/friends-text.ts</context>
-          <context context-type="linenumber">66</context>
+          <context context-type="linenumber">65</context>
         </context-group>
       </trans-unit>
       <trans-unit id="friends.error.incoming" datatype="html">
         <source>This player already sent you a request: accept it in the requests received.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/friends/friends-text.ts</context>
-          <context context-type="linenumber">68</context>
+          <context context-type="linenumber">67</context>
         </context-group>
       </trans-unit>
       <trans-unit id="friends.error.limit" datatype="html">
         <source>You reached the maximum number of friends.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/friends/friends-text.ts</context>
-          <context context-type="linenumber">70</context>
+          <context context-type="linenumber">69</context>
         </context-group>
       </trans-unit>
       <trans-unit id="friends.error.otherLimit" datatype="html">
         <source>This player reached the maximum number of friends.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/friends/friends-text.ts</context>
-          <context context-type="linenumber">72</context>
+          <context context-type="linenumber">71</context>
         </context-group>
       </trans-unit>
       <trans-unit id="friends.error.pendingLimit" datatype="html">
         <source>Too many requests waiting for an answer. Cancel some first.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/friends/friends-text.ts</context>
-          <context context-type="linenumber">74</context>
+          <context context-type="linenumber">73</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.neutral.round" datatype="html">
@@ -2056,147 +2049,119 @@
         <source>My profile</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/profile/profile.ts</context>
-          <context context-type="linenumber">48</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="profile.currentStreak" datatype="html">
-        <source>Current streak</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/game/profile/profile.ts</context>
-          <context context-type="linenumber">49</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="profile.bestStreak" datatype="html">
-        <source>Best streak</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/game/profile/profile.ts</context>
-          <context context-type="linenumber">50</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="profile.days" datatype="html">
-        <source>days in a row</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/game/profile/profile.ts</context>
-          <context context-type="linenumber">51</context>
+          <context context-type="linenumber">47</context>
         </context-group>
       </trans-unit>
       <trans-unit id="profile.gamesPlayed" datatype="html">
         <source>Games finished</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/profile/profile.ts</context>
-          <context context-type="linenumber">52</context>
+          <context context-type="linenumber">48</context>
         </context-group>
       </trans-unit>
       <trans-unit id="profile.average" datatype="html">
         <source>Average score</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/profile/profile.ts</context>
-          <context context-type="linenumber">53</context>
+          <context context-type="linenumber">49</context>
         </context-group>
       </trans-unit>
       <trans-unit id="profile.best" datatype="html">
         <source>Best score</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/profile/profile.ts</context>
-          <context context-type="linenumber">54</context>
+          <context context-type="linenumber">50</context>
         </context-group>
       </trans-unit>
       <trans-unit id="profile.history" datatype="html">
         <source>Past games</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/profile/profile.ts</context>
-          <context context-type="linenumber">55</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="profile.streakExplained" datatype="html">
-        <source>A streak counts the days in a row on which you finished the daily game.</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/game/profile/profile.ts</context>
-          <context context-type="linenumber">56</context>
+          <context context-type="linenumber">51</context>
         </context-group>
       </trans-unit>
       <trans-unit id="profile.empty" datatype="html">
         <source>No game finished yet. Your games will show up here.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/profile/profile.ts</context>
-          <context context-type="linenumber">57</context>
+          <context context-type="linenumber">52</context>
         </context-group>
       </trans-unit>
       <trans-unit id="profile.play" datatype="html">
         <source>Play today&apos;s game</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/profile/profile.ts</context>
-          <context context-type="linenumber">58</context>
+          <context context-type="linenumber">53</context>
         </context-group>
       </trans-unit>
       <trans-unit id="profile.incomplete" datatype="html">
         <source>Not finished</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/profile/profile.ts</context>
-          <context context-type="linenumber">59</context>
+          <context context-type="linenumber">54</context>
         </context-group>
       </trans-unit>
       <trans-unit id="profile.roundNotFinished" datatype="html">
         <source>Not finished</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/profile/profile.ts</context>
-          <context context-type="linenumber">60</context>
+          <context context-type="linenumber">55</context>
         </context-group>
       </trans-unit>
       <trans-unit id="profile.years" datatype="html">
         <source>years old</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/profile/profile.ts</context>
-          <context context-type="linenumber">61</context>
+          <context context-type="linenumber">56</context>
         </context-group>
       </trans-unit>
       <trans-unit id="profile.guesses" datatype="html">
         <source>Your guesses:</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/profile/profile.ts</context>
-          <context context-type="linenumber">63</context>
+          <context context-type="linenumber">58</context>
         </context-group>
       </trans-unit>
       <trans-unit id="profile.older" datatype="html">
         <source>Older games</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/profile/profile.ts</context>
-          <context context-type="linenumber">64</context>
+          <context context-type="linenumber">59</context>
         </context-group>
       </trans-unit>
       <trans-unit id="profile.loadError" datatype="html">
         <source>Your history could not be loaded.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/profile/profile.ts</context>
-          <context context-type="linenumber">65</context>
+          <context context-type="linenumber">60</context>
         </context-group>
       </trans-unit>
       <trans-unit id="profile.lastDays" datatype="html">
         <source>Last 30 days</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/profile/profile.ts</context>
-          <context context-type="linenumber">66</context>
+          <context context-type="linenumber">61</context>
         </context-group>
       </trans-unit>
       <trans-unit id="profile.notPlayed" datatype="html">
         <source>Not played</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/profile/profile.ts</context>
-          <context context-type="linenumber">67</context>
+          <context context-type="linenumber">62</context>
         </context-group>
       </trans-unit>
       <trans-unit id="profile.score" datatype="html">
         <source>Score</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/profile/profile.ts</context>
-          <context context-type="linenumber">68</context>
+          <context context-type="linenumber">63</context>
         </context-group>
       </trans-unit>
       <trans-unit id="profile.finishedLately" datatype="html">
         <source>Games finished in the last 30 days: <x id="count" equiv-text="count"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/profile/profile.ts</context>
-          <context context-type="linenumber">70</context>
+          <context context-type="linenumber">65</context>
         </context-group>
       </trans-unit>
       <trans-unit id="language.switchFailed" datatype="html">

@@ -13,7 +13,6 @@ import app.ageguessr.features.people.Person;
 import app.ageguessr.features.people.PersonPhoto;
 import app.ageguessr.features.people.PersonPhotoRepository;
 import app.ageguessr.features.people.PersonRepository;
-import java.time.Clock;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -44,7 +43,6 @@ public class GetHistoryHandler {
     private final DailyRoundRepository rounds;
     private final PersonPhotoRepository photos;
     private final PersonRepository people;
-    private final Clock clock;
 
     @Transactional(readOnly = true)
     public HistoryResponse handle(UUID userId, int page) {
@@ -64,7 +62,7 @@ public class GetHistoryHandler {
             }
         }
         PlayerHistory.Result result = PlayerHistory.compute(
-                played.stream().map(PlayerHistories::toPlay).toList(), playable, LocalDate.now(clock));
+                played.stream().map(PlayerHistories::toPlay).toList(), playable);
 
         List<PlayerHistory.Day> days = result.days();
         // In long: a huge page number would overflow an int and go negative.
@@ -77,12 +75,7 @@ public class GetHistoryHandler {
                 .toList();
         PlayerHistory.Stats stats = result.stats();
         return new HistoryResponse(
-                new HistoryResponse.Stats(
-                        stats.gamesPlayed(),
-                        stats.averagePoints(),
-                        stats.bestPoints(),
-                        stats.currentStreak(),
-                        stats.bestStreak()),
+                new HistoryResponse.Stats(stats.gamesPlayed(), stats.averagePoints(), stats.bestPoints()),
                 pageDays,
                 page,
                 to < days.size());

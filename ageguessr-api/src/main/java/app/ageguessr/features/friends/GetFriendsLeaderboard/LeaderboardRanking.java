@@ -15,7 +15,7 @@ final class LeaderboardRanking {
 
     private LeaderboardRanking() {}
 
-    record Entry(String username, boolean me, int gamesPlayed, int averagePoints, int currentStreak) {}
+    record Entry(String username, boolean me, int gamesPlayed, int averagePoints) {}
 
     /** @param rank null for a player with no game yet; equal for equal average and games */
     record Ranked(Integer rank, Entry entry) {}

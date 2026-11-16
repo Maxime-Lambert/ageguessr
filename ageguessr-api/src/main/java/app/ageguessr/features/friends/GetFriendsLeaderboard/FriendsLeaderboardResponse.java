@@ -6,6 +6,5 @@ import java.util.List;
 public record FriendsLeaderboardResponse(List<Player> players) {
 
     /** @param rank null for a player with no game yet, as averagePoints */
-    public record Player(
-            Integer rank, String username, boolean me, int gamesPlayed, Integer averagePoints, int currentStreak) {}
+    public record Player(Integer rank, String username, boolean me, int gamesPlayed, Integer averagePoints) {}
 }

@@ -46,7 +46,6 @@ const BOARD = {
       me: false,
       gamesPlayed: 9,
       averagePoints: 2400,
-      currentStreak: 3,
     },
     {
       rank: 2,
@@ -54,7 +53,6 @@ const BOARD = {
       me: true,
       gamesPlayed: 4,
       averagePoints: 2100,
-      currentStreak: 2,
     },
   ],
 };

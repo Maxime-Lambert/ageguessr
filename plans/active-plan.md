@@ -43,34 +43,34 @@ set its status to `Complete` and write its **Phase Summary**; run the phase's
   accessible). À ajouter plus tard si besoin.
 
 ## Phase 1 : Supprimer les séries
-Status: Not started
+Status: Complete
 
 Backend :
-- [ ] `features/game/PlayerHistory.java` : retirer le calcul des séries, `Stats` devient
+- [x] `features/game/PlayerHistory.java` : retirer le calcul des séries, `Stats` devient
       `(gamesPlayed, averagePoints, bestPoints)` ; mettre à jour la Javadoc (règles)
-- [ ] `features/game/GetHistory/HistoryResponse.java` et `GetHistoryHandler.java` : plus de
+- [x] `features/game/GetHistory/HistoryResponse.java` et `GetHistoryHandler.java` : plus de
       champs de série
-- [ ] `features/friends/GetFriendsLeaderboard/LeaderboardRanking.java`,
+- [x] `features/friends/GetFriendsLeaderboard/LeaderboardRanking.java`,
       `FriendsLeaderboardResponse.java`, `GetFriendsLeaderboardHandler.java` : retirer
       `currentStreak`
-- [ ] Javadocs qui citent la série : `ClaimGuestPlays/ClaimGuestPlaysHandler.java`,
+- [x] Javadocs qui citent la série : `ClaimGuestPlays/ClaimGuestPlaysHandler.java`,
       `architecture/ArchitectureTests.java`
-- [ ] Tests : `PlayerHistoryTest` (retirer les cas de série, garder jours/stats),
+- [x] Tests : `PlayerHistoryTest` (retirer les cas de série, garder jours/stats),
       `GetHistoryIntegrationTest`, `PlayerHistoriesIntegrationTest`,
       `functional/game/GameFunctionalTest`, tests du classement
 
 Frontend :
-- [ ] `features/game/models.ts`, `features/friends/models.ts` : retirer les champs
-- [ ] `features/game/profile/profile.{html,ts,spec.ts}` : retirer la section série et
+- [x] `features/game/models.ts`, `features/friends/models.ts` : retirer les champs
+- [x] `features/game/profile/profile.{html,ts,spec.ts}` : retirer la section série et
       « Meilleure série » ; garder parties jouées / moyenne / meilleur score
-- [ ] `features/friends/friends-leaderboard/friends-leaderboard.{html,spec.ts}`,
+- [x] `features/friends/friends-leaderboard/friends-leaderboard.{html,spec.ts}`,
       `friends-text.ts`, `friends/testing.ts` : retirer la colonne
-- [ ] `features/auth/register/register.html` : « Track your streak… » → « Keep your
+- [x] `features/auth/register/register.html` : « Track your streak… » → « Keep your
       history and compare scores with friends. »
-- [ ] `features/legal/privacy/privacy.html` (l. 85) : les amis ne voient plus de série
-- [ ] `locale/messages.xlf` + `messages.fr.xlf` : retirer les unités de série, traduire
+- [x] `features/legal/privacy/privacy.html` (l. 85) : les amis ne voient plus de série
+- [x] `locale/messages.xlf` + `messages.fr.xlf` : retirer les unités de série, traduire
       les textes modifiés (`pnpm extract-i18n` ou équivalent du projet)
-- [ ] E2E : `e2e/component/profile.spec.ts`, `component-fr/profile.spec.ts`,
+- [x] E2E : `e2e/component/profile.spec.ts`, `component-fr/profile.spec.ts`,
       `component/friends.spec.ts`, `component-fr/friends.spec.ts`,
       `journeys/daily-game.spec.ts` (le parcours « invité puis inscription » vérifie le
       jour et la partie jouée au profil, plus la série)
@@ -81,7 +81,13 @@ Frontend :
 - `cd ageguessr-api && ./mvnw test` → BUILD SUCCESS ; `cd frontend && pnpm test` → tout vert
 
 ### Phase Summary
-_(write when phase completes)_
+Séries retirées de `PlayerHistory` (et de son paramètre `today`), de l'historique, du
+classement entre amis, du profil (la grille passe à 3 tuiles), de l'inscription et de
+la page de confidentialité EN/FR (date `PRIVACY_UPDATED` passée au 2026-11-16 ; la
+ligne sur la purge invités dit déjà « 7 jours après avoir été jouées », anticipant la
+phase 2). `PlayerHistories.today()` est conservé : `GetFriendsToday` l'utilise.
+Vérifié : grep « streak » vide (hors Javadoc « no streaks »), `./mvnw test` vert,
+`pnpm test` vert après correction du spec du classement, `pnpm lint` propre.
 
 ## Phase 2 : Ouvrir les jours passés (backend)
 Status: Not started

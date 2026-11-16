@@ -25,7 +25,7 @@ class PlayerHistoryTest {
         Result result = compute();
 
         assertThat(result.days()).isEmpty();
-        assertThat(result.stats()).isEqualTo(new Stats(0, 0, 0, 0, 0));
+        assertThat(result.stats()).isEqualTo(new Stats(0, 0, 0));
     }
 
     @Test
@@ -79,79 +79,16 @@ class PlayerHistoryTest {
     }
 
     @Test
-    void theCurrentStreakIncludesTodayOnceFinished() {
-        fullDay(TODAY, 100, 100, 100);
-        fullDay(TODAY.minusDays(1), 100, 100, 100);
-        fullDay(TODAY.minusDays(2), 100, 100, 100);
-
-        assertThat(compute().stats().currentStreak()).isEqualTo(3);
-    }
-
-    @Test
-    void todayNotFinishedYetDoesNotBreakTheStreak() {
-        fullDay(TODAY.minusDays(1), 100, 100, 100);
-        fullDay(TODAY.minusDays(2), 100, 100, 100);
-        threeRounds(TODAY);
-        plays.add(new Play(TODAY, (short) 1, true, 100));
-
-        assertThat(compute().stats().currentStreak()).isEqualTo(2);
-    }
-
-    @Test
-    void aMissedDayEndsTheStreak() {
-        fullDay(TODAY, 100, 100, 100);
-        fullDay(TODAY.minusDays(2), 100, 100, 100);
-        fullDay(TODAY.minusDays(3), 100, 100, 100);
+    void aDayCaughtUpLongAfterCountsAsAnyOther() {
+        // No streaks: the date a day was played on does not matter, a gap neither.
+        fullDay(TODAY, 1000, 1000, 1000);
+        fullDay(TODAY.minusDays(40), 0, 0, 0);
 
         Stats stats = compute().stats();
 
-        assertThat(stats.currentStreak()).isEqualTo(1);
-        assertThat(stats.bestStreak()).isEqualTo(2);
-    }
-
-    @Test
-    void noGameYesterdayOrTodayMeansNoCurrentStreak() {
-        fullDay(TODAY.minusDays(2), 100, 100, 100);
-
-        Stats stats = compute().stats();
-
-        assertThat(stats.currentStreak()).isZero();
-        assertThat(stats.bestStreak()).isEqualTo(1);
-    }
-
-    @Test
-    void anIncompleteDayInTheMiddleBreaksTheStreak() {
-        fullDay(TODAY, 100, 100, 100);
-        threeRounds(TODAY.minusDays(1));
-        plays.add(new Play(TODAY.minusDays(1), (short) 1, true, 100));
-        fullDay(TODAY.minusDays(2), 100, 100, 100);
-
-        assertThat(compute().stats().currentStreak()).isEqualTo(1);
-    }
-
-    @Test
-    void theBestStreakCanBeAnOldOne() {
-        for (int i = 10; i < 14; i++) {
-            fullDay(TODAY.minusDays(i), 100, 100, 100);
-        }
-        fullDay(TODAY, 100, 100, 100);
-
-        Stats stats = compute().stats();
-
-        assertThat(stats.bestStreak()).isEqualTo(4);
-        assertThat(stats.currentStreak()).isEqualTo(1);
-    }
-
-    @Test
-    void aStreakCrossesTheNewYear() {
-        LocalDate newYear = LocalDate.of(2027, 1, 1);
-        fullDay(newYear, 100, 100, 100);
-        fullDay(newYear.minusDays(1), 100, 100, 100);
-
-        Result result = PlayerHistory.compute(plays, playable, newYear);
-
-        assertThat(result.stats().currentStreak()).isEqualTo(2);
-        assertThat(result.stats().bestStreak()).isEqualTo(2);
+        assertThat(stats.gamesPlayed()).isEqualTo(2);
+        assertThat(stats.averagePoints()).isEqualTo(1500);
+        assertThat(stats.bestPoints()).isEqualTo(3000);
     }
 
     @Test
@@ -178,7 +115,7 @@ class PlayerHistoryTest {
     }
 
     @Test
-    void aDayWhoseRoundsWereAllNeutralizedUnfinishedKeepsTheStreakButNotTheStats() {
+    void aDayWhoseRoundsWereAllNeutralizedUnfinishedIsCompleteButNotInTheStats() {
         fullDay(TODAY.minusDays(1), 100, 100, 100);
         threeRounds(TODAY);
         playable.get(TODAY).replaceAll((position, value) -> false);
@@ -187,12 +124,11 @@ class PlayerHistoryTest {
         Result result = compute();
 
         assertThat(result.days().getFirst()).isEqualTo(new Day(TODAY, 0, 0, true));
-        assertThat(result.stats().currentStreak()).isEqualTo(2);
         assertThat(result.stats().gamesPlayed()).isEqualTo(1);
     }
 
     private Result compute() {
-        return PlayerHistory.compute(plays, playable, TODAY);
+        return PlayerHistory.compute(plays, playable);
     }
 
     private void threeRounds(LocalDate date) {

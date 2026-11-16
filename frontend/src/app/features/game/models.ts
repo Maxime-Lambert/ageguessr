@@ -153,8 +153,6 @@ export interface HistoryStats {
   gamesPlayed: number;
   averagePoints: number;
   bestPoints: number;
-  currentStreak: number;
-  bestStreak: number;
 }
 
 export interface HistoryDay {

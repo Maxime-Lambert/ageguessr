@@ -41,8 +41,6 @@ function history(overrides: Partial<History> = {}): History {
       gamesPlayed: 12,
       averagePoints: 1820,
       bestPoints: 2750,
-      currentStreak: 4,
-      bestStreak: 9,
     },
     days: [DAY],
     page: 0,
@@ -82,19 +80,16 @@ describe('Profile', () => {
   const respond = (body: History, pageNumber = 0) =>
     http.expectOne(`/api/game/history?page=${pageNumber}`).flush(body);
 
-  it('shows the statistics, the streak first', () => {
+  it('shows the statistics', () => {
     page();
     respond(history());
     const root = page();
 
     expect(root.querySelector('h1')?.textContent).toContain('Jane_D');
-    expect(root.querySelector('#streak-title')?.textContent).toContain('Current streak');
-    expect(root.textContent).toContain('4');
     const tiles = Array.from(root.querySelectorAll('dl > div')).map((tile) =>
       tile.textContent?.replace(/\s+/g, ' ').trim(),
     );
     expect(tiles).toEqual([
-      'Best streak 9',
       'Games finished 12',
       'Average score 1,820',
       'Best score 2,750',
@@ -172,7 +167,7 @@ describe('Profile', () => {
     respond(
       history({
         days: [],
-        stats: { gamesPlayed: 0, averagePoints: 0, bestPoints: 0, currentStreak: 0, bestStreak: 0 },
+        stats: { gamesPlayed: 0, averagePoints: 0, bestPoints: 0 },
       }),
     );
     const root = page();

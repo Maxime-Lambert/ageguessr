@@ -63,7 +63,6 @@ class PlayerHistoriesIntegrationTest {
         assertThat(records).containsOnlyKeys(alice, bob, idle);
         assertThat(records.get(alice).plays()).hasSize(2);
         assertThat(records.get(alice).result().stats().gamesPlayed()).isEqualTo(2);
-        assertThat(records.get(alice).result().stats().currentStreak()).isEqualTo(2);
         assertThat(records.get(bob).result().days()).hasSize(1);
         assertThat(records.get(idle).plays()).isEmpty();
         assertThat(records.get(idle).result().stats().gamesPlayed()).isZero();

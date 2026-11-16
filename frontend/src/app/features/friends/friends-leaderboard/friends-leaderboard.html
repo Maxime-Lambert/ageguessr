@@ -7,11 +7,8 @@
         <th scope="col" class="w-10 py-1.5 pr-2 text-right font-semibold">{{ text.rank }}</th>
         <th scope="col" class="py-1.5 pr-2 font-semibold">{{ text.player }}</th>
         <th scope="col" class="py-1.5 pr-2 text-right font-semibold">{{ text.average }}</th>
-        <th scope="col" class="hidden py-1.5 pr-2 text-right font-semibold sm:table-cell">
-          {{ text.games }}
-        </th>
         <th scope="col" class="hidden py-1.5 text-right font-semibold sm:table-cell">
-          {{ text.streak }}
+          {{ text.games }}
         </th>
       </tr>
     </thead>
@@ -32,8 +29,7 @@
               <span class="text-muted font-normal">{{ text.noGame }}</span>
             }
           </td>
-          <td class="hidden py-2 pr-2 text-right sm:table-cell">{{ player.gamesPlayed }}</td>
-          <td class="hidden py-2 text-right sm:table-cell">{{ player.currentStreak }}</td>
+          <td class="hidden py-2 text-right sm:table-cell">{{ player.gamesPlayed }}</td>
         </tr>
       }
     </tbody>

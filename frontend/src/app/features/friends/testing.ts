@@ -15,7 +15,7 @@ export function lockedToday(): FriendsToday {
 export function board(overrides: Partial<FriendsLeaderboard> = {}): FriendsLeaderboard {
   return {
     players: [
-      { rank: 1, username: 'me', me: true, gamesPlayed: 4, averagePoints: 2100, currentStreak: 2 },
+      { rank: 1, username: 'me', me: true, gamesPlayed: 4, averagePoints: 2100 },
     ],
     ...overrides,
   };
