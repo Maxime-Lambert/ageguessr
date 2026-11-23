@@ -47,6 +47,16 @@ const EXAMPLES: Record<HintCategory, { kind: string; hint: string; year: number 
     hint: $localize`:@@game.leadHelp.literature.hint:Published: "Harry Potter and the Philosopher's Stone" — J. K. Rowling`,
     year: 1997,
   },
+  TELEVISION: {
+    kind: $localize`:@@game.leadHelp.television.kind:A TV series or show, first aired.`,
+    hint: $localize`:@@game.leadHelp.television.hint:First aired: "Friends"`,
+    year: 1994,
+  },
+  VIDEO_GAMES: {
+    kind: $localize`:@@game.leadHelp.videoGames.kind:A video game released.`,
+    hint: $localize`:@@game.leadHelp.videoGames.hint:Release of the video game "Super Mario Bros."`,
+    year: 1985,
+  },
   CELEBRITIES: {
     kind: $localize`:@@game.leadHelp.celebrities.kind:A famous person, as old this year as the person on the photo.`,
     hint: 'Tom Hanks',

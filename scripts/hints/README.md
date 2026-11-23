@@ -28,6 +28,8 @@ calculés et les années sous 3 catégories jouables.
    | Cinéma | Films, Oscars, Palme d'or, César |
    | Célébrités | Personnes, date de naissance au jour près, majeures le jour de l'extraction |
    | Littérature | Parutions (romans, pièces, poèmes, nouvelles, BD) avec leur auteur, Nobel de littérature, Goncourt, Booker, Pulitzer de la fiction |
+   | Télévision | Premières diffusions de séries, émissions, dessins animés (toute sous-classe de programme télévisé, sans épisode ni saison) |
+   | Jeux vidéo | Sorties de jeux vidéo (date la plus ancienne) |
 
 2. **Notoriété** : les vues sur 12 mois (`VIEWS_FROM`, `VIEWS_TO`) de l'article de
    l'élément lui-même, sur fr.wikipedia pour un indice français, sur en.wikipedia pour un

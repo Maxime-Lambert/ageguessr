@@ -255,6 +255,27 @@ describe('Round', () => {
     expect(cards.some((card) => card.className.includes('col-span'))).toBe(false);
   });
 
+  it('offers the nine categories in a full grid, Television and Video games included', () => {
+    show(
+      awaitingHints({
+        categories: [
+          'MUSIC',
+          'FILM',
+          'SPORT',
+          'SCIENCE',
+          'WORLD',
+          'CELEBRITIES',
+          'LITERATURE',
+          'TELEVISION',
+          'VIDEO_GAMES',
+        ],
+      }),
+    );
+
+    expect(leadButtons().map((button) => button.textContent?.trim())).toContain('Video games');
+    expect(leadButtons()).toHaveLength(9);
+  });
+
   it('puts the help of the last column on the right edge, the lone last card on the left', () => {
     show(awaitingHints({ categories: ['MUSIC', 'FILM', 'SPORT', 'SCIENCE', 'WORLD'] }));
 

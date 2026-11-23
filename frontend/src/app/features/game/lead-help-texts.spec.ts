@@ -8,6 +8,8 @@ const CATEGORIES: HintCategory[] = [
   'SCIENCE',
   'WORLD',
   'LITERATURE',
+  'TELEVISION',
+  'VIDEO_GAMES',
   'CELEBRITIES',
 ];
 

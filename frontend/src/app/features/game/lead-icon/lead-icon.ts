@@ -3,10 +3,12 @@ import {
   LucideBookOpen,
   LucideClapperboard,
   LucideFlaskConical,
+  LucideGamepad2,
   LucideGlobe,
   LucideMusic,
   LucideSparkles,
   LucideTrophy,
+  LucideTv,
 } from '@lucide/angular';
 import { HintCategory } from '../models';
 
@@ -17,10 +19,12 @@ import { HintCategory } from '../models';
     LucideBookOpen,
     LucideClapperboard,
     LucideFlaskConical,
+    LucideGamepad2,
     LucideGlobe,
     LucideMusic,
     LucideSparkles,
     LucideTrophy,
+    LucideTv,
   ],
   host: { class: 'inline-flex', 'aria-hidden': 'true' },
   template: `
@@ -45,6 +49,12 @@ import { HintCategory } from '../models';
       }
       @case ('LITERATURE') {
         <svg lucideBookOpen [size]="size()"></svg>
+      }
+      @case ('TELEVISION') {
+        <svg lucideTv [size]="size()"></svg>
+      }
+      @case ('VIDEO_GAMES') {
+        <svg lucideGamepad2 [size]="size()"></svg>
       }
     }
   `,

@@ -15,7 +15,15 @@ export interface GuessRange {
   max: number;
 }
 export type HintCategory =
-  'MUSIC' | 'FILM' | 'SPORT' | 'SCIENCE' | 'WORLD' | 'CELEBRITIES' | 'LITERATURE';
+  | 'MUSIC'
+  | 'FILM'
+  | 'SPORT'
+  | 'SCIENCE'
+  | 'WORLD'
+  | 'CELEBRITIES'
+  | 'LITERATURE'
+  | 'TELEVISION'
+  | 'VIDEO_GAMES';
 
 /** The hint during the round: no year, it would give the answer away. */
 export interface ShownHint {

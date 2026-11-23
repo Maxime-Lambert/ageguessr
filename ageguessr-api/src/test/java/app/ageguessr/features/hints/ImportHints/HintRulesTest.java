@@ -48,7 +48,7 @@ class HintRulesTest {
     @Test
     void refusesAnUnknownCategoryOrAudience() {
         HintFileEntry category = new HintFileEntry(
-                "TV", 1976, "FR", "Un texte.", null, "https://fr.wikipedia.org/wiki/P", "chart", null, "key", false);
+                "COOKING", 1976, "FR", "Un texte.", null, "https://fr.wikipedia.org/wiki/P", "chart", null, "key", false);
         HintFileEntry audience = withTexts("DE", "Un texte.", null);
 
         assertThat(check(category)).contains(HintRejection.UNKNOWN_CATEGORY);
@@ -62,6 +62,19 @@ class HintRulesTest {
                 "https://www.wikidata.org/wiki/Q1", "wikidata-notoriety", null, "key", false);
 
         assertThat(check(book)).isEmpty();
+    }
+
+    @Test
+    void acceptsTelevisionAndVideoGameHints() {
+        HintFileEntry show = new HintFileEntry(
+                "TELEVISION", 1994, "FR", "Première diffusion de « Une série »", null,
+                "https://www.wikidata.org/wiki/Q1", "wikidata-notoriety", null, "show", false);
+        HintFileEntry game = new HintFileEntry(
+                "VIDEO_GAMES", 1991, "EN", null, "Release of the video game \"A game\"",
+                "https://www.wikidata.org/wiki/Q2", "wikidata-notoriety", null, "game", false);
+
+        assertThat(check(show)).isEmpty();
+        assertThat(check(game)).isEmpty();
     }
 
     @Test
