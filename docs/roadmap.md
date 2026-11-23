@@ -312,8 +312,8 @@ Quatre joueurs sur la prod. Décisions prises avec l'utilisateur le 2026-11-23.
 - [x] Partie libre : « Série » devient « Partie libre » (*Free play*) partout, bouton
       « Abandonner » (avec confirmation) sur une partie en cours, plus de durée estimée
       sur les longueurs — PR `feature/free-play`
-- [ ] En-tête fixe, compact, avec une icône « ? » vers « Comment jouer » (le pied de page
-      n'est pas visible en partie ni en haut des pages légales)
+- [x] En-tête fixe, compact, avec une icône « ? » vers « Comment jouer » (le pied de page
+      n'est pas visible en partie ni en haut des pages légales) — PR `feature/sticky-header`
 - [ ] Nouvelles catégories d'indice : Télévision (grosses émissions et séries) et Jeux
       vidéo (dès 1972 environ) ; on ne montre que les catégories disponibles, la fuite
       sur l'année est acceptée (les indices viennent après le premier essai) ; 9 au plus,

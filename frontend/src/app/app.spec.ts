@@ -46,6 +46,17 @@ describe('App', () => {
     expect(compiled.querySelector('header a')?.textContent).toContain('AgeGuessr');
   });
 
+  it('keeps the header on screen while the page scrolls', () => {
+    const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
+
+    const header = (fixture.nativeElement as HTMLElement).querySelector('app-header')!;
+    expect(header.classList).toContain('sticky');
+    expect(header.classList).toContain('top-0');
+    // Above the page's popovers (z-10), below the confetti (z-50) and the CDK overlays.
+    expect(header.classList).toContain('z-40');
+  });
+
   it('loads the site in the language of the restored account', async () => {
     const fixture = TestBed.createComponent(App);
     httpMock.expectOne('/api/auth/refresh').flush({ accessToken: 'token' });
