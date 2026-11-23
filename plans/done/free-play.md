@@ -41,7 +41,7 @@ Status: Complete
 - [x] 4. Duration removed (`seriesDuration` and its FR unit gone)
 - [x] 5. `SeriesApi.abandon`; `FreeGame`: « Abandon this game » above a round, then an
       inline confirm (« Abandon » / « Keep playing »), back to the lengths on 204, an
-      error kept on screen otherwise. The two small buttons prevent mousedown so the age
+      error kept on screen otherwise. The three buttons prevent mousedown so the age
       field keeps its focus (its blur showed « enter an age »)
 
 Tests: interface — confirm then cancel sends nothing, confirm sends DELETE and shows
@@ -57,7 +57,10 @@ fixed with the mousedown guard.
 
 ## Final Recap
 Stacked on `fix/tester-feedback-quick-wins` (both edit the xlf and the roadmap). The
-architecture doc records the abandon and the name. Reviews: see the PR.
+architecture doc records the abandon and the name. Reviews: code-reviewer nothing
+blocking, its 🟡 (no rate limit on the DELETE) left: a player only deletes their own series,
+whose number the creation limit already bounds. architecture-reviewer's 🟡 (the confirm
+button also had to keep the focus) fixed. `./mvnw test` 1276 pass.
 
 ## Deployment Plan
 No migration, no config. After deploy: start a free game, play one round, « Abandonner

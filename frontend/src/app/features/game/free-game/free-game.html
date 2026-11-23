@@ -71,7 +71,13 @@
                 aria-labelledby="abandon-confirm"
               >
                 <p id="abandon-confirm">{{ text.abandonConfirm }}</p>
-                <button appButton type="button" [disabled]="abandoning()" (click)="abandon()">
+                <button
+                  appButton
+                  type="button"
+                  [disabled]="abandoning()"
+                  (mousedown)="$event.preventDefault()"
+                  (click)="abandon()"
+                >
                   {{ text.abandonYes }}
                 </button>
                 <button
