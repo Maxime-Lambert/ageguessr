@@ -65,6 +65,14 @@ describe('Header', () => {
     expect(texts(header(), 'nav a')).toEqual(['Daily game', 'Free play', 'Calendar']);
   });
 
+  it('keeps « How to play » one tap away, on every screen size', () => {
+    const link = named(header(), 'a', 'How to play') as HTMLAnchorElement;
+
+    expect(link.getAttribute('href')).toBe('/how-to-play');
+    expect(link.title).toBe('How to play');
+    expect(link.closest('.hidden')).toBeNull();
+  });
+
   it('shows nothing account-related until the session restore has settled', () => {
     const page = header();
 

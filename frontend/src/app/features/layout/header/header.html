@@ -21,6 +21,19 @@
 
   <span class="flex-1"></span>
 
+  <!-- On every screen size, beside the account: the rules one tap away during a round
+       (testers, 2026-11-23, the footer's link was out of sight). -->
+  <a
+    routerLink="/how-to-play"
+    routerLinkActive="text-foreground!"
+    ariaCurrentWhenActive="page"
+    class="text-muted hover:bg-surface-2 hover:text-foreground -mx-1 grid size-10 shrink-0 place-items-center rounded-sm"
+    [attr.aria-label]="howToPlay"
+    [title]="howToPlay"
+  >
+    <svg lucideCircleQuestionMark [size]="20" aria-hidden="true"></svg>
+  </a>
+
   <div class="hidden items-center gap-2 md:flex">
     @if (auth.currentUser(); as user) {
       <app-dropdown
