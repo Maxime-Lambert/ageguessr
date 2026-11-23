@@ -156,6 +156,12 @@ describe('Game', () => {
     expect(page.textContent).toContain(GAME_TEXT.summary);
   });
 
+  it('counts down to the next game under the summary of the day', () => {
+    load(today([finished(1)]));
+
+    expect(page.querySelector('app-next-game-countdown')?.textContent).toContain('Next game in');
+  });
+
   it('leads from the summary of the day to the series', () => {
     load(today([finished(1)]));
 
@@ -176,7 +182,7 @@ describe('Game', () => {
       { date: '2026-11-13' },
     );
   const expectedText =
-    'AgeGuessr · Nov 13, 2026\nI guessed the age of 3 people in photos 📸\n🎯🟩⬛🟥  2,340 / 3,000\nWell played! Can you beat that? 👉 https://ageguessr.app';
+    'AgeGuessr · Nov 13, 2026\nI guessed the age of 3 people in photos 📸\n🎯 1000/1000\n🟩 920/1000\n⬛ —\n🟥 420/1000\n2,340 / 3,000\nWell played! Can you beat that? 👉 https://ageguessr.app';
 
   it('offers to share the result only once the day is played', () => {
     load(today([finished(1), round(2)]));
@@ -421,7 +427,7 @@ describe('Game of a past day', () => {
 
     expect(page.textContent).toContain(GAME_TEXT.summary);
     expect(page.textContent).not.toContain(GAME_TEXT.shareResult);
-    expect(page.textContent).not.toContain(GAME_TEXT.comeBack);
+    expect(page.querySelector('app-next-game-countdown')).toBeNull();
     const links = Array.from(page.querySelectorAll('a')).filter(
       (link) => link.textContent?.trim() === GAME_TEXT.backToCalendar,
     );

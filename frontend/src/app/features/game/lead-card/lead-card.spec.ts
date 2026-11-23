@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
-import { HOVER_DELAY_MS, LeadCard } from './lead-card';
+import { LeadCard } from './lead-card';
 
 describe('LeadCard', () => {
   let fixture: ComponentFixture<LeadCard>;
@@ -48,59 +48,41 @@ describe('LeadCard', () => {
     expect(info().getAttribute('aria-expanded')).toBe('true');
   });
 
-  it('opens after the mouse rests on ⓘ, and closes when it leaves the card', () => {
+  it('never opens on the mouse passing over ⓘ or the card (testers, 2026-11-23)', () => {
     vi.useFakeTimers();
     pointer('pointerenter', 'mouse', info());
-    vi.advanceTimersByTime(HOVER_DELAY_MS - 1);
-    expect(events).toEqual([]);
-    vi.advanceTimersByTime(1);
-    expect(events).toEqual(['opened']);
-
-    set({ open: true });
-    pointer('pointerleave', 'mouse');
-
-    expect(events).toEqual(['opened', 'closed']);
-  });
-
-  it('does not open when the mouse rests on the card itself', () => {
-    vi.useFakeTimers();
+    pointer('pointerover', 'mouse', info());
     pointer('pointerenter', 'mouse', card());
-    pointer('pointerenter', 'mouse');
-    vi.advanceTimersByTime(HOVER_DELAY_MS * 5);
+    vi.advanceTimersByTime(5000);
 
     expect(events).toEqual([]);
   });
 
-  it('does not open when the mouse only brushes past ⓘ', () => {
-    vi.useFakeTimers();
-    pointer('pointerenter', 'mouse', info());
-    vi.advanceTimersByTime(HOVER_DELAY_MS / 2);
-    pointer('pointerleave', 'mouse');
-    vi.advanceTimersByTime(HOVER_DELAY_MS);
-
-    expect(events).toEqual([]);
-  });
-
-  it('ignores a finger on the card: the help opens from ⓘ', () => {
-    vi.useFakeTimers();
-    pointer('pointerenter', 'touch', info());
-    vi.advanceTimersByTime(HOVER_DELAY_MS);
-    expect(events).toEqual([]);
-
-    info().dispatchEvent(new PointerEvent('click', { pointerType: 'touch', bubbles: true }));
+  it('toggles on a mouse click of ⓘ', () => {
+    info().dispatchEvent(new PointerEvent('click', { pointerType: 'mouse', bubbles: true }));
     expect(events).toEqual(['opened']);
+
     set({ open: true });
-    info().dispatchEvent(new PointerEvent('click', { pointerType: 'touch', bubbles: true }));
-
-    expect(events).toEqual(['opened', 'closed']);
-  });
-
-  it('keeps open on a mouse click of ⓘ: the rest on it opened it', () => {
-    set({ open: true });
-
     info().dispatchEvent(new PointerEvent('click', { pointerType: 'mouse', bubbles: true }));
 
+    expect(events).toEqual(['opened', 'closed']);
+  });
+
+  it('stays open when the mouse leaves the card: only a click elsewhere closes it', () => {
+    set({ open: true });
+
+    pointer('pointerleave', 'mouse');
+
     expect(events).toEqual([]);
+  });
+
+  it('toggles on a tap of ⓘ', () => {
+    info().dispatchEvent(new PointerEvent('click', { pointerType: 'touch', bubbles: true }));
+    expect(events).toEqual(['opened']);
+    set({ open: true });
+    info().dispatchEvent(new PointerEvent('click', { pointerType: 'touch', bubbles: true }));
+
+    expect(events).toEqual(['opened', 'closed']);
   });
 
   it('toggles on Enter once Tab reached ⓘ (a click that no pointer made)', () => {

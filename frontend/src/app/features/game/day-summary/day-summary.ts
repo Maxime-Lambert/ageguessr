@@ -1,5 +1,5 @@
 import { Component, ElementRef, afterNextRender, computed, input, viewChild } from '@angular/core';
-import { GAME_TEXT } from '../game-vocabulary';
+import { GAME_TEXT, summaryDetail } from '../game-vocabulary';
 import { PlayedRounds } from '../models';
 
 /**
@@ -26,6 +26,9 @@ export class DaySummary {
       position: round.position,
       removed: round.status === 'NEUTRALIZED',
       name: round.result?.person.name ?? null,
+      detail: round.result
+        ? summaryDetail(round.result.age, round.result.firstGuess, round.result.secondGuess)
+        : null,
       points: round.result?.points ?? null,
       // A small copy of the photo in the report: nothing to hide any more once played.
       imageUrl: round.imageUrl,

@@ -39,11 +39,25 @@ describe('RoundResult', () => {
   it('names the person with a link to the article in a new tab', () => {
     show(finished(1));
 
-    const name = link('Jane Doe');
+    const name = Array.from(page.querySelectorAll('a')).find((a) =>
+      a.textContent?.trim().startsWith('Jane Doe'),
+    )!;
+    expect(name.textContent).toContain(GAME_TEXT.personLink);
+    expect(name.querySelector('svg[aria-hidden="true"]')).not.toBeNull();
+    expect(name.classList).toContain('underline');
     expect(name.href).toBe('https://www.wikidata.org/wiki/Special:GoToLinkedPage/enwiki/Q42');
     expect(name.target).toBe('_blank');
     expect(name.rel).toBe('noopener');
     expect(page.querySelector('img')?.classList).toContain('archive-photo');
+  });
+
+  it('throws confetti for an age found at the first guess only', () => {
+    show(finished(1));
+    expect(page.querySelector('app-confetti')).toBeNull();
+
+    show(finished(1, { firstGuess: 40, secondGuess: null, secondPoints: null, points: 1000 }));
+    expect(page.querySelector('app-confetti')).not.toBeNull();
+    expect(page.textContent).toContain(GAME_TEXT.exact);
   });
 
   it('credits the photo with its license and source', () => {
@@ -145,6 +159,7 @@ describe('RoundResult', () => {
     expect(page.textContent).toContain('A hit.');
     expect(page.textContent).toContain('A film.');
     expect(page.textContent?.match(/1986/g)).toHaveLength(2);
+    expect(page.querySelectorAll('app-lead-help-button button[aria-label]')).toHaveLength(2);
     const buttons = Array.from(page.querySelectorAll('button')).map((b) => b.textContent?.trim());
     // The film hint was already reported: only the music one is offered.
     expect(buttons.filter((label) => label === GAME_TEXT.reportHint)).toHaveLength(1);

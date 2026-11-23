@@ -1,3 +1,6 @@
+@if (exact()) {
+  <app-confetti />
+}
 <section
   aria-labelledby="result-title"
   class="grid items-start gap-5 md:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] md:gap-14"
@@ -39,12 +42,20 @@
       </span>
     </p>
 
+    <!-- Underlined at rest, with an arrow out: testers did not see it was a link (2026-11-23). -->
     <a
       [href]="result().person.wikipediaUrl"
       target="_blank"
       rel="noopener"
-      class="font-display mt-3 block text-[32px] leading-tight underline-offset-4 hover:underline md:text-[40px]"
-      >{{ result().person.name }}</a
+      class="font-display hover:text-accent decoration-muted hover:decoration-accent mt-3 block text-[32px] leading-tight underline decoration-dotted decoration-2 underline-offset-[6px] md:text-[40px]"
+      >{{ result().person.name
+      }}<svg
+        lucideExternalLink
+        class="text-muted ml-2 inline-block align-baseline"
+        [size]="22"
+        aria-hidden="true"
+      ></svg
+      ><span class="sr-only"> {{ text.personLink }}</span></a
     >
     <dl class="text-muted mt-1.5 flex gap-1.5">
       <dt>{{ text.realAge }}</dt>
@@ -68,7 +79,9 @@
         </dd>
         <dd class="text-right font-semibold tabular-nums">{{ result().firstPoints }}</dd>
         @if (exact()) {
-          <dd class="text-score col-span-4">{{ text.exact }}</dd>
+          <dd class="text-score col-span-4 font-semibold">
+            <span aria-hidden="true">🎯 </span>{{ text.exact }}
+          </dd>
         } @else {
           <dt class="text-muted">{{ text.secondGuess }}</dt>
           <dd class="font-semibold">{{ result().secondGuess }}</dd>
@@ -91,6 +104,7 @@
           <app-lead-icon [category]="hint.category" [size]="14" />
           {{ text.hint }} · {{ categoryLabels[hint.category] }} · {{ hint.year }} ·
           {{ yearsAgo() }}
+          <app-lead-help-button [category]="hint.category" [gameYear]="gameYear" />
         </p>
         <p class="mt-2 text-lg leading-snug">{{ hint.text }}</p>
         <div

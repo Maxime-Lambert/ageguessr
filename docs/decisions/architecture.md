@@ -817,11 +817,15 @@ souvent obscur et daté à quelques années près, ne resserrait rien après un 
   donne le genre d'indice, la règle et un exemple dont l'écart est calculé depuis l'année
   de la partie (jamais écrit en dur). Seul ⓘ l'ouvre (2026-11-14, PR
   `fix/lead-help-on-info-only` : au survol de la carte entière ou à l'arrivée par Tab,
-  la bulle surgissait par-dessus les autres cartes sans qu'on l'ait demandée) : survol de
-  200 ms de ⓘ à la souris, tap au doigt, Entrée au clavier une fois ⓘ atteint par Tab.
-  Elle se ferme quand la souris quitte la carte (bulle comprise, pour pouvoir la lire),
-  au tap ailleurs ou sur Échap. Une seule ouverte à la fois ; la carte la référence par
-  `aria-describedby`, donc un lecteur d'écran l'entend sans l'ouvrir.
+  la bulle surgissait par-dessus les autres cartes sans qu'on l'ait demandée), et
+  seulement exprès (2026-11-23, PR `fix/tester-feedback-quick-wins` : le survol de 200 ms
+  de ⓘ l'ouvrait au passage et la laissait tant que la souris restait sur la carte, les
+  testeurs la trouvaient gênante) : un clic, un tap, ou Entrée une fois ⓘ atteint par Tab.
+  Elle se ferme par un second clic sur ⓘ, un clic ailleurs ou Échap. Une seule ouverte à
+  la fois ; la carte la référence par `aria-describedby`, donc un lecteur d'écran l'entend
+  sans l'ouvrir. Le même ⓘ suit l'indice une fois révélé (avant le 2e essai et au
+  résultat, `LeadHelpButton`), pour retrouver ce que donne la catégorie ; la bulle elle-même
+  est un composant partagé (`LeadHelpPanel`).
 
 ### Système de points
 **Décision** (2026-11-02, remplace « l'essentiel des points sur le 2e essai ») : chaque

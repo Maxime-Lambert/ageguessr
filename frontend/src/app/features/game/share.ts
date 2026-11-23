@@ -11,23 +11,33 @@ export function dailyShareUrl(origin: string): string {
   return origin;
 }
 
+/** The most one round can earn: an exact first guess. */
+export const ROUND_MAX = 1000;
+
 /**
- * One square per round, by points: never the answers. With `exact` (the daily game only, a
- * decision of 2026-11-13), a target for a round found at the first guess, which ends it.
+ * One line per round, a square by points and the points (`🟨 499/1000`), never the
+ * answers: a line reads better than a row of squares (testers, 2026-11-23). With `exact`
+ * (the daily game only, a decision of 2026-11-13), a target for a round found at the first
+ * guess, which ends it. A withdrawn photo earns nothing to compare: a black square, a dash.
  */
-export function squares(rounds: RoundView[], { exact = false } = {}): string {
-  return rounds
-    .map((round) => {
-      if (round.status === 'NEUTRALIZED') {
-        return '⬛';
-      }
-      if (exact && round.result && round.result.secondGuess === null) {
-        return '🎯';
-      }
-      const points = round.result?.points ?? 0;
-      return points >= 900 ? '🟩' : points >= 500 ? '🟨' : '🟥';
-    })
-    .join('');
+export function scoreLines(rounds: RoundView[], { exact = false } = {}): string {
+  return rounds.map((round) => scoreLine(round, exact)).join('\n');
+}
+
+function scoreLine(round: RoundView, exact: boolean): string {
+  if (round.status === 'NEUTRALIZED') {
+    return '⬛ —';
+  }
+  const points = round.result?.points ?? 0;
+  const square =
+    exact && round.result && round.result.secondGuess === null
+      ? '🎯'
+      : points >= 900
+        ? '🟩'
+        : points >= 500
+          ? '🟨'
+          : '🟥';
+  return `${square} ${points}/${ROUND_MAX}`;
 }
 
 /** The format of a nickname, as the API checks it (the format of a username). */

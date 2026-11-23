@@ -37,13 +37,12 @@ export class Calendar {
   private readonly locale = inject(LOCALE_ID);
 
   protected readonly text = { ...GAME_TEXT, ...CALENDAR_TEXT };
-  protected readonly legend = (['AVAILABLE', 'STARTED', 'FINISHED', 'UNAVAILABLE'] as const).map(
-    (state) => ({
-      state,
-      label: STATE_LABELS[state],
-      classes: `${DAY_BASE} size-5 ${DAY_CLASSES[state]}`,
-    }),
-  );
+  /** No item for a day without a game: its empty slot says it (testers, 2026-11-23). */
+  protected readonly legend = (['AVAILABLE', 'STARTED', 'FINISHED'] as const).map((state) => ({
+    state,
+    label: STATE_LABELS[state],
+    classes: `${DAY_BASE} size-5 ${DAY_CLASSES[state]}`,
+  }));
 
   readonly month = signal<CalendarMonth | null>(null);
   readonly status = signal<'loading' | 'ready' | 'error'>('loading');
@@ -130,7 +129,7 @@ export class Calendar {
 }
 
 const CALENDAR_TEXT = {
-  intro: $localize`:@@calendar.intro:Missed a day? Every past daily game can still be played.`,
+  intro: $localize`:@@calendar.intro:Missed a day? Past daily games can still be played.`,
   previousMonth: $localize`:@@calendar.previousMonth:Previous month`,
   nextMonth: $localize`:@@calendar.nextMonth:Next month`,
   available: $localize`:@@calendar.available:To play`,

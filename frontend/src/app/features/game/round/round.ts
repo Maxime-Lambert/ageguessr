@@ -29,6 +29,7 @@ import {
   roundTitle,
 } from '../game-vocabulary';
 import { LeadCard } from '../lead-card/lead-card';
+import { LeadHelpButton } from '../lead-help/lead-help-button';
 import { LeadIcon } from '../lead-icon/lead-icon';
 import { HintCategory, MAX_AGE, MIN_AGE, RoundView } from '../models';
 
@@ -46,6 +47,7 @@ import { HintCategory, MAX_AGE, MIN_AGE, RoundView } from '../models';
     CaseSteps,
     Field,
     LeadCard,
+    LeadHelpButton,
     LeadIcon,
     LucideArrowDown,
     LucideArrowUp,

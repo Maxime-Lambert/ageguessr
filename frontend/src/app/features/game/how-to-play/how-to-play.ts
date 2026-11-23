@@ -1,5 +1,5 @@
-import { Component, input } from '@angular/core';
-import { GAME_TEXT } from '../game-vocabulary';
+import { Component, LOCALE_ID, inject, input } from '@angular/core';
+import { GAME_TEXT, localMidnight, ruleNewGame } from '../game-vocabulary';
 
 /**
  * The rules in three lines, for a first visit (RulesCard), the free page and the
@@ -36,6 +36,7 @@ export class HowToPlay {
     GAME_TEXT.ruleGuess,
     GAME_TEXT.ruleLead,
     GAME_TEXT.ruleHints,
-    GAME_TEXT.rulePoints,
+    // Midnight UTC, and when that is on the player's clock.
+    `${GAME_TEXT.rulePoints} ${ruleNewGame(localMidnight(new Date(), inject(LOCALE_ID)))}`,
   ];
 }

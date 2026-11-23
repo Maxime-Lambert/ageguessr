@@ -11,7 +11,7 @@ import { Leaderboard } from '../leaderboard/leaderboard';
 import { Challenge, Series } from '../models';
 import { SeriesApi } from '../series-api';
 import { SHARE_TARGET } from '../../../shared/share-target';
-import { NICKNAME_PATTERN, challengeUrl, squares } from '../share';
+import { NICKNAME_PATTERN, challengeUrl, scoreLines } from '../share';
 
 /**
  * « Challenge friends », at the end of a series its creator played: a guest names
@@ -100,6 +100,6 @@ export class ShareChallenge {
 
   private message(): string {
     const series = this.series();
-    return shareText(series.score.points, series.score.max, squares(series.rounds), this.url()!);
+    return shareText(series.score.points, series.score.max, scoreLines(series.rounds), this.url()!);
   }
 }
