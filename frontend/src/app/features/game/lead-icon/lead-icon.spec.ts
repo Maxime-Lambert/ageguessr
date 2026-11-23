@@ -10,6 +10,8 @@ const CATEGORIES: HintCategory[] = [
   'WORLD',
   'CELEBRITIES',
   'LITERATURE',
+  'TELEVISION',
+  'VIDEO_GAMES',
 ];
 
 describe('LeadIcon', () => {

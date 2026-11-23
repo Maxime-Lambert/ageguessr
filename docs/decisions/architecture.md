@@ -626,9 +626,14 @@ permettre de calculer l'âge sur la photo. Son **année de référence est l'ann
 au joueur.
 - **Catégories** : Musique, Cinéma, Sport, Science et techno, Monde, Célébrités, et
   Littérature depuis le 2026-11-12 (V23 : parutions avec leur auteur, Nobel de
-  littérature, Goncourt, Booker, Pulitzer de la fiction). Au moins
-  5 indices par catégorie, par année et par public ; en dessous, la catégorie est masquée
-  pour cette année.
+  littérature, Goncourt, Booker, Pulitzer de la fiction), Télévision et Jeux vidéo depuis
+  le 2026-11-23 (V30, retours testeurs : premières diffusions de séries et d'émissions,
+  sorties de jeux vidéo). Au moins 5 indices par catégorie, par année et par public ; en
+  dessous, la catégorie est masquée pour cette année. Jeux vidéo n'existe pas avant les
+  années 1970 : son absence dit au joueur que la personne avait plus d'une cinquantaine
+  d'années sur la photo. Fuite acceptée par l'utilisateur (les indices viennent après le
+  premier essai, qui en dit déjà beaucoup) ; les cartes gardent une taille fixe quel que
+  soit leur nombre (4 à 9).
 - **Base pré-construite** : extraction en Python hors de l'application (`scripts/hints/`),
   sortie JSON versionnée, import idempotent par Java. Pas d'appel à un LLM, à Wikipédia
   ou à Wikidata depuis l'application.

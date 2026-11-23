@@ -1954,151 +1954,165 @@
           <context context-type="linenumber">204</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="game.category.television" datatype="html">
+        <source>Television</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
+          <context context-type="linenumber">205</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="game.category.videoGames" datatype="html">
+        <source>Video games</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
+          <context context-type="linenumber">206</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="game.yearsAgo" datatype="html">
         <source><x id="years" equiv-text="years"/> years ago</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">209</context>
+          <context context-type="linenumber">211</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.roundTitle" datatype="html">
         <source><x id="round" equiv-text="GAME_TEXT.round"/> <x id="position" equiv-text="position"/> of <x id="total" equiv-text="total"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">213</context>
+          <context context-type="linenumber">215</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.summaryDetailExact" datatype="html">
         <source>Age <x id="age" equiv-text="age"/> · spot on at <x id="first" equiv-text="first"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">222</context>
+          <context context-type="linenumber">224</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.summaryDetail" datatype="html">
         <source>Age <x id="age" equiv-text="age"/> · guessed <x id="first" equiv-text="first"/> then <x id="second" equiv-text="second"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">223</context>
+          <context context-type="linenumber">225</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.ruleNewGameLocal" datatype="html">
         <source>A new game starts every day at midnight UTC (<x id="time" equiv-text="localTime"/> your time).</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">233</context>
+          <context context-type="linenumber">235</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.ruleNewGame" datatype="html">
         <source>A new game starts every day at midnight UTC.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">234</context>
+          <context context-type="linenumber">236</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.nextGameInHours" datatype="html">
         <source>Next game in <x id="hours" equiv-text="hours"/> h <x id="minutes" equiv-text="String(rest).padStart(2, &apos;0&apos;)"/> min</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">257</context>
+          <context context-type="linenumber">259</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.nextGameInMinutes" datatype="html">
         <source>Next game in <x id="minutes" equiv-text="rest"/> min</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">258</context>
+          <context context-type="linenumber">260</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.challengeIntro" datatype="html">
         <source><x id="creator" equiv-text="creator"/> challenges you on <x id="length" equiv-text="seriesLength(rounds)"/>.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">264</context>
+          <context context-type="linenumber">266</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.challengeIntroAnonymous" datatype="html">
         <source>A friend challenges you on <x id="length" equiv-text="seriesLength(rounds)"/>.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">265</context>
+          <context context-type="linenumber">267</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.shareText" datatype="html">
         <source>AgeGuessr · <x id="challenge" equiv-text="GAME_TEXT.challenge"/> · <x id="points" equiv-text="points"/> / <x id="max" equiv-text="max"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">275</context>
+          <context context-type="linenumber">277</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.share.verdict.brilliant" datatype="html">
         <source>Brilliant!</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">286</context>
+          <context context-type="linenumber">288</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.share.verdict.wellPlayed" datatype="html">
         <source>Well played!</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">287</context>
+          <context context-type="linenumber">289</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.share.verdict.notBad" datatype="html">
         <source>Not bad!</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">288</context>
+          <context context-type="linenumber">290</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.share.verdict.tough" datatype="html">
         <source>A tough one!</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">289</context>
+          <context context-type="linenumber">291</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.share.verdict.rough" datatype="html">
         <source>Rough day!</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">290</context>
+          <context context-type="linenumber">292</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.share.playedOne" datatype="html">
         <source>I guessed the age of 1 person in a photo 📸</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">296</context>
+          <context context-type="linenumber">298</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.share.played" datatype="html">
         <source>I guessed the age of <x id="photos" equiv-text="photos"/> people in photos 📸</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">297</context>
+          <context context-type="linenumber">299</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.shareDateFormat" datatype="html">
         <source>MMM d, y</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">322</context>
+          <context context-type="linenumber">324</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.share.dare" datatype="html">
         <source>Can you beat that? 👉 <x id="url" equiv-text="url"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">330</context>
+          <context context-type="linenumber">332</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.pastDayTitle" datatype="html">
         <source>Daily game of <x id="day" equiv-text="day"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">344</context>
+          <context context-type="linenumber">346</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.leadHelp.rule" datatype="html">
@@ -2199,32 +2213,60 @@
           <context context-type="linenumber">47</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="game.leadHelp.television.kind" datatype="html">
+        <source>A TV series or show, first aired.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/lead-help-texts.ts</context>
+          <context context-type="linenumber">51</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="game.leadHelp.television.hint" datatype="html">
+        <source>First aired: &quot;Friends&quot;</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/lead-help-texts.ts</context>
+          <context context-type="linenumber">52</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="game.leadHelp.videoGames.kind" datatype="html">
+        <source>A video game released.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/lead-help-texts.ts</context>
+          <context context-type="linenumber">56</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="game.leadHelp.videoGames.hint" datatype="html">
+        <source>Release of the video game &quot;Super Mario Bros.&quot;</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/lead-help-texts.ts</context>
+          <context context-type="linenumber">57</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="game.leadHelp.celebrities.kind" datatype="html">
         <source>A famous person, as old this year as the person on the photo.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/lead-help-texts.ts</context>
-          <context context-type="linenumber">51</context>
+          <context context-type="linenumber">61</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.leadHelp.celebrities.example" datatype="html">
         <source><x id="name" equiv-text="hint"/>, born in <x id="year" equiv-text="year"/>: <x id="years" equiv-text="years"/> this year → <x id="age" equiv-text="years"/> on the photo.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/lead-help-texts.ts</context>
-          <context context-type="linenumber">65</context>
+          <context context-type="linenumber">75</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.leadHelp.example" datatype="html">
         <source><x id="hint" equiv-text="hint"/>: <x id="years" equiv-text="years"/> years ago → <x id="age" equiv-text="years"/> on the photo.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/lead-help-texts.ts</context>
-          <context context-type="linenumber">71</context>
+          <context context-type="linenumber">81</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.leadHelp.button" datatype="html">
         <source>How the <x id="category" equiv-text="label"/> hint works</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/lead-help-texts.ts</context>
-          <context context-type="linenumber">77</context>
+          <context context-type="linenumber">87</context>
         </context-group>
       </trans-unit>
       <trans-unit id="profile.title" datatype="html">
@@ -2392,77 +2434,77 @@
         <source>Main</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/layout/header/header.ts</context>
-          <context context-type="linenumber">67</context>
+          <context context-type="linenumber">69</context>
         </context-group>
       </trans-unit>
       <trans-unit id="header.login" datatype="html">
         <source>Log in</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/layout/header/header.ts</context>
-          <context context-type="linenumber">68</context>
+          <context context-type="linenumber">70</context>
         </context-group>
       </trans-unit>
       <trans-unit id="header.signup" datatype="html">
         <source>Sign up</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/layout/header/header.ts</context>
-          <context context-type="linenumber">69</context>
+          <context context-type="linenumber">71</context>
         </context-group>
       </trans-unit>
       <trans-unit id="header.logout" datatype="html">
         <source>Log out</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/layout/header/header.ts</context>
-          <context context-type="linenumber">70</context>
+          <context context-type="linenumber">72</context>
         </context-group>
       </trans-unit>
       <trans-unit id="header.myAccount" datatype="html">
         <source>My account</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/layout/header/header.ts</context>
-          <context context-type="linenumber">71</context>
+          <context context-type="linenumber">73</context>
         </context-group>
       </trans-unit>
       <trans-unit id="header.profile" datatype="html">
         <source>My profile</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/layout/header/header.ts</context>
-          <context context-type="linenumber">72</context>
+          <context context-type="linenumber">74</context>
         </context-group>
       </trans-unit>
       <trans-unit id="header.friends" datatype="html">
         <source>Friends</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/layout/header/header.ts</context>
-          <context context-type="linenumber">73</context>
+          <context context-type="linenumber">75</context>
         </context-group>
       </trans-unit>
       <trans-unit id="header.pendingRequests" datatype="html">
         <source><x id="count" equiv-text="count"/> requests waiting for an answer</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/layout/header/header.ts</context>
-          <context context-type="linenumber">75</context>
+          <context context-type="linenumber">77</context>
         </context-group>
       </trans-unit>
       <trans-unit id="header.preferences" datatype="html">
         <source>Preferences</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/layout/header/header.ts</context>
-          <context context-type="linenumber">76</context>
+          <context context-type="linenumber">78</context>
         </context-group>
       </trans-unit>
       <trans-unit id="header.menu" datatype="html">
         <source>Menu</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/layout/header/header.ts</context>
-          <context context-type="linenumber">77</context>
+          <context context-type="linenumber">79</context>
         </context-group>
       </trans-unit>
       <trans-unit id="header.closeMenu" datatype="html">
         <source>Close menu</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/layout/header/header.ts</context>
-          <context context-type="linenumber">78</context>
+          <context context-type="linenumber">80</context>
         </context-group>
       </trans-unit>
       <trans-unit id="preferences.siteLanguage" datatype="html">

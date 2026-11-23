@@ -91,9 +91,12 @@ class HintConstraintsIntegrationTest {
                 // V24: a hint naming an author, a laureate, a winner keeps that person.
                 valid().dedupeKey("performer").subjectQid("Q42").build(),
                 // V23.
-                valid().dedupeKey("book").category(HintCategory.LITERATURE).build()));
+                valid().dedupeKey("book").category(HintCategory.LITERATURE).build(),
+                // V30.
+                valid().dedupeKey("show").category(HintCategory.TELEVISION).build(),
+                valid().dedupeKey("game").category(HintCategory.VIDEO_GAMES).build()));
 
-        assertThat(saved).hasSize(6);
+        assertThat(saved).hasSize(8);
     }
 
     @Test

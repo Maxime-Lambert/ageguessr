@@ -1456,6 +1456,30 @@
         <source>Keep playing</source>
         <target>Continuer</target>
       </trans-unit>
+      <trans-unit id="game.category.television" datatype="html">
+        <source>Television</source>
+        <target>Télévision</target>
+      </trans-unit>
+      <trans-unit id="game.category.videoGames" datatype="html">
+        <source>Video games</source>
+        <target>Jeux vidéo</target>
+      </trans-unit>
+      <trans-unit id="game.leadHelp.television.kind" datatype="html">
+        <source>A TV series or show, first aired.</source>
+        <target>Une série ou une émission de télévision, à sa première diffusion.</target>
+      </trans-unit>
+      <trans-unit id="game.leadHelp.television.hint" datatype="html">
+        <source>First aired: &quot;Friends&quot;</source>
+        <target>Première diffusion de « Friends »</target>
+      </trans-unit>
+      <trans-unit id="game.leadHelp.videoGames.kind" datatype="html">
+        <source>A video game released.</source>
+        <target>La sortie d'un jeu vidéo.</target>
+      </trans-unit>
+      <trans-unit id="game.leadHelp.videoGames.hint" datatype="html">
+        <source>Release of the video game &quot;Super Mario Bros.&quot;</source>
+        <target>Sortie du jeu vidéo « Super Mario Bros. »</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

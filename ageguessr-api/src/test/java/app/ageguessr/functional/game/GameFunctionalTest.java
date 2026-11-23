@@ -339,6 +339,27 @@ class GameFunctionalTest {
     }
 
     @Test
+    void televisionAndVideoGameHintsAreOfferedShownAndKeptInTheRound() throws Exception {
+        int year = today.getYear() - AGE;
+        for (int i = 0; i < Hint.MINIMUM_PER_CATEGORY; i++) {
+            saveHint(HintCategory.TELEVISION, year, "Show " + i);
+            saveHint(HintCategory.VIDEO_GAMES, year, "Game " + i);
+        }
+        Cookie guest = guestCookie();
+        firstGuess(1, 30, guest)
+                .andExpect(jsonPath("$.categories", hasItem("TELEVISION")))
+                .andExpect(jsonPath("$.categories", hasItem("VIDEO_GAMES")));
+
+        // V30: the round stores both categories, as the CHECK constraints of the plays now allow.
+        perform(post(round(1, "hint")), "{\"categories\":[\"TELEVISION\",\"VIDEO_GAMES\",\"MUSIC\"]}", guest, null)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.hints[*].category", hasItem("VIDEO_GAMES")));
+        perform(post(round(1, "second-guess")), "{\"guess\":38}", guest, null)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.result.hints[*].category", hasItem("TELEVISION")));
+    }
+
+    @Test
     void aPageOfBeforeSeveralHintsStillGetsOneHint() throws Exception {
         Cookie guest = guestCookie();
         firstGuess(1, 30, guest).andExpect(status().isOk());
