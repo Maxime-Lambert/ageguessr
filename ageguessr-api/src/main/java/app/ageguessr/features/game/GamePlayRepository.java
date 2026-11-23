@@ -23,6 +23,9 @@ public interface GamePlayRepository extends JpaRepository<GamePlay, UUID> {
 
     List<GamePlay> findByGuestIdAndGameDate(UUID guestId, LocalDate gameDate);
 
+    /** Every play of a day, all players: the stats of the day (GetDayStats). */
+    List<GamePlay> findByGameDate(LocalDate gameDate);
+
     Optional<GamePlay> findByUserIdAndGameDateAndPosition(UUID userId, LocalDate gameDate, short position);
 
     Optional<GamePlay> findByGuestIdAndGameDateAndPosition(UUID guestId, LocalDate gameDate, short position);

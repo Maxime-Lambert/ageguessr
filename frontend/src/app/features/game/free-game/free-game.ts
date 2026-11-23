@@ -16,7 +16,7 @@ import { SeriesApi } from '../series-api';
 import { ShareChallenge } from '../share-challenge/share-challenge';
 
 /**
- * The free investigation, at /free: the player picks a length, plays the series with the
+ * Free play, at /free: the player picks a length, plays the series with the
  * rules of the daily game (RoundsScreen), then starts another one. An unfinished series
  * is picked up again, from the server, on any device of an account.
  */

@@ -1480,6 +1480,14 @@
         <source>Release of the video game &quot;Super Mario Bros.&quot;</source>
         <target>Sortie du jeu vidéo « Super Mario Bros. »</target>
       </trans-unit>
+      <trans-unit id="game.betterThan" datatype="html">
+        <source>Better than <x id="percent" equiv-text="percent"/>% of the <x id="players" equiv-text="players"/> players who finished this game</source>
+        <target>Mieux que <x id="percent" equiv-text="percent"/> % des <x id="players" equiv-text="players"/> joueurs qui ont fini cette partie</target>
+      </trans-unit>
+      <trans-unit id="game.playersAverage" datatype="html">
+        <source>Players&apos; average: <x id="age" equiv-text="age"/></source>
+        <target>Moyenne des joueurs : <x id="age" equiv-text="age"/> ans</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

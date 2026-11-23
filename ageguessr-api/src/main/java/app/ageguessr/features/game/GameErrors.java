@@ -40,6 +40,14 @@ public final class GameErrors {
         return new ConflictException("HINT_COUNT", "Pick the number of distinct hint categories the round asks for");
     }
 
+    /**
+     * The stats of a day before the asker finished it: the average guesses would give the
+     * ages away.
+     */
+    public static ConflictException dayNotFinished() {
+        return new ConflictException("DAY_NOT_FINISHED", "Finish the day to see how the others did");
+    }
+
     /** Unknown, purged, or not one of the player's series: the same answer for all three. */
     public static NotFoundException seriesNotFound() {
         return new NotFoundException("No such series");

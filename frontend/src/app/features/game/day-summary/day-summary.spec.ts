@@ -47,4 +47,28 @@ describe('DaySummary', () => {
       },
     ]);
   });
+
+  it('says where the player stands and what the others guessed, given the stats', () => {
+    fixture.componentRef.setInput('game', today([finished(1, { points: 593 })]));
+    fixture.componentRef.setInput('stats', {
+      players: 143,
+      betterThanPercent: 72,
+      rounds: [{ position: 1, averageFirstGuess: 44 }],
+    });
+    fixture.detectChanges();
+
+    expect(page.textContent).toContain('Better than 72% of the 143 players who finished this game');
+    expect(page.querySelector('li')?.textContent?.replace(/\s+/g, ' ')).toContain(
+      "Age 40 · guessed 30 then 38 Players' average: 44",
+    );
+  });
+
+  it('says nothing of the others under the minimum of players', () => {
+    fixture.componentRef.setInput('game', today([finished(1)]));
+    fixture.componentRef.setInput('stats', { players: 4, betterThanPercent: null, rounds: [] });
+    fixture.detectChanges();
+
+    expect(page.textContent).not.toContain('Better than');
+    expect(page.textContent).not.toContain('average');
+  });
 });

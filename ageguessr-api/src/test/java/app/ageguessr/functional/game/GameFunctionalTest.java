@@ -675,6 +675,46 @@ class GameFunctionalTest {
         seeded.forEach(photo -> assertThat(json).doesNotContain(photo.getId().toString()));
     }
 
+    @Test
+    void theStatsOfTheDayAreForThoseWhoFinishedIt() throws Exception {
+        String stats = "/api/game/days/" + today + "/stats";
+        // Nine others finished the day, exact on every round but at 50 on round 1.
+        for (int i = 0; i < 9; i++) {
+            PlayerKey other = PlayerKey.guest(UUID.randomUUID());
+            for (short position = 1; position <= 3; position++) {
+                int guess = position == 1 ? 50 : AGE;
+                GamePlay play = GamePlay.start(today, position, other, Language.EN, guess, AGE, Instant.now());
+                if (guess != AGE) {
+                    play.revealHints(List.of(HintCategory.MUSIC), List.of(UUID.randomUUID()));
+                    play.finishWithSecondGuess(AGE, AGE, Instant.now());
+                }
+                gamePlays.save(play);
+            }
+        }
+        Cookie guest = guestCookie();
+        mockMvc.perform(get(stats)).andExpect(status().isConflict());
+        firstGuess(1, AGE, guest).andExpect(status().isOk());
+        // Before the end of the day, the averages would give the ages away.
+        mockMvc.perform(get(stats).cookie(guest))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.errorCode").value("DAY_NOT_FINISHED"));
+
+        firstGuess(2, AGE, guest).andExpect(status().isOk());
+        firstGuess(3, AGE, guest).andExpect(status().isOk());
+
+        mockMvc.perform(get(stats).cookie(guest))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.players").value(10))
+                .andExpect(jsonPath("$.betterThanPercent").value(100))
+                .andExpect(jsonPath("$.rounds.length()").value(3))
+                // (9 × 50 + 40) / 10 = 49.
+                .andExpect(jsonPath("$.rounds[0].averageFirstGuess").value(49))
+                .andExpect(jsonPath("$.rounds[1].averageFirstGuess").value(AGE));
+        mockMvc.perform(get("/api/game/days/" + today.plusDays(1) + "/stats").cookie(guest))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.errorCode").value("GAME_CLOSED"));
+    }
+
     private Cookie guestCookie() {
         return new Cookie(GuestCookie.NAME, UUID.randomUUID().toString());
     }

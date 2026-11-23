@@ -2024,95 +2024,109 @@
           <context context-type="linenumber">260</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="game.betterThan" datatype="html">
+        <source>Better than <x id="percent" equiv-text="percent"/>% of the <x id="players" equiv-text="players"/> players who finished this game</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
+          <context context-type="linenumber">268</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="game.playersAverage" datatype="html">
+        <source>Players&apos; average: <x id="age" equiv-text="age"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
+          <context context-type="linenumber">273</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="game.challengeIntro" datatype="html">
         <source><x id="creator" equiv-text="creator"/> challenges you on <x id="length" equiv-text="seriesLength(rounds)"/>.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">266</context>
+          <context context-type="linenumber">279</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.challengeIntroAnonymous" datatype="html">
         <source>A friend challenges you on <x id="length" equiv-text="seriesLength(rounds)"/>.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">267</context>
+          <context context-type="linenumber">280</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.shareText" datatype="html">
         <source>AgeGuessr · <x id="challenge" equiv-text="GAME_TEXT.challenge"/> · <x id="points" equiv-text="points"/> / <x id="max" equiv-text="max"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">277</context>
+          <context context-type="linenumber">290</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.share.verdict.brilliant" datatype="html">
         <source>Brilliant!</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">288</context>
+          <context context-type="linenumber">301</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.share.verdict.wellPlayed" datatype="html">
         <source>Well played!</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">289</context>
+          <context context-type="linenumber">302</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.share.verdict.notBad" datatype="html">
         <source>Not bad!</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">290</context>
+          <context context-type="linenumber">303</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.share.verdict.tough" datatype="html">
         <source>A tough one!</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">291</context>
+          <context context-type="linenumber">304</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.share.verdict.rough" datatype="html">
         <source>Rough day!</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">292</context>
+          <context context-type="linenumber">305</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.share.playedOne" datatype="html">
         <source>I guessed the age of 1 person in a photo 📸</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">298</context>
+          <context context-type="linenumber">311</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.share.played" datatype="html">
         <source>I guessed the age of <x id="photos" equiv-text="photos"/> people in photos 📸</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">299</context>
+          <context context-type="linenumber">312</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.shareDateFormat" datatype="html">
         <source>MMM d, y</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">324</context>
+          <context context-type="linenumber">337</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.share.dare" datatype="html">
         <source>Can you beat that? 👉 <x id="url" equiv-text="url"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">332</context>
+          <context context-type="linenumber">345</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.pastDayTitle" datatype="html">
         <source>Daily game of <x id="day" equiv-text="day"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/game/game-vocabulary.ts</context>
-          <context context-type="linenumber">346</context>
+          <context context-type="linenumber">359</context>
         </context-group>
       </trans-unit>
       <trans-unit id="game.leadHelp.rule" datatype="html">

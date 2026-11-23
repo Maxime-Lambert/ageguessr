@@ -94,6 +94,16 @@ export interface TodayGame extends PlayedRounds {
   date: string;
 }
 
+/**
+ * How the others did on a day (/api/game/days/{date}/stats), once the player finished it.
+ * Under the API's minimum of players, only `players`: no share, no averages.
+ */
+export interface DayStats {
+  players: number;
+  betterThanPercent: number | null;
+  rounds: { position: number; averageFirstGuess: number }[];
+}
+
 /** A day of the calendar, for the player (DayState). */
 export type DayState = 'UNAVAILABLE' | 'AVAILABLE' | 'STARTED' | 'FINISHED';
 
