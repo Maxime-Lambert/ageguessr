@@ -15,7 +15,15 @@ export interface GuessRange {
   max: number;
 }
 export type HintCategory =
-  'MUSIC' | 'FILM' | 'SPORT' | 'SCIENCE' | 'WORLD' | 'CELEBRITIES' | 'LITERATURE';
+  | 'MUSIC'
+  | 'FILM'
+  | 'SPORT'
+  | 'SCIENCE'
+  | 'WORLD'
+  | 'CELEBRITIES'
+  | 'LITERATURE'
+  | 'TELEVISION'
+  | 'VIDEO_GAMES';
 
 /** The hint during the round: no year, it would give the answer away. */
 export interface ShownHint {
@@ -84,6 +92,16 @@ export interface PlayedRounds {
 /** Today's game (/api/game/today) or a past day's (/api/game/days/{date}). */
 export interface TodayGame extends PlayedRounds {
   date: string;
+}
+
+/**
+ * How the others did on a day (/api/game/days/{date}/stats), once the player finished it.
+ * Under the API's minimum of players, only `players`: no share, no averages.
+ */
+export interface DayStats {
+  players: number;
+  betterThanPercent: number | null;
+  rounds: { position: number; averageFirstGuess: number }[];
 }
 
 /** A day of the calendar, for the player (DayState). */

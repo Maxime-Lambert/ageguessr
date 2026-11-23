@@ -34,7 +34,8 @@ WORKERS = 32
 LANGS = ("fr", "en")
 SOURCE_KIND = "wikidata-notoriety"
 FILES = {"SPORT": "sport", "WORLD": "world", "SCIENCE": "science", "MUSIC": "music", "FILM": "film",
-         "CELEBRITIES": "celebrities", "LITERATURE": "literature"}
+         "CELEBRITIES": "celebrities", "LITERATURE": "literature", "TELEVISION": "television",
+         "VIDEO_GAMES": "video-games"}
 
 # The floor of a category and decade: a share of the median of the best known fact of each
 # year, never under the absolute floor of the language. A floor per decade follows the
@@ -48,9 +49,11 @@ PER_ARTIST = 2
 # military prototypes would otherwise fill Science while few players know them.
 PER_YEAR_OF_KIND = {"flight": 4}
 
-SITELINKS = {"SPORT": 12, "WORLD": 15, "SCIENCE": 15, "MUSIC": 12, "FILM": 15, "CELEBRITIES": 40, "LITERATURE": 12}
+SITELINKS = {"SPORT": 12, "WORLD": 15, "SCIENCE": 15, "MUSIC": 12, "FILM": 15, "CELEBRITIES": 40, "LITERATURE": 12,
+             "TELEVISION": 12, "VIDEO_GAMES": 12}
 # How many candidates per year go on to the views, by sitelinks: more where the pool is thin.
-TOP = {"SPORT": 80, "WORLD": 80, "SCIENCE": 80, "MUSIC": 80, "FILM": 60, "CELEBRITIES": 40, "LITERATURE": 80}
+TOP = {"SPORT": 80, "WORLD": 80, "SCIENCE": 80, "MUSIC": 80, "FILM": 60, "CELEBRITIES": 40, "LITERATURE": 80,
+       "TELEVISION": 80, "VIDEO_GAMES": 80}
 
 # No minor in a public file: only people already 18 on the day of the extraction.
 ADULT_AGE = 18
@@ -246,6 +249,27 @@ QUERIES = {
       }"""),
         ("award", award(("Q37922", HUMAN), ("Q187300", HUMAN), ("Q160082", HUMAN), ("Q833633", HUMAN))),
     ],
+    # A programme first aired: series, game shows, talk shows, cartoons (any subclass of
+    # television program), dated by its start, or its release when Wikidata has no start.
+    # Neither an episode nor a season: a show is remembered as a whole (2026-11-23).
+    "TELEVISION": [("show", """
+      SELECT ?i ?n ?en ?fr ?p ?ten ?tfr WHERE {
+        ?i wdt:P31/wdt:P279* wd:Q15416 ; wikibase:sitelinks ?n . FILTER(?n >= %(n)d)
+        { ?i wdt:P580 ?p } UNION { ?i wdt:P577 ?p }
+        FILTER NOT EXISTS { VALUES ?part { wd:Q21191270 wd:Q3464665 } ?i wdt:P31/wdt:P279* ?part }
+        FILTER NOT EXISTS { ?i wdt:P136 wd:Q172067 }
+        %(labels)s %(titles)s
+      }""")],
+    # A video game released (the earliest date: a release abroad comes later). Few before
+    # the seventies: those years simply offer no Video games lead (decision of 2026-11-23,
+    # the leak on the age accepted).
+    # Never an adult game (eroge, hentai, erotic video game): a family game names none, a
+    # rule on the genre rather than a list of titles (review of 2026-11-23).
+    "VIDEO_GAMES": [("game", """
+      SELECT ?i ?n ?en ?fr ?p ?ten ?tfr WHERE {
+        ?i wdt:P31 wd:Q7889 ; wikibase:sitelinks ?n ; wdt:P577 ?p . FILTER(?n >= %(n)d) %(labels)s %(titles)s
+        FILTER NOT EXISTS { VALUES ?adult { wd:Q1046788 wd:Q172067 wd:Q3362070 } ?i wdt:P136 ?adult }
+      }""")],
     # The birth date to the day, so that the adult rule holds on the day of the extraction.
     "CELEBRITIES": [("person", """
       SELECT ?i ?n ?en ?fr ?p ?ten ?tfr ?descEn ?descFr WHERE {
@@ -308,6 +332,8 @@ WORK = {"fr": "Œuvre « {} »", "en": "Work \"{}\""}
 DISCOVERY = {"fr": "Découverte ou invention : {}", "en": "Discovered or invented: {}"}
 LAUNCH = {"fr": "Lancement : {}", "en": "Launched: {}"}
 FILM = {"fr": "Sortie du film « {} »", "en": "Release of the film \"{}\""}
+SHOW = {"fr": "Première diffusion de « {} »", "en": "First aired: \"{}\""}
+GAME = {"fr": "Sortie du jeu vidéo « {} »", "en": "Release of the video game \"{}\""}
 BOOK = {"fr": ("Parution : « {} » — {}", "Parution : « {} »"), "en": ("Published: \"{}\" — {}", "Published: \"{}\"")}
 ALBUM = {"fr": ("Album « {} » — {}", "Album éponyme — {}", "Album « {} »"),
          "en": ("Album \"{}\" — {}", "Self-titled album — {}", "Album \"{}\"")}
@@ -408,6 +434,10 @@ def text(item, lang):
         return DISCOVERY[lang].format(label)
     if kind == "film":
         return FILM[lang].format(label)
+    if kind == "show":
+        return SHOW[lang].format(label)
+    if kind == "game":
+        return GAME[lang].format(label)
     if kind == "album":
         if not winner:
             return ALBUM[lang][2].format(label)

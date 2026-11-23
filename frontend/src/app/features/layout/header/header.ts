@@ -7,6 +7,7 @@ import { NavigationStart, Router, RouterLink, RouterLinkActive } from '@angular/
 import { filter } from 'rxjs';
 import {
   LucideChevronDown,
+  LucideCircleQuestionMark,
   LucideFolderOpen,
   LucideHistory,
   LucideImages,
@@ -36,6 +37,7 @@ import { Preferences } from '../preferences/preferences';
     Dropdown,
     Preferences,
     LucideChevronDown,
+    LucideCircleQuestionMark,
     LucideFolderOpen,
     LucideHistory,
     LucideImages,
@@ -77,6 +79,7 @@ export class Header {
     menu: $localize`:@@header.menu:Menu`,
     closeMenu: $localize`:@@header.closeMenu:Close menu`,
   };
+  protected readonly howToPlay = GAME_TEXT.howToPlay;
   /** The game modes, named in the game's own vocabulary (game-vocabulary.ts). */
   protected readonly gameLinks = [
     { path: '/', label: GAME_TEXT.dailyGame },

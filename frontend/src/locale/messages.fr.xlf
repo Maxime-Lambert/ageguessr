@@ -488,10 +488,6 @@
         <source>This day is not open yet.</source>
         <target>Ce jour n'est pas encore ouvert.</target>
       </trans-unit>
-      <trans-unit id="game.comeBack" datatype="html">
-        <source>A new game starts at midnight UTC.</source>
-        <target>Une nouvelle partie commence à minuit UTC.</target>
-      </trans-unit>
       <trans-unit id="game.hintLanguage" datatype="html">
         <source>Hints in</source>
         <target>Indices en</target>
@@ -546,7 +542,7 @@
       </trans-unit>
       <trans-unit id="game.leadHelp.music.kind" datatype="html">
         <source>An album, a song, a Eurovision or a Grammy win.</source>
-        <target>Un album, une chanson, une victoire à l'Eurovision ou aux Grammy.</target>
+        <target>Un album, une chanson, une victoire à l'Eurovision ou aux Grammy Awards.</target>
       </trans-unit>
       <trans-unit id="game.leadHelp.music.hint" datatype="html">
         <source>Album &quot;Thriller&quot; — Michael Jackson</source>
@@ -649,24 +645,24 @@
         <target>Trop de tentatives. Attendez une minute, puis réessayez.</target>
       </trans-unit>
       <trans-unit id="title.free" datatype="html">
-        <source>Series · AgeGuessr</source>
-        <target>Série · AgeGuessr</target>
+        <source>Free play · AgeGuessr</source>
+        <target>Partie libre · AgeGuessr</target>
       </trans-unit>
       <trans-unit id="game.neutral.freeMode" datatype="html">
-        <source>Series</source>
-        <target>Série</target>
+        <source>Free play</source>
+        <target>Partie libre</target>
       </trans-unit>
       <trans-unit id="game.neutral.chooseLength" datatype="html">
         <source>How many rounds?</source>
         <target>Combien de manches ?</target>
       </trans-unit>
       <trans-unit id="game.neutral.newSeries" datatype="html">
-        <source>New series</source>
-        <target>Nouvelle série</target>
+        <source>New game</source>
+        <target>Nouvelle partie</target>
       </trans-unit>
       <trans-unit id="game.neutral.tryFree" datatype="html">
-        <source>Not enough? Play a series</source>
-        <target>Pas assez ? Jouez une série</target>
+        <source>Not enough? Try free play</source>
+        <target>Pas assez ? Essayez la partie libre</target>
       </trans-unit>
       <trans-unit id="game.freeIntro" datatype="html">
         <source>Same rules as the daily game, as many as you like. Nothing here counts toward the daily game.</source>
@@ -958,7 +954,7 @@
       </trans-unit>
       <trans-unit id="game.pickHintHelp" datatype="html">
         <source>Each one is a fact from as many years ago as this person's age on the photo: a song from 40 years ago means they were 40.</source>
-        <target>Chacune est un fait survenu il y a autant d'années que l'âge de la personne sur la photo : une chanson sortie il y a 40 ans veut dire qu'elle avait 40 ans.</target>
+        <target>Chacun remonte à autant d'années que l'âge de la personne sur la photo : une chanson sortie il y a 40 ans signifie qu'elle avait 40 ans.</target>
       </trans-unit>
       <trans-unit id="title.profile" datatype="html">
         <source>My profile · AgeGuessr</source>
@@ -1034,7 +1030,7 @@
       </trans-unit>
       <trans-unit id="game.ruleHints" datatype="html">
         <source>Then you pick a few hints, each a fact from as many years ago as their age on the photo: a film released 40 years ago means they were 40 on it.</source>
-        <target>Puis vous choisissez quelques indices, chacun un fait survenu il y a autant d'années que son âge sur la photo : un film sorti il y a 40 ans veut dire qu'elle y avait 40 ans.</target>
+        <target>Puis vous choisissez quelques indices : chacun remonte à autant d'années que son âge sur la photo. Un film sorti il y a 40 ans signifie qu'elle avait 40 ans.</target>
       </trans-unit>
       <trans-unit id="game.neutral.showHints" datatype="html">
         <source>Show these hints</source>
@@ -1073,8 +1069,8 @@
         <target>Choix : <x id="picked" equiv-text="picked"/> sur <x id="count" equiv-text="count"/></target>
       </trans-unit>
       <trans-unit id="game.rulePoints" datatype="html">
-        <source>Each guess earns up to 500 points, more the closer it is; a spot-on first guess is worth 1000. A new game starts every day at midnight UTC.</source>
-        <target>Chaque essai rapporte jusqu'à 500 points, d'autant plus qu'il est proche ; un premier essai exact en vaut 1000. Une nouvelle partie commence chaque jour à minuit UTC.</target>
+        <source>Each guess earns up to 500 points, more the closer it is; a spot-on first guess is worth 1000.</source>
+        <target>Chaque essai rapporte jusqu'à 500 points : plus il est proche, plus il rapporte. Un premier essai exact rapporte 1000 points.</target>
       </trans-unit>
       <trans-unit id="game.gotIt" datatype="html">
         <source>Got it</source>
@@ -1083,10 +1079,6 @@
       <trans-unit id="game.playToday" datatype="html">
         <source>Play today's game</source>
         <target>Jouer la partie du jour</target>
-      </trans-unit>
-      <trans-unit id="game.seriesDuration" datatype="html">
-        <source>About <x id="minutes" equiv-text="minutes"/> min</source>
-        <target>Environ <x id="minutes" equiv-text="minutes"/> min</target>
       </trans-unit>
       <trans-unit id="game.yearsAgo" datatype="html">
         <source><x id="years" equiv-text="years"/> years ago</source>
@@ -1317,8 +1309,8 @@
         <target>Un jeu quotidien : devinez l'âge qu'avait la personne sur une photo d'archive, avec des indices tirés de l'histoire, de la musique, du cinéma et plus encore. Trois photos par jour, gratuit, sans compte.</target>
       </trans-unit>
       <trans-unit id="seo.description.free" datatype="html">
-        <source>Play as many series as you like: guess the age of people in archive photos, beyond the daily game. Free, no account needed.</source>
-        <target>Enchaînez autant de séries que vous voulez : devinez l'âge de personnes sur des photos d'archive, en plus du jeu du jour. Gratuit, sans compte.</target>
+        <source>Play as many games as you like: guess the age of people in archive photos, beyond the daily game. Free, no account needed.</source>
+        <target>Enchaînez autant de parties que vous voulez : devinez l'âge de personnes sur des photos d'archive, en plus du jeu du jour. Gratuit, sans compte.</target>
       </trans-unit>
       <trans-unit id="seo.description.howToPlay" datatype="html">
         <source>How to play AgeGuessr: two guesses per photo, hints to narrow down the age, and points by how close you get.</source>
@@ -1357,8 +1349,8 @@
         <target>Partie passée · AgeGuessr</target>
       </trans-unit>
       <trans-unit id="calendar.intro" datatype="html">
-        <source>Missed a day? Every past daily game can still be played.</source>
-        <target>Un jour manqué ? Toutes les parties du jour passées se jouent encore.</target>
+        <source>Missed a day? Past daily games can still be played.</source>
+        <target>Vous avez raté un jour ? Les parties précédentes restent jouables.</target>
       </trans-unit>
       <trans-unit id="calendar.previousMonth" datatype="html">
         <source>Previous month</source>
@@ -1411,6 +1403,90 @@
       <trans-unit id="seo.description.calendar" datatype="html">
         <source>Every past daily game of AgeGuessr, month by month: catch up on the days you missed. Free, no account needed.</source>
         <target>Toutes les parties du jour passées d'AgeGuessr, mois par mois : rattrapez les jours manqués. Gratuit, sans compte.</target>
+      </trans-unit>
+      <trans-unit id="game.personLink" datatype="html">
+        <source>(Wikipedia, opens in a new tab)</source>
+        <target>(Wikipédia, s'ouvre dans un nouvel onglet)</target>
+      </trans-unit>
+      <trans-unit id="game.nextGameReady" datatype="html">
+        <source>A new game is ready.</source>
+        <target>Une nouvelle partie est disponible.</target>
+      </trans-unit>
+      <trans-unit id="game.playNextGame" datatype="html">
+        <source>Play it</source>
+        <target>Jouer</target>
+      </trans-unit>
+      <trans-unit id="game.summaryDetailExact" datatype="html">
+        <source>Age <x id="age" equiv-text="age"/> · spot on at <x id="first" equiv-text="first"/></source>
+        <target><x id="age" equiv-text="age"/> ans · trouvé du premier coup</target>
+      </trans-unit>
+      <trans-unit id="game.summaryDetail" datatype="html">
+        <source>Age <x id="age" equiv-text="age"/> · guessed <x id="first" equiv-text="first"/> then <x id="second" equiv-text="second"/></source>
+        <target><x id="age" equiv-text="age"/> ans · essais <x id="first" equiv-text="first"/> puis <x id="second" equiv-text="second"/></target>
+      </trans-unit>
+      <trans-unit id="game.ruleNewGameLocal" datatype="html">
+        <source>A new game starts every day at midnight UTC (<x id="time" equiv-text="localTime"/> your time).</source>
+        <target>Une nouvelle partie commence chaque jour à minuit UTC (<x id="time" equiv-text="localTime"/> chez vous).</target>
+      </trans-unit>
+      <trans-unit id="game.ruleNewGame" datatype="html">
+        <source>A new game starts every day at midnight UTC.</source>
+        <target>Une nouvelle partie commence chaque jour à minuit UTC.</target>
+      </trans-unit>
+      <trans-unit id="game.nextGameInHours" datatype="html">
+        <source>Next game in <x id="hours" equiv-text="hours"/> h <x id="minutes" equiv-text="String(rest).padStart(2, &apos;0&apos;)"/> min</source>
+        <target>Prochaine partie dans <x id="hours" equiv-text="hours"/> h <x id="minutes" equiv-text="String(rest).padStart(2, &apos;0&apos;)"/></target>
+      </trans-unit>
+      <trans-unit id="game.nextGameInMinutes" datatype="html">
+        <source>Next game in <x id="minutes" equiv-text="rest"/> min</source>
+        <target>Prochaine partie dans <x id="minutes" equiv-text="rest"/> min</target>
+      </trans-unit>
+      <trans-unit id="game.abandon" datatype="html">
+        <source>Abandon this game</source>
+        <target>Abandonner cette partie</target>
+      </trans-unit>
+      <trans-unit id="game.abandonConfirm" datatype="html">
+        <source>Abandon this game? Its rounds will be lost.</source>
+        <target>Abandonner cette partie ? Ses manches seront perdues.</target>
+      </trans-unit>
+      <trans-unit id="game.abandonYes" datatype="html">
+        <source>Abandon</source>
+        <target>Abandonner</target>
+      </trans-unit>
+      <trans-unit id="game.abandonNo" datatype="html">
+        <source>Keep playing</source>
+        <target>Continuer</target>
+      </trans-unit>
+      <trans-unit id="game.category.television" datatype="html">
+        <source>Television</source>
+        <target>Télévision</target>
+      </trans-unit>
+      <trans-unit id="game.category.videoGames" datatype="html">
+        <source>Video games</source>
+        <target>Jeux vidéo</target>
+      </trans-unit>
+      <trans-unit id="game.leadHelp.television.kind" datatype="html">
+        <source>A TV series or show, first aired.</source>
+        <target>Une série ou une émission de télévision, à sa première diffusion.</target>
+      </trans-unit>
+      <trans-unit id="game.leadHelp.television.hint" datatype="html">
+        <source>First aired: &quot;Friends&quot;</source>
+        <target>Première diffusion de « Friends »</target>
+      </trans-unit>
+      <trans-unit id="game.leadHelp.videoGames.kind" datatype="html">
+        <source>A video game released.</source>
+        <target>La sortie d'un jeu vidéo.</target>
+      </trans-unit>
+      <trans-unit id="game.leadHelp.videoGames.hint" datatype="html">
+        <source>Release of the video game &quot;Super Mario Bros.&quot;</source>
+        <target>Sortie du jeu vidéo « Super Mario Bros. »</target>
+      </trans-unit>
+      <trans-unit id="game.betterThan" datatype="html">
+        <source>Better than <x id="percent" equiv-text="percent"/>% of the <x id="players" equiv-text="players"/> players who finished this game</source>
+        <target>Mieux que <x id="percent" equiv-text="percent"/> % des <x id="players" equiv-text="players"/> joueurs qui ont fini cette partie</target>
+      </trans-unit>
+      <trans-unit id="game.playersAverage" datatype="html">
+        <source>Players&apos; average: <x id="age" equiv-text="age"/></source>
+        <target>Moyenne des joueurs : <x id="age" equiv-text="age"/> ans</target>
       </trans-unit>
     </body>
   </file>

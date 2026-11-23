@@ -1,5 +1,5 @@
 import { dailyShareText, dailyShareVerdict, shareText } from './game-vocabulary';
-import { challengeUrl, dailyShareUrl, shareOrCopy, squares } from './share';
+import { challengeUrl, dailyShareUrl, scoreLines, shareOrCopy } from './share';
 import { fakeShareTarget, finished, round } from './testing';
 
 describe('share', () => {
@@ -9,7 +9,7 @@ describe('share', () => {
     );
   });
 
-  it('draws one square per round by points, never an answer', () => {
+  it('writes one line per round, a square by points and the points, never an answer', () => {
     const rounds = [
       finished(1, { points: 1000 }),
       finished(2, { points: 900 }),
@@ -18,12 +18,15 @@ describe('share', () => {
       round(5, { status: 'NEUTRALIZED', imageUrl: null }),
     ];
 
-    expect(squares(rounds)).toBe('🟩🟩🟨🟥⬛');
+    expect(scoreLines(rounds)).toBe('🟩 1000/1000\n🟩 900/1000\n🟨 600/1000\n🟥 120/1000\n⬛ —');
   });
 
-  it('puts the score, the squares and the link in the text to share', () => {
-    expect(shareText(3840, 5000, '🟩🟨', 'https://ageguessr.app/challenge/K7F2QX9M')).toBe(
-      'AgeGuessr · Challenge · 3840 / 5000\n🟩🟨\nhttps://ageguessr.app/challenge/K7F2QX9M',
+  it('puts the score, the lines and the link in the text to share', () => {
+    expect(
+      shareText(3840, 5000, '🟩 950/1000\n🟨 600/1000', 'https://ageguessr.app/challenge/K7F2QX9M'),
+    ).toBe(
+      'AgeGuessr · Challenge · 3840 / 5000\n🟩 950/1000\n🟨 600/1000\n' +
+        'https://ageguessr.app/challenge/K7F2QX9M',
     );
   });
 
@@ -35,17 +38,19 @@ describe('share', () => {
       round(4, { status: 'NEUTRALIZED', imageUrl: null }),
     ];
 
-    expect(squares(rounds, { exact: true })).toBe('🎯🟩🟥⬛');
-    expect(squares(rounds)).toBe('🟩🟩🟥⬛');
+    expect(scoreLines(rounds, { exact: true })).toBe(
+      '🎯 1000/1000\n🟩 950/1000\n🟥 120/1000\n⬛ —',
+    );
+    expect(scoreLines(rounds).split('\n')[0]).toBe('🟩 1000/1000');
   });
 
-  it('says the day, what was guessed, the squares and the score, then dares', () => {
+  it('says the day, what was guessed, a line per round and the total, then dares', () => {
     expect(
       dailyShareText(
         '2026-11-13',
         2340,
         3000,
-        '🎯🟩🟥',
+        '🎯 1000/1000\n🟩 920/1000\n🟥 420/1000',
         3,
         dailyShareUrl('https://ageguessr.app'),
         'en-US',
@@ -53,19 +58,22 @@ describe('share', () => {
     ).toBe(
       'AgeGuessr · Nov 13, 2026\n' +
         'I guessed the age of 3 people in photos 📸\n' +
-        '🎯🟩🟥  2,340 / 3,000\n' +
+        '🎯 1000/1000\n' +
+        '🟩 920/1000\n' +
+        '🟥 420/1000\n' +
+        '2,340 / 3,000\n' +
         'Well played! Can you beat that? 👉 https://ageguessr.app',
     );
   });
 
   it('counts a single photo in the singular, and drops the line with none left', () => {
-    expect(dailyShareText('2026-11-13', 900, 1000, '🟩', 1, '', 'en-US')).toContain(
+    expect(dailyShareText('2026-11-13', 900, 1000, '🟩 900/1000', 1, '', 'en-US')).toContain(
       '\nI guessed the age of 1 person in a photo 📸\n',
     );
-    const allWithdrawn = dailyShareText('2026-11-13', 0, 0, '⬛⬛⬛', 0, '', 'en-US');
+    const allWithdrawn = dailyShareText('2026-11-13', 0, 0, '⬛ —\n⬛ —', 0, '', 'en-US');
     expect(allWithdrawn).not.toContain('I guessed');
     expect(allWithdrawn).toBe(
-      'AgeGuessr · Nov 13, 2026\n⬛⬛⬛  0 / 0\nRough day! Can you beat that? 👉 ',
+      'AgeGuessr · Nov 13, 2026\n⬛ —\n⬛ —\n0 / 0\nRough day! Can you beat that? 👉 ',
     );
   });
 

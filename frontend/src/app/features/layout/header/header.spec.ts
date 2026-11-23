@@ -62,7 +62,15 @@ describe('Header', () => {
   };
 
   it('links to the game modes and the calendar, in the game vocabulary', () => {
-    expect(texts(header(), 'nav a')).toEqual(['Daily game', 'Series', 'Calendar']);
+    expect(texts(header(), 'nav a')).toEqual(['Daily game', 'Free play', 'Calendar']);
+  });
+
+  it('keeps « How to play » one tap away, on every screen size', () => {
+    const link = named(header(), 'a', 'How to play') as HTMLAnchorElement;
+
+    expect(link.getAttribute('href')).toBe('/how-to-play');
+    expect(link.title).toBe('How to play');
+    expect(link.closest('.hidden')).toBeNull();
   });
 
   it('shows nothing account-related until the session restore has settled', () => {
@@ -176,7 +184,7 @@ describe('Header', () => {
       const panel = open();
 
       expect(panel.getAttribute('aria-label')).toBe('Menu');
-      expect(texts(panel, 'nav a')).toEqual(['Daily game', 'Series', 'Calendar']);
+      expect(texts(panel, 'nav a')).toEqual(['Daily game', 'Free play', 'Calendar']);
       expect(named(panel, 'a', 'Sign up')).toBeDefined();
       expect(panel.querySelector('app-preferences')).not.toBeNull();
     });

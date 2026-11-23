@@ -1,17 +1,19 @@
-import { Component, LOCALE_ID, inject, signal } from '@angular/core';
+import { Component, DestroyRef, LOCALE_ID, effect, inject, signal, untracked } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ApiLanguage } from '../../../shared/i18n/language';
 import { DaySummary } from '../day-summary/day-summary';
 import { GameApi } from '../game-api';
-import { LucideArrowLeft, LucideClock, LucideShare2 } from '@lucide/angular';
+import { LucideArrowLeft, LucideShare2 } from '@lucide/angular';
 import { Button } from '../../../shared/ui/button/button';
 import { Page } from '../../../shared/ui/page/page';
-import { HintCategory, RoundReport, RoundView, TodayGame } from '../models';
+import { DayStats, HintCategory, RoundReport, RoundView, TodayGame } from '../models';
 import { SHARE_TARGET } from '../../../shared/share-target';
 import { calendarDate, dailyShareText, pastDayTitle } from '../game-vocabulary';
-import { dailyShareUrl, shareOrCopy, squares } from '../share';
+import { dailyShareUrl, shareOrCopy, scoreLines } from '../share';
 import { RulesCard } from '../how-to-play/rules-card';
+import { NextGameCountdown } from '../next-game-countdown/next-game-countdown';
 import { RoundPlayer } from '../round-player/round-player';
 import { RoundsScreen } from '../rounds-screen';
 
@@ -28,10 +30,10 @@ import { RoundsScreen } from '../rounds-screen';
     RouterLink,
     Button,
     Page,
-    LucideClock,
     LucideShare2,
     LucideArrowLeft,
     RulesCard,
+    NextGameCountdown,
   ],
   selector: 'app-game',
   templateUrl: './game.html',
@@ -49,9 +51,32 @@ export class Game extends RoundsScreen<TodayGame> {
   /** What became of the last share: copied says so, a refused copy says it failed. */
   protected readonly shared = signal<'shared' | 'copied' | 'failed' | null>(null);
 
+  /** How the others did, once the summary is on screen; null until then, or on a failure. */
+  protected readonly stats = signal<DayStats | null>(null);
+
   constructor() {
     super();
     this.load();
+    // The summary is on screen: the stats of the day, once per day. A failure only leaves
+    // them out, the summary stands without them. Cancelled with the page, not on a rerun of
+    // the effect: `asked` would keep it from being asked again.
+    const destroyRef = inject(DestroyRef);
+    let asked: string | null = null;
+    effect(() => {
+      const game = this.game();
+      if (!game || !game.score.complete || this.active() || game.rounds.length === 0) return;
+      if (asked === game.date) return;
+      asked = game.date;
+      untracked(() =>
+        this.api
+          .stats(game.date)
+          .pipe(takeUntilDestroyed(destroyRef))
+          .subscribe({
+            next: (stats) => this.stats.set(stats),
+            error: () => this.stats.set(null),
+          }),
+      );
+    });
   }
 
   /** The day's result, without the answers (« Partage façon Wordle »), to a friend. */
@@ -60,7 +85,7 @@ export class Game extends RoundsScreen<TodayGame> {
       game.date,
       game.score.points,
       game.score.max,
-      squares(game.rounds, { exact: true }),
+      scoreLines(game.rounds, { exact: true }),
       game.rounds.filter((round) => round.status !== 'NEUTRALIZED').length,
       dailyShareUrl(this.target.origin()),
       this.locale,

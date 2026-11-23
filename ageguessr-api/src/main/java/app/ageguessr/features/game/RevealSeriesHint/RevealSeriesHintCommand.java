@@ -14,8 +14,8 @@ import java.util.List;
  *     To remove once no such page can be left open
  */
 public record RevealSeriesHintCommand(
-        // At most every category: 7 since Literature (V23), as RevealHintCommand.
-        @Size(max = 7) List<@NotNull HintCategory> categories, HintCategory category) {
+        // At most every category, as RevealHintCommand: 9 since Television and Video games (V30).
+        @Size(max = 9) List<@NotNull HintCategory> categories, HintCategory category) {
 
     /** Sent by a page of before several hints. */
     public boolean legacy() {

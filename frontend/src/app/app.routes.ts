@@ -20,7 +20,7 @@ export const routes: Routes = [
   {
     path: 'free',
     ...describedAs(SEO_TEXT.free),
-    title: $localize`:@@title.free:Series · AgeGuessr`,
+    title: $localize`:@@title.free:Free play · AgeGuessr`,
     loadComponent: () => import('./features/game/free-game/free-game').then((m) => m.FreeGame),
   },
   {

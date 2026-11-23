@@ -60,15 +60,13 @@
             (retry)="load()"
           />
         } @else {
-          <app-day-summary [game]="game">
+          <app-day-summary [game]="game" [stats]="stats()">
             @if (pastDay) {
               <div class="mt-5 flex flex-wrap gap-3">
                 <a appButton routerLink="/calendar">{{ text.backToCalendar }}</a>
               </div>
             } @else {
-              <p class="text-muted mt-5 flex items-center gap-2 text-sm">
-                <svg lucideClock [size]="16" aria-hidden="true"></svg>{{ text.comeBack }}
-              </p>
+              <app-next-game-countdown class="mt-5 block" (playNext)="load()" />
               <div class="mt-5 flex flex-wrap gap-3">
                 <button appButton type="button" (click)="shareResult(game)">
                   <svg lucideShare2 [size]="18" aria-hidden="true"></svg>{{ text.shareResult }}

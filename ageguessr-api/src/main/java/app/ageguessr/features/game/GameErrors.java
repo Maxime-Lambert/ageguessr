@@ -40,6 +40,14 @@ public final class GameErrors {
         return new ConflictException("HINT_COUNT", "Pick the number of distinct hint categories the round asks for");
     }
 
+    /**
+     * The stats of a day before the asker finished it: the average guesses would give the
+     * ages away.
+     */
+    public static ConflictException dayNotFinished() {
+        return new ConflictException("DAY_NOT_FINISHED", "Finish the day to see how the others did");
+    }
+
     /** Unknown, purged, or not one of the player's series: the same answer for all three. */
     public static NotFoundException seriesNotFound() {
         return new NotFoundException("No such series");
@@ -55,9 +63,14 @@ public final class GameErrors {
         return new NotFoundException("No such challenge");
     }
 
-    /** Only the creator shares a series, and once it is played. */
+    /** Only the creator shares a series, once it is played, or gives it up before. */
     public static ConflictException notCreator() {
-        return new ConflictException("NOT_CREATOR", "Only the creator of a series shares it");
+        return new ConflictException("NOT_CREATOR", "Only the creator of a series may do this");
+    }
+
+    /** A finished series is not given up: it may be shared, nothing is left to play. */
+    public static ConflictException seriesFinished() {
+        return new ConflictException("SERIES_FINISHED", "A finished series cannot be abandoned");
     }
 
     public static ConflictException seriesNotFinished() {

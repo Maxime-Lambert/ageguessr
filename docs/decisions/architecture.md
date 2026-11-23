@@ -626,9 +626,14 @@ permettre de calculer l'âge sur la photo. Son **année de référence est l'ann
 au joueur.
 - **Catégories** : Musique, Cinéma, Sport, Science et techno, Monde, Célébrités, et
   Littérature depuis le 2026-11-12 (V23 : parutions avec leur auteur, Nobel de
-  littérature, Goncourt, Booker, Pulitzer de la fiction). Au moins
-  5 indices par catégorie, par année et par public ; en dessous, la catégorie est masquée
-  pour cette année.
+  littérature, Goncourt, Booker, Pulitzer de la fiction), Télévision et Jeux vidéo depuis
+  le 2026-11-23 (V30, retours testeurs : premières diffusions de séries et d'émissions,
+  sorties de jeux vidéo). Au moins 5 indices par catégorie, par année et par public ; en
+  dessous, la catégorie est masquée pour cette année. Jeux vidéo n'existe pas avant les
+  années 1970 : son absence dit au joueur que la personne avait plus d'une cinquantaine
+  d'années sur la photo. Fuite acceptée par l'utilisateur (les indices viennent après le
+  premier essai, qui en dit déjà beaucoup) ; les cartes gardent une taille fixe quel que
+  soit leur nombre (4 à 9).
 - **Base pré-construite** : extraction en Python hors de l'application (`scripts/hints/`),
   sortie JSON versionnée, import idempotent par Java. Pas d'appel à un LLM, à Wikipédia
   ou à Wikidata depuis l'application.
@@ -817,11 +822,15 @@ souvent obscur et daté à quelques années près, ne resserrait rien après un 
   donne le genre d'indice, la règle et un exemple dont l'écart est calculé depuis l'année
   de la partie (jamais écrit en dur). Seul ⓘ l'ouvre (2026-11-14, PR
   `fix/lead-help-on-info-only` : au survol de la carte entière ou à l'arrivée par Tab,
-  la bulle surgissait par-dessus les autres cartes sans qu'on l'ait demandée) : survol de
-  200 ms de ⓘ à la souris, tap au doigt, Entrée au clavier une fois ⓘ atteint par Tab.
-  Elle se ferme quand la souris quitte la carte (bulle comprise, pour pouvoir la lire),
-  au tap ailleurs ou sur Échap. Une seule ouverte à la fois ; la carte la référence par
-  `aria-describedby`, donc un lecteur d'écran l'entend sans l'ouvrir.
+  la bulle surgissait par-dessus les autres cartes sans qu'on l'ait demandée), et
+  seulement exprès (2026-11-23, PR `fix/tester-feedback-quick-wins` : le survol de 200 ms
+  de ⓘ l'ouvrait au passage et la laissait tant que la souris restait sur la carte, les
+  testeurs la trouvaient gênante) : un clic, un tap, ou Entrée une fois ⓘ atteint par Tab.
+  Elle se ferme par un second clic sur ⓘ, un clic ailleurs ou Échap. Une seule ouverte à
+  la fois ; la carte la référence par `aria-describedby`, donc un lecteur d'écran l'entend
+  sans l'ouvrir. Le même ⓘ suit l'indice une fois révélé (avant le 2e essai et au
+  résultat, `LeadHelpButton`), pour retrouver ce que donne la catégorie ; la bulle elle-même
+  est un composant partagé (`LeadHelpPanel`).
 
 ### Système de points
 **Décision** (2026-11-02, remplace « l'essentiel des points sur le 2e essai ») : chaque
@@ -927,6 +936,26 @@ jour-là.
 simplifie aussi la comparaison de scores entre amis (même partie = comparaison
 équitable).
 
+### Stats du jour
+**Décision** (2026-11-23, PR `feature/daily-stats`, retours testeurs) : à la fin d'une
+partie du jour, le récapitulatif dit où le joueur se place (« Mieux que 72 % des 143
+joueurs qui ont fini cette partie ») et, par manche, le premier essai moyen des joueurs.
+- **Qui compte** : les joueurs qui ont fini toutes les manches jouables du jour, comptes
+  et invités ; une manche neutralisée ne compte pour personne. Part = joueurs dont le total
+  est strictement inférieur, sur les autres joueurs (une égalité ne compte pas).
+- **Premier essai** : la moyenne porte sur l'essai d'avant les indices, l'estimation à
+  l'œil.
+- **Anti-triche** : `GET /api/game/days/{date}/stats` répond 409 `DAY_NOT_FINISHED` tant
+  que le demandeur n'a pas fini la journée ; les moyennes donneraient les âges.
+- **Seuil** : sous 10 joueurs (`DayStats.MINIMUM_PLAYERS`), seul le nombre de joueurs ;
+  ni part ni moyenne, qui ne voudraient rien dire.
+- **Calcul** : en mémoire, à chaque demande, depuis `game_plays` du jour (quelques milliers
+  de lignes au plus à l'audience actuelle). À revoir (agrégat stocké ou cache) si un jour
+  dépasse quelques dizaines de milliers de manches.
+- **Limite connue** : les manches des invités partent au bout de 7 jours
+  (`PurgeGuestPlays`) ; un jour plus ancien, joué depuis le calendrier, ne compte plus
+  que les comptes.
+
 ### Enquête libre et Défi (séries hors partie du jour)
 **Décision** (2026-11-03, PR `feature/free-investigation`) : en plus de la partie du
 jour, un joueur joue des séries de 5, 10 ou 20 photos, avec les mêmes règles. À la fin
@@ -964,6 +993,16 @@ un classement.
 - **Conservation** (`PurgeSeries`, tous les jours) : une série non partagée part
   7 jours après sa création, un défi 30 jours après son partage. Un code expiré donne un
   404, comme un code inconnu.
+- **Abandon** (2026-11-23, PR `feature/free-play`) : `DELETE /api/game/series/{id}`
+  (`AbandonSeries`) supprime une série inachevée de son créateur, ses manches et ses
+  parties avec (cascades V15). Supprimée plutôt que marquée : inachevée, elle n'a jamais
+  été partagée, aucun défi n'y mène, et la conservation l'aurait supprimée en 7 jours.
+  Une série finie reste (`SERIES_FINISHED`), un joueur d'un défi n'abandonne pas la série
+  d'un autre (`NOT_CREATOR`). Sans abandon, `GetCurrentSeries` la reprenait à chaque
+  visite. Le front demande une confirmation.
+- **Nom** : « Partie libre » / *Free play* côté joueur depuis 2026-11-23 (« Série » se
+  lisait comme une série télé, et désigne déjà les jours d'affilée) ; le code garde
+  `series`.
 - **Limite de débit** `series` : 30 par heure et par IP sur la création de séries et le
   `join`. Chaque série révèle l'âge de ses photos, et un script ne doit pas moissonner
   le pool.

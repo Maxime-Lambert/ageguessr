@@ -243,6 +243,39 @@ describe('Round', () => {
     expect(picks).toEqual([['MUSIC', 'FILM', 'SPORT']]);
   });
 
+  it('keeps every lead card the same size, a lone last one included', () => {
+    show(
+      awaitingHints({
+        categories: ['MUSIC', 'FILM', 'SPORT', 'SCIENCE', 'WORLD', 'CELEBRITIES', 'LITERATURE'],
+      }),
+    );
+
+    const cards = [...page.querySelectorAll('app-lead-card')];
+    expect(cards).toHaveLength(7);
+    expect(cards.some((card) => card.className.includes('col-span'))).toBe(false);
+  });
+
+  it('offers the nine categories in a full grid, Television and Video games included', () => {
+    show(
+      awaitingHints({
+        categories: [
+          'MUSIC',
+          'FILM',
+          'SPORT',
+          'SCIENCE',
+          'WORLD',
+          'CELEBRITIES',
+          'LITERATURE',
+          'TELEVISION',
+          'VIDEO_GAMES',
+        ],
+      }),
+    );
+
+    expect(leadButtons().map((button) => button.textContent?.trim())).toContain('Video games');
+    expect(leadButtons()).toHaveLength(9);
+  });
+
   it('puts the help of the last column on the right edge, the lone last card on the left', () => {
     show(awaitingHints({ categories: ['MUSIC', 'FILM', 'SPORT', 'SCIENCE', 'WORLD'] }));
 
@@ -281,6 +314,25 @@ describe('Round', () => {
       GAME_TEXT.secondGuessButton,
     );
     expect(document.activeElement).toBe(input);
+  });
+
+  it('puts an ⓘ on each revealed hint, to find again what its category means', () => {
+    show(
+      round(1, {
+        step: 'AWAITING_SECOND_GUESS',
+        firstGuess: 30,
+        direction: 'OLDER',
+        range: { min: 31, max: 40 },
+        hints: [{ category: 'FILM', text: 'A film.' }],
+      }),
+    );
+
+    const button = page.querySelector<HTMLButtonElement>('app-lead-help-button button')!;
+    expect(button.getAttribute('aria-label')).toBe('How the Film hint works');
+    button.click();
+    fixture.detectChanges();
+
+    expect(page.querySelector<HTMLElement>('#revealed-help-film')!.hidden).toBe(false);
   });
 
   it.each([

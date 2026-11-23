@@ -7,11 +7,13 @@ import {
   output,
   viewChild,
 } from '@angular/core';
-import { LucideArrowRight, LucideStamp } from '@lucide/angular';
+import { LucideArrowRight, LucideExternalLink, LucideStamp } from '@lucide/angular';
 import { Button } from '../../../shared/ui/button/button';
 import { CasePhoto } from '../case-photo/case-photo';
 import { CaseSteps } from '../case-steps/case-steps';
 import { CATEGORY_LABELS, GAME_TEXT, roundTitle, yearsAgo } from '../game-vocabulary';
+import { Confetti } from '../confetti/confetti';
+import { LeadHelpButton } from '../lead-help/lead-help-button';
 import { LeadIcon } from '../lead-icon/lead-icon';
 import { RoundReveal, RoundView } from '../models';
 import { ReportButton, RoundReporter } from '../report-button/report-button';
@@ -26,7 +28,18 @@ const GUESS_MAX = 500;
  * can be reported from here, once the identity is known.
  */
 @Component({
-  imports: [Button, CasePhoto, CaseSteps, LeadIcon, LucideArrowRight, LucideStamp, ReportButton],
+  imports: [
+    Button,
+    CasePhoto,
+    CaseSteps,
+    Confetti,
+    LeadHelpButton,
+    LeadIcon,
+    LucideArrowRight,
+    LucideExternalLink,
+    LucideStamp,
+    ReportButton,
+  ],
   selector: 'app-round-result',
   templateUrl: './round-result.html',
 })
@@ -41,6 +54,8 @@ export class RoundResult {
 
   protected readonly text = GAME_TEXT;
   protected readonly categoryLabels = CATEGORY_LABELS;
+  /** The year the help's examples count from, as in the round (Round#gameYear). */
+  protected readonly gameYear = new Date().getUTCFullYear();
 
   readonly title = computed(() => roundTitle(this.round().position, this.total()));
   readonly result = computed(() => this.round().result as RoundReveal);

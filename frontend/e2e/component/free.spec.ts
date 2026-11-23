@@ -11,7 +11,7 @@ test.describe('series', () => {
       const started = await mockSeries(page, 10);
       await page.goto('/en/free');
 
-      await expect(page.getByRole('heading', { name: 'Series', level: 1 })).toBeVisible();
+      await expect(page.getByRole('heading', { name: 'Free play', level: 1 })).toBeVisible();
       await page.getByRole('button', { name: '10 rounds' }).click();
 
       await expect(page.getByRole('img', { name: 'The person to guess' })).toBeVisible();
@@ -50,7 +50,7 @@ test.describe('series', () => {
     await page.setViewportSize({ width: 1024, height: 768 });
     await page.goto('/en/free');
 
-    await page.getByRole('banner').getByRole('link', { name: 'Series' }).click();
+    await page.getByRole('banner').getByRole('link', { name: 'Free play' }).click();
     await expect(page).toHaveURL(/\/en\/free$/);
     const overflow = await page.evaluate(
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,

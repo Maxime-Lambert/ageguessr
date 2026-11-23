@@ -29,10 +29,10 @@ const GAME_WORDS = {
   next: $localize`:@@game.neutral.next:Next round`,
   seeSummary: $localize`:@@game.neutral.seeSummary:See the summary`,
   removed: $localize`:@@game.neutral.removed:Photo removed`,
-  freeMode: $localize`:@@game.neutral.freeMode:Series`,
+  freeMode: $localize`:@@game.neutral.freeMode:Free play`,
   chooseLength: $localize`:@@game.neutral.chooseLength:How many rounds?`,
-  newSeries: $localize`:@@game.neutral.newSeries:New series`,
-  tryFree: $localize`:@@game.neutral.tryFree:Not enough? Play a series`,
+  newSeries: $localize`:@@game.neutral.newSeries:New game`,
+  tryFree: $localize`:@@game.neutral.tryFree:Not enough? Try free play`,
   reportHint: $localize`:@@game.neutral.reportHint:Report this hint`,
 };
 
@@ -49,7 +49,7 @@ export const GAME_TEXT = {
   ruleLead: $localize`:@@game.ruleLead:After the first, you learn whether they were older or younger, and by how much: 1 to 5 years, 6 to 15, or more.`,
   // No count: it is a setting (app.game.hints.per-round), and fewer when fewer turned up.
   ruleHints: $localize`:@@game.ruleHints:Then you pick a few hints, each a fact from as many years ago as their age on the photo: a film released 40 years ago means they were 40 on it.`,
-  rulePoints: $localize`:@@game.rulePoints:Each guess earns up to 500 points, more the closer it is; a spot-on first guess is worth 1000. A new game starts every day at midnight UTC.`,
+  rulePoints: $localize`:@@game.rulePoints:Each guess earns up to 500 points, more the closer it is; a spot-on first guess is worth 1000.`,
   gotIt: $localize`:@@game.gotIt:Got it`,
   playToday: $localize`:@@game.playToday:Play today's game`,
   firstGuessButton: $localize`:@@game.firstGuessButton:Guess`,
@@ -62,6 +62,7 @@ export const GAME_TEXT = {
   points: $localize`:@@game.points:points`,
   outOf: $localize`:@@game.outOf:out of`,
   hintFrom: $localize`:@@game.hintFrom:From`,
+  personLink: $localize`:@@game.personLink:(Wikipedia, opens in a new tab)`,
   // Names and licences, the same in every language.
   wikipedia: 'Wikipedia',
   hintLicense: 'CC BY-SA',
@@ -78,13 +79,18 @@ export const GAME_TEXT = {
   removedExplained: $localize`:@@game.removedExplained:This photo was withdrawn for everyone. It does not count in your score.`,
   closed: $localize`:@@game.closed:This day is not open yet.`,
   genericError: COMMON_MESSAGES.genericError,
-  comeBack: $localize`:@@game.comeBack:A new game starts at midnight UTC.`,
+  nextGameReady: $localize`:@@game.nextGameReady:A new game is ready.`,
+  playNextGame: $localize`:@@game.playNextGame:Play it`,
   backToCalendar: $localize`:@@game.backToCalendar:Back to the calendar`,
   playPastDays: $localize`:@@game.playPastDays:Play past days`,
   calendar: $localize`:@@game.calendar:Calendar`,
   hintLanguage: $localize`:@@game.hintLanguage:Hints in`,
   freeIntro: $localize`:@@game.freeIntro:Same rules as the daily game, as many as you like. Nothing here counts toward the daily game.`,
   noPhotos: $localize`:@@game.noPhotos:No photo is available right now. Try again later.`,
+  abandon: $localize`:@@game.abandon:Abandon this game`,
+  abandonConfirm: $localize`:@@game.abandonConfirm:Abandon this game? Its rounds will be lost.`,
+  abandonYes: $localize`:@@game.abandonYes:Abandon`,
+  abandonNo: $localize`:@@game.abandonNo:Keep playing`,
   tooManySeries: $localize`:@@game.tooManySeries:Too many games started from your connection. Try again in a while.`,
   challenge: $localize`:@@game.challenge:Challenge`,
   challengeFriends: $localize`:@@game.challengeFriends:Challenge friends`,
@@ -196,6 +202,8 @@ export const CATEGORY_LABELS: Record<HintCategory, string> = {
   WORLD: $localize`:@@game.category.world:World events`,
   CELEBRITIES: $localize`:@@game.category.celebrities:Celebrities`,
   LITERATURE: $localize`:@@game.category.literature:Literature`,
+  TELEVISION: $localize`:@@game.category.television:Television`,
+  VIDEO_GAMES: $localize`:@@game.category.videoGames:Video games`,
 };
 
 /** How far back the hint is: the answer itself, so only shown once the round is over. */
@@ -203,13 +211,66 @@ export function yearsAgo(years: number): string {
   return $localize`:@@game.yearsAgo:${years}:years: years ago`;
 }
 
-/** A rough length for a free series, so the choice of size says what it commits to. */
-export function seriesDuration(minutes: number): string {
-  return $localize`:@@game.seriesDuration:About ${minutes}:minutes: min`;
-}
-
 export function roundTitle(position: number, total: number): string {
   return $localize`:@@game.roundTitle:${GAME_TEXT.round}:round: ${position}:position: of ${total}:total:`;
+}
+
+/**
+ * A round recalled on the summary: the real age and the guesses (testers wanted them
+ * there, 2026-11-23), or a first guess that was spot on, which ends the round.
+ */
+export function summaryDetail(age: number, first: number, second: number | null): string {
+  return second === null
+    ? $localize`:@@game.summaryDetailExact:Age ${age}:age: · spot on at ${first}:first:`
+    : $localize`:@@game.summaryDetail:Age ${age}:age: · guessed ${first}:first: then ${second}:second:`;
+}
+
+/**
+ * When the next daily game starts, for the rules: midnight UTC, and the same moment on
+ * the player's clock (`localTime`, as formatted by `localMidnight`), left out where the
+ * two are the same.
+ */
+export function ruleNewGame(localTime: string | null): string {
+  return localTime
+    ? $localize`:@@game.ruleNewGameLocal:A new game starts every day at midnight UTC (${localTime}:time: your time).`
+    : $localize`:@@game.ruleNewGame:A new game starts every day at midnight UTC.`;
+}
+
+/**
+ * The next midnight UTC on the player's clock, in their language ("1:00 AM", "01:00"), or
+ * null when their clock is on UTC. Read from the browser's time zone: the page is never
+ * rendered on a server, so this is always the player's.
+ */
+export function localMidnight(now: Date, locale: string): string | null {
+  if (now.getTimezoneOffset() === 0) return null;
+  const next = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
+  return formatDate(next, 'shortTime', locale);
+}
+
+/**
+ * How long until the next daily game, counted for the player rather than told in UTC
+ * (testers, 2026-11-23): hours and minutes, minutes alone in the last hour.
+ */
+export function nextGameIn(ms: number): string {
+  const minutes = Math.max(1, Math.ceil(ms / 60_000));
+  const hours = Math.floor(minutes / 60);
+  const rest = minutes % 60;
+  return hours > 0
+    ? $localize`:@@game.nextGameInHours:Next game in ${hours}:hours: h ${String(rest).padStart(2, '0')}:minutes: min`
+    : $localize`:@@game.nextGameInMinutes:Next game in ${rest}:minutes: min`;
+}
+
+/**
+ * Where the player stands among those who finished the day (testers, 2026-11-23), the
+ * players counted guests included.
+ */
+export function betterThanText(percent: number, players: number): string {
+  return $localize`:@@game.betterThan:Better than ${percent}:percent:% of the ${players}:players: players who finished this game`;
+}
+
+/** The players' first guess on a round, on average: before any hint. */
+export function playersAverageText(age: number): string {
+  return $localize`:@@game.playersAverage:Players' average: ${age}:age:`;
 }
 
 /** Who sent the challenge, and how long it is. */
@@ -220,14 +281,14 @@ export function challengeIntro(creator: string | null, rounds: number): string {
 }
 
 /**
- * The text a player shares: the score, one square per round (green from 900 points,
- * yellow from 500, red below, black for a withdrawn photo), then the link. Nothing of
- * the answers: the friends have yet to play.
+ * The text a player shares: the score, one line per round (`scoreLines`: a square green
+ * from 900 points, yellow from 500, red below, black for a withdrawn photo, and the
+ * points), then the link. Nothing of the answers: the friends have yet to play.
  */
-export function shareText(points: number, max: number, squares: string, url: string): string {
+export function shareText(points: number, max: number, lines: string, url: string): string {
   return (
     $localize`:@@game.shareText:AgeGuessr · ${GAME_TEXT.challenge}:challenge: · ${points}:points: / ${max}:max:` +
-    `\n${squares}\n${url}`
+    `\n${lines}\n${url}`
   );
 }
 
@@ -253,9 +314,10 @@ function dailySharePlayed(photos: number): string {
 
 /**
  * The text a player shares at the end of the daily game (« Partage façon Wordle »), a dare
- * more than a report (2026-11-15): the day, what the game is in one line, the squares with
- * the score, then a word on the result and a challenge with the link. No legend: the
- * squares read as colours, and the line above says what was guessed. The day is the game's
+ * more than a report (2026-11-15): the day, what the game is in one line, a line per round
+ * (`scoreLines`, 2026-11-23), the total, then a word on the result and a challenge with
+ * the link. No legend: the squares read as colours, and the line above says what was
+ * guessed. The day is the game's
  * UTC day (YYYY-MM-DD), formatted in UTC so that it never moves with the player's time zone,
  * in a format of its language. `photos` counts the photos played, the withdrawn ones aside:
  * with none left, the line about them goes.
@@ -264,7 +326,7 @@ export function dailyShareText(
   date: string,
   points: number,
   max: number,
-  squares: string,
+  lines: string,
   photos: number,
   url: string,
   locale: string,
@@ -277,7 +339,8 @@ export function dailyShareText(
   return [
     `AgeGuessr · ${day}`,
     ...(photos > 0 ? [dailySharePlayed(photos)] : []),
-    `${squares}  ${score}`,
+    ...(lines ? [lines] : []),
+    score,
     `${dailyShareVerdict(points, max)} ` +
       $localize`:@@game.share.dare:Can you beat that? 👉 ${url}:url:`,
   ].join('\n');

@@ -53,8 +53,8 @@
           }
         </div>
         <p class="text-muted mt-0.5 text-sm">{{ text.pickHintHelp }}</p>
-        <!-- 4 to 7 categories depending on the year: a card alone on the last row takes the
-             whole row, rather than look forgotten. -->
+        <!-- 4 to 9 categories depending on the year, every card the same size whatever
+             their number (testers, 2026-11-23): a lone last card no longer spans its row. -->
         <div
           class="mt-4 grid grid-cols-2 gap-2.5 sm:grid-cols-3"
           role="group"
@@ -62,7 +62,6 @@
         >
           @for (category of round().categories; track category; let i = $index) {
             <app-lead-card
-              class="sm:[&:nth-child(3n+1):last-child]:col-span-3 max-sm:[&:nth-child(odd):last-child]:col-span-2"
               [category]="category"
               [gameYear]="gameYear"
               [picked]="isPicked(category)"
@@ -97,6 +96,7 @@
                 >
                   <app-lead-icon [category]="hint.category" [size]="14" />
                   {{ text.hint }} · {{ categoryLabels[hint.category] }}
+                  <app-lead-help-button [category]="hint.category" [gameYear]="gameYear" />
                 </p>
                 <p class="mt-2 text-lg leading-snug">{{ hint.text }}</p>
               </div>

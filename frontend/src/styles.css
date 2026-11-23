@@ -93,6 +93,11 @@
   }
 }
 
+/* The header stays at the top (app.html): a link to an anchor lands below it, not under. */
+html {
+  scroll-padding-top: 4.5rem;
+}
+
 body {
   font-family: var(--font-sans);
   background-color: var(--color-background);

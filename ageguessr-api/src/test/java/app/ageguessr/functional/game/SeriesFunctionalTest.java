@@ -2,6 +2,7 @@ package app.ageguessr.functional.game;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.matchesPattern;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -350,6 +351,46 @@ class SeriesFunctionalTest {
     }
 
     @Test
+    void theCreatorAbandonsAnUnfinishedSeriesAndItIsNoLongerPickedUp() throws Exception {
+        MvcResult started = start(5, null).andReturn();
+        Cookie creator = cookieFrom(started);
+        String seriesId = idOf(started);
+        perform(post(round(seriesId, 1, "first-guess")), "{\"guess\":30,\"language\":\"EN\"}", creator)
+                .andExpect(status().isOk());
+
+        // Someone else gets the 404 of a series that does not exist.
+        abandon(seriesId, new Cookie(GuestCookie.NAME, UUID.randomUUID().toString()))
+                .andExpect(status().isNotFound());
+        abandon(seriesId, creator).andExpect(status().isNoContent());
+
+        mockMvc.perform(get("/api/game/series/current").cookie(creator)).andExpect(status().isNoContent());
+        mockMvc.perform(get("/api/game/series/" + seriesId).cookie(creator)).andExpect(status().isNotFound());
+        assertThat(jdbc.queryForObject(
+                        "SELECT count(*) FROM free_series_plays WHERE series_id = ?::uuid", Integer.class, seriesId))
+                .isZero();
+        abandon(seriesId, creator).andExpect(status().isNotFound());
+    }
+
+    @Test
+    void aFinishedSeriesIsNotAbandonedNorBySomeoneWhoJoinedIt() throws Exception {
+        MvcResult started = start(5, null).andReturn();
+        Cookie creator = cookieFrom(started);
+        String seriesId = idOf(started);
+        playAll(seriesId, creator, 40);
+
+        abandon(seriesId, creator)
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.errorCode").value("SERIES_FINISHED"));
+
+        String code = codeOf(share(seriesId, "{\"nickname\":\"Sherlock\"}", creator).andReturn());
+        Cookie friend = cookieFrom(join(code, "{\"nickname\":\"Watson\"}", null).andReturn());
+        abandon(seriesId, friend)
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.errorCode").value("NOT_CREATOR"));
+        mockMvc.perform(get("/api/game/challenges/" + code)).andExpect(status().isOk());
+    }
+
+    @Test
     void anUnknownCodeIsNotFound() throws Exception {
         mockMvc.perform(get("/api/game/challenges/K7F2QX9M")).andExpect(status().isNotFound());
         join("K7F2QX9M", "{\"nickname\":\"Watson\"}", null).andExpect(status().isNotFound());
@@ -381,6 +422,14 @@ class SeriesFunctionalTest {
 
     private ResultActions share(String seriesId, String body, Cookie player) throws Exception {
         return perform(post("/api/game/series/" + seriesId + "/share"), body, player);
+    }
+
+    private ResultActions abandon(String seriesId, Cookie player) throws Exception {
+        MockHttpServletRequestBuilder request = delete("/api/game/series/" + seriesId);
+        if (player != null) {
+            request.cookie(player);
+        }
+        return mockMvc.perform(request);
     }
 
     private ResultActions join(String code, String body, Cookie player) throws Exception {

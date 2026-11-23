@@ -34,7 +34,15 @@ describe('Game', () => {
     page = fixture.nativeElement as HTMLElement;
   });
 
-  afterEach(() => http.verify());
+  // The stats of the day are asked once the summary shows: covered on their own below.
+  afterEach(() => {
+    http
+      .match((request) => request.url.endsWith('/stats'))
+      .forEach((request) => {
+        if (!request.cancelled) request.flush({ players: 3, betterThanPercent: null, rounds: [] });
+      });
+    http.verify();
+  });
 
   function load(game: TodayGame): void {
     http.expectOne('/api/game/today').flush(game);
@@ -156,6 +164,44 @@ describe('Game', () => {
     expect(page.textContent).toContain(GAME_TEXT.summary);
   });
 
+  it('counts down to the next game under the summary of the day', () => {
+    load(today([finished(1)]));
+
+    expect(page.querySelector('app-next-game-countdown')?.textContent).toContain('Next game in');
+  });
+
+  it('shows how the others did under the summary, once it is on screen', () => {
+    load(today([finished(1)], { date: '2026-11-23' }));
+
+    http.expectOne('/api/game/days/2026-11-23/stats').flush({
+      players: 143,
+      betterThanPercent: 72,
+      rounds: [{ position: 1, averageFirstGuess: 44 }],
+    });
+    fixture.detectChanges();
+
+    expect(page.textContent).toContain('Better than 72% of the 143 players who finished this game');
+    expect(page.textContent).toContain("Players' average: 44");
+  });
+
+  it('keeps the summary without the stats when they fail', () => {
+    load(today([finished(1)], { date: '2026-11-23' }));
+
+    http
+      .expectOne('/api/game/days/2026-11-23/stats')
+      .flush(null, { status: 500, statusText: 'Server Error' });
+    fixture.detectChanges();
+
+    expect(page.textContent).toContain(GAME_TEXT.summary);
+    expect(page.textContent).not.toContain('Better than');
+  });
+
+  it('asks no stats while a round is left to play', () => {
+    load(today([finished(1), round(2)]));
+
+    http.expectNone((request) => request.url.endsWith('/stats'));
+  });
+
   it('leads from the summary of the day to the series', () => {
     load(today([finished(1)]));
 
@@ -176,7 +222,7 @@ describe('Game', () => {
       { date: '2026-11-13' },
     );
   const expectedText =
-    'AgeGuessr · Nov 13, 2026\nI guessed the age of 3 people in photos 📸\n🎯🟩⬛🟥  2,340 / 3,000\nWell played! Can you beat that? 👉 https://ageguessr.app';
+    'AgeGuessr · Nov 13, 2026\nI guessed the age of 3 people in photos 📸\n🎯 1000/1000\n🟩 920/1000\n⬛ —\n🟥 420/1000\n2,340 / 3,000\nWell played! Can you beat that? 👉 https://ageguessr.app';
 
   it('offers to share the result only once the day is played', () => {
     load(today([finished(1), round(2)]));
@@ -399,7 +445,15 @@ describe('Game of a past day', () => {
     page = fixture.nativeElement as HTMLElement;
   });
 
-  afterEach(() => http.verify());
+  // The stats of the day are asked once the summary shows: covered on their own below.
+  afterEach(() => {
+    http
+      .match((request) => request.url.endsWith('/stats'))
+      .forEach((request) => {
+        if (!request.cancelled) request.flush({ players: 3, betterThanPercent: null, rounds: [] });
+      });
+    http.verify();
+  });
 
   it('reads the day and plays it on its own date', () => {
     http.expectOne('/api/game/days/2026-10-20').flush(today([round(1)], { date: '2026-10-20' }));
@@ -421,7 +475,7 @@ describe('Game of a past day', () => {
 
     expect(page.textContent).toContain(GAME_TEXT.summary);
     expect(page.textContent).not.toContain(GAME_TEXT.shareResult);
-    expect(page.textContent).not.toContain(GAME_TEXT.comeBack);
+    expect(page.querySelector('app-next-game-countdown')).toBeNull();
     const links = Array.from(page.querySelectorAll('a')).filter(
       (link) => link.textContent?.trim() === GAME_TEXT.backToCalendar,
     );

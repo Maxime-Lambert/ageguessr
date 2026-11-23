@@ -2,7 +2,15 @@ import { HttpClient } from '@angular/common/http';
 import { Service, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiLanguage } from '../../shared/i18n/language';
-import { CalendarMonth, HintCategory, History, RoundReport, RoundView, TodayGame } from './models';
+import {
+  CalendarMonth,
+  DayStats,
+  HintCategory,
+  History,
+  RoundReport,
+  RoundView,
+  TodayGame,
+} from './models';
 
 /**
  * The daily game. Public: the auth interceptor adds the bearer token when signed in, and a
@@ -28,6 +36,11 @@ export class GameApi {
 
   today(): Observable<TodayGame> {
     return this.http.get<TodayGame>('/api/game/today');
+  }
+
+  /** Only once the player finished the day (409 DAY_NOT_FINISHED before). */
+  stats(date: string): Observable<DayStats> {
+    return this.http.get<DayStats>(`/api/game/days/${encodeURIComponent(date)}/stats`);
   }
 
   /** A past day's game, played from the calendar (404 when nothing was drawn that day). */

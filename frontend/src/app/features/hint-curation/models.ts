@@ -4,7 +4,15 @@ import { HintReportReason } from '../../shared/reports/report-reasons';
 
 export type HintReviewStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
 export type HintCategory =
-  'MUSIC' | 'FILM' | 'SPORT' | 'SCIENCE' | 'WORLD' | 'CELEBRITIES' | 'LITERATURE';
+  | 'MUSIC'
+  | 'FILM'
+  | 'SPORT'
+  | 'SCIENCE'
+  | 'WORLD'
+  | 'CELEBRITIES'
+  | 'LITERATURE'
+  | 'TELEVISION'
+  | 'VIDEO_GAMES';
 export type HintAudience = 'ALL' | 'FR' | 'EN';
 
 export interface PendingHint {
