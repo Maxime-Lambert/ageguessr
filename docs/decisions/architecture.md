@@ -936,6 +936,26 @@ jour-là.
 simplifie aussi la comparaison de scores entre amis (même partie = comparaison
 équitable).
 
+### Stats du jour
+**Décision** (2026-11-23, PR `feature/daily-stats`, retours testeurs) : à la fin d'une
+partie du jour, le récapitulatif dit où le joueur se place (« Mieux que 72 % des 143
+joueurs qui ont fini cette partie ») et, par manche, le premier essai moyen des joueurs.
+- **Qui compte** : les joueurs qui ont fini toutes les manches jouables du jour, comptes
+  et invités ; une manche neutralisée ne compte pour personne. Part = joueurs dont le total
+  est strictement inférieur, sur les autres joueurs (une égalité ne compte pas).
+- **Premier essai** : la moyenne porte sur l'essai d'avant les indices, l'estimation à
+  l'œil.
+- **Anti-triche** : `GET /api/game/days/{date}/stats` répond 409 `DAY_NOT_FINISHED` tant
+  que le demandeur n'a pas fini la journée ; les moyennes donneraient les âges.
+- **Seuil** : sous 10 joueurs (`DayStats.MINIMUM_PLAYERS`), seul le nombre de joueurs ;
+  ni part ni moyenne, qui ne voudraient rien dire.
+- **Calcul** : en mémoire, à chaque demande, depuis `game_plays` du jour (quelques milliers
+  de lignes au plus à l'audience actuelle). À revoir (agrégat stocké ou cache) si un jour
+  dépasse quelques dizaines de milliers de manches.
+- **Limite connue** : les manches des invités partent au bout de 7 jours
+  (`PurgeGuestPlays`) ; un jour plus ancien, joué depuis le calendrier, ne compte plus
+  que les comptes.
+
 ### Enquête libre et Défi (séries hors partie du jour)
 **Décision** (2026-11-03, PR `feature/free-investigation`) : en plus de la partie du
 jour, un joueur joue des séries de 5, 10 ou 20 photos, avec les mêmes règles. À la fin

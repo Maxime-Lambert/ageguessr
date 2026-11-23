@@ -60,7 +60,7 @@
             (retry)="load()"
           />
         } @else {
-          <app-day-summary [game]="game">
+          <app-day-summary [game]="game" [stats]="stats()">
             @if (pastDay) {
               <div class="mt-5 flex flex-wrap gap-3">
                 <a appButton routerLink="/calendar">{{ text.backToCalendar }}</a>

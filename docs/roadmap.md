@@ -318,5 +318,6 @@ Quatre joueurs sur la prod. Décisions prises avec l'utilisateur le 2026-11-23.
       vidéo (dès 1972 environ) ; on ne montre que les catégories disponibles, la fuite
       sur l'année est acceptée (les indices viennent après le premier essai) ; 9 au plus,
       grille 3 × 3 — PR `feature/tv-and-video-game-hints`
-- [ ] Stats du jour, invités compris : « mieux que 72 % des joueurs », âge moyen donné
-      par manche ; affichées une fois la partie finie, au-delà d'une dizaine de joueurs
+- [x] Stats du jour, invités compris : « mieux que 72 % des joueurs », âge moyen donné
+      par manche ; affichées une fois la partie finie, au-delà d'une dizaine de joueurs —
+      PR `feature/daily-stats`

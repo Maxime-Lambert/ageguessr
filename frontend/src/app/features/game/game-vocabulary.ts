@@ -260,6 +260,19 @@ export function nextGameIn(ms: number): string {
     : $localize`:@@game.nextGameInMinutes:Next game in ${rest}:minutes: min`;
 }
 
+/**
+ * Where the player stands among those who finished the day (testers, 2026-11-23), the
+ * players counted guests included.
+ */
+export function betterThanText(percent: number, players: number): string {
+  return $localize`:@@game.betterThan:Better than ${percent}:percent:% of the ${players}:players: players who finished this game`;
+}
+
+/** The players' first guess on a round, on average: before any hint. */
+export function playersAverageText(age: number): string {
+  return $localize`:@@game.playersAverage:Players' average: ${age}:age:`;
+}
+
 /** Who sent the challenge, and how long it is. */
 export function challengeIntro(creator: string | null, rounds: number): string {
   return creator
