@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { ApiErrorResponse } from '../../../shared/api-error';
 import { ApiLanguage } from '../../../shared/i18n/language';
 import { DaySummary } from '../day-summary/day-summary';
-import { seriesDuration, seriesLength, shorterSeries } from '../game-vocabulary';
+import { seriesLength, shorterSeries } from '../game-vocabulary';
 import { HowToPlay } from '../how-to-play/how-to-play';
 import { RulesCard } from '../how-to-play/rules-card';
 import { Button } from '../../../shared/ui/button/button';
@@ -30,13 +30,15 @@ export class FreeGame extends RoundsScreen<Series> {
 
   protected readonly sizes = SERIES_SIZES;
   protected readonly seriesLength = seriesLength;
-  /** About 30 seconds a case, rounded up to the minute: a hint of the commitment only. */
-  protected readonly duration = (size: SeriesSize) => seriesDuration(Math.ceil(size / 2));
 
   /** No series on screen: the player picks a length. */
   readonly choosing = signal(false);
   readonly starting = signal(false);
   readonly startError = signal<string | null>(null);
+  /** The player asked to give the series up: the screen asks them to confirm first. */
+  readonly confirmingAbandon = signal(false);
+  readonly abandoning = signal(false);
+  readonly abandonError = signal<string | null>(null);
 
   readonly shorter = computed(() => {
     const series = this.game();
@@ -60,6 +62,8 @@ export class FreeGame extends RoundsScreen<Series> {
   }
 
   choose(): void {
+    this.confirmingAbandon.set(false);
+    this.abandonError.set(null);
     this.game.set(null);
     this.startError.set(null);
     this.choosing.set(true);
@@ -88,6 +92,29 @@ export class FreeGame extends RoundsScreen<Series> {
               ? this.text.tooManySeries
               : this.text.genericError,
         );
+      },
+    });
+  }
+
+  /**
+   * Gives up the series on screen (testers, 2026-11-23): it was picked up again on every
+   * visit with no way out. Deleted by the API, then back to the choice of a length.
+   */
+  abandon(): void {
+    const series = this.game();
+    if (!series || this.abandoning()) {
+      return;
+    }
+    this.abandoning.set(true);
+    this.abandonError.set(null);
+    this.api.abandon(series.id).subscribe({
+      next: () => {
+        this.abandoning.set(false);
+        this.choose();
+      },
+      error: () => {
+        this.abandoning.set(false);
+        this.abandonError.set(this.text.genericError);
       },
     });
   }

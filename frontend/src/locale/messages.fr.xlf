@@ -645,24 +645,24 @@
         <target>Trop de tentatives. Attendez une minute, puis réessayez.</target>
       </trans-unit>
       <trans-unit id="title.free" datatype="html">
-        <source>Series · AgeGuessr</source>
-        <target>Série · AgeGuessr</target>
+        <source>Free play · AgeGuessr</source>
+        <target>Partie libre · AgeGuessr</target>
       </trans-unit>
       <trans-unit id="game.neutral.freeMode" datatype="html">
-        <source>Series</source>
-        <target>Série</target>
+        <source>Free play</source>
+        <target>Partie libre</target>
       </trans-unit>
       <trans-unit id="game.neutral.chooseLength" datatype="html">
         <source>How many rounds?</source>
         <target>Combien de manches ?</target>
       </trans-unit>
       <trans-unit id="game.neutral.newSeries" datatype="html">
-        <source>New series</source>
-        <target>Nouvelle série</target>
+        <source>New game</source>
+        <target>Nouvelle partie</target>
       </trans-unit>
       <trans-unit id="game.neutral.tryFree" datatype="html">
-        <source>Not enough? Play a series</source>
-        <target>Pas assez ? Jouez une série</target>
+        <source>Not enough? Try free play</source>
+        <target>Pas assez ? Essayez la partie libre</target>
       </trans-unit>
       <trans-unit id="game.freeIntro" datatype="html">
         <source>Same rules as the daily game, as many as you like. Nothing here counts toward the daily game.</source>
@@ -1080,10 +1080,6 @@
         <source>Play today's game</source>
         <target>Jouer la partie du jour</target>
       </trans-unit>
-      <trans-unit id="game.seriesDuration" datatype="html">
-        <source>About <x id="minutes" equiv-text="minutes"/> min</source>
-        <target>Environ <x id="minutes" equiv-text="minutes"/> min</target>
-      </trans-unit>
       <trans-unit id="game.yearsAgo" datatype="html">
         <source><x id="years" equiv-text="years"/> years ago</source>
         <target>il y a <x id="years" equiv-text="years"/> ans</target>
@@ -1313,8 +1309,8 @@
         <target>Un jeu quotidien : devinez l'âge qu'avait la personne sur une photo d'archive, avec des indices tirés de l'histoire, de la musique, du cinéma et plus encore. Trois photos par jour, gratuit, sans compte.</target>
       </trans-unit>
       <trans-unit id="seo.description.free" datatype="html">
-        <source>Play as many series as you like: guess the age of people in archive photos, beyond the daily game. Free, no account needed.</source>
-        <target>Enchaînez autant de séries que vous voulez : devinez l'âge de personnes sur des photos d'archive, en plus du jeu du jour. Gratuit, sans compte.</target>
+        <source>Play as many games as you like: guess the age of people in archive photos, beyond the daily game. Free, no account needed.</source>
+        <target>Enchaînez autant de parties que vous voulez : devinez l'âge de personnes sur des photos d'archive, en plus du jeu du jour. Gratuit, sans compte.</target>
       </trans-unit>
       <trans-unit id="seo.description.howToPlay" datatype="html">
         <source>How to play AgeGuessr: two guesses per photo, hints to narrow down the age, and points by how close you get.</source>
@@ -1443,6 +1439,22 @@
       <trans-unit id="game.nextGameInMinutes" datatype="html">
         <source>Next game in <x id="minutes" equiv-text="rest"/> min</source>
         <target>Prochaine partie dans <x id="minutes" equiv-text="rest"/> min</target>
+      </trans-unit>
+      <trans-unit id="game.abandon" datatype="html">
+        <source>Abandon this game</source>
+        <target>Abandonner cette partie</target>
+      </trans-unit>
+      <trans-unit id="game.abandonConfirm" datatype="html">
+        <source>Abandon this game? Its rounds will be lost.</source>
+        <target>Abandonner cette partie ? Ses manches seront perdues.</target>
+      </trans-unit>
+      <trans-unit id="game.abandonYes" datatype="html">
+        <source>Abandon</source>
+        <target>Abandonner</target>
+      </trans-unit>
+      <trans-unit id="game.abandonNo" datatype="html">
+        <source>Keep playing</source>
+        <target>Continuer</target>
       </trans-unit>
     </body>
   </file>

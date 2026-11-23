@@ -968,6 +968,16 @@ un classement.
 - **Conservation** (`PurgeSeries`, tous les jours) : une série non partagée part
   7 jours après sa création, un défi 30 jours après son partage. Un code expiré donne un
   404, comme un code inconnu.
+- **Abandon** (2026-11-23, PR `feature/free-play`) : `DELETE /api/game/series/{id}`
+  (`AbandonSeries`) supprime une série inachevée de son créateur, ses manches et ses
+  parties avec (cascades V15). Supprimée plutôt que marquée : inachevée, elle n'a jamais
+  été partagée, aucun défi n'y mène, et la conservation l'aurait supprimée en 7 jours.
+  Une série finie reste (`SERIES_FINISHED`), un joueur d'un défi n'abandonne pas la série
+  d'un autre (`NOT_CREATOR`). Sans abandon, `GetCurrentSeries` la reprenait à chaque
+  visite. Le front demande une confirmation.
+- **Nom** : « Partie libre » / *Free play* côté joueur depuis 2026-11-23 (« Série » se
+  lisait comme une série télé, et désigne déjà les jours d'affilée) ; le code garde
+  `series`.
 - **Limite de débit** `series` : 30 par heure et par IP sur la création de séries et le
   `join`. Chaque série révèle l'âge de ses photos, et un script ne doit pas moissonner
   le pool.

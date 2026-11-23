@@ -6,7 +6,7 @@ test.describe('série en français', () => {
     const started = await mockSeries(page);
     await page.goto('/fr/free');
 
-    await expect(page.getByRole('heading', { name: 'Série', level: 1 })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Partie libre', level: 1 })).toBeVisible();
     await expect(page.getByText('Combien de manches ?')).toBeVisible();
     await page.getByRole('button', { name: '5 manches' }).click();
 

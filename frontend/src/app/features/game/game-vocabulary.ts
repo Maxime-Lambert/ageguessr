@@ -29,10 +29,10 @@ const GAME_WORDS = {
   next: $localize`:@@game.neutral.next:Next round`,
   seeSummary: $localize`:@@game.neutral.seeSummary:See the summary`,
   removed: $localize`:@@game.neutral.removed:Photo removed`,
-  freeMode: $localize`:@@game.neutral.freeMode:Series`,
+  freeMode: $localize`:@@game.neutral.freeMode:Free play`,
   chooseLength: $localize`:@@game.neutral.chooseLength:How many rounds?`,
-  newSeries: $localize`:@@game.neutral.newSeries:New series`,
-  tryFree: $localize`:@@game.neutral.tryFree:Not enough? Play a series`,
+  newSeries: $localize`:@@game.neutral.newSeries:New game`,
+  tryFree: $localize`:@@game.neutral.tryFree:Not enough? Try free play`,
   reportHint: $localize`:@@game.neutral.reportHint:Report this hint`,
 };
 
@@ -87,6 +87,10 @@ export const GAME_TEXT = {
   hintLanguage: $localize`:@@game.hintLanguage:Hints in`,
   freeIntro: $localize`:@@game.freeIntro:Same rules as the daily game, as many as you like. Nothing here counts toward the daily game.`,
   noPhotos: $localize`:@@game.noPhotos:No photo is available right now. Try again later.`,
+  abandon: $localize`:@@game.abandon:Abandon this game`,
+  abandonConfirm: $localize`:@@game.abandonConfirm:Abandon this game? Its rounds will be lost.`,
+  abandonYes: $localize`:@@game.abandonYes:Abandon`,
+  abandonNo: $localize`:@@game.abandonNo:Keep playing`,
   tooManySeries: $localize`:@@game.tooManySeries:Too many games started from your connection. Try again in a while.`,
   challenge: $localize`:@@game.challenge:Challenge`,
   challengeFriends: $localize`:@@game.challengeFriends:Challenge friends`,
@@ -203,11 +207,6 @@ export const CATEGORY_LABELS: Record<HintCategory, string> = {
 /** How far back the hint is: the answer itself, so only shown once the round is over. */
 export function yearsAgo(years: number): string {
   return $localize`:@@game.yearsAgo:${years}:years: years ago`;
-}
-
-/** A rough length for a free series, so the choice of size says what it commits to. */
-export function seriesDuration(minutes: number): string {
-  return $localize`:@@game.seriesDuration:About ${minutes}:minutes: min`;
 }
 
 export function roundTitle(position: number, total: number): string {
