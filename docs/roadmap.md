@@ -299,3 +299,24 @@ retirer une fois tous faits.
       passe un smoke test ; à cocher quand la section « À vérifier à la main » est vide
 - ~~Landing page de lancement~~ — écartée (nov. 2026) : le jeu à `/` sert de page
       d'accueil
+
+## Retours testeurs du 2026-11-23
+
+Quatre joueurs sur la prod. Décisions prises avec l'utilisateur le 2026-11-23.
+
+- [x] Petites corrections : formulations FR, bulle ⓘ au clic seulement (plus de survol)
+      et aussi sur les indices révélés, cartes d'indice d'une seule taille, nom du
+      résultat visiblement cliquable, confettis sur un âge exact, récap avec l'âge et les
+      essais, partage une ligne par manche (`🟨 499/1000`), compte à rebours vers la
+      prochaine partie — PR `fix/tester-feedback-quick-wins`
+- [ ] Partie libre : « Série » devient « Partie libre » (*Free play*) partout, bouton
+      « Abandonner » (avec confirmation) sur une partie en cours, plus de durée estimée
+      sur les longueurs
+- [ ] En-tête fixe, compact, avec une icône « ? » vers « Comment jouer » (le pied de page
+      n'est pas visible en partie ni en haut des pages légales)
+- [ ] Nouvelles catégories d'indice : Télévision (grosses émissions et séries) et Jeux
+      vidéo (dès 1972 environ) ; on ne montre que les catégories disponibles, la fuite
+      sur l'année est acceptée (les indices viennent après le premier essai) ; 9 au plus,
+      grille 3 × 3
+- [ ] Stats du jour, invités compris : « mieux que 72 % des joueurs », âge moyen donné
+      par manche ; affichées une fois la partie finie, au-delà d'une dizaine de joueurs

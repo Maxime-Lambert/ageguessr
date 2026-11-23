@@ -4,14 +4,15 @@ import { Observable } from 'rxjs';
 import { ApiLanguage } from '../../../shared/i18n/language';
 import { DaySummary } from '../day-summary/day-summary';
 import { GameApi } from '../game-api';
-import { LucideArrowLeft, LucideClock, LucideShare2 } from '@lucide/angular';
+import { LucideArrowLeft, LucideShare2 } from '@lucide/angular';
 import { Button } from '../../../shared/ui/button/button';
 import { Page } from '../../../shared/ui/page/page';
 import { HintCategory, RoundReport, RoundView, TodayGame } from '../models';
 import { SHARE_TARGET } from '../../../shared/share-target';
 import { calendarDate, dailyShareText, pastDayTitle } from '../game-vocabulary';
-import { dailyShareUrl, shareOrCopy, squares } from '../share';
+import { dailyShareUrl, shareOrCopy, scoreLines } from '../share';
 import { RulesCard } from '../how-to-play/rules-card';
+import { NextGameCountdown } from '../next-game-countdown/next-game-countdown';
 import { RoundPlayer } from '../round-player/round-player';
 import { RoundsScreen } from '../rounds-screen';
 
@@ -28,10 +29,10 @@ import { RoundsScreen } from '../rounds-screen';
     RouterLink,
     Button,
     Page,
-    LucideClock,
     LucideShare2,
     LucideArrowLeft,
     RulesCard,
+    NextGameCountdown,
   ],
   selector: 'app-game',
   templateUrl: './game.html',
@@ -60,7 +61,7 @@ export class Game extends RoundsScreen<TodayGame> {
       game.date,
       game.score.points,
       game.score.max,
-      squares(game.rounds, { exact: true }),
+      scoreLines(game.rounds, { exact: true }),
       game.rounds.filter((round) => round.status !== 'NEUTRALIZED').length,
       dailyShareUrl(this.target.origin()),
       this.locale,

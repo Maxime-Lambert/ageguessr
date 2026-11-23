@@ -18,7 +18,7 @@ import { RoundPlayer } from '../round-player/round-player';
 import { RoundsScreen } from '../rounds-screen';
 import { SeriesApi } from '../series-api';
 import { SHARE_TARGET } from '../../../shared/share-target';
-import { NICKNAME_PATTERN, challengeUrl, shareOrCopy, squares } from '../share';
+import { NICKNAME_PATTERN, challengeUrl, shareOrCopy, scoreLines } from '../share';
 
 /**
  * A challenge, at /challenge/:code: who sent it, then, once joined, its series played with
@@ -120,7 +120,7 @@ export class ChallengePage extends RoundsScreen<Series> {
     const text = shareText(
       series.score.points,
       series.score.max,
-      squares(series.rounds),
+      scoreLines(series.rounds),
       challengeUrl(this.target.origin(), challenge.code),
     );
     this.shared.set(null);

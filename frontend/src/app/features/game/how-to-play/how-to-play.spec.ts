@@ -22,6 +22,7 @@ describe('HowToPlay', () => {
     expect(rules[1]).toContain(GAME_TEXT.ruleLead);
     expect(rules[2]).toContain(GAME_TEXT.ruleHints);
     expect(rules[3]).toContain(GAME_TEXT.rulePoints);
+    expect(rules[3]).toContain('A new game starts every day at midnight UTC');
   });
 
   it('leaves the heading to the page when told to', () => {

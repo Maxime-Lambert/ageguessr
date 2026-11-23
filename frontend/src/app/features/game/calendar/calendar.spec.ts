@@ -78,6 +78,14 @@ describe('Calendar', () => {
     expect(day(20).querySelector('[role="img"]')?.getAttribute('aria-label')).toContain('No game');
   });
 
+  it('leaves a day without a game out of the legend: its empty slot says it', () => {
+    load(november());
+
+    const legend = page.querySelector('ul[aria-label="Legend"]');
+    expect(legend?.querySelectorAll('li')).toHaveLength(3);
+    expect(legend?.textContent).not.toContain('No game');
+  });
+
   it('moves between months, from the first one to the current one', () => {
     load(november());
     expect(arrow('Next month').disabled).toBe(true);
