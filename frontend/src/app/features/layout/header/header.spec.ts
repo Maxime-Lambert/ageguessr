@@ -62,7 +62,7 @@ describe('Header', () => {
   };
 
   it('links to the game modes and the calendar, in the game vocabulary', () => {
-    expect(texts(header(), 'nav a')).toEqual(['Daily game', 'Series', 'Calendar']);
+    expect(texts(header(), 'nav a')).toEqual(['Daily game', 'Free play', 'Calendar']);
   });
 
   it('shows nothing account-related until the session restore has settled', () => {
@@ -176,7 +176,7 @@ describe('Header', () => {
       const panel = open();
 
       expect(panel.getAttribute('aria-label')).toBe('Menu');
-      expect(texts(panel, 'nav a')).toEqual(['Daily game', 'Series', 'Calendar']);
+      expect(texts(panel, 'nav a')).toEqual(['Daily game', 'Free play', 'Calendar']);
       expect(named(panel, 'a', 'Sign up')).toBeDefined();
       expect(panel.querySelector('app-preferences')).not.toBeNull();
     });

@@ -309,9 +309,9 @@ Quatre joueurs sur la prod. Décisions prises avec l'utilisateur le 2026-11-23.
       résultat visiblement cliquable, confettis sur un âge exact, récap avec l'âge et les
       essais, partage une ligne par manche (`🟨 499/1000`), compte à rebours vers la
       prochaine partie — PR `fix/tester-feedback-quick-wins`
-- [ ] Partie libre : « Série » devient « Partie libre » (*Free play*) partout, bouton
+- [x] Partie libre : « Série » devient « Partie libre » (*Free play*) partout, bouton
       « Abandonner » (avec confirmation) sur une partie en cours, plus de durée estimée
-      sur les longueurs
+      sur les longueurs — PR `feature/free-play`
 - [ ] En-tête fixe, compact, avec une icône « ? » vers « Comment jouer » (le pied de page
       n'est pas visible en partie ni en haut des pages légales)
 - [ ] Nouvelles catégories d'indice : Télévision (grosses émissions et séries) et Jeux

@@ -2,7 +2,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { GAME_TEXT, seriesDuration, seriesLength } from '../game-vocabulary';
+import { GAME_TEXT, seriesLength } from '../game-vocabulary';
 import { Series } from '../models';
 import { finished, round, series } from '../testing';
 import { FreeGame } from './free-game';
@@ -67,12 +67,11 @@ describe('FreeGame', () => {
     expect(page.textContent).toContain('Only 2 photos could be drawn this time.');
   });
 
-  it('says roughly how long each length takes, and the rules', () => {
+  it('offers the lengths without a duration (testers found it too low), and the rules', () => {
     noCurrentSeries();
 
-    expect(button(seriesLength(5)).textContent).toContain(seriesDuration(3));
-    expect(button(seriesLength(10)).textContent).toContain(seriesDuration(5));
-    expect(button(seriesLength(20)).textContent).toContain(seriesDuration(10));
+    expect(button(seriesLength(5)).textContent?.trim()).toBe(seriesLength(5));
+    expect(page.textContent).not.toContain('min');
     expect(page.querySelector('#free-rules-title')?.textContent).toContain(GAME_TEXT.howToPlay);
     expect(page.textContent).toContain(GAME_TEXT.ruleLead);
   });
@@ -92,6 +91,50 @@ describe('FreeGame', () => {
     fixture.detectChanges();
     expect(page.textContent).toContain(GAME_TEXT.summary);
     expect(page.textContent).toContain('1186');
+  });
+
+  it('gives up the game on screen once confirmed, then offers the lengths again', () => {
+    current(series([finished(1), round(2)]));
+
+    button(GAME_TEXT.abandon).click();
+    fixture.detectChanges();
+    expect(page.textContent).toContain(GAME_TEXT.abandonConfirm);
+    button(GAME_TEXT.abandonNo).click();
+    fixture.detectChanges();
+    expect(page.textContent).not.toContain(GAME_TEXT.abandonConfirm);
+    http.expectNone({ method: 'DELETE' });
+
+    button(GAME_TEXT.abandon).click();
+    fixture.detectChanges();
+    button(GAME_TEXT.abandonYes).click();
+    const request = http.expectOne('/api/game/series/series-1');
+    expect(request.request.method).toBe('DELETE');
+    request.flush(null, { status: 204, statusText: 'No Content' });
+    fixture.detectChanges();
+
+    expect(page.textContent).toContain(GAME_TEXT.chooseLength);
+    expect(page.textContent).not.toContain(GAME_TEXT.abandonConfirm);
+  });
+
+  it('keeps the game and says so when giving it up fails', () => {
+    current(series([round(1)]));
+    button(GAME_TEXT.abandon).click();
+    fixture.detectChanges();
+
+    button(GAME_TEXT.abandonYes).click();
+    http
+      .expectOne('/api/game/series/series-1')
+      .flush(null, { status: 500, statusText: 'Server Error' });
+    fixture.detectChanges();
+
+    expect(page.querySelector('[role="alert"]')?.textContent).toContain(GAME_TEXT.genericError);
+    expect(page.querySelector('h2')?.textContent).toContain(`${GAME_TEXT.round} 1 of 1`);
+  });
+
+  it('offers no way to give up a finished game', () => {
+    current(series([finished(1)], { score: { points: 593, max: 1000, complete: true } }));
+
+    expect(button(GAME_TEXT.abandon)).toBeUndefined();
   });
 
   it('starts over with a new series from the summary', () => {

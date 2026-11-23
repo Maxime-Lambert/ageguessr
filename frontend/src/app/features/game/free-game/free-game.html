@@ -41,7 +41,6 @@
               (click)="start(size)"
             >
               <span class="font-display block text-[28px]">{{ seriesLength(size) }}</span>
-              <span class="text-muted mt-1 block text-sm">{{ duration(size) }}</span>
             </button>
           }
         </div>
@@ -60,6 +59,45 @@
         }
         @if (active(); as round) {
           <app-rules-card />
+          <!-- A way out of a game picked up again on every visit (testers, 2026-11-23),
+               confirmed first: the rounds played are lost. Asking or backing out keeps the
+               focus in the age field (mousedown prevented): its blur would show « enter an
+               age » under an empty field. -->
+          <div class="mb-4 flex justify-end">
+            @if (confirmingAbandon()) {
+              <div
+                class="bg-surface border-border flex flex-wrap items-center gap-3 rounded-md border p-3 text-sm"
+                role="group"
+                aria-labelledby="abandon-confirm"
+              >
+                <p id="abandon-confirm">{{ text.abandonConfirm }}</p>
+                <button appButton type="button" [disabled]="abandoning()" (click)="abandon()">
+                  {{ text.abandonYes }}
+                </button>
+                <button
+                  appButton
+                  variant="secondary"
+                  type="button"
+                  (mousedown)="$event.preventDefault()"
+                  (click)="confirmingAbandon.set(false)"
+                >
+                  {{ text.abandonNo }}
+                </button>
+                @if (abandonError(); as abandonError) {
+                  <p class="text-danger w-full" role="alert">{{ abandonError }}</p>
+                }
+              </div>
+            } @else {
+              <button
+                type="button"
+                class="text-muted hover:text-foreground text-sm underline underline-offset-4"
+                (mousedown)="$event.preventDefault()"
+                (click)="confirmingAbandon.set(true)"
+              >
+                {{ text.abandon }}
+              </button>
+            }
+          </div>
           <app-round-player
             [round]="round"
             [total]="total()"

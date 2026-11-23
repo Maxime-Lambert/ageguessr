@@ -21,6 +21,11 @@ export class SeriesApi {
     return this.http.get<Series>(`/api/game/series/${encodeURIComponent(id)}`);
   }
 
+  /** Gives up an unfinished series of the player's own (204): it is deleted. */
+  abandon(id: string): Observable<void> {
+    return this.http.delete<void>(`/api/game/series/${encodeURIComponent(id)}`);
+  }
+
   /** The series left unfinished, or null (204). */
   current(): Observable<Series | null> {
     return this.http
